@@ -1,0 +1,55 @@
+NPC Spawn Platforms 2.1
+=======================
+About
+-----
+This is an addon for the popular [Garry's Mod][gmod].
+It allows you to create SEnts which spawn a stream of NPCs without user interaction, which is useful for NPC battles, either against yourself or rival NPCs.
+
+Features
+--------
+* Full [Wiremod][wire] support
+* Integrates with the Sandbox gamemode if it's loaded
+* Easy to control Lua API for integration with other gamemodes.
+* Huge customisability:
+    - Comes with 23 NPCs and 14 weapons by default, more can be added very easily
+    - Choose the skill level and health at which NPCs spawn. Even the odds in battles by making combine smart and rebels stupid!
+    - Specify where and how fast NPCs spawn
+    - Choose how many NPCs are active at any one time and if the spawners should turn off after a certain number of NPCs spawned. (Waves anyone?)
+
+Changelog
+---------
+* __2.1__:
+    - Wire support
+    - Added Hunter
+    - Added zombine
+    - Added admin config menu
+    - Added automatic corpse cleanup
+    - Added sandbox hooks
+    - Added delay reduction ability
+    - Added 'turn off after x npcs' ability
+    - Added NPC weapons` Proficiency
+    - Made it cleaner
+* __2.0__:
+    - Rewrote everything
+    - added platform:TurnOn()
+    - platform:TurnOff()
+    - platform:Toggle()
+    - platform:RemoveNPCs()
+
+
+Credits
+-------
+* Lexi
+* Devenger
+
+Links
+-----
+* [Latest gmod.org release][latest]
+* [Facepunch thread][fpthread]
+* [Original STool][original]
+
+  [gmod]:     http://garrysmod.com/                           "Garry's Mod"
+  [wire]:     http://wiremod.com/                             "Wire Mod"
+  [latest]:   http://garrysmod.org/downloads/?a=view&id=99245 "Latest 'stable' release"
+  [fpthread]: http://facepunch.com/threads/845444             "Facepunch forums release thread"
+  [original]: http://garrysmod.org/downloads/?a=view&id=3898  "STool this is based off"
