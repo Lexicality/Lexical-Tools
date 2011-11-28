@@ -104,7 +104,6 @@ language.Add ("Tool_npc_spawnplatform_desc", "Create a platform that will consta
 language.Add ("Tool_npc_spawnplatform_0", "Left-click: Spawn/Update Platform.  Right-click: Copy Platform Data.");
 --do return; end
 local function OnPopulateToolPanel(panel)
-    print("addoptions!");
 	panel:AddControl("Label", {
 		Text = "Cleanup Corpses: This will clean up all the clientside corpses every minute if enabled."
 	});
@@ -160,6 +159,5 @@ local function OnPopulateToolPanel(panel)
 	--]]
 end
 hook.Add("PopulateToolMenu", "NPCSpawner Options", function()
-    print("Populate tool menu!");
 	spawnmenu.AddToolMenuOption("Options", "Addons", "NPC Spawn Platforms", "NPC Spawn Platforms", "", "", OnPopulateToolPanel)
 end)

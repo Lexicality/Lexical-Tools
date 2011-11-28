@@ -39,12 +39,15 @@ npcspawner = {
 	end;
     send = function(name, tab, who)
         if (net) then
+            MsgN("send", name, tab, who)
             net.Start(name);
             net.WriteTable(tab);
             if (CLIENT) then
                 net.SendToServer();
+            --[[ Yay more bugs. TODO: REMOVE WHEN FIXED
             elseif (who) then
                 net.Send(who);
+            --]]
             else
                 net.Broadcast();
             end
@@ -61,6 +64,7 @@ npcspawner = {
     recieve = function(name, callback)
         if (net) then
             net.Receive(name, function(len, who)
+                MsgN("rec", name, len, who)
                 callback(net.ReadTable(), who);
             end);
         elseif (datastream) then
