@@ -65,27 +65,27 @@ local function callback(cvar, old, new)
 		end
 	end
 end
-for k,v in pairs(npcspawner.config) do
+for k, v in pairs(npcspawner.config) do
 	CreateConVar(cvarstr .. k, tostring(v));
 	cvars.AddChangeCallback(cvarstr .. k, callback);
 end
 usermessage.Hook("npcspawner_config", function(msg)
-	local cvar,value = msg:ReadString(), msg:ReadFloat()
+	local cvar, value = msg:ReadString(), msg:ReadFloat()
 	npcspawner.config[cvar] = value;
 	RunConsoleCommand(cvarstr .. cvar, tostring(value));
 end);
-datastream.Hook("NPCSpawner NPCs",function(_, _, _, data)
+npcspawner.recieve("NPCSpawner NPCs", function(data)
 	npcspawner.npcs = data;
 	npcspawner.debug("Just got new npc vars.");
 end);
-datastream.Hook("NPCSpawner Weps",function(_, _, _, data)
+npcspawner.recieve("NPCSpawner Weps", function(data)
 	npcspawner.weps = data;
 	npcspawner.debug("Just got new weapon vars.");
 end);
-datastream.Hook("NPCSpawner Config",function(_, _, _, data)
+npcspawner.recieve("NPCSpawner Config", function(data)
 	npcspawner.config = data;
 	npcspawner.debug("Just got new config vars.");
-	for k,v in pairs(npcspawner.config) do
+	for k, v in pairs(npcspawner.config) do
 		RunConsoleCommand(cvarstr .. k, tostring(v))
 	end
 end);
@@ -95,7 +95,7 @@ end);
 CreateConVar("cleanupcorpses", 1);
 timer.Create("Dead Body Deleter", 60, 0, function()
 	if (GetConVarNumber("cleanupcorpses") < 1) then return; end
-	for _,ent in pairs(ents.FindByClass("class C_ClientRagdoll")) do
+	for _, ent in pairs(ents.FindByClass("class C_ClientRagdoll")) do
 		ent:Remove()
 	end
 end);
@@ -104,6 +104,7 @@ language.Add ("Tool_npc_spawnplatform_desc", "Create a platform that will consta
 language.Add ("Tool_npc_spawnplatform_0", "Left-click: Spawn/Update Platform.  Right-click: Copy Platform Data.");
 --do return; end
 local function OnPopulateToolPanel(panel)
+    print("addoptions!");
 	panel:AddControl("Label", {
 		Text = "Cleanup Corpses: This will clean up all the clientside corpses every minute if enabled."
 	});
@@ -159,5 +160,6 @@ local function OnPopulateToolPanel(panel)
 	--]]
 end
 hook.Add("PopulateToolMenu", "NPCSpawner Options", function()
+    print("Populate tool menu!");
 	spawnmenu.AddToolMenuOption("Options", "Addons", "NPC Spawn Platforms", "NPC Spawn Platforms", "", "", OnPopulateToolPanel)
 end)

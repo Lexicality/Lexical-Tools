@@ -86,15 +86,12 @@ if (not npcspawner.config) then
 		debug		= 0,
 	};
 end
-for k,v in pairs(npcspawner.config) do
+for k, v in pairs(npcspawner.config) do
 	umsg.PoolString(k)
 	npcspawner.config[k] = tonumber(v);
 end
 concommand.Add("npcspawner_config", function(ply, _, args)
---	print(ply, _, args);
---	PrintTable(args);
 	local var, val = args[1], tonumber(args[2]);
-	--print(var, val);
 	if (not (ply:IsAdmin() and var and val)) then return; end
 	npcspawner.config[var] = val;
 	umsg.Start("npcspawner_config");
@@ -102,37 +99,41 @@ concommand.Add("npcspawner_config", function(ply, _, args)
 	umsg.Float(val);
 	umsg.End();
 end);
+
+--[[
 umsg.PoolString"NPCSpawner NPCs";
 umsg.PoolString"NPCSpawner Weps";
 umsg.PoolString"NPCSpawner Config";
-hook.Add("PlayerInitialSpawn","NPCSpawner PlayerInitialSpawn",function(ply)
-	datastream.StreamToClients(ply, "NPCSpawner NPCs",   npcspawner.npcs  );
-	datastream.StreamToClients(ply, "NPCSpawner Weps",   npcspawner.weps  );
-	datastream.StreamToClients(ply, "NPCSpawner Config", npcspawner.config);
-end);
-hook.Add("AcceptStream","NPCSpawner AcceptStream",function(ply, handle)
-	if (handle == "NPCSpawner NPCs" or handle == "NPCSpawner Weps") then
-		return ply:IsAdmin();
-	end
+--]]
+
+hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", function(ply)
+	npcspawner.send("NPCSpawner NPCs",   npcspawner.npcs,   ply);
+	npcspawner.send("NPCSpawner Weps",   npcspawner.weps,   ply);
+	npcspawner.send("NPCSpawner Config", npcspawner.config, ply);
 end);
 
-datastream.Hook("NPCSpawner NPCs",function(ply, _, _, _, data)
-	if (not ply:IsAdmin()) then return false end -- Someone might have fucked up the accept stream hook.
-	if (table.Count(data) < 1) then return false end -- There must be data
-	npcspawner.npcs = data;
-	file.Write("npcspawner/npcs.txt",util.TableToKeyValues(npcspawner.npcs));
-	npcspawner.debug("Just got new npc vars from",ply);
-	datastream.StreamToClients(player.GetAll(),"NPCSpawner NPCs",npcspawner.npcs);
-end);
-datastream.Hook("NPCSpawner Weps",function(ply, _, _, _, data)
-	if (not ply:IsAdmin()) then return false end -- Someone might have fucked up the accept stream hook.
-	if (table.Count(data) < 1) then return false end -- There must be data
-	npcspawner.weps = data;
-	file.Write("npcspawner/weps.txt",util.TableToKeyValues(npcspawner.weps));
-	npcspawner.debug("Just got new weapon vars from",ply);
-	datastream.StreamToClients(player.GetAll(),"NPCSpawner Weps",npcspawner.weps);
-end);
 if (not ConVarExists("sbox_maxspawnplatforms")) then
 	CreateConVar("sbox_maxspawnplatforms", 3);
 end
 cleanup.Register("sent_spawnplatform");
+
+-- This will allow admins to edit the npc/weapon lists in-game, when I add that feature.
+--[[
+npcspawner.recieve("NPCSpawner NPCs", function(data, ply)
+	if (not ply:IsAdmin()) then return false end -- Someone might have fucked up the accept stream hook.
+	if (table.Count(data) < 1) then return false end -- There must be data
+	npcspawner.npcs = data;
+	file.Write      ("npcspawner/npcs.txt", util.TableToKeyValues(npcspawner.npcs));
+	npcspawner.debug("Just got new npc vars from", ply);
+	npcspawner.send ("NPCSpawner NPCs", npcspawner.npcs);
+end);
+
+npcspawner.recieve("NPCSpawner Weps", function(data, ply)
+	if (not ply:IsAdmin()) then return false end -- Someone might have fucked up the accept stream hook.
+	if (table.Count(data) < 1) then return false end -- There must be data
+	npcspawner.weps = data;
+	file.Write      ("npcspawner/weps.txt", util.TableToKeyValues(npcspawner.weps));
+	npcspawner.debug("Just got new weapon vars from", ply);
+	npcspawner.send ("NPCSpawner Weps", npcspawner.weps);
+end);
+--]]
