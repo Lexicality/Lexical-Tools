@@ -23,8 +23,10 @@ if (SERVER) then
     end);
 end
 -- Whoopsie garry! TODO: Remove when fixed
-net.WriteVars[TYPE_STRING] = function(t,v) net.WriteByte(t) net.WriteString(v) end
-net.ReadVars[TYPE_STRING] = function() return net.ReadString() end
+if (net) then
+    net.WriteVars[TYPE_STRING] = function(t,v) net.WriteByte(t) net.WriteString(v) end
+    net.ReadVars[TYPE_STRING] = function() return net.ReadString() end
+end
 
 npcspawner = {
 	debug = function(...)
