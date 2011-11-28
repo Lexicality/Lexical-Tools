@@ -41,7 +41,6 @@ npcspawner = {
 	end;
     send = function(name, tab, who)
         if (net) then
-            MsgN("send", name, tab, who)
             net.Start(name);
             net.WriteTable(tab);
             if (CLIENT) then
@@ -66,7 +65,6 @@ npcspawner = {
     recieve = function(name, callback)
         if (net) then
             net.Receive(name, function(len, who)
-                MsgN("rec", name, len, who)
                 callback(net.ReadTable(), who);
             end);
         elseif (datastream) then
