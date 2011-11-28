@@ -44,6 +44,7 @@ function TOOL:LeftClick(trace)
 	self:SetKVs(ent);
 	ent:SetKeyValue("ply", owner:EntIndex());
 	ent:SetPos(trace.HitPos);
+    ent:SetAngles(Angle(0,0,90));
 	ent:Spawn();
 	ent:Activate();
 	ent:SetPlayer(owner);
