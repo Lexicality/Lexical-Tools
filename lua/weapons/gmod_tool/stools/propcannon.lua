@@ -179,8 +179,6 @@ end
 
 function TOOL.BuildCPanel(cp)
 
-    cp:AddControl( "Header", { Text = "#Tool_propcannon_name", Description	= "#Tool_propcannon_desc" }  )
-
     local Combo = {};
 	Combo["Label"] = "#Presets";
 	Combo["MenuButton"] = "1";
@@ -226,7 +224,6 @@ function TOOL.BuildCPanel(cp)
 	});
     cp:AddControl( "Slider", {
 		Label = "Force:";
-		Description = "How much force the cannon fires with";
 		Type = "float";
 		Min = "0";
 		Max = "100000";
@@ -234,7 +231,6 @@ function TOOL.BuildCPanel(cp)
 	});
     cp:AddControl( "Slider", {
 		Label = "Reload Delay:";
-		Description = "How many seconds after firing before the cannon can fire again";
 		Type = "float";
 		Min = "0";
 		Max = "50";
@@ -242,7 +238,6 @@ function TOOL.BuildCPanel(cp)
 	});
     cp:AddControl( "Slider", {
 		Label = "Recoil:";
-		Description = "How much to multiply the cannon's recoil by.";
 		Type = "float";
 		Min = "0";
 		Max = "10";
@@ -250,7 +245,6 @@ function TOOL.BuildCPanel(cp)
 	});
     cp:AddControl( "Slider", {
 		Label = "Prop Lifetime:";
-		Description = "How many seconds each fired prop will exist for after being fired (0 to last forever)";
 		Type = "float";
 		Min = "0";
 		Max = "30";
@@ -258,7 +252,6 @@ function TOOL.BuildCPanel(cp)
 	});
     cp:AddControl( "Slider", {
 		Label = "Explosive Power:";
-		Description = "If the prop is set to explode, how much damage to do.";
 		Type = "float";
 		Min = "0";
 		Max = "200";
@@ -266,7 +259,6 @@ function TOOL.BuildCPanel(cp)
 	});
     cp:AddControl( "Slider", {
 		Label = "Explosive Radius:";
-		Description = "If the prop is set to explode, how big the explosion should be.";
 		Type = "float";
 		Min = "0";
 		Max = "500";
@@ -274,7 +266,6 @@ function TOOL.BuildCPanel(cp)
 	});
     cp:AddControl( "Checkbox", {
 		Label = "Explode on contact:";
-		Description = "Should the fired props explode when they hit something";
 		Command = "propcannon_explosive";
 	});
 	cp:AddControl( "PropSelect", {
@@ -283,10 +274,8 @@ function TOOL.BuildCPanel(cp)
 		Category = "Ammo";
 		Models = list.Get( "CannonAmmoModels" );
 	});
-	cp:AddControl( "ComboBox", {
+	cp:AddControl( "ListBox", {
 		Label = "Firing Effect:";
-		Description = "The effect to play when the cannon fires";
-		MenuButton = "0";
 		Options = list.Get( "CannonEffects" );
 	});
 end

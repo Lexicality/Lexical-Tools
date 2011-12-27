@@ -3,18 +3,19 @@
 	~ Lexi ~
 --]]
 
+TOOL.Name     = "Cloaking";
+TOOL.Author   = "Lexi";
 TOOL.Category = "Lexical Tools";
-TOOL.Name = "Cloaking";
 
-TOOL.ClientConVar["key"] = "5";
-TOOL.ClientConVar["flicker"] = "0";
-TOOL.ClientConVar["toggle"] = "1";
+TOOL.ClientConVar["key"]      = "5";
+TOOL.ClientConVar["flicker"]  = "0";
+TOOL.ClientConVar["toggle"]   = "1";
 TOOL.ClientConVar["reversed"] = "0";
-TOOL.ClientConVar["all"] = "1";
+TOOL.ClientConVar["all"]      = "1";
 TOOL.ClientConVar["material"] = "sprites/heatwave";
 
 local function checkTrace(tr)
-	return (tr.Entity and tr.Entity:IsValid() and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle() or tr.HitWorld));
+    return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC());
 end
 
 if (CLIENT) then
@@ -30,18 +31,30 @@ if (CLIENT) then
 	list.Set("CloakingMaterials", "Heatwave", "sprites/heatwave");
 	list.Set("CloakingMaterials", "Light", "models/effects/vol_light001");
 	
-	function TOOL:BuildCPanel()
-		self:AddControl("Header",   {Text = "#Tool_cloaking_name", Description = "#Tool_cloaking_desc"});
-		self:AddControl("CheckBox", {Label = "Reversed (Starts invisible, becomes visible)", Command = "cloaking_reversed"});
-		self:AddControl("CheckBox", {Label = "Flicker when damaged", Command = "cloaking_flicker"});
-		self:AddControl("CheckBox", {Label = "Toggle Active", Command = "cloaking_toggle"});
-		self:AddControl("CheckBox", {Label = "Cloak all constrained entities", Command = "cloaking_all"});
-		self:AddControl("Numpad",   {Label = "Button", ButtonSize = "22", Command = "cloaking_key"});
+	function TOOL.BuildCPanel(panel)
+        -- Header
+        panel:CheckBox("Inverted Controls",          "cloaking_reversed");
+        panel:CheckBox("Flicker on damage",          "cloaking_flicker" );
+        panel:CheckBox("Toggle Controls",            "cloaking_toggle"  );
+        panel:CheckBox("Cloak constrained entities", "cloaking_all"     );
+
+		panel:AddControl("Numpad",
+            {
+                Label      = "Button",
+                Command    = "cloaking_key"
+            }
+        );
 		local options = {};
 		for name, material in pairs(list.Get( "CloakingMaterials" )) do
 			options[name] = { cloaking_material = material };
 		end
-		self:AddControl("Listbox", {Label = "Material:", MenuButton = 0, Height = 120, Options = options});
+		panel:AddControl("Listbox",
+            {
+                Label = "Material:",
+                Height = 120,
+                Options = options
+            }
+        );
 	end
 	
 	TOOL.LeftClick = checkTrace;
@@ -93,42 +106,21 @@ end
 numpad.Register("Cloaking onUp", onUp);
 
 
---umsg.PoolString("CloakingHurrah!");
 --[[ Wire Based Shit ]]--
 local function doWireInputs(ent)
-	local inputs = ent.Inputs;
-	if (not inputs) then
-		Wire_CreateInputs(ent, {"Cloak"});
-		return;
-	end
-	local names, types, descs = {}, {}, {};
-	local num;
-	for _, data in pairs(inputs) do
-		num = data.Num;
-		names[num] = data.Name;
-		types[num] = data.Type;
-		descs[num] = data.Desc;
-	end
-	table.insert(names, "Cloak");
-	WireLib.AdjustSpecialInputs(ent, names, types, descs);
+    if (not WireLib.AddInputs) then
+        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
+        return;
+    end
+    WireLib.AddInputs(ent, {"Cloak"});
 end
 
 local function doWireOutputs(ent)
-	local outputs = ent.Outputs;
-	if (not outputs) then
-		Wire_CreateOutputs(ent, {"CloakActive"});
-		return;
-	end
-	local names, types, descs = {}, {}, {};
-	local num;
-	for _, data in pairs(outputs) do
-		num = data.Num;
-		names[num] = data.Name;
-		types[num] = data.Type;
-		descs[num] = data.Desc;
-	end
-	table.insert(names, "CloakActive");
-	WireLib.AdjustSpecialOutputs(ent, names, types, descs);
+    if (not WireLib.AddOutputs) then
+        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
+        return;
+    end
+    WireLib.AddOutputs(ent, {"CloakActive"}, {"If this entity is currently cloaked"});
 end
 
 local function TriggerInput(self, name, value, ...)

@@ -11,10 +11,6 @@ if (CLIENT) then
 	
 
 	function TOOL.BuildCPanel(cp)
-		cp:AddControl("Header", {
-			Text = "#Tool_crate_name",
-			Description = "#Tool_crate_desc"
-		});
 		cp:AddControl("Slider", {
 			Label = "Scale",
 			Type = "Integer",
@@ -54,25 +50,3 @@ function TOOL:LeftClick(tr)
 	
 	return true;
 end
-
-function MakeCrate(ply, pos, angles, scale, data)
-	if (not ply:CheckLimit("props")) then
-		return false;
-	end
-	if (data) then
-		ent = duplicator.GenericDuplicatorFunction(ply, data); -- This is actually better than doing it manually
-	else
-		ent = ents.Create("gmod_crate");
-		ent:SetModel("models/props/de_dust/du_crate_64x64.mdl");
-		ent:SetPos(pos);
-		ent:SetAngles(angles);
-		ent:Spawn();
-	end
-	ent:SetScale(scale);
-	ent:Think(); -- Update the boundries NOW
-	
-	ply:AddCount("props",   ent);
-	ply:AddCleanup("props", ent);
-	return ent;
-end
-duplicator.RegisterEntityClass("gmod_crate", MakeCrate, "Pos", "Ang", "Scale", "Data")

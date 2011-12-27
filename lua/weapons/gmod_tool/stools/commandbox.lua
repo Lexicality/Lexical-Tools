@@ -59,7 +59,7 @@ list.Set("CommandboxModels", "models/props_lab/reciever01a.mdl", {});
 list.Set("CommandboxModels", "models/props_lab/monitor02.mdl", {});
 
 local function canTool(tr)
-	return tr.Hit and not tr.Entity:IsPlayer()
+	return tr.Hit and tr.HitWorld or (IsValid(tr.Entity) and not tr.Entity:IsPlayer())
 end
 
 if (CLIENT) then
@@ -184,27 +184,3 @@ function TOOL:LeftClick(tr)
 	
 	return true;
 end
-
-// Create command box
-function MakeCommandBox(ply, pos, angles, model, key, command, data)
-	if (not ply:CheckLimit("commandboxes")) then
-		return false;
-	end
-	local box;
-	if (data) then
-		box = duplicator.GenericDuplicatorFunction(ply, data); -- This is actually better than doing it manually
-	else
-		box = ents.Create("gmod_commandbox");
-		box:SetModel(model)
-		box:SetPos(pos);
-		box:SetAngles(angles);
-		box:Spawn();
-	end
-	box:SetPlayer(ply);
-	box:SetKey(key);
-	box:SetCommand(command);
-	ply:AddCount("commandboxes", box);
-	return box;
-end
-
-duplicator.RegisterEntityClass("gmod_commandbox", MakeCommandBox, "Pos", "Ang", "Model", "key", "command", "Data");

@@ -13,7 +13,7 @@ TOOL.ClientConVar["toggle"] = "0"
 TOOL.ClientConVar["reversed"] = "0"
 
 local function checkTrace(tr)
-	return (tr.Entity and tr.Entity:IsValid() and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle() or tr.HitWorld));
+    return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle());
 end
 
 if (CLIENT) then
@@ -26,18 +26,21 @@ if (CLIENT) then
 	language.Add("Tool_fading_doors_0", "Click on something to make it a fading door. Reload to set it back to normal");
 	language.Add("Undone_fading_door", "Undone Fading Door");
 	
-	function TOOL:BuildCPanel()
-		self:AddControl("Header",   {Text = "#Tool_fading_doors_name", Description = "#Tool_fading_doors_desc"});
-		self:AddControl("CheckBox", {Label = "Reversed (Starts invisible, becomes solid)", Command = "fading_doors_reversed"});
-		self:AddControl("CheckBox", {Label = "Toggle Active", Command = "fading_doors_toggle"});
-		self:AddControl("Numpad",   {Label = "Button", ButtonSize = "22", Command = "fading_doors_key"});
+	function TOOL.BuildCPanel(panel)
+        panel:CheckBox("Reversed (Starts invisible, becomes solid)", "fading_doors_reversed");
+	    panel:CheckBox("Toggle Active", "fading_doors_toggle");
+        panel:AddControl("Numpad",
+            {
+                Label = "Button",
+                Command = "fading_doors_key"
+            }
+        );
 	end
 	
 	TOOL.LeftClick = checkTrace;
 	
 	return;
 end	
---umsg.PoolString("FadingDoorHurrah!");
 
 local function fadeActivate(self)
 	if (self.fadeActive) then return; end
@@ -119,41 +122,20 @@ local function onUp(ply, ent)
 end
 numpad.Register("Fading Doors onUp", onUp);
 
--- Fuck you wire.
 local function doWireInputs(ent)
-	local inputs = ent.Inputs;
-	if (not inputs) then
-		Wire_CreateInputs(ent, {"Fade"});
-		return;
-	end
-	local names, types, descs = {}, {}, {};
-	local num;
-	for _, data in pairs(inputs) do
-		num = data.Num;
-		names[num] = data.Name;
-		types[num] = data.Type;
-		descs[num] = data.Desc;
-	end
-	table.insert(names, "Fade");
-	WireLib.AdjustSpecialInputs(ent, names, types, descs);
+    if (not WireLib.AddInputs) then
+        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
+        return;
+    end
+    WireLib.AddInputs(ent, {"Fade"});
 end
 
 local function doWireOutputs(ent)
-	local outputs = ent.Outputs;
-	if (not outputs) then
-		Wire_CreateOutputs(ent, {"FadeActive"});
-		return;
-	end
-	local names, types, descs = {}, {}, {};
-	local num;
-	for _, data in pairs(outputs) do
-		num = data.Num;
-		names[num] = data.Name;
-		types[num] = data.Type;
-		descs[num] = data.Desc;
-	end
-	table.insert(names, "FadeActive");
-	WireLib.AdjustSpecialOutputs(ent, names, types, descs);
+    if (not WireLib.AddOutputs) then
+        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
+        return;
+    end
+    WireLib.AddOutputs(ent, {"FadeActive"}, {"If this entity is currently faded."});
 end
 
 local function TriggerInput(self, name, value, ...)
