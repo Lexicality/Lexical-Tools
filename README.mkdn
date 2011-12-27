@@ -1,0 +1,21 @@
+Lexical Tools
+=============
+
+Various STools for [Garry's Mod][gmod] that have been abandoned by their creators rewritten for the modern gmod.
+
+Features
+--------
+
+* Full [Wiremod][wire] support where applicable
+* Clean error free code
+* Written with clean integration in mind to reduce the chance of future breakage or addon clashage.
+
+Links
+-----
+* [Facepunch thread][fpthread]
+* [Release SVN repo][svnrepo]
+
+  [gmod]:     http://garrysmod.com/                   "Garry's Mod"
+  [wire]:     http://wiremod.com/                     "Wire Mod"
+  [fpthread]: http://facepunch.com/threads/982955     "Facepunch forums release thread"
+  [svnrepo]:  http://code.google.com/p/lexical-tools/ "'Release' SVN repository"
