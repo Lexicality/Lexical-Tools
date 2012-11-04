@@ -1,3 +1,9 @@
+--[[
+	NPC Spawn Platforms V2.1
+    Copyright (c) 2011-2012 Lex Robinson
+    This code is freely available under the MIT License
+--]]
+
 ENT.Type                        = "anim";
 ENT.Base                        = "base_gmodentity";
 ENT.PrintName                   = "NPC Spawn Platform";

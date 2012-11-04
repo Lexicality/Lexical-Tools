@@ -1,91 +1,43 @@
 --[[
 	NPC Spawn Platforms V2.1
-	~ Lexi ~
+    Copyright (c) 2011-2012 Lex Robinson
+    This code is freely available under the MIT License
 --]]
 AddCSLuaFile("autorun/npcspawner2.lua");
 AddCSLuaFile("autorun/client/npcspawner2_cl.lua");
--- I'd rather use glon and sql, but you have to make this shit accessable yo.
-if (not file.IsDir("npcspawner2")) then
-	file.CreateDir("npcspawner2");
+
+local datapath = "npcspawner2"
+if (not file.IsDir(datapath, "DATA")) then
+    file.CreateDir(datapath, "DATA");
 end
-if (file.Exists("npcspawner2/npcs.txt")) then
-	local data = util.KeyValuesToTable(file.Read("npcspawner/npcs.txt"));
-	if (table.Count(data) > 0) then
-		npcspawner.npcs = data;
-	end
+
+local function readfile(fname)
+    fname = datapath .. "/" .. fname .. ".txt";
+    if (file.Exists(fname, "DATA")) then
+        local data = util.JSONToTable(file.Read(fname, "DATA"));
+        if (data and table.Count(data) > 0) then
+            return data;
+        end
+    end
 end
-if (not npcspawner.npcs) then
-	npcspawner.npcs = {
-		npc_headcrab		= "Headcrab",
-		npc_headcrab_poison	= "Headcrab, Poison",
-		npc_headcrab_fast	= "Headcrab, Fast",
-		npc_zombie			= "Zombie",
-		npc_poisonzombie	= "Zombie, Poison",
-		npc_fastzombie		= "Zombie, Fast",
-		npc_antlion			= "Antlion",
-		npc_antlionguard	= "Antlion Guard",
-		npc_crow			= "Crow",
-		npc_pigeon			= "Pigeon",
-		npc_seagull			= "Seagull",
-		npc_citizen			= "Citizen",
-		npc_citizen_refugee	= "Citizen, Refugee",
-		npc_citizen_dt		= "Citizen, Downtrodden",
-		npc_citizen_rebel	= "Rebel",
-		npc_citizen_medic	= "Rebel Medic",
-		npc_combine_s		= "Combine Soldier",
-		npc_combine_p		= "Combine, Prison",
-		npc_combine_e		= "Combine, Elite",
-		npc_metropolice		= "Metrocop",
-		npc_manhack			= "Manhack",
-		npc_rollermine		= "Rollermine",
-		npc_vortigaunt		= "Vortigaunt"
-	};
-	if (util.IsValidModel("models/hunter.mdl")) then
-		npcspawner.npcs["npc_hunter"] = "Hunter";
-	end if (util.IsValidModel("models/zombie/zombie_soldier.mdl")) then
-		npcspawner.npcs["npc_zombine"] = "Zombine";
-	end
+
+npcspawner.npcs = readfile("npcs") or npcspawner.npcs;
+npcspawner.weps = readfile("weps") or npcspawner.weps;
+
+local cfg = readfile("config");
+if (cfg) then
+    for key, value in pairs(cfg) do
+        value = tonumber(value);
+        if (value) then
+            npcspawner.config[key] = value;
+        end
+    end
 end
-if (file.Exists("npcspawner2/weps.txt")) then
-	local data = util.KeyValuesToTable(file.Read("npcspawner2/weps.txt"));
-	if (table.Count(data) > 0) then
-		npcspawner.weps = data;
-	end
-end
-if (not npcspawner.weps) then
-	npcspawner.weps = {
-		weapon_crowbar			= "Crowbar",
-		weapon_stunstick		= "Stunstick",
-		weapon_pistol			= "Pistol",
-		weapon_alyxgun			= "Alyx's Gun",
-		weapon_smg1				= "SMG",
-		weapon_ar2				= "AR2",
-		weapon_shotgun			= "Shotgun",
-		weapon_annabelle		= "Anabelle",
-	--	weapon_rpg				= "RPG", -- RPG doesn't work D:
-		weapon_citizenpackage	= "Package",
-		weapon_citizensuitcase	= "Suitcase",
-		weapon_none				= "None",
-		weapon_rebel			= "Random Rebel Weapon",
-		weapon_combine			= "Random Combine Weapon",
-		weapon_citizen			= "Random Citizen Weapon"
-	};
-end
-if (file.Exists("npcspawner2/config.txt")) then
-	local data = util.KeyValuesToTable(file.Read("npcspawner2/config.txt") or "");
-	if (table.Count(data) > 0) then
-		npcspawner.config = data
-	end
-end
-if (not npcspawner.config) then
-	npcspawner.config = {
-		adminonly	= 0,
-		callhooks	= 1,
-		maxinplay	= 20,
-		mindelay	= 0.1,
-		debug		= 0,
-	};
-end
+
+util.AddNetworkString("NPCSpawner NPCs");
+util.AddNetworkString("NPCSpawner Weps");
+util.AddNetworkString("NPCSpawner Config");
+
 for k, v in pairs(npcspawner.config) do
 	umsg.PoolString(k)
 	npcspawner.config[k] = tonumber(v);
@@ -99,12 +51,6 @@ concommand.Add("npcspawner_config", function(ply, _, args)
 	umsg.Float(val);
 	umsg.End();
 end);
-
---[[
-umsg.PoolString"NPCSpawner NPCs";
-umsg.PoolString"NPCSpawner Weps";
-umsg.PoolString"NPCSpawner Config";
---]]
 
 hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", function(ply)
 	npcspawner.send("NPCSpawner NPCs",   npcspawner.npcs,   ply);

@@ -1,5 +1,17 @@
+--[[
+	NPC Spawn Platforms V2.1
+    Copyright (c) 2011-2012 Lex Robinson
+    This code is freely available under the MIT License
+--]]
+
+if (CLIENT) then
+    language.Add ("tool.npc_spawnplatform.name", "NPC Spawn Platforms 2.1");
+    language.Add ("tool.npc_spawnplatform.desc", "Create a platform that will constantly make NPCs.");
+    language.Add ("tool.npc_spawnplatform.0", "Left-click: Spawn/Update Platform.  Right-click: Copy Platform Data.");
+end
+
 TOOL.Category						= "Lexical Tools"		-- Name of the category
-TOOL.Name							= "#NPC Spawn Platforms2"	-- Name to display
+TOOL.Name							= "NPC Spawn Platforms 2.1"	-- Name to display
 --- Default Values
 TOOL.ClientConVar ["npc"]			= "npc_combine_s";
 TOOL.ClientConVar ["weapon"]		= "weapon_smg1";
@@ -78,8 +90,8 @@ end
 --TODO: Make my own header panels and include them so I can have hedrz;
 function TOOL:BuildCPanel()
 		self:AddControl( "Header", {
-			Text 		= "#Tool_npc_spawnplatformname",
-			Description	= "#Tool_npc_spawnplatformdesc"}
+			Text 		= "#Tool.npc_spawnplatform.name",
+			Description	= "#Tool.npc_spawnplatform.desc"}
 		);
 	local combo
 	-- Presets 

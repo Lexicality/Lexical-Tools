@@ -1,6 +1,7 @@
 --[[
 	NPC Spawn Platforms V2.1
-	~ Lexi ~
+    Copyright (c) 2011-2012 Lex Robinson
+    This code is freely available under the MIT License
 --]]
 
 function printd(...)
@@ -12,20 +13,6 @@ function printd2(...)
 	if (GetConVarNumber("developer") > 1) then
 		print(...)
 	end
-end
-local datastreamHooks;
-if (SERVER) then
-    datastreamHooks = {};
-    hook.Add("AcceptStream", "NPCSpawner AcceptStream", function(ply, handle)
-        if (dastreamHooks[handle]) then
-            return ply:IsAdmin();
-        end
-    end);
-end
--- Whoopsie garry! TODO: Remove when fixed
-if (net) then
-    net.WriteVars[TYPE_STRING] = function(t,v) net.WriteByte(t) net.WriteString(v) end
-    net.ReadVars[TYPE_STRING] = function() return net.ReadString() end
 end
 
 npcspawner = {
@@ -40,46 +27,75 @@ npcspawner = {
 		end
 	end;
     send = function(name, tab, who)
-        if (net) then
-            net.Start(name);
-            net.WriteTable(tab);
-            if (CLIENT) then
-                net.SendToServer();
-            --[[ Yay more bugs. TODO: REMOVE WHEN FIXED
-            elseif (who) then
-                net.Send(who);
-            --]]
-            else
-                net.Broadcast();
-            end
-        elseif (datastream) then
-            if (CLIENT) then
-                datastream.StreamToServer(name, tab);
-            else
-                datastream.StreamToClients(who, name, tab);
-            end
+        net.Start(name);
+        net.WriteTable(tab);
+        if (CLIENT) then
+            net.SendToServer();
+        elseif (who) then
+            net.Send(who);
         else
-            error("No transport functions available!");
+            net.Broadcast();
         end
     end;
     recieve = function(name, callback)
-        if (net) then
-            net.Receive(name, function(len, who)
-                callback(net.ReadTable(), who);
-            end);
-        elseif (datastream) then
-            if (CLIENT) then
-                datastream.Hook(name, function(_, _, _, data)
-                    callback(data);
-                end);
-            else
-                datastreamHooks[name] = true;
-                datastream.Hook(name, function(who, _, _, _, data)
-                    callback(data, who);
-                end);
-            end
-        else
-            error("No transport functions available!");
-        end
+        net.Receive(name, function(len, who)
+            callback(net.ReadTable(), who);
+        end);
     end;
+    -- Default config
+    npcs = {
+        npc_headcrab		= "Headcrab",
+        npc_headcrab_poison	= "Headcrab, Poison",
+        npc_headcrab_fast	= "Headcrab, Fast",
+        npc_zombie			= "Zombie",
+        npc_poisonzombie	= "Zombie, Poison",
+        npc_fastzombie		= "Zombie, Fast",
+        npc_antlion			= "Antlion",
+        npc_antlionguard	= "Antlion Guard",
+        npc_crow			= "Crow",
+        npc_pigeon			= "Pigeon",
+        npc_seagull			= "Seagull",
+        npc_citizen			= "Citizen",
+        npc_citizen_refugee	= "Citizen, Refugee",
+        npc_citizen_dt		= "Citizen, Downtrodden",
+        npc_citizen_rebel	= "Rebel",
+        npc_citizen_medic	= "Rebel Medic",
+        npc_combine_s		= "Combine Soldier",
+        npc_combine_p		= "Combine, Prison",
+        npc_combine_e		= "Combine, Elite",
+        npc_metropolice		= "Metrocop",
+        npc_manhack			= "Manhack",
+        npc_rollermine		= "Rollermine",
+        npc_vortigaunt		= "Vortigaunt"
+    };
+    weps = {
+        weapon_crowbar			= "Crowbar",
+        weapon_stunstick		= "Stunstick",
+        weapon_pistol			= "Pistol",
+        weapon_alyxgun			= "Alyx's Gun",
+        weapon_smg1				= "SMG",
+        weapon_ar2				= "AR2",
+	--	weapon_rpg				= "RPG", -- RPG doesn't work D:
+        weapon_shotgun			= "Shotgun",
+        weapon_annabelle		= "Anabelle",
+        weapon_citizenpackage	= "Package",
+        weapon_citizensuitcase	= "Suitcase",
+        weapon_none				= "None",
+        weapon_rebel			= "Random Rebel Weapon",
+        weapon_combine			= "Random Combine Weapon",
+        weapon_citizen			= "Random Citizen Weapon"
+    };
+    config = {
+        adminonly	= 0,
+        callhooks	= 1,
+        maxinplay	= 20,
+        mindelay	= 0.1,
+        debug		= 0,
+    };
 };
+-- Stuff that required ep1/ep2 to be mounted
+if (util.IsValidModel("models/hunter.mdl")) then
+    npcspawner.npcs["npc_hunter"] = "Hunter";
+end if (util.IsValidModel("models/zombie/zombie_soldier.mdl")) then
+    npcspawner.npcs["npc_zombine"] = "Zombine";
+end

@@ -1,3 +1,9 @@
+--[[
+	NPC Spawn Platforms V2.1
+    Copyright (c) 2011-2012 Lex Robinson
+    This code is freely available under the MIT License
+--]]
+
 --[[ Make the platform dupable ]]--
 duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angles,  data)
 			local ent = ents.Create("sent_spawnplatform");
@@ -29,7 +35,7 @@ local complextypes = {
         npc_citizen_rebel = {
 			class = "npc_citizen", 
 			kvs = {
-					citizentype = CT_REBELb
+					citizentype = CT_REBEL
 			}
         }, 
         npc_citizen_dt = {

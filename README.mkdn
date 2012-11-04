@@ -39,7 +39,7 @@ Changelog
 
 Credits
 -------
-* Lexi
+* Lex Robinson
 * Devenger
 
 Links
