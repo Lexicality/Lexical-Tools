@@ -100,6 +100,7 @@ ENT.Spawned             = 0;
 ENT.LastSpawn           = 0;
 ENT.LastChange          = 0;
 ENT.TotalSpawned		= 0;
+ENT.Delay               = 5;
 
 function ENT:SpawnFunction(ply,  tr)
 	if (not tr.Hit) then return end
@@ -398,6 +399,8 @@ local nwablekeys = {
 function ENT:KeyValue (key,  value)
 	npcspawner.debug2("Key:", key, "Value:", value);
 	if (key == "delay") then
+        value = tonumber(value);
+        if (not value) then return; end
 		self.LastSpawn = CurTime();
 		self.Delay = value;
 		value = math.max(value,npcspawner.config.mindelay);
