@@ -14,10 +14,13 @@ duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angle
             ent:SetKeyValue(key:sub(3), value);
         end
     end
-    ent:SetKeyValue("ply", ply:EntIndex());
     ent:Spawn();
     ent:Activate();
-    ply:AddCount("sent_spawnplatform", ent);
+    -- If it's being loaded from a savegame ply might be nil
+    if (IsValid(ply)) then
+        ent:SetKeyValue("ply", ply:EntIndex());
+        ply:AddCount("sent_spawnplatform", ent);
+    end
     return ent;
 end,  "Pos",  "Angle",  "Data");
 AddCSLuaFile("shared.lua");
