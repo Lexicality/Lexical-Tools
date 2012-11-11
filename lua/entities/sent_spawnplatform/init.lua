@@ -6,21 +6,20 @@
 
 --[[ Make the platform dupable ]]--
 duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angles,  data)
-    PrintTable(data)
-			local ent = ents.Create("sent_spawnplatform");
-			ent:SetAngles(angles);
-			ent:SetPos(pos);
-			for key, value in pairs(data) do
-				if (key:sub(1, 2) == "k_") then
-					ent:SetKeyValue(key:sub(3), value);
-				end
-			end
-			ent:SetKeyValue("ply", ply:EntIndex());
-			ent:Spawn();
-			ent:Activate();
-			ply:AddCount("sent_spawnplatform", ent);
-            return ent;
-		end,  "Pos",  "Angle",  "Data");
+    local ent = ents.Create("sent_spawnplatform");
+    ent:SetAngles(angles);
+    ent:SetPos(pos);
+    for key, value in pairs(data) do
+        if (key:sub(1, 2) == "k_") then
+            ent:SetKeyValue(key:sub(3), value);
+        end
+    end
+    ent:SetKeyValue("ply", ply:EntIndex());
+    ent:Spawn();
+    ent:Activate();
+    ply:AddCount("sent_spawnplatform", ent);
+    return ent;
+end,  "Pos",  "Angle",  "Data");
 AddCSLuaFile("shared.lua");
 include('shared.lua');
 local model1 = Model("models/props_c17/streetsign004e.mdl");
