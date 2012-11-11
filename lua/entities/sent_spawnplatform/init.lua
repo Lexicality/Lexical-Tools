@@ -30,52 +30,52 @@ local model2 = Model("models/props_c17/streetsign004f.mdl");
 
 local complextypes = {
         npc_citizen_medic = {
-			class   = "npc_citizen", 
+			class   = "npc_citizen",
 			kvs     = {
-					citizentype = CT_REBEL, 
+					citizentype = CT_REBEL,
 					spawnflags  = 131072
 			}
-        }, 
+        },
         npc_citizen_rebel = {
-			class = "npc_citizen", 
+			class = "npc_citizen",
 			kvs = {
 					citizentype = CT_REBEL
 			}
-        }, 
+        },
         npc_citizen_dt = {
-			class = "npc_citizen", 
+			class = "npc_citizen",
 			kvs = {
 					citizentype = CT_DOWNTRODDEN
 			}
-        }, 
+        },
         npc_citizen = {
-			class = "npc_citizen", 
+			class = "npc_citizen",
 			kvs = {
 					citizentype = CT_DEFAULT
 			}
-        }, 
+        },
 		npc_citizen_refugee = {
-			class = "npc_citizen", 
+			class = "npc_citizen",
 			kvs = {
 					citizentype = CT_REFUGEE
 			}
-		}, 	
+		},
         npc_combine_e = {
-			class = "npc_combine_s", 
+			class = "npc_combine_s",
 			kvs = {
 					model = "models/combine_super_soldier.mdl"
 			}
-        }, 
+        },
         npc_combine_p = {
-			class = "npc_combine_s", 
+			class = "npc_combine_s",
 			kvs = {
 					model = "models/combine_soldier_prisonguard.mdl"
 			}
         }
 };
 local weaponsets = {
-	weapon_rebel	= {"weapon_pistol",  "weapon_smg1",  "weapon_ar2",  "weapon_shotgun"}, 
-	weapon_combine	= {"weapon_smg1",  "weapon_ar2",  "weapon_shotgun"}, 
+	weapon_rebel	= {"weapon_pistol",  "weapon_smg1",  "weapon_ar2",  "weapon_shotgun"},
+	weapon_combine	= {"weapon_smg1",  "weapon_ar2",  "weapon_shotgun"},
 	weapon_citizen	= {"weapon_citizenpackage",  "weapon_citizensuitcase",  "weapon_none"}
 };
 
@@ -159,17 +159,17 @@ function ENT:Initialize ()
 			"HealthMultiplier", 		-- healthmul
 			"MaxSpawnedNPCs", 		-- totallimit
 			"DelayDecreaseAmount", 	-- decrease
-			"RemoveNPCs", 
+			"RemoveNPCs",
 				},  {
-			"NORMAL", 
 			"NORMAL",
-			"STRING", 
-			"NORMAL", 
-			"NORMAL", 
-			"STRING", 
-			"NORMAL", 
-			"NORMAL", 
-			"NORMAL", 
+			"NORMAL",
+			"STRING",
+			"NORMAL",
+			"NORMAL",
+			"STRING",
+			"NORMAL",
+			"NORMAL",
+			"NORMAL",
 			"NORMAL"
 			--[[
 				}, {
@@ -181,14 +181,14 @@ function ENT:Initialize ()
 			"Set what weapon to give the NPCs",
 			"Set the health multiplier for the NPCs",
 			"Set how much to decrease the delay by every MaxActiveNPCs spawned",
-			"Delete all NPCs currently spawned."				
+			"Delete all NPCs currently spawned."
 			--]]
 		});
 		WireLib.CreateSpecialOutputs(self,  {
-			"IsOn", 
-			"ActiveNPCs", 
-			"TotalNPCsSpawned", 
-			"LastNPCSpawned", 
+			"IsOn",
+			"ActiveNPCs",
+			"TotalNPCsSpawned",
+			"LastNPCSpawned",
 			"OnNPCSpawned"
 				},  {
 			"NORMAL",  "NORMAL",  "NORMAL",  "ENTITY",  "NORMAL"
@@ -211,7 +211,7 @@ function ENT:Think()
 	if (self._WireSpawnedActive) then
 		Wire_TriggerOutput(self,  "OnNPCSpawned",  0);
 		self._WireSpawnedActive = nil;
-	end		
+	end
 	if (self.k_active == 0 or self.Spawned >= self.k_maximum or self.LastSpawn + self.k_delay > CurTime()) then return end
 	self:SpawnOne();
 end
@@ -263,7 +263,7 @@ function ENT:SpawnOne()
 		debugstr = debugstr.."\tKey = "..k.."; Value = "..v.."\n";
 	end
 	npcspawner.debug2("Keyvalues:\n", debugstr);
-	-- 
+	--
 	local squad = (self.k_customsquads == 1) and "squad"..self.k_squadoverride or tostring(self);
 	npcspawner.debug2("Squad:", squad);
 	npc:SetKeyValue("squadname", squad);
@@ -393,9 +393,9 @@ function ENT:CheckActive()
 end
 
 local nwablekeys = {
-	npc		= true, 
-	weapon	= true, 
-	maximum	= true, 
+	npc		= true,
+	weapon	= true,
+	maximum	= true,
 	delay	= true
 }
 -- Using keyvalues allows us to have a callback for each value,  should it be needed.

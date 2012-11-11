@@ -1,30 +1,30 @@
 --[[
-	NPC Spawn Platforms V2.1
+    NPC Spawn Platforms V2.1
     Copyright (c) 2011-2012 Lex Robinson
     This code is freely available under the MIT License
 --]]
 
-ENT.Type                        = "anim";
-ENT.Base                        = "base_gmodentity";
-ENT.PrintName                   = "NPC Spawn Platform";
-ENT.Author                      = "Lexi/Devenger";
-ENT.Purpose                     = "Spawn a constant(ish) stream of NPCs";
-ENT.Spawnable                   = false;
-ENT.AdminSpawnable              = true;
+ENT.Type           = "anim";
+ENT.Base           = "base_gmodentity";
+ENT.PrintName      = "NPC Spawn Platform";
+ENT.Author         = "Lexi/Devenger";
+ENT.Purpose        = "Spawn a constant(ish) stream of NPCs";
+ENT.Spawnable      = false;
+ENT.AdminSpawnable = true;
 
 local function convert( text )
-	return npcspawner.npcs[text] or npcspawner.weps[text] or text;
+    return npcspawner.npcs[text] or npcspawner.weps[text] or text;
 end
 
 function ENT:UpdateLabel()
-        self:SetOverlayText(
-                "NPC: "       .. convert(self:GetNWString("npc"    )) ..
-                "\nWeapon: "  .. convert(self:GetNWString("weapon" )) ..
-                "\nDelay: "   ..         self:GetNWString("delay"  )  ..
-                "\nMaximum: " ..         self:GetNWString("maximum")
-        );
+    self:SetOverlayText(
+        "NPC: "       .. convert(self:GetNWString("npc"    )) ..
+        "\nWeapon: "  .. convert(self:GetNWString("weapon" )) ..
+        "\nDelay: "   ..         self:GetNWString("delay"  )  ..
+        "\nMaximum: " ..         self:GetNWString("maximum")
+    );
 end
 
 function ENT:GetNPCName()
-	return convert(self:GetNWString("npc"));
+    return convert(self:GetNWString("npc"));
 end
