@@ -1,22 +1,12 @@
 --[[
-	~ Money Pot STool ~
-	~ Lexi ~
+    Moneypot STool
+    Copyright (c) 2010-2012 Lex Robinson
+    This code is freely available under the MIT License
 --]]
 
 TOOL.Category    = "Lexical Tools"
 TOOL.Name        = "#Money Pot"
 TOOL.ClientConVar["weld"] = 1
-TOOL.ClientConVar["model"] = "models/props_lab/powerbox02b.mdl";
-if (not WireLib) then -- This is useless without Wire, so just disable it.
-	TOOL.AddToMenu		= false
-	return;
-end
-
-list.Set("CommandboxModelOffsets","models/props_lab/powerbox02a.mdl",Vector(0, 0, 17));
-list.Set("CommandboxModelOffsets","models/props_lab/powerbox02b.mdl",Vector(0, 0, 17));
-list.Set("CommandboxModelOffsets","models/props_lab/powerbox02c.mdl",Vector(0, 0, 10));
-
-local models = list.GetForEdit("CommandboxModels") -- <3 u pass by refernce and how you keep my tables up to date.
 
 cleanup.Register("moneypots")
 
@@ -37,8 +27,8 @@ function TOOL:UpdateGhost(ent, ply)
 end
 
 function TOOL:Think()
-	if (SERVER and not SinglePlayer()) then return end
-	if (CLIENT and SinglePlayer()) then return end
+	if (SERVER and not game.SinglePlayer()) then return end
+	if (CLIENT and game.SinglePlayer()) then return end
 	local ent = self.GhostEntity;
 	if (not IsValid(ent)) then
 		self:MakeGhostEntity("models/props_lab/powerbox02b.mdl", vector_origin, Angle());
@@ -52,9 +42,9 @@ end
 
 if (CLIENT) then
 	
-	language.Add("Tool_moneypot_name", "Money Pot")
-	language.Add("Tool_moneypot_desc", "Allows you to store vast amounts of money in a small box.")
-	language.Add("Tool_moneypot_0", "Left click to spawn a Money Pot")
+	language.Add("tool.moneypot.name", "Money Pot")
+	language.Add("tool.moneypot.desc", "Allows you to store vast amounts of money in a small box.")
+	language.Add("tool.moneypot.0", "Left click to spawn a Money Pot")
 	
 	// Other
 	
@@ -70,16 +60,6 @@ if (CLIENT) then
 			Label = "Weld:";
 			Command = "moneypot_weld";
 		});
-		local tab = {}
-		for model in pairs(models) do
-			tab[model] = {};
-		end
-		cp:AddControl("Prop Select", {
-			Label = "Model:";
-			ConVar = "moneypot_model";
-			Models = tab;
-		});
-			
 	end
 	return;
 end
@@ -95,8 +75,6 @@ function TOOL:LeftClick(tr)
 		
 	local angles = tr.HitNormal:Angle();
 	angles.pitch = angles.pitch + 90;
-	
-	local model = self:GetClientInfo("model");
 	
 	local box = MakeMoneyPot(ply, tr.HitPos, angles, "models/props_lab/powerbox02b.mdl");
 	if (not box) then return false; end
@@ -126,26 +104,3 @@ function TOOL:LeftClick(tr)
 	
 	return true;
 end
-
-// Create command box
-function MakeMoneyPot(ply, pos, angles, model, data)
-	if (not ply:CheckLimit("moneypots")) then
-		return false;
-	end
-	local box;
-	if (data) then
-		box = duplicator.GenericDuplicatorFunction(ply, data); -- This is actually better than doing it manually
-	else
-		box = ents.Create("gmod_wire_moneypot");
-		box:SetModel(model)
-		box:SetPos(pos);
-		box:SetAngles(angles);
-		box:Spawn();
-	end
-	box:SetPlayer(ply);
-	ply:AddCount("moneypots", box);
-	return box;
-end
-
-duplicator.RegisterEntityClass("gmod_wire_moneypot", MakeMoneyPot, "Pos", "Ang", "Model", "Data");
-
