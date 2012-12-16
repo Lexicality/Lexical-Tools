@@ -10,7 +10,8 @@ local function callback(cvar, old, new)
     new = tonumber(new) or npcspawner.config[cvar];
     if (npcspawner.config[cvar] ~= new) then
         npcspawner.config[cvar] = new;
-        if (LocalPlayer():IsAdmin()) then
+        local lpl = LocalPlayer();
+        if (lpl and type(lpl) == 'Player' and IsValid(lpl) and lpl:IsAdmin()) then
             RunConsoleCommand("npcspawner_config", cvar, new);
         end
     end
