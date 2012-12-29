@@ -52,7 +52,9 @@ if (CLIENT) then
 	language.Add("SBoxLimit_moneypots", "You've hit the Money Pots limit!")
 	language.Add("Cleanup_moneypots", "Money Pots")
 	language.Add("Cleaned_moneypots", "Cleaned up all Money Pots")
-	TOOL.LeftClick = canTool;
+	function TOOL:LeftClick(tr)
+        return canTool(tr);
+    end
 	function TOOL.BuildCPanel(cp)
 		cp:AddControl("Header", {Text = "#Tool_moneypot_name", Description = "#Tool_moneypot_desc"})
 		
@@ -87,11 +89,9 @@ function TOOL:LeftClick(tr)
 		weld = constraint.Weld(box, ent, 0, tr.PhysicsBone, 0);
 		ent:DeleteOnRemove(box);
 	else
-		local phys = box:GetPhysicsObject();
-		if (IsValid(phys)) then
-			phys:EnableMotion(false);
-		end
+	    box:GetPhysicsObject():EnableMotion(false);
 	end
+    DoPropSpawnedEffect(box);
 	
 	undo.Create("moneypot");
 	undo.AddEntity(box);
@@ -101,6 +101,6 @@ function TOOL:LeftClick(tr)
 	
 	ply:AddCleanup("moneypots", box);
 	ply:AddCleanup("moneypots", weld);
-	
+
 	return true;
 end
