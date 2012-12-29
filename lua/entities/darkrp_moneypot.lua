@@ -43,7 +43,8 @@ end
 --------------------------------------
 
 function MakeMoneyPot(ply, pos, angles, model, data)
-	if (not ply:CheckLimit("moneypots")) then
+    ply = IsValid(ply) and ply or nil;
+	if (ply and not ply:CheckLimit("moneypots")) then
 		return false;
 	end
     data = data or {
@@ -53,8 +54,10 @@ function MakeMoneyPot(ply, pos, angles, model, data)
     };
     data.Class = "darkrp_moneypot";
 	local box  = duplicator.GenericDuplicatorFunction(ply, data);
-	box:SetPlayer(ply);
-	ply:AddCount("moneypots", box);
+    if (ply) then
+        box:SetPlayer(ply);
+        ply:AddCount("moneypots", box);
+    end
 	return box;
 end
 
