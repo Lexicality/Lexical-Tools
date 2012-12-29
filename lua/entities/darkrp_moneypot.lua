@@ -50,10 +50,15 @@ function MakeMoneyPot(ply, pos, angles, model, data)
     data = data or {
         Pos   = pos,
         Angle = angles,
-        Model = model
     };
     data.Class = "darkrp_moneypot";
 	local box  = duplicator.GenericDuplicatorFunction(ply, data);
+    -- This sets it's own model by default, but if someone wants to override ..?
+    --[[
+    if (model) then
+        box:SetModel(model);
+    end
+    --]]
     if (ply) then
         box:SetPlayer(ply);
         ply:AddCount("moneypots", box);
