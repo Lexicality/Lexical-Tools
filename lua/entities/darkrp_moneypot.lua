@@ -56,13 +56,13 @@ function MakeMoneyPot(ply, pos, angles, model, data)
     if (not box) then
         -- uh oh
         -- Run the various duplicator tests to see what's wrong
-        local isa = tobool(duplicator.IsAllowed(data.Class));
-        local e = IsValid(ents.Create(data.Class));
+        local isa = duplicator.IsAllowed(data.Class)        and "yes" or "no";
+        local isv = IsValid(ents.Create(data.Class))        and "yes" or "no";
         -- uh, do we exist?
-        local drp = scripted_ents.Get('darkrp_moneypot') ~= nil;
-        local bas = scripted_ents.Get('base_moneypot') ~= nil;
-        local old = scripted_ents.Get('gmod_wire_moneypot') ~= nil;
-        error("Something's gone wrong! Debug: Allowed: " .. isa .. " Valid: " .. e .. " Exist Derived: " .. drp .. " Exist Base: " .. bas .. " Exist Old: " .. old);
+        local drp = scripted_ents.Get('darkrp_moneypot')    and "yes" or "no";
+        local bas = scripted_ents.Get('base_moneypot')      and "yes" or "no";
+        local old = scripted_ents.Get('gmod_wire_moneypot') and "yes" or "no";
+        error("Something's gone wrong! Debug: Allowed: " .. isa .. " Valid: " .. isv .. " Exist Derived: " .. drp .. " Exist Base: " .. bas .. " Exist Old: " .. old);
     end
 
     -- This sets it's own model by default, but if someone wants to override ..?
