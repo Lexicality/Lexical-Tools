@@ -62,7 +62,7 @@ function MakeMoneyPot(ply, pos, angles, model, data)
         local drp = scripted_ents.Get('darkrp_moneypot') ~= nil;
         local bas = scripted_ents.Get('base_moneypot') ~= nil;
         local old = scripted_ents.Get('gmod_wire_moneypot') ~= nil;
-        Error("Something's gone wrong! Debug: Allowed: ", isa, " Valid: ", e, " Exist Derived: ", drp, " Exist Base: ", bas, " Exist Old: ", old);
+        error("Something's gone wrong! Debug: Allowed: " .. isa .. " Valid: " .. e .. " Exist Derived: " .. drp .. " Exist Base: " .. bas .. " Exist Old: " .. old);
     end
 
     -- This sets it's own model by default, but if someone wants to override ..?
