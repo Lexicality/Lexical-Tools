@@ -7,10 +7,12 @@
 AddCSLuaFile();
 
 ENT.Type            = "anim"
-ENT.PrintName       = "Money Pot"
+ENT.PrintName       = "DarkRP Money Pot"
+ENT.Information     = "Allows you to collect DarkRP money into a pot"
 ENT.Author          = "Lexi"
-ENT.Spawnable       = false
-ENT.AdminSpawnable  = false
+ENT.Spawnable       = true
+ENT.AdminSpawnable  = true
+ENT.Category        = "DarkRP"
 
 DEFINE_BASECLASS("base_moneypot");
 
