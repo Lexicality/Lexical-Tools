@@ -1,0 +1,18 @@
+{
+	"title"   : "Keypads 2.0",
+	"author"  : "Lex Robinson",
+	"contact" : "lexi@lexi.org.uk",
+	"credits" : "TommyLobo, Robis_1",
+	"updated" : "Mar '13",
+	"license" : "MIT",
+	"type"    : "tool",
+	"tags"    : ["roleplay", "build"],
+	"ignore"  :
+	[
+		"LICENSE",
+		"*.mkdn",
+		".git*",
+		"*.jpg",
+		"*.sublime*"
+	]
+}
