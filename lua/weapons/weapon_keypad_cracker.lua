@@ -225,28 +225,31 @@ local texes = {
 for i, name in ipairs(texes) do
     texes[i] = surface.GetTextureID(name);
 end
-local sprmat = Material('sprites/ledglow');
+local sprmat = Material('sprites/redglow1');
 function SWEP:ViewModelDrawn()
     local vm = self.Owner:GetViewModel();
     local matt = vm:GetBoneMatrix(vm:LookupBone('v_weapon.c4'));
     local pos = matt:GetTranslation();
     local ang = matt:GetAngles();
-    render.SetMaterial(sprmat)
-    render.SetBlend(0.1);
-    render.DrawSprite(pos
-                        + ang:Forward() * -1.6
-                        + ang:Up() * -0.25
-                        + ang:Right() * -2.8
-                    , 1, 1, color_white);
-    render.SetBlend(1);
-    pos = pos + ang:Forward() * -1.8 + ang:Right() * -2.7 + ang:Up() * 1.3;
+    local spritepos = pos
+                    + ang:Forward() * -1.6
+                    + ang:Up() * -0.25
+                    + ang:Right() * -2.8;
+    local screenpos = pos
+                    + ang:Forward() * -1.8
+                    + ang:Right() * -2.7
+                    + ang:Up() * 1.3;
     ang:RotateAroundAxis(ang:Forward(),-90);
     ang:RotateAroundAxis(ang:Up(), 180);
-    cam.Start3D2D(pos, ang, 0.01);
+    cam.Start3D2D(screenpos, ang, 0.01);
         surface.SetDrawColor(color_white);
         for _, tex in ipairs(texes) do
             surface.SetTexture(tex);
             surface.DrawTexturedRect(0, 0, 290, 155);
         end
     cam.End3D2D();
+    render.SetMaterial(sprmat)
+    cam.IgnoreZ(true);
+    render.DrawSprite(spritepos, 1, 1, color_white);
+    cam.IgnoreZ(false);
 end
