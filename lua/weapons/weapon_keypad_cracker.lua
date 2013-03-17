@@ -132,6 +132,18 @@ function SWEP:ResetState()
     self.Timer = 0;
 end
 
+local frames = {
+    28, -- LED on
+    37, -- Screen on (flicker)
+    45, -- Overlay1 on
+    51, -- Overlay2 on
+    57, -- background on
+    63, -- EMP the keypad
+    67, -- start flashing
+}
+local maxframes = 83;
+local sequenceduration = 2.7666666556729
+
 function SWEP:Think()
     if (not self.Cracking) then
         return;
@@ -214,13 +226,10 @@ end
 local texes = {
     -- "effects/combinedisplay001a",
     "effects/prisonmap_disp",
-    -- "effects/combine_binocoverlay",
     "effects/tvscreen_noise002a",
     "vgui/screens/vgui_overlay",
     "dev/dev_prisontvoverlay001",
     "dev/dev_prisontvoverlay002",
-    -- "dev/dev_prisontvoverlay003",
-    -- "dev/dev_prisontvoverlay004",
 }
 for i, name in ipairs(texes) do
     texes[i] = surface.GetTextureID(name);
