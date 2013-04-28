@@ -168,7 +168,7 @@ function ENT:Draw()
 			end
 		else
 			local pass = self.dt.Password;
-			if (pass > 0) then
+			if (not self.dt.Cracking and pass > 0) then
 				surface.SetFont('Keypad Input');
 				surface.SetTextColor(color_white);
 				if (self.dt.Secure) then

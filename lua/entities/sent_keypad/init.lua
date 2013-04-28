@@ -313,9 +313,15 @@ hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
     if (not cmd) then return; end
 
     local tr = ply:GetEyeTrace();
-    if (not (IsValid(tr.Entity) and tr.Entity.IsKeypad) or tr.StartPos:Distance(tr.HitPos) > 50) then
+    if (not (IsValid(tr.Entity) and tr.Entity.IsKeypad) or tr.StartPos:Distance(tr.HitPos) > 90) then
         return;
     end
+
+    -- Don't allow input while being cracked
+    if (tr.Entity.dt.Cracking) then
+        return;
+    end
+
     tr.Entity:KeypadInput(cmd);
 end);
 local KeyPos = {
@@ -338,7 +344,10 @@ function ENT:Use(activator)
     if (not (IsValid(activator) and activator:IsPlayer())) then
         return;
     end
-    print('USED');
+    -- Don't allow input while being cracked
+    if (self.dt.Cracking) then
+        return;
+    end
     local tr = activator:GetEyeTrace();
     local pos = self:WorldToLocal(tr.HitPos);
     for i, btn in ipairs(KeyPos) do
