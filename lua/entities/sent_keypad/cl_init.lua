@@ -114,7 +114,9 @@ function ENT:Draw()
 	
 	self:DrawModel()
 	
-	if (LocalPlayer():GetShootPos():DistToSqr(self:GetPos()) > visual_cutoff) then return end
+	if (LocalPlayer():GetShootPos():DistToSqr(self:GetPos()) > visual_cutoff) then
+		return;
+	end
 	
 	local pos = self:GetPos() + (self:GetForward() * 1.02) + (self:GetRight() * 2.75) + (self:GetUp() * 5.25);
 	local ang = self:GetAngles();
@@ -123,10 +125,7 @@ function ENT:Draw()
 	ang:RotateAroundAxis(ang:Up(),     90);
 	
 	cam.Start3D2D(pos, ang, 0.05)
-		-- local Num = self.dt.Password;
-		-- local Access = self.dt.Access;
-		-- local ShowAccess = self.dt.ShowAccess;
-		-- local Secure = self.dt.Secure;
+
 		surface.SetMaterial(background);
 		surface.SetDrawColor(color_white);
 		surface.DrawTexturedRect(0, 0, 110, 210);
@@ -181,22 +180,6 @@ function ENT:Draw()
 				end
 			end
 		end
-		
-		-- if (Num ~= 0) and not (ShowAccess) then
-		-- 	if (Secure) then`
-				-- local Text = string.rep("*", string.len(Num))`
-				-- 
-		-- 	else
-				-- draw.DrawText('1234', "Keypad Input", X+17, Y+10, Color(255, 255, 255, 255))
-		-- 	end
-		-- elseif (Access) and (ShowAccess) then
-			-- draw.DrawText("ACCESS","Trebuchet24AA", X+17, Y+7, Color(0, 255, 0, 255))
-			-- draw.DrawText("GRANTED","Trebuchet24AA", X+7, Y+27, Color(0, 255, 0, 255))
-		-- elseif not (Access) and (ShowAccess) then
-			-- draw.DrawText("ACCESS","Trebuchet24", X+17, Y+7, Color(255, 0, 0, 255))
-			-- draw.DrawText("DENIED","Trebuchet24", X+19, Y+27, Color(255, 0, 0, 255))
-		-- end
-		
 	cam.End3D2D()
 end
 
