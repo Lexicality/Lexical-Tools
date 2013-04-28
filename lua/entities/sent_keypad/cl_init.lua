@@ -182,7 +182,3 @@ function ENT:Draw()
 		end
 	cam.End3D2D()
 end
-
-hook.Add("KeyRelease", "Keypad_KeyReleased", function(Ply, key)
-	Ply.KeyOnce = false
-end)
