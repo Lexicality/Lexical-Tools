@@ -18,4 +18,5 @@ function ENT:SetupDataTables()
     self:DTVar("Bool", 0, "Secure");
     self:DTVar("Bool", 1, "Access");
     self:DTVar("Bool", 2, "ShowAccess");
+    self:DTVar("Bool", 3, "Cracking");
 end

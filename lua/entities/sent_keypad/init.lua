@@ -35,6 +35,7 @@ function ENT:Initialize()
     self:PhysicsInit(SOLID_VPHYSICS);
     self:SetMoveType(MOVETYPE_VPHYSICS);
     self:SetSolid(SOLID_VPHYSICS);
+    self:SetUseType(SIMPLE_USE);
     self:RemoveIfPhysicsInvalidElseWake();
 
     -- Defaults
@@ -272,6 +273,19 @@ do
 end
 
 
+ENT.NextCrackNum = 0;
+function ENT:Think()
+    if (not self.dt.Cracking) then
+        return;
+    end
+    local cn = CurTime();
+    if (cn < self.NextCrackNum) then
+        return;
+    end
+    self.NextCrackNum = cn + 0.05;
+    self:EmitSound(self.PressSound);
+end
+
 util.AddNetworkString('gmod_keypad');
 net.Receive('gmod_keypad', function(_, ply)
     if (not IsValid(ply)) then return; end
@@ -304,6 +318,44 @@ hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
     end
     tr.Entity:KeypadInput(cmd);
 end);
+local KeyPos = {
+    {-2.2, 1.25,  4.55, 1.3},
+    {-0.6, 1.25,  4.55, 1.3},
+    { 1.0, 1.25,  4.55, 1.3},
+    
+    {-2.2, 1.25,  2.90, 1.3},
+    {-0.6, 1.25,  2.90, 1.3},
+    { 1.0, 1.25,  2.90, 1.3},
+    
+    {-2.2, 1.25,  1.30, 1.3},
+    {-0.6, 1.25,  1.30, 1.3},
+    { 1.0, 1.25,  1.30, 1.3},
+    
+    {-2.2, 2, -0.30, 1.6},
+    { 0.3, 2, -0.30, 1.6}
+}
+function ENT:Use(activator)
+    if (not (IsValid(activator) and activator:IsPlayer())) then
+        return;
+    end
+    print('USED');
+    local tr = activator:GetEyeTrace();
+    local pos = self:WorldToLocal(tr.HitPos);
+    for i, btn in ipairs(KeyPos) do
+        local x = (pos.y - btn[1]) / btn[2];
+        local y = 1 - (pos.z + btn[3]) / btn[4];
+        if (x >= 0 and x <= 1 and y >= 0 and y <= 1) then
+            local cmd = i;
+            if (i == 10) then
+                cmd = 'reset';
+            elseif (i == 11) then
+                cmd = 'accept';
+            end
+            self:KeypadInput(cmd);
+            return;
+        end
+    end
+end
 
 --[[ Duplicashion ]]--
 if (not ConVarExists("sbox_maxkeypads")) then
