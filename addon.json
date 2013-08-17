@@ -2,9 +2,9 @@
 	"title"   : "NPC Spawn Platforms v2.1",
 	"author"  : "Lex Robinson",
 	"contact" : "lexi@lexi.org.uk",
-	"updated" : "Dec '12",
+	"updated" : "Aug '13",
 	"license" : "MIT",
-	"type"    : ["npc", "tool"],
+	"type"    : "tool",
 	"tags"    : ["fun", "build"],
 	"ignore"  :
 	[
