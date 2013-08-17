@@ -82,7 +82,6 @@ local weaponsets = {
 -- Default Settings
 ENT.k_npc				= "npc_combine_s";
 ENT.k_weapon			= "weapon_smg1";
-ENT.NPCs 				= {};
 ENT.k_spawnheight		= 16;
 ENT.k_spawnradius		= 16;
 ENT.k_maximum			= 5;
@@ -99,6 +98,7 @@ ENT.k_decrease			= 0;
 ENT.k_active			= 0;
 ENT.k_ply				= 0;
 ENT.k_skill				= WEAPON_PROFICIENCY_AVERAGE;
+ENT.NPCs 				= {};
 ENT.Spawned             = 0;
 ENT.LastSpawn           = 0;
 ENT.LastChange          = 0;
@@ -399,8 +399,9 @@ local nwablekeys = {
 	delay	= true
 }
 -- Using keyvalues allows us to have a callback for each value,  should it be needed.
-function ENT:KeyValue (key,  value)
+function ENT:KeyValue(key,  value)
 	npcspawner.debug2("Key:", key, "Value:", value);
+    key = string.lower(key);
 	if (key == "delay") then
         value = tonumber(value);
         if (not value) then return; end
