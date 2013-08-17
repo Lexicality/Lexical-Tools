@@ -7,29 +7,32 @@ AddCSLuaFile("autorun/npcspawner2.lua");
 AddCSLuaFile("autorun/client/npcspawner2_cl.lua");
 
 local datapath = "npcspawner2"
+--[[
 if (not file.IsDir(datapath, "DATA")) then
     file.CreateDir(datapath, "DATA");
 end
-
-local function readfile(fname)
-    fname = datapath .. "/" .. fname .. ".txt";
-    if (file.Exists(fname, "DATA")) then
-        local data = util.JSONToTable(file.Read(fname, "DATA"));
-        if (data and table.Count(data) > 0) then
-            return data;
+--]]
+if (file.IsDir(datapath, "DATA")) then
+    local function readfile(fname)
+        fname = datapath .. "/" .. fname .. ".txt";
+        if (file.Exists(fname, "DATA")) then
+            local data = util.JSONToTable(file.Read(fname, "DATA"));
+            if (data and table.Count(data) > 0) then
+                return data;
+            end
         end
     end
-end
 
-npcspawner.npcs = readfile("npcs") or npcspawner.npcs;
-npcspawner.weps = readfile("weps") or npcspawner.weps;
+    npcspawner.npcs = readfile("npcs") or npcspawner.npcs;
+    npcspawner.weps = readfile("weps") or npcspawner.weps;
 
-local cfg = readfile("config");
-if (cfg) then
-    for key, value in pairs(cfg) do
-        value = tonumber(value);
-        if (value) then
-            npcspawner.config[key] = value;
+    local cfg = readfile("config");
+    if (cfg) then
+        for key, value in pairs(cfg) do
+            value = tonumber(value);
+            if (value) then
+                npcspawner.config[key] = value;
+            end
         end
     end
 end
