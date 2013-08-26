@@ -90,7 +90,7 @@ npcspawner = {
         callhooks   = 1,
         maxinplay   = 20,
         mindelay    = 0.1,
-        debug       = 0,
+        debug       = 1,
     };
 };
 -- Stuff that required ep1/ep2 to be mounted

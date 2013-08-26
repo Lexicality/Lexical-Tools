@@ -471,3 +471,12 @@ function ENT:TriggerInput(name,  val)
 		self:KeyValue("decrease", val);
 	end
 end
+
+
+--[[ Hammer I/O ]]--
+-- function ENT:AcceptInput(name, activator, called, value)
+-- 	--npcspawner.debug2(self, "has just had their", name, "triggered by", tostring(called), "which was caused by", tostring(activator), "and was passed", value);
+-- 	MsgN(self, " had their '", name, "' input triggered by ", tostring(called), " which was caused by ", tostring(activator), " and was passed '", value, "'");
+--     name = string.lower(name);
+--     return true;
+-- end
