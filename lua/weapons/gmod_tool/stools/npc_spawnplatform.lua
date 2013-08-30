@@ -62,10 +62,15 @@ function TOOL:LeftClick(trace)
     self:SetKVs(ent);
     ent:SetKeyValue("ply", owner:EntIndex());
     ent:SetPos(trace.HitPos);
-    ent:SetAngles(Angle(0,0,90));
+    local ang = trace.HitNormal:Angle();
+    ang.Roll = ang.Roll - 90;
+    ang.Pitch = ang.Pitch - 90;
+    ent:SetAngles( ang );
     ent:Spawn();
     ent:Activate();
-    ent:SetPlayer(owner);
+    ent:SetPlayer(owner)
+    local min = ent:OBBMins()
+    ent:SetPos( trace.HitPos - trace.HitNormal * min.y );
     owner:AddCount("sent_spawnplatform", ent);
     undo.Create("spawnplatform");
         undo.SetPlayer(self:GetOwner());
