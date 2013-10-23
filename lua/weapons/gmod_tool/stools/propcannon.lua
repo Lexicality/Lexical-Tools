@@ -159,8 +159,8 @@ function TOOL:UpdateGhost(ent, ply) --( ent, player )
 end
 
 function TOOL:Think()
-	if (SERVER and not SinglePlayer()) then return end
-	if (CLIENT and SinglePlayer()) then return end
+	if (SERVER and not game.SinglePlayer()) then return end
+	if (CLIENT and game.SinglePlayer()) then return end
 	local ent = self.GhostEntity;
 	local model = string.lower(self:GetClientInfo("cannon_model"));
 	if (not (IsValid(ent) and ent:GetModel() == model)) then

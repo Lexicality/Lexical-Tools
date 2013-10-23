@@ -33,8 +33,9 @@ function ENT:Initialize()
 	end
 end
 
-hook.Add("EntityTakeDamage", "cannon_prop kill crediting", function(ent, me, attack, amt, info)
-	if (me:GetClass() == "cannon_prop") then
+hook.Add("EntityTakeDamage", "cannon_prop kill crediting", function(ent, info)
+	local me = info:GetInflictor();
+	if (IsValid(me) and me:GetClass() == "cannon_prop") then
 		info:SetAttacker(me.Owner);
 	end
 end);
