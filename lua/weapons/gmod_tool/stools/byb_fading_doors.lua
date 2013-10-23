@@ -112,7 +112,7 @@ local function fadeInputOn(self)
 	end
 	self.fadeInputActive = true;
 	self.fadeByB5SecTimer = true;
-	timer.Simple(5,killTimer,self);
+	timer.Simple(5,function() killTimer(self) end);
 	self:fadeToggleActive();
 end
 
