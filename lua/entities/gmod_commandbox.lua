@@ -2,7 +2,7 @@
 	~ Command Box ~
 	~ Lexi ~
 --]]
-AddCSLuaFile("shared.lua");
+AddCSLuaFile();
 ENT.Type = "anim"
 if (WireLib) then
 	ENT.Base = "base_wire_entity"

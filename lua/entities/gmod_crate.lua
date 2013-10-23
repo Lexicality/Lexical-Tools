@@ -2,7 +2,7 @@
 	~ Resizable Crate Entity ~
 	~ Lexi ~
 --]]
-AddCSLuaFile("shared.lua");
+AddCSLuaFile();
 ENT.Type 			= "anim";
 ENT.Base 			= "base_anim";
 ENT.PrintName		= "Resizable Crate";
