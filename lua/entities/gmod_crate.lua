@@ -38,7 +38,10 @@ function ENT:Think()
 			phys:SetMass(phys:GetMass() * scale);
 		end
 	else
-		self:SetModelWorldScale(Vector(scale, scale, scale));
+		local mat = Matrix()
+		mat:Scale(Vector(scale, scale, scale))
+		self:EnableMatrix("RenderMultiply", mat)
+		-- self:SetModelWorldScale(Vector(scale, scale, scale));
 		vec = vec * 2;
 		self:SetRenderBounds(-vec, vec);
 		self:SetupBones();	
