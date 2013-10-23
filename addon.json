@@ -1,0 +1,17 @@
+{
+	"title"   : "Lexical Tools",
+	"author"  : "Lex Robinson",
+	"contact" : "lex@lex.me.uk",
+	"updated" : "Oct '13",
+	"license" : "MIT",
+	"type"    : "tool",
+	"tags"    : ["build"],
+	"ignore"  :
+	[
+		"LICENSE",
+		"*.mkdn",
+		".git*",
+		"*.jpg",
+		"*.sublime*"
+	]
+}
