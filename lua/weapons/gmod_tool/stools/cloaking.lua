@@ -252,7 +252,7 @@ end
 hook.Add("EntityTakeDamage", "Cloaking Flicker Hook", function(ent)
 	if (ent.isCloakable and ent.cloakFlicker and ent.cloakActive) then
 		ent:cloakDeactivate();
-		timer.Simple(0.05, ent.cloakActivate, ent);
+		timer.Simple(0.05, function() ent:cloakActivate() end);
 	end
 end);
 
