@@ -104,6 +104,9 @@ end
 AddToolLanguage( "name", "NPC Spawn Platforms 2.1" );
 AddToolLanguage( "desc", "Create a platform that will constantly make NPCs." );
 AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data." );
+AddToolLanguage( "weapon",        "Weapon" );
+AddToolLanguage( "weapon_skill",  "Weapon Skill" );
+
 local function lang( id )
     return '#Tool.' .. ClassName .. '.' .. id;
 end
@@ -117,7 +120,7 @@ function TOOL:BuildCPanel()
         Text        = lang 'name';
         Description = lang 'desc';
     } );
-    local combo
+    local combo, options
     -- Presets
     local CVars = {};
     local defaults = {};
@@ -147,23 +150,22 @@ function TOOL:BuildCPanel()
         combo.Options[v] = {npc_spawnplatform_npc = k};
     end
     self.npclist = self:AddControl ("ListBox", combo);
-    --Weapon select
-    combo = {
-        Label   = "Weapon",
-        Folder  = "spawnplatform",
-        Options = {},
-    };
-    for k ,v in pairs(npcspawner.weps) do
-        combo.Options[v] = {npc_spawnplatform_weapon = k};
+    -- Weapon select
+    options = {};
+    for id, label in pairs( npcspawner.weps ) do
+        options[ label ] = { npc_spawnplatform_weapon = id };
     end
-    self.weplist = self:AddControl( "ListBox", combo );
+    self:AddControl( "ListBox", {
+        Label = lang "weapon";
+        Options = options;
+    } );
     -- Skill select
-    self:AddControl( 'Slider', {
-        Label   = 'Skill';
+    self:AddControl( "Slider", {
+        Label   = lang "weapon_skill";
         -- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
         Min     = WEAPON_PROFICIENCY_POOR;
         Max     = WEAPON_PROFICIENCY_PERFECT;
-        Command = cvar 'skill';
+        Command = cvar "skill";
     } );
 
     local pad = {Text = ""}
