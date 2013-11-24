@@ -4,14 +4,13 @@
     This code is freely available under the MIT License
 --]]
 
-if (CLIENT) then
-    language.Add("tool.npc_spawnplatform.name", "NPC Spawn Platforms 2.1");
-    language.Add("tool.npc_spawnplatform.desc", "Create a platform that will constantly make NPCs.");
-    language.Add("tool.npc_spawnplatform.0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data.");
-end
+
+local ClassName = 'npc_spawnplatform';
+
+MsgN( ClassName, ' reloaded');
 
 TOOL.Category     = "Lexical Tools"             -- Name of the category
-TOOL.Name         = "NPC Spawn Platforms 2.1"   -- Name to display
+TOOL.Name         = "NPC Spawn Platforms 2.2"   -- Name to display
 --- Default Values
 local cvars = {
     npc           = "npc_combine_s";
@@ -35,9 +34,7 @@ local cvars = {
     skill         = WEAPON_PROFICIENCY_AVERAGE;
 }
 
-for k,v in pairs(cvars) do
-    TOOL.ClientConVar[k] = v;
-end
+table.Merge( TOOL.ClientConVar, cvars );
 
 function TOOL:LeftClick(trace)
     local owner = self:GetOwner()
@@ -94,37 +91,52 @@ end
 
 function TOOL:SetKVs(ent)
     for key in pairs(cvars) do
+        -- Things that've been 
         ent:SetKeyValue(key, self:GetClientInfo(key));
     end
+end
+
+if ( SERVER ) then return; end
+
+local function AddToolLanguage( id, lang )
+    language.Add( 'tool.' .. ClassName .. '.' .. id, lang );
+end
+AddToolLanguage( "name", "NPC Spawn Platforms 2.1" );
+AddToolLanguage( "desc", "Create a platform that will constantly make NPCs." );
+AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data." );
+local function lang( id )
+    return '#Tool.' .. ClassName .. '.' .. id;
+end
+local function cvar( id )
+    return ClassName .. '_' .. id;
 end
 
 --TODO: Make my own header panels and include them so I can have hedrz;
 function TOOL:BuildCPanel()
     self:AddControl( "Header", {
-        Text        = "#Tool.npc_spawnplatform.name",
-        Description = "#Tool.npc_spawnplatform.desc"}
-    );
+        Text        = lang 'name';
+        Description = lang 'desc';
+    } );
     local combo
     -- Presets
-    local prefix = "npc_spawnplatform_";
     local CVars = {};
     local defaults = {};
     for key, default in pairs(cvars) do
-        local key = prefix .. key;
+        key = cvar( key );
         table.insert(CVars, key);
         defaults[key] = default;
     end
 
     self:AddControl( "ComboBox", {
-        Label = "#Presets";
-        MenuButton = 1;
-        Folder = "spawnplatform";
-        CVars = CVars;
+        Label   = "#Presets";
+        Folder  = "spawnplatform";
+        CVars   = CVars;
         Options = {
             default = defaults;
             -- TODO: Maybe some other nice defaults?
-        },
-    });
+        };
+        MenuButton = 1;
+    } );
     --Type select
     combo = {
         Label   = "NPC",
@@ -134,7 +146,7 @@ function TOOL:BuildCPanel()
     for k,v in pairs(npcspawner.npcs) do
         combo.Options[v] = {npc_spawnplatform_npc = k};
     end
-    self.npclist = self:AddControl ( "ListBox", combo);
+    self.npclist = self:AddControl ("ListBox", combo);
     --Weapon select
     combo = {
         Label   = "Weapon",
