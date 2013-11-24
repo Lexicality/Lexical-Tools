@@ -104,8 +104,12 @@ end
 AddToolLanguage( "name", "NPC Spawn Platforms 2.1" );
 AddToolLanguage( "desc", "Create a platform that will constantly make NPCs." );
 AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data." );
+-- Controls 
 AddToolLanguage( "weapon",            "Weapon" );
 AddToolLanguage( "weapon_skill",      "Weapon Skill" );
+-- Control Descs
+AddToolLanguage( "weapon_skill_desc", "Where 0 is terrible and 5 is perfect" );
+-- Panels
 AddToolLanguage( "panel_npc",         "NPC Selection" );
 AddToolLanguage( "panel_spawning",    "NPC Spawn Rates" );
 AddToolLanguage( "panel_activation",  "Platform Activation" );
@@ -177,7 +181,7 @@ function TOOL.BuildCPanel( CPanel )
             Min     = WEAPON_PROFICIENCY_POOR;
             Max     = WEAPON_PROFICIENCY_PERFECT;
             Command = cvar "skill";
-        } );
+        } ):SetToolTip( lang "weapon_skill_desc" );
 
     end
 
