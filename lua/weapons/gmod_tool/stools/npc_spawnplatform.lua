@@ -108,7 +108,7 @@ AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy P
 AddToolLanguage( "weapon",            "Weapon" );
 AddToolLanguage( "weapon_skill",      "Weapon Skill" );
 -- Control Descs
-AddToolLanguage( "weapon_skill_desc", "Where 0 is terrible and 5 is perfect" );
+AddToolLanguage( "weapon_skill_desc", string.format( "Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT ) );
 -- Panels
 AddToolLanguage( "panel_npc",         "NPC Selection" );
 AddToolLanguage( "panel_spawning",    "NPC Spawn Rates" );
