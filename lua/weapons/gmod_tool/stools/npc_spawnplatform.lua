@@ -200,7 +200,7 @@ function TOOL.BuildCPanel( CPanel )
         local CPanel = AddControl( CPanel, "CPanel", "panel_spawning" );
 
         --Timer select
-        AddControl( CPanel, "Slider", {
+        AddControl( CPanel, "Slider", "delay", {
             Label       = "Spawn Delay",
             Type        = "Float",
             Min         = npcspawner.config.mindelay,
@@ -209,7 +209,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "The delay between each NPC spawn."
         });
         --Timer Reduction
-        AddControl( CPanel, "Slider", {
+        AddControl( CPanel, "Slider", "delay_decrease", {
             Label       = "Decrease Delay Amount",
             Type        = "Float",
             Min         = 0,
@@ -218,7 +218,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "How much to decrease the delay by every time you kill every NPC spawned."
         } );
         --Maximum select
-        AddControl( CPanel, "Slider", {
+        AddControl( CPanel, "Slider", "maxinplay", {
             Label       = "Maximum In Action Simultaneously",
             Type        = "Integer",
             Min         = 1,
@@ -227,7 +227,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "The maximum NPCs allowed from the spawnpoint at one time."
         } );
         --Maximum Ever
-        AddControl( CPanel, "Slider", {
+        AddControl( CPanel, "Slider", "totallimit", {
             Label       = "Maximum To Spawn",
             Type        = "Integer",
             Min         = 0,
@@ -236,7 +236,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "The maximum NPCs allowed from the spawnpoint in one lifetime. The spawnpoint will turn off when this number is reached."
         } );
         --Autoremove select
-        AddControl( CPanel, "Checkbox", {
+        AddControl( CPanel, "Checkbox", "autoremove", {
             Label       = "Remove All Spawned NPCs on Platform Remove",
             Command     = "npc_spawnplatform_autoremove",
             Description = "If this is checked, all NPCs spawned by a platform will be removed with the platform."
@@ -246,7 +246,7 @@ function TOOL.BuildCPanel( CPanel )
     do
         local CPanel = AddControl( CPanel, "CPanel", "panel_activation" );
         --Numpad on/off select
-        AddControl( CPanel, "Numpad", {
+        CPanel:AddControl("Numpad", { -- Someone always has to be special
             Label       = "#Turn On",
             Label2      = "#Turn Off",
             Command     = "npc_spawnplatform_onkey",
@@ -254,13 +254,13 @@ function TOOL.BuildCPanel( CPanel )
             ButtonSize  = 22
         } );
         --Toggleable select
-        AddControl( CPanel, "Checkbox", {
+        AddControl( CPanel, "Checkbox", "toggleable", {
             Label       = "Toggle On/Off With Use",
             Command     = "npc_spawnplatform_toggleable",
             Description = "If this is checked, pressing Use on the spawn platform toggles the spawner on and off."
         } );
         --Active select
-        AddControl( CPanel, "Checkbox", {
+        AddControl( CPanel, "Checkbox", "active", {
             Label       = "Start Active",
             Command     = "npc_spawnplatform_active",
             Description = "If this is checked, spawned or updated platforms will be live."
@@ -273,13 +273,13 @@ function TOOL.BuildCPanel( CPanel )
             Closed = true;
         });
         -- Nocollide
-        AddControl( CPanel, "Checkbox", {
+        AddControl( CPanel, "Checkbox", "nocollide", {
             Label       = "No Collision Between Spawned NPCs",
             Command     = "npc_spawnplatform_nocollide",
             Description = "If this is checked, NPCs will not collide with any other NPCs spawned with this option on. This helps prevent stacking in the spawn area"
         } );
         --Spawnheight select
-        AddControl( CPanel, "Slider", {
+        AddControl( CPanel, "Slider", "spawnheight", {
             Label       = "Spawn Height Offset",
             Type        = "Float",
             Min         = 8,
@@ -288,7 +288,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "(Only change if needed) Height above spawn platform NPCs originate from."
         } );
         --Spawnradius select
-        AddControl( CPanel, "Slider", {
+        AddControl( CPanel, "Slider", "spawnradius", {
             Label       = "Spawn X/Y Radius",
             Type        = "Float",
             Min         = 0,
@@ -303,7 +303,7 @@ function TOOL.BuildCPanel( CPanel )
             Closed = true;
         });
         --Healthmul select
-        AddControl( CPanel, "Slider", {
+        AddControl( CPanel, "Slider", "healthmul", {
             Label       = "Health Multiplier",
             Type        = "Float",
             Min         = 0.5,
@@ -312,7 +312,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "The multiplier applied to the health of all NPCs on spawn."
         } );
         -- Custom Squad Picker
-        AddControl( CPanel, "Slider", {
+        AddControl( CPanel, "Slider", "squadoverride", {
             Label       = "Squad Override",
             Type        = "Integer",
             Min         = 1,
@@ -321,7 +321,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "Squad number override (if custom squads is checked)"
         } );
         -- Custom Squad On/Off
-        AddControl( CPanel, "Checkbox", {
+        AddControl( CPanel, "Checkbox", "customsquads", {
             Label       = "Use Custom Squad Indexes",
             Command     = "npc_spawnplatform_customsquads",
             Description = "If this is checked, NPCs spawn under the squad defined by the override. Otherwise NPCs will be put in a squad with their spawnmates."
