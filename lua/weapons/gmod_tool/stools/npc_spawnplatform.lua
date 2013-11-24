@@ -156,21 +156,16 @@ function TOOL:BuildCPanel()
     for k ,v in pairs(npcspawner.weps) do
         combo.Options[v] = {npc_spawnplatform_weapon = k};
     end
-    self.weplist = self:AddControl( "ListBox", combo);
-    --Skill select
-    combo = {
-        Label       = "Skill",
-        Folder      = "spawnplatform",
-        Options     = {
-            ["-1: Poor"]     = {npc_spawnplatform_skill = WEAPON_PROFICIENCY_POOR};
-            ["0: Average"]   = {npc_spawnplatform_skill = WEAPON_PROFICIENCY_AVERAGE};
-            ["1: Good"]      = {npc_spawnplatform_skill = WEAPON_PROFICIENCY_GOOD};
-            ["2: Very Good"] = {npc_spawnplatform_skill = WEAPON_PROFICIENCY_VERY_GOOD};
-            ["3: Perfect"]   = {npc_spawnplatform_skill = WEAPON_PROFICIENCY_PERFECT};
-        };
-    };
-    self.skilllist = self:AddControl("ListBox", combo);
-    -- TODO: Select the right value
+    self.weplist = self:AddControl( "ListBox", combo );
+    -- Skill select
+    self:AddControl( 'Slider', {
+        Label   = 'Skill';
+        -- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
+        Min     = WEAPON_PROFICIENCY_POOR;
+        Max     = WEAPON_PROFICIENCY_PERFECT;
+        Command = cvar 'skill';
+    } );
+
     local pad = {Text = ""}
     self:AddControl("Label", pad)
 
