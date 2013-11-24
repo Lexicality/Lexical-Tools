@@ -10,31 +10,34 @@ Features
 * Full [Wiremod][wire] support
 * Integrates with the Sandbox gamemode if it's loaded
 * Easy to control Lua API for integration with other gamemodes.
+* Spawn any installed NPC or SNPC
 * Huge customisability:
-    - Comes with 23 NPCs and 14 weapons by default, more can be added very easily
-    - Choose the skill level and health at which NPCs spawn. Even the odds in battles by making combine smart and rebels stupid!
-    - Specify where and how fast NPCs spawn
-    - Choose how many NPCs are active at any one time and if the spawners should turn off after a certain number of NPCs spawned. (Waves anyone?)
+  - Choose the skill level and health at which NPCs spawn. Even the odds in battles by making combine smart and rebels stupid!
+  - Specify where and how fast NPCs spawn
+  - Choose how many NPCs are active at any one time and if the spawners should turn off after a certain number of NPCs spawned. (Waves anyone?)
 
 Changelog
 ---------
+* __2.2__:
+  - Added a version of the GM13 spawn menu UI
+  - Changed the spawning system to GM13's, allowing SNPCs and so forth
 * __2.1__:
-    - Wire support
-    - Added Hunter
-    - Added zombine
-    - Added admin config menu
-    - Added automatic corpse cleanup
-    - Added sandbox hooks
-    - Added delay reduction ability
-    - Added 'turn off after x npcs' ability
-    - Added NPC weapons` Proficiency
-    - Made it cleaner
+  - Wire support
+  - Added Hunter
+  - Added zombine
+  - Added admin config menu
+  - Added automatic corpse cleanup
+  - Added sandbox hooks
+  - Added delay reduction ability
+  - Added 'turn off after x npcs' ability
+  - Added NPC weapons Proficiency
+  - Made it cleaner
 * __2.0__:
-    - Rewrote everything
-    - added platform:TurnOn()
-    - platform:TurnOff()
-    - platform:Toggle()
-    - platform:RemoveNPCs()
+  - Rewrote everything
+  - added platform:TurnOn()
+  - platform:TurnOff()
+  - platform:Toggle()
+  - platform:RemoveNPCs()
 
 
 Credits
