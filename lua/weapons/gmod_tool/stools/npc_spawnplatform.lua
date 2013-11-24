@@ -115,8 +115,8 @@ local function cvar( id )
 end
 
 --TODO: Make my own header panels and include them so I can have hedrz;
-function TOOL:BuildCPanel()
-    self:AddControl( "Header", {
+function TOOL.BuildCPanel( CPanel )
+    CPanel:AddControl( "Header", {
         Text        = lang 'name';
         Description = lang 'desc';
     } );
@@ -130,7 +130,7 @@ function TOOL:BuildCPanel()
         defaults[key] = default;
     end
 
-    self:AddControl( "ComboBox", {
+    CPanel:AddControl( "ComboBox", {
         Label   = "#Presets";
         Folder  = "spawnplatform";
         CVars   = CVars;
@@ -149,18 +149,18 @@ function TOOL:BuildCPanel()
     for k,v in pairs(npcspawner.npcs) do
         combo.Options[v] = {npc_spawnplatform_npc = k};
     end
-    self.npclist = self:AddControl ("ListBox", combo);
+    CPanel:AddControl( "ListBox", combo );
     -- Weapon select
     options = {};
     for id, label in pairs( npcspawner.weps ) do
         options[ label ] = { npc_spawnplatform_weapon = id };
     end
-    self:AddControl( "ListBox", {
+    CPanel:AddControl( "ListBox", {
         Label = lang "weapon";
         Options = options;
     } );
     -- Skill select
-    self:AddControl( "Slider", {
+    CPanel:AddControl( "Slider", {
         Label   = lang "weapon_skill";
         -- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
         Min     = WEAPON_PROFICIENCY_POOR;
@@ -168,14 +168,14 @@ function TOOL:BuildCPanel()
         Command = cvar "skill";
     } );
 
-    local pad = {Text = ""}
-    self:AddControl("Label", pad)
+    local pad = { Text = "" }
+    CPanel:AddControl( "Label", pad );
 
-    self:AddControl("Label", {
-    Text = "Spawning:"
-    })
+    CPanel:AddControl( "Label", {
+        Text = "Spawning:"
+    } );
     --Timer select
-    self.delayslider= self:AddControl( "Slider",  {
+    CPanel:AddControl( "Slider", {
         Label       = "Spawn Delay",
         Type        = "Float",
         Min         = npcspawner.config.mindelay,
@@ -184,123 +184,123 @@ function TOOL:BuildCPanel()
         Description = "The delay between each NPC spawn."
     });
     --Timer Reduction
-    self.delayslider= self:AddControl( "Slider",  {
+    CPanel:AddControl( "Slider", {
         Label       = "Decrease Delay Amount",
         Type        = "Float",
         Min         = 0,
         Max         = 2,
         Command     = "npc_spawnplatform_decrease",
         Description = "How much to decrease the delay by every time you kill every NPC spawned."
-    });
+    } );
     --Maximum select
-    self.maxslider  = self:AddControl( "Slider",  {
+    CPanel:AddControl( "Slider", {
         Label       = "Maximum In Action Simultaneously",
         Type        = "Integer",
         Min         = 1,
         Max         = npcspawner.config.maxinplay,
         Command     = "npc_spawnplatform_maximum",
         Description = "The maximum NPCs allowed from the spawnpoint at one time."
-    });
+    } );
     --Maximum Ever
-    self.maxslider  = self:AddControl( "Slider",  {
+    CPanel:AddControl( "Slider", {
         Label       = "Maximum To Spawn",
         Type        = "Integer",
         Min         = 0,
         Max         = 100,
         Command     = "npc_spawnplatform_totallimit",
         Description = "The maximum NPCs allowed from the spawnpoint in one lifetime. The spawnpoint will turn off when this number is reached."
-    });
+    } );
     --Autoremove select
-    self:AddControl( "Checkbox", {
+    CPanel:AddControl( "Checkbox", {
         Label       = "Remove All Spawned NPCs on Platform Remove",
         Command     = "npc_spawnplatform_autoremove",
         Description = "If this is checked, all NPCs spawned by a platform will be removed with the platform."
-    });
-    self:AddControl("Label", pad)
+    } );
+    CPanel:AddControl( "Label", pad );
 
-    self:AddControl("Label", {
-    Text = "On / Off:"
-    })
+    CPanel:AddControl( "Label", {
+        Text = "On / Off:"
+    } );
     --Numpad on/off select
-    self:AddControl( "Numpad", {
+    CPanel:AddControl( "Numpad", {
         Label       = "#Turn On",
         Label2      = "#Turn Off",
         Command     = "npc_spawnplatform_onkey",
         Command2    = "npc_spawnplatform_offkey",
         ButtonSize  = 22
-    });
+    } );
     --Toggleable select
-    self:AddControl( "Checkbox", {
+    CPanel:AddControl( "Checkbox", {
         Label       = "Toggle On/Off With Use",
         Command     = "npc_spawnplatform_toggleable",
         Description = "If this is checked, pressing Use on the spawn platform toggles the spawner on and off."
-    });
+    } );
     --Active select
-    self:AddControl( "Checkbox", {
+    CPanel:AddControl( "Checkbox", {
         Label       = "Start Active",
         Command     = "npc_spawnplatform_active",
         Description = "If this is checked, spawned or updated platforms will be live."
-    })
+    } );
 
 
     -- Spawn Pos Header
-    self:AddControl("Label", pad)
+    CPanel:AddControl( "Label", pad );
 
-    self:AddControl("Label", {
+    CPanel:AddControl( "Label", {
         Text = "Positioning:"
-    })
+    } );
     -- Nocollide
-    self:AddControl( "Checkbox", {
+    CPanel:AddControl( "Checkbox", {
         Label       = "No Collision Between Spawned NPCs",
         Command     = "npc_spawnplatform_nocollide",
         Description = "If this is checked, NPCs will not collide with any other NPCs spawned with this option on. This helps prevent stacking in the spawn area"
-    });
+    } );
     --Spawnheight select
-    self:AddControl( "Slider",  {
+    CPanel:AddControl( "Slider", {
         Label       = "Spawn Height Offset",
         Type        = "Float",
         Min         = 8,
         Max         = 128,
         Command     = "npc_spawnplatform_spawnheight",
         Description = "(Only change if needed) Height above spawn platform NPCs originate from."
-    });
+    } );
     --Spawnradius select
-    self:AddControl( "Slider",  {
+    CPanel:AddControl( "Slider", {
         Label       = "Spawn X/Y Radius",
         Type        = "Float",
         Min         = 0,
         Max         = 128,
         Command     = "npc_spawnplatform_spawnradius",
         Description = "(Use 0 if confused) Radius in which NPCs spawn (use small radius unless on flat open area)."
-    });
+    } );
     --Another header
-    self:AddControl("Label", pad)
+    CPanel:AddControl( "Label", pad );
 
-    self:AddControl("Label", {
+    CPanel:AddControl( "Label", {
         Text = "Other:"
-    })
+    } );
     --Healthmul select
-    self:AddControl( "Slider",  {
+    CPanel:AddControl( "Slider", {
         Label       = "Health Multiplier",
         Type        = "Float",
         Min         = 0.5,
         Max         = 5,
         Command     = "npc_spawnplatform_healthmul",
         Description = "The multiplier applied to the health of all NPCs on spawn."
-    });
+    } );
     -- Custom Squad Picker
-    self:AddControl( "Slider",  {
+    CPanel:AddControl( "Slider", {
         Label       = "Squad Override",
         Type        = "Integer",
         Min         = 1,
         Max         = 10,
         Command     = "npc_spawnplatform_squadoverride",
         Description = "Squad number override (if custom squads is checked)"
-    });
+    } );
     -- Custom Squad On/Off
-    self:AddControl( "Checkbox", {
+    CPanel:AddControl( "Checkbox", {
         Label       = "Use Custom Squad Indexes",
         Command     = "npc_spawnplatform_customsquads",
         Description = "If this is checked, NPCs spawn under the squad defined by the override. Otherwise NPCs will be put in a squad with their spawnmates."
-    });
+    } );
 end
