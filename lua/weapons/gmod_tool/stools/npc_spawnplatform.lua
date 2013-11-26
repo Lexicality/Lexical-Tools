@@ -109,7 +109,7 @@ AddToolLanguage( "npc",          "NPC" );
 AddToolLanguage( "weapon",       "Weapon" );
 AddToolLanguage( "skill", "Weapon Skill" );
 -- Control Descs
-AddToolLanguage( "skill_desc", string.format( "Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT ) );
+AddToolLanguage( "skill.desc", string.format( "Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT ) );
 -- Panels
 AddToolLanguage( "panel_npc",         "NPC Selection" );
 AddToolLanguage( "panel_spawning",    "NPC Spawn Rates" );
@@ -137,7 +137,7 @@ local function AddControl( CPanel, control, name, data )
     end
     local ctrl = CPanel:AddControl( control, data );
     if ( data.Description ) then
-        ctrl:SetToolTip( lang( name .. "_desc" ) );
+        ctrl:SetToolTip( lang( name .. ".desc" ) );
     end
     return ctrl;
 end
