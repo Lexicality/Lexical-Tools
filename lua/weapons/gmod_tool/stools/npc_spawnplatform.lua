@@ -138,6 +138,8 @@ local function AddControl( CPanel, control, name, data )
     end
     return ctrl;
 end
+-- Derp. CPanel:AddControl lowercases control names for you (so kind)
+vgui.Register("controlpanel", {}, "ControlPanel");
 
 function TOOL.BuildCPanel( CPanel )
     CPanel:AddControl( "Header", {
@@ -167,7 +169,7 @@ function TOOL.BuildCPanel( CPanel )
 
     do -- NPC Selector
 
-        local CPanel = AddControl( CPanel, "CPanel", "panel_npc" );
+        local CPanel = AddControl( CPanel, "ControlPanel", "panel_npc" );
         --Type select
         combo = {
             Height  = 150,
@@ -197,7 +199,7 @@ function TOOL.BuildCPanel( CPanel )
     end
 
     do
-        local CPanel = AddControl( CPanel, "CPanel", "panel_spawning" );
+        local CPanel = AddControl( CPanel, "ControlPanel", "panel_spawning" );
 
         --Timer select
         AddControl( CPanel, "Slider", "delay", {
@@ -218,7 +220,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "How much to decrease the delay by every time you kill every NPC spawned."
         } );
         --Maximum select
-        AddControl( CPanel, "Slider", "maxinplay", {
+        AddControl( CPanel, "Slider", "maximum", {
             Label       = "Maximum In Action Simultaneously",
             Type        = "Integer",
             Min         = 1,
@@ -244,7 +246,7 @@ function TOOL.BuildCPanel( CPanel )
     end
 
     do
-        local CPanel = AddControl( CPanel, "CPanel", "panel_activation" );
+        local CPanel = AddControl( CPanel, "ControlPanel", "panel_activation" );
         --Numpad on/off select
         CPanel:AddControl("Numpad", { -- Someone always has to be special
             Label       = "#Turn On",
@@ -269,7 +271,7 @@ function TOOL.BuildCPanel( CPanel )
 
     do -- Positions
 
-        local CPanel = AddControl( CPanel, "CPanel", "panel_positioning", {
+        local CPanel = AddControl( CPanel, "ControlPanel", "panel_positioning", {
             Closed = true;
         });
         -- Nocollide
@@ -299,7 +301,7 @@ function TOOL.BuildCPanel( CPanel )
 
     end
     do -- Other
-        local CPanel = AddControl( CPanel, "CPanel", "panel_other", {
+        local CPanel = AddControl( CPanel, "ControlPanel", "panel_other", {
             Closed = true;
         });
         --Healthmul select
