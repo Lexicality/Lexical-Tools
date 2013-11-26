@@ -107,9 +107,9 @@ AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy P
 -- Controls 
 AddToolLanguage( "npc",          "NPC" );
 AddToolLanguage( "weapon",       "Weapon" );
-AddToolLanguage( "weapon_skill", "Weapon Skill" );
+AddToolLanguage( "skill", "Weapon Skill" );
 -- Control Descs
-AddToolLanguage( "weapon_skill_desc", string.format( "Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT ) );
+AddToolLanguage( "skill_desc", string.format( "Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT ) );
 -- Panels
 AddToolLanguage( "panel_npc",         "NPC Selection" );
 AddToolLanguage( "panel_spawning",    "NPC Spawn Rates" );
@@ -186,7 +186,7 @@ function TOOL.BuildCPanel( CPanel )
             Options = options;
         } );
         -- Skill select
-        AddControl( CPanel, "Slider", "weapon_skill", {
+        AddControl( CPanel, "Slider", "skill", {
             -- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
             Min     = WEAPON_PROFICIENCY_POOR;
             Max     = WEAPON_PROFICIENCY_PERFECT;
@@ -209,7 +209,7 @@ function TOOL.BuildCPanel( CPanel )
             Description = "The delay between each NPC spawn."
         });
         --Timer Reduction
-        AddControl( CPanel, "Slider", "delay_decrease", {
+        AddControl( CPanel, "Slider", "decrease", {
             Label       = "Decrease Delay Amount",
             Type        = "Float",
             Min         = 0,
