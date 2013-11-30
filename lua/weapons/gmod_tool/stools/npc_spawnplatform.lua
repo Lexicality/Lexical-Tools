@@ -155,7 +155,7 @@ end
 local function AddControl( CPanel, control, name, data )
     data = data or {};
     data.Label = lang( name );
-    if ( data.Command ) then
+    if ( control ~= "ControlPanel" and control ~= "ListBox" ) then
         data.Command = cvar( name );
     end
     local ctrl = CPanel:AddControl( control, data );
@@ -218,7 +218,6 @@ function TOOL.BuildCPanel( CPanel )
             -- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
             Min     = WEAPON_PROFICIENCY_POOR;
             Max     = WEAPON_PROFICIENCY_PERFECT;
-            Command = true;
             Description = true;
         } );
 
@@ -232,7 +231,6 @@ function TOOL.BuildCPanel( CPanel )
             Type        = "Float";
             Min         = npcspawner.config.mindelay;
             Max         = 60;
-            Command     = true;
             Description = true;
         });
         -- Timer Reduction
@@ -240,7 +238,6 @@ function TOOL.BuildCPanel( CPanel )
             Type        = "Float";
             Min         = 0;
             Max         = 2;
-            Command     = true;
             Description = true;
         } );
         -- Maximum select
@@ -248,7 +245,6 @@ function TOOL.BuildCPanel( CPanel )
             Type        = "Integer";
             Min         = 1;
             Max         = npcspawner.config.maxinplay;
-            Command     = true;
             Description = true;
         } );
         -- Maximum Ever
@@ -256,12 +252,10 @@ function TOOL.BuildCPanel( CPanel )
             Type        = "Integer";
             Min         = 0;
             Max         = 100;
-            Command     = true;
             Description = true;
         } );
         -- Autoremove select
         AddControl( CPanel, "Checkbox", "autoremove", {
-            Command     = true;
             Description = true;
         } );
     end
@@ -277,12 +271,9 @@ function TOOL.BuildCPanel( CPanel )
         } );
         --Toggleable select
         AddControl( CPanel, "Checkbox", "toggleable", {
-            Command     = true;
         } );
         --Active select
-        AddControl( CPanel, "Checkbox", "active", {
-            Command     = true;
-        } );
+        AddControl( CPanel, "Checkbox", "active" );
     end
 
     do -- Positions
@@ -292,15 +283,12 @@ function TOOL.BuildCPanel( CPanel )
         });
         CPanel:Help( lang "positioning.help" );
         -- Nocollide
-        AddControl( CPanel, "Checkbox", "nocollide", {
-            Command     = true,
-        } );
+        AddControl( CPanel, "Checkbox", "nocollide" );
         --Spawnheight select
         AddControl( CPanel, "Slider", "spawnheight", {
             Type        = "Float";
             Min         = 8;
             Max         = 128;
-            Command     = true;
             Description = true;
         } );
         --Spawnradius select
@@ -308,7 +296,6 @@ function TOOL.BuildCPanel( CPanel )
             Type        = "Float";
             Min         = 0;
             Max         = 128;
-            Command     = true;
             Description = true;
         } );
 
@@ -322,22 +309,18 @@ function TOOL.BuildCPanel( CPanel )
             Type        = "Float";
             Min         = 0.5;
             Max         = 5;
-            Command     = true;
             Description = true;
         } );
         -- Global Squads
         CPanel:Help( lang "squads.help1" );
         CPanel:Help( lang "squads.help2" );
         -- Global Squad On/Off
-        AddControl( CPanel, "Checkbox", "customsquads", {
-            Command     = true;
-        } );
+        AddControl( CPanel, "Checkbox", "customsquads" );
         -- Custom Squad Picker
         AddControl( CPanel, "Slider", "squadoverride", {
             Type        = "Integer";
             Min         = 1;
             Max         = 50;
-            Command     = true;
         } );
     end
 end
