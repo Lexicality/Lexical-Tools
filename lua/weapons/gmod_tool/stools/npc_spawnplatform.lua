@@ -147,10 +147,6 @@ end
 
 -- Because when don't you need to define your own builtins?
 local function AddControl( CPanel, control, name, data )
-    --[[ FIXME ]] if ( type( name ) == "table" ) then -- FIXME
-    --[[ FIXME ]]     data = name;                    -- FIXME
-    --[[ FIXME ]]     name = name.Label               -- FIXME
-    --[[ FIXME ]] end                                 -- FIXME
     data = data or {};
     data.Label = lang( name );
     if ( data.Command ) then
