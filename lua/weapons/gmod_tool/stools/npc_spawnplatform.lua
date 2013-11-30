@@ -108,27 +108,35 @@ AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy P
 AddToolLanguage( "npc",           "NPC" );
 AddToolLanguage( "weapon",        "Weapon" );
 AddToolLanguage( "skill",         "Weapon Skill" );
-AddToolLanguage( "delay",         "Spawn Delay" );
+AddToolLanguage( "delay",         "Spawning Delay" );
 AddToolLanguage( "decrease",      "Decrease Delay Amount" );
-AddToolLanguage( "maximum",       "Maximum In Action Simultaneously" );
-AddToolLanguage( "totallimit",    "Maximum To Spawn" );
-AddToolLanguage( "autoremove",    "Remove All Spawned NPCs on Platform Remove" );
-AddToolLanguage( "toggleable",    "Toggle On/Off With Use" );
+AddToolLanguage( "maximum",       "Maximum In Action" );
+AddToolLanguage( "totallimit",    "Turn Off After" );
+AddToolLanguage( "autoremove",    "Clean up on Remove" );
+AddToolLanguage( "toggleable",    "Use Key Toggles" );
 AddToolLanguage( "active",        "Start Active" );
-AddToolLanguage( "nocollide",     "No Collision Between Spawned NPCs" );
-AddToolLanguage( "spawnheight",   "Spawn Height Offset" );
-AddToolLanguage( "spawnradius",   "Spawn X/Y Radius" );
+AddToolLanguage( "nocollide",     "Disable NPC Collisions" );
+AddToolLanguage( "spawnheight",   "Spawn Height" );
+AddToolLanguage( "spawnradius",   "Spawn Radius" );
 AddToolLanguage( "healthmul",     "Health Multiplier" );
-AddToolLanguage( "squadoverride", "Squad Override" );
-AddToolLanguage( "customsquads",  "Use Custom Squad Indexes" );
+AddToolLanguage( "customsquads",  "Use Global Squad" );
+AddToolLanguage( "squadoverride", "Global Squad Number" );
 -- Control Descs
-AddToolLanguage( "skill.desc", string.format( "Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT ) );
+AddToolLanguage( "skill.desc",         string.format( "Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT ) );
+AddToolLanguage( "delay.desc",         "The delay between each NPC spawn." );
+AddToolLanguage( "decrease.desc",      "How much to decrease the delay by every time you kill every NPC spawned." );
+AddToolLanguage( "maximum.desc",       "The platform will pause spawning until you kill one of the spawned ones" );
+AddToolLanguage( "totallimit.desc",    "Turn the platform off after this many NPC have been spawned" );
+AddToolLanguage( "autoremove.desc",    "All NPCs spawned by a platform will be removed with the platform." );
+AddToolLanguage( "spawnheight.desc",   "Spawn NPCs higher than the platform to avoid obsticles" );
+AddToolLanguage( "spawnradius.desc",   "Spawn NPCs in a circle around the platform. 0 spawns them on the platform" );
+AddToolLanguage( "healthmul.desc",     "Increase the health of spawned NPCs for more longer fights" );
 -- Panels
-AddToolLanguage( "panel_npc",         "NPC Selection" );
-AddToolLanguage( "panel_spawning",    "NPC Spawn Rates" );
-AddToolLanguage( "panel_activation",  "Platform Activation" );
-AddToolLanguage( "panel_positioning", "NPC Positioning" );
-AddToolLanguage( "panel_other",       "Other" );
+AddToolLanguage( "panel_npc",          "NPC Selection" );
+AddToolLanguage( "panel_spawning",     "NPC Spawn Rates" );
+AddToolLanguage( "panel_activation",   "Platform Activation" );
+AddToolLanguage( "panel_positioning",  "NPC Positioning" );
+AddToolLanguage( "panel_other",        "Other" );
 
 local function lang( id )
     return '#Tool.' .. ClassName .. '.' .. id;
@@ -217,42 +225,42 @@ function TOOL.BuildCPanel( CPanel )
     do
         local CPanel = AddControl( CPanel, "ControlPanel", "panel_spawning" );
 
-        --Timer select
+        -- Timer select
         AddControl( CPanel, "Slider", "delay", {
-            Type        = "Float",
-            Min         = npcspawner.config.mindelay,
-            Max         = 60,
-            Command     = true,
-            Description = "The delay between each NPC spawn."
+            Type        = "Float";
+            Min         = npcspawner.config.mindelay;
+            Max         = 60;
+            Command     = true;
+            Description = true;
         });
-        --Timer Reduction
+        -- Timer Reduction
         AddControl( CPanel, "Slider", "decrease", {
-            Type        = "Float",
-            Min         = 0,
-            Max         = 2,
-            Command     = true,
-            Description = "How much to decrease the delay by every time you kill every NPC spawned."
+            Type        = "Float";
+            Min         = 0;
+            Max         = 2;
+            Command     = true;
+            Description = true;
         } );
-        --Maximum select
+        -- Maximum select
         AddControl( CPanel, "Slider", "maximum", {
-            Type        = "Integer",
-            Min         = 1,
-            Max         = npcspawner.config.maxinplay,
-            Command     = true,
-            Description = "The maximum NPCs allowed from the spawnpoint at one time."
+            Type        = "Integer";
+            Min         = 1;
+            Max         = npcspawner.config.maxinplay;
+            Command     = true;
+            Description = true;
         } );
-        --Maximum Ever
+        -- Maximum Ever
         AddControl( CPanel, "Slider", "totallimit", {
-            Type        = "Integer",
-            Min         = 0,
-            Max         = 100,
-            Command     = true,
-            Description = "The maximum NPCs allowed from the spawnpoint in one lifetime. The spawnpoint will turn off when this number is reached."
+            Type        = "Integer";
+            Min         = 0;
+            Max         = 100;
+            Command     = true;
+            Description = true;
         } );
-        --Autoremove select
+        -- Autoremove select
         AddControl( CPanel, "Checkbox", "autoremove", {
-            Command     = true,
-            Description = "If this is checked, all NPCs spawned by a platform will be removed with the platform."
+            Command     = true;
+            Description = true;
         } );
     end
 
@@ -268,13 +276,11 @@ function TOOL.BuildCPanel( CPanel )
         } );
         --Toggleable select
         AddControl( CPanel, "Checkbox", "toggleable", {
-            Command     = true,
-            Description = "If this is checked, pressing Use on the spawn platform toggles the spawner on and off."
+            Command     = true;
         } );
         --Active select
         AddControl( CPanel, "Checkbox", "active", {
-            Command     = true,
-            Description = "If this is checked, spawned or updated platforms will be live."
+            Command     = true;
         } );
     end
 
@@ -286,23 +292,22 @@ function TOOL.BuildCPanel( CPanel )
         -- Nocollide
         AddControl( CPanel, "Checkbox", "nocollide", {
             Command     = true,
-            Description = "If this is checked, NPCs will not collide with any other NPCs spawned with this option on. This helps prevent stacking in the spawn area"
         } );
         --Spawnheight select
         AddControl( CPanel, "Slider", "spawnheight", {
-            Type        = "Float",
-            Min         = 8,
-            Max         = 128,
-            Command     = true,
-            Description = "(Only change if needed) Height above spawn platform NPCs originate from."
+            Type        = "Float";
+            Min         = 8;
+            Max         = 128;
+            Command     = true;
+            Description = true;
         } );
         --Spawnradius select
         AddControl( CPanel, "Slider", "spawnradius", {
-            Type        = "Float",
-            Min         = 0,
-            Max         = 128,
-            Command     = true,
-            Description = "(Use 0 if confused) Radius in which NPCs spawn (use small radius unless on flat open area)."
+            Type        = "Float";
+            Min         = 0;
+            Max         = 128;
+            Command     = true;
+            Description = true;
         } );
 
     end
@@ -312,24 +317,22 @@ function TOOL.BuildCPanel( CPanel )
         });
         --Healthmul select
         AddControl( CPanel, "Slider", "healthmul", {
-            Type        = "Float",
-            Min         = 0.5,
-            Max         = 5,
-            Command     = true,
-            Description = "The multiplier applied to the health of all NPCs on spawn."
-        } );
-        -- Custom Squad Picker
-        AddControl( CPanel, "Slider", "squadoverride", {
-            Type        = "Integer",
-            Min         = 1,
-            Max         = 10,
-            Command     = true,
-            Description = "Squad number override (if custom squads is checked)"
+            Type        = "Float";
+            Min         = 0.5;
+            Max         = 5;
+            Command     = true;
+            Description = true;
         } );
         -- Custom Squad On/Off
         AddControl( CPanel, "Checkbox", "customsquads", {
-            Command     = true,
-            Description = "If this is checked, NPCs spawn under the squad defined by the override. Otherwise NPCs will be put in a squad with their spawnmates."
+            Command     = true;
+        } );
+        -- Custom Squad Picker
+        AddControl( CPanel, "Slider", "squadoverride", {
+            Type        = "Integer";
+            Min         = 1;
+            Max         = 10;
+            Command     = true;
         } );
     end
 end
