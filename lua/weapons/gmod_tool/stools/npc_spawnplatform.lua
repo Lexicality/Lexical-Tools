@@ -131,6 +131,10 @@ AddToolLanguage( "autoremove.desc",    "All NPCs spawned by a platform will be r
 AddToolLanguage( "spawnheight.desc",   "Spawn NPCs higher than the platform to avoid obsticles" );
 AddToolLanguage( "spawnradius.desc",   "Spawn NPCs in a circle around the platform. 0 spawns them on the platform" );
 AddToolLanguage( "healthmul.desc",     "Increase the health of spawned NPCs for more longer fights" );
+-- Help!
+AddToolLanguage( "positioning.help", "Prevent your NPCs getting stuck in each other by disabling collisions or spacing their spawns out." );
+AddToolLanguage( "squads.help1", "NPCs in a squad talk to each other to improve tactics. By default, all NPCs spawned by a spawn platform are in the same squad." );
+AddToolLanguage( "squads.help2", "If you want a squad to cover more than one platform, use a global squad. Be careful not to let your squads get to big or your game will lag!" );
 -- Panels
 AddToolLanguage( "panel_npc",          "NPC Selection" );
 AddToolLanguage( "panel_spawning",     "NPC Spawn Rates" );
@@ -285,6 +289,7 @@ function TOOL.BuildCPanel( CPanel )
         local CPanel = AddControl( CPanel, "ControlPanel", "panel_positioning", {
             Closed = true;
         });
+        CPanel:Help( lang "positioning.help" );
         -- Nocollide
         AddControl( CPanel, "Checkbox", "nocollide", {
             Command     = true,
@@ -319,7 +324,10 @@ function TOOL.BuildCPanel( CPanel )
             Command     = true;
             Description = true;
         } );
-        -- Custom Squad On/Off
+        -- Global Squads
+        CPanel:Help( lang "squads.help1" );
+        CPanel:Help( lang "squads.help2" );
+        -- Global Squad On/Off
         AddControl( CPanel, "Checkbox", "customsquads", {
             Command     = true;
         } );
@@ -327,7 +335,7 @@ function TOOL.BuildCPanel( CPanel )
         AddControl( CPanel, "Slider", "squadoverride", {
             Type        = "Integer";
             Min         = 1;
-            Max         = 10;
+            Max         = 50;
             Command     = true;
         } );
     end
