@@ -113,6 +113,8 @@ AddToolLanguage( "decrease",      "Decrease Delay Amount" );
 AddToolLanguage( "maximum",       "Maximum In Action" );
 AddToolLanguage( "totallimit",    "Turn Off After" );
 AddToolLanguage( "autoremove",    "Clean up on Remove" );
+AddToolLanguage( "keys.on",       "Turn On" );
+AddToolLanguage( "keys.off",      "Turn Off" );
 AddToolLanguage( "toggleable",    "Use Key Toggles" );
 AddToolLanguage( "active",        "Start Active" );
 AddToolLanguage( "nocollide",     "Disable NPC Collisions" );
@@ -268,11 +270,10 @@ function TOOL.BuildCPanel( CPanel )
         local CPanel = AddControl( CPanel, "ControlPanel", "panel_activation" );
         --Numpad on/off select
         CPanel:AddControl("Numpad", { -- Someone always has to be special
-            Label       = "#Turn On",
-            Label2      = "#Turn Off",
-            Command     = "npc_spawnplatform_onkey",
-            Command2    = "npc_spawnplatform_offkey",
-            ButtonSize  = 22
+            Label       = lang "keys.on";
+            Label2      = lang "keys.off";
+            Command     = cvar "onkey";
+            Command2    = cvar "offkey";
         } );
         --Toggleable select
         AddControl( CPanel, "Checkbox", "toggleable", {
