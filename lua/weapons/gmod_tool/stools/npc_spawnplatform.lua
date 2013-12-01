@@ -70,7 +70,7 @@ function TOOL:LeftClick(trace)
     local min = ent:OBBMins()
     ent:SetPos( trace.HitPos - trace.HitNormal * min.y );
     owner:AddCount("sent_spawnplatform", ent);
-    undo.Create("spawnplatform");
+    undo.Create("NPC Spawn Platform");
         undo.SetPlayer(self:GetOwner());
         undo.AddEntity(ent);
         undo.SetCustomUndoText("Undone a " .. self:GetClientInfo("npc") .. " spawn platform" .. (tonumber(self:GetClientInfo("autoremove")) > 0 and " and all its NPCs." or "."));
