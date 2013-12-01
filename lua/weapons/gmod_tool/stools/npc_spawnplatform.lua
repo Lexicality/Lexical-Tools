@@ -34,6 +34,7 @@ local cvars = {
     skill         = WEAPON_PROFICIENCY_AVERAGE;
 }
 
+cleanup.Register("Spawnplatforms");
 table.Merge( TOOL.ClientConVar, cvars );
 
 function TOOL:LeftClick(trace)
@@ -74,6 +75,7 @@ function TOOL:LeftClick(trace)
         undo.AddEntity(ent);
         undo.SetCustomUndoText("Undone a " .. self:GetClientInfo("npc") .. " spawn platform" .. (tonumber(self:GetClientInfo("autoremove")) > 0 and " and all its NPCs." or "."));
     undo.Finish();
+    cleanup.Add(self:GetOwner(), "Spawnplatforms", ent);
     return true;
 end
 
@@ -143,6 +145,9 @@ AddToolLanguage( "panel_spawning",     "NPC Spawn Rates" );
 AddToolLanguage( "panel_activation",   "Platform Activation" );
 AddToolLanguage( "panel_positioning",  "NPC Positioning" );
 AddToolLanguage( "panel_other",        "Other" );
+-- Inferior Tech
+language.Add("Cleanup_Spawnplatforms", "NPC Spawn Platforms");
+language.Add("Cleaned_Spawnplatforms", "Cleaned up all NPC Spawn Platforms");
 
 local function lang( id )
     return '#Tool.' .. ClassName .. '.' .. id;
