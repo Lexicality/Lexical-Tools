@@ -92,6 +92,14 @@ npcspawner = {
         mindelay    = 0.1,
         debug       = 1,
     };
+    legacy = {
+        npc_citizen_medic   = "Medic";
+        npc_citizen_rebel   = "Rebel";
+        npc_citizen_dt      = "npc_citizen";
+        npc_citizen_refugee = "Refugee";
+        npc_combine_e       = "CombineElite";
+        npc_combine_p       = "CombinePrison";
+    };
 };
 -- Stuff that required ep1/ep2 to be mounted
 if (util.IsValidModel("models/hunter.mdl")) then
