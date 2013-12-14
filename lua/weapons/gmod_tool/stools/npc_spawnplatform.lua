@@ -210,14 +210,29 @@ function TOOL.BuildCPanel( CPanel )
             combo.Options[v] = {npc_spawnplatform_npc = k};
         end
         AddControl( CPanel, "ListBox", "npc", combo );
-        -- Weapon select
-        options = {};
-        for id, label in pairs( npcspawner.weps ) do
-            options[ label ] = { npc_spawnplatform_weapon = id };
+
+        local weapons = AddControl( CPanel, "ListBox", "weapon" );
+        if (not weapons) then -- Dirty workaround for ListBox not actually returning a ListBox
+            weapons = CPanel.Items[#CPanel.Items]:GetChild(1);
         end
-        AddControl( CPanel, "ListBox", "weapon", {
-            Options = options;
-        } );
+        do
+            local key = cvar"weapon";
+            function option( title, class )
+                weapons:AddOption( title, { [ key ] = class } );
+            end
+            option( "Default Weapon", "weapon_default" );
+            for _, tab in pairs( list.Get( "NPCUsableWeapons" ) ) do
+                local title, class = tab.title, tab.class;
+                if ( class == "none" ) then
+                    class = "weapon_none";
+                end
+                option( title, class );
+            end
+            option( "Random Rebel Weapon",   "weapon_rebel"   );
+            option( "Random Combine Weapon", "weapon_combine" );
+            option( "Random Citizen Weapon", "weapon_citizen" );
+
+        end
         -- Skill select
         AddControl( CPanel, "Slider", "skill", {
             -- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
