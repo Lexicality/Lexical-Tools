@@ -103,7 +103,7 @@ if ( SERVER ) then return; end
 local function AddToolLanguage( id, lang )
     language.Add( 'tool.' .. ClassName .. '.' .. id, lang );
 end
-AddToolLanguage( "name", "NPC Spawn Platforms 2.1" );
+AddToolLanguage( "name", "NPC Spawn Platforms 2.2" );
 AddToolLanguage( "desc", "Create a platform that will constantly make NPCs." );
 AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data." );
 -- Controls 
@@ -171,6 +171,7 @@ local function AddControl( CPanel, control, name, data )
 end
 -- Derp. CPanel:AddControl lowercases control names for you (so kind)
 vgui.Register("controlpanel", {}, "ControlPanel");
+vgui.Register("npcselect", {}, "NPCSelect");
 
 function TOOL.BuildCPanel( CPanel )
     CPanel:AddControl( "Header", {
@@ -201,7 +202,17 @@ function TOOL.BuildCPanel( CPanel )
     do -- NPC Selector
 
         local CPanel = AddControl( CPanel, "ControlPanel", "panel_npc" );
+        local function workaround(panel)
+            -- This is because ListBox doesn't actually return the listbox.
+            -- I've submitted a pull request so that might change but for now . . .
+            if (not panel) then
+                panel = CPanel.Items[#CPanel.Items]:GetChild(1);
+            end
+            return panel;
+        end
+
         --Type select
+        --[[
         combo = {
             Height  = 150,
             Options = {},
@@ -209,12 +220,11 @@ function TOOL.BuildCPanel( CPanel )
         for k,v in pairs(npcspawner.npcs) do
             combo.Options[v] = {npc_spawnplatform_npc = k};
         end
-        AddControl( CPanel, "ListBox", "npc", combo );
+        local npcs = workaround( AddControl( CPanel, "ListBox", "npc", combo ) );
+        --]]
+        AddControl( CPanel, "NPCSelect", "npc" );
 
-        local weapons = AddControl( CPanel, "ListBox", "weapon" );
-        if (not weapons) then -- Dirty workaround for ListBox not actually returning a ListBox
-            weapons = CPanel.Items[#CPanel.Items]:GetChild(1);
-        end
+        local weapons = workaround( AddControl( CPanel, "ListBox", "weapon" ) );
         do
             local key = cvar"weapon";
             function option( title, class )
