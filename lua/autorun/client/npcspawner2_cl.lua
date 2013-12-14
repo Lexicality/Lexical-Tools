@@ -51,7 +51,7 @@ local function OnPopulateToolPanel(panel)
     panel:AddControl("CheckBox", {
         Label = "Cleanup Corpses",
         Command = "cleanupcorpses",
-    })
+    });
     if (not LocalPlayer():IsAdmin()) then
         return;
     end
@@ -61,13 +61,20 @@ local function OnPopulateToolPanel(panel)
     panel:AddControl("CheckBox", {
         Label = "Admins Only",
         Command = "npcspawner_config_adminonly",
-    })
+    });
     panel:AddControl("Label", {
-        Text = "Call Hooks: This will cause the platform to call all the sandbox hooks, as if the player was using the Spawn Menu to make NPCs."
+        Text = "Call Hooks: This will cause the platforms to call all the sandbox hooks, as if the player was using the Spawn Menu to make NPCs."
     });
     panel:AddControl("CheckBox", {
         Label = "Call Hooks",
         Command = "npcspawner_config_callhooks",
+    });
+    panel:AddControl("Label", {
+        Text = "Sanity Check: This will limit what platforms can spawn to the registered \"NPC\" list."
+    });
+    panel:AddControl("CheckBox", {
+        Label = "Santiy Check",
+        Command = "npcspawner_config_sanity",
     })
     panel:AddControl("Label", {
         Text = "Max In Play: The maximum number of NPCs a single spawnplatform can have out at once."

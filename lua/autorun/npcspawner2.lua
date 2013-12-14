@@ -51,6 +51,7 @@ npcspawner = {
         maxinplay   = 20,
         mindelay    = 0.1,
         debug       = 1,
+        sanity      = 1,
     };
     legacy = {
         npc_citizen_medic   = "Medic";
