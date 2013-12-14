@@ -90,7 +90,7 @@ local function OnPopulateToolPanel(panel)
         Text = "Minimum Delay: The minimum delay between each npc spawn."
     });
     panel:AddControl("Slider", {
-        Label = "Max In Play",
+        Label = "Minimum Delay",
         Command = "npcspawner_config_mindelay",
         Type = "Float",
         Min = "0.1",
