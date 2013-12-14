@@ -43,48 +43,8 @@ npcspawner = {
         end);
     end;
     -- Default config
-    npcs = {
-        npc_headcrab        = "Headcrab",
-        npc_headcrab_poison = "Headcrab, Poison",
-        npc_headcrab_fast   = "Headcrab, Fast",
-        npc_zombie          = "Zombie",
-        npc_poisonzombie    = "Zombie, Poison",
-        npc_fastzombie      = "Zombie, Fast",
-        npc_antlion         = "Antlion",
-        npc_antlionguard    = "Antlion Guard",
-        npc_crow            = "Crow",
-        npc_pigeon          = "Pigeon",
-        npc_seagull         = "Seagull",
-        npc_citizen         = "Citizen",
-        npc_citizen_refugee = "Citizen, Refugee",
-        npc_citizen_dt      = "Citizen, Downtrodden",
-        npc_citizen_rebel   = "Rebel",
-        npc_citizen_medic   = "Rebel Medic",
-        npc_combine_s       = "Combine Soldier",
-        npc_combine_p       = "Combine, Prison",
-        npc_combine_e       = "Combine, Elite",
-        npc_metropolice     = "Metrocop",
-        npc_manhack         = "Manhack",
-        npc_rollermine      = "Rollermine",
-        npc_vortigaunt      = "Vortigaunt"
-    };
-    weps = {
-        weapon_crowbar          = "Crowbar",
-        weapon_stunstick        = "Stunstick",
-        weapon_pistol           = "Pistol",
-        weapon_alyxgun          = "Alyx's Gun",
-        weapon_smg1             = "SMG",
-        weapon_ar2              = "AR2",
-    --  weapon_rpg              = "RPG", -- RPG doesn't work D:
-        weapon_shotgun          = "Shotgun",
-        weapon_annabelle        = "Anabelle",
-        weapon_citizenpackage   = "Package",
-        weapon_citizensuitcase  = "Suitcase",
-        weapon_none             = "None",
-        weapon_rebel            = "Random Rebel Weapon",
-        weapon_combine          = "Random Combine Weapon",
-        weapon_citizen          = "Random Citizen Weapon"
-    };
+    npcs = {};
+    weps = {};
     config = {
         adminonly   = 0,
         callhooks   = 1,
@@ -101,9 +61,3 @@ npcspawner = {
         npc_combine_p       = "CombinePrison";
     };
 };
--- Stuff that required ep1/ep2 to be mounted
-if (util.IsValidModel("models/hunter.mdl")) then
-    npcspawner.npcs["npc_hunter"] = "Hunter";
-end if (util.IsValidModel("models/zombie/zombie_soldier.mdl")) then
-    npcspawner.npcs["npc_zombine"] = "Zombine";
-end

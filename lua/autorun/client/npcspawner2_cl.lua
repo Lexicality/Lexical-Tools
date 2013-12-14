@@ -25,14 +25,6 @@ usermessage.Hook("npcspawner_config", function(msg)
     npcspawner.config[cvar] = value;
     RunConsoleCommand(cvarstr .. cvar, tostring(value));
 end);
-npcspawner.recieve("NPCSpawner NPCs", function(data)
-    npcspawner.npcs = data;
-    npcspawner.debug("Just got new npc vars.");
-end);
-npcspawner.recieve("NPCSpawner Weps", function(data)
-    npcspawner.weps = data;
-    npcspawner.debug("Just got new weapon vars.");
-end);
 npcspawner.recieve("NPCSpawner Config", function(data)
     npcspawner.config = data;
     npcspawner.debug("Just got new config vars.");

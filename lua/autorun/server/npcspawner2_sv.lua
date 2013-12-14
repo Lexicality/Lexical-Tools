@@ -7,11 +7,6 @@ AddCSLuaFile("autorun/npcspawner2.lua");
 AddCSLuaFile("autorun/client/npcspawner2_cl.lua");
 
 local datapath = "npcspawner2"
---[[
-if (not file.IsDir(datapath, "DATA")) then
-    file.CreateDir(datapath, "DATA");
-end
---]]
 if (file.IsDir(datapath, "DATA")) then
     local function readfile(fname)
         fname = datapath .. "/" .. fname .. ".txt";
@@ -22,10 +17,6 @@ if (file.IsDir(datapath, "DATA")) then
             end
         end
     end
-
-    npcspawner.npcs = readfile("npcs") or npcspawner.npcs;
-    npcspawner.weps = readfile("weps") or npcspawner.weps;
-
     local cfg = readfile("config");
     if (cfg) then
         for key, value in pairs(cfg) do
@@ -37,8 +28,6 @@ if (file.IsDir(datapath, "DATA")) then
     end
 end
 
-util.AddNetworkString("NPCSpawner NPCs");
-util.AddNetworkString("NPCSpawner Weps");
 util.AddNetworkString("NPCSpawner Config");
 
 for k, v in pairs(npcspawner.config) do
@@ -56,8 +45,6 @@ concommand.Add("npcspawner_config", function(ply, _, args)
 end);
 
 hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", function(ply)
-    npcspawner.send("NPCSpawner NPCs",   npcspawner.npcs,   ply);
-    npcspawner.send("NPCSpawner Weps",   npcspawner.weps,   ply);
     npcspawner.send("NPCSpawner Config", npcspawner.config, ply);
 end);
 
@@ -65,24 +52,3 @@ if (not ConVarExists("sbox_maxspawnplatforms")) then
     CreateConVar("sbox_maxspawnplatforms", 3);
 end
 cleanup.Register("sent_spawnplatform");
-
--- This will allow admins to edit the npc/weapon lists in-game, when I add that feature.
---[[
-npcspawner.recieve("NPCSpawner NPCs", function(data, ply)
-    if (not ply:IsAdmin()) then return false end -- Someone might have fucked up the accept stream hook.
-    if (table.Count(data) < 1) then return false end -- There must be data
-    npcspawner.npcs = data;
-    file.Write      ("npcspawner/npcs.txt", util.TableToKeyValues(npcspawner.npcs));
-    npcspawner.debug("Just got new npc vars from", ply);
-    npcspawner.send ("NPCSpawner NPCs", npcspawner.npcs);
-end);
-
-npcspawner.recieve("NPCSpawner Weps", function(data, ply)
-    if (not ply:IsAdmin()) then return false end -- Someone might have fucked up the accept stream hook.
-    if (table.Count(data) < 1) then return false end -- There must be data
-    npcspawner.weps = data;
-    file.Write      ("npcspawner/weps.txt", util.TableToKeyValues(npcspawner.weps));
-    npcspawner.debug("Just got new weapon vars from", ply);
-    npcspawner.send ("NPCSpawner Weps", npcspawner.weps);
-end);
---]]

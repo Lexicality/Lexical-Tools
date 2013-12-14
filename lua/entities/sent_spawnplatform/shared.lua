@@ -13,7 +13,9 @@ ENT.Spawnable      = false;
 ENT.AdminSpawnable = true;
 
 local function convert( text )
-    return npcspawner.npcs[text] or npcspawner.weps[text] or text;
+    -- return npcspawner.npcs[text] or npcspawner.weps[text] or text;
+    -- TODO: Look in the "NPC" and "NPCUsableWeapons" lists for the names
+    return text;
 end
 
 function ENT:UpdateLabel()
