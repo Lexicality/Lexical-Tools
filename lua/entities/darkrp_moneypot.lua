@@ -29,8 +29,8 @@ function ENT:IsMoneyEntity(ent)
 end
 
 function ENT:SpawnMoneyEntity(amount)
-	local cash = ents.Create("spawned_money");
-	cash.dt.amount = amount;
+    local cash = ents.Create("spawned_money");
+    cash.dt.amount = amount;
     return cash;
 end
 
@@ -46,15 +46,15 @@ end
 
 function MakeMoneyPot(ply, pos, angles, model, data)
     ply = IsValid(ply) and ply or nil;
-	if (ply and not ply:CheckLimit("moneypots")) then
-		return false;
-	end
+    if (ply and not ply:CheckLimit("moneypots")) then
+        return false;
+    end
     data = data or {
         Pos   = pos,
         Angle = angles,
     };
     data.Class = "darkrp_moneypot";
-	local box  = duplicator.GenericDuplicatorFunction(ply, data);
+    local box  = duplicator.GenericDuplicatorFunction(ply, data);
     if (not box) then
         -- uh oh
         -- Run the various duplicator tests to see what's wrong
@@ -77,7 +77,7 @@ function MakeMoneyPot(ply, pos, angles, model, data)
         box:SetPlayer(ply);
         ply:AddCount("moneypots", box);
     end
-	return box;
+    return box;
 end
 
 duplicator.RegisterEntityClass("darkrp_moneypot",    MakeMoneyPot, "Pos", "Angle", "Model", "Data");

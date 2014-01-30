@@ -48,12 +48,12 @@ end
 --------------------------------------
 
 function ENT:Initialize()
-	self:SetModel("models/props_lab/powerbox02b.mdl")
-	self:PhysicsInit(SOLID_VPHYSICS)
-	self:SetMoveType(MOVETYPE_VPHYSICS)
-	self:SetSolid(SOLID_VPHYSICS)
-	self:SetUseType(SIMPLE_USE)
-	self:UpdateOverlay()
+    self:SetModel("models/props_lab/powerbox02b.mdl")
+    self:PhysicsInit(SOLID_VPHYSICS)
+    self:SetMoveType(MOVETYPE_VPHYSICS)
+    self:SetSolid(SOLID_VPHYSICS)
+    self:SetUseType(SIMPLE_USE)
+    self:UpdateOverlay()
     if (WireLib) then
         WireLib.CreateSpecialInputs(self, {
             "SpawnAll",
@@ -65,7 +65,7 @@ function ENT:Initialize()
             "Updated"
         });
     end
-	local phys = self:GetPhysicsObject()
+    local phys = self:GetPhysicsObject()
     if (not phys:IsValid()) then
         local mdl = self:GetModel()
         self:Remove();
@@ -87,33 +87,33 @@ function ENT:UpdateWireOutputs(amount)
 end
 
 function ENT:StartTouch(ent)
-	if (self:IsMoneyEntity(ent) and (ent.MoneyPotPause or 0) < CurTime()) then
+    if (self:IsMoneyEntity(ent) and (ent.MoneyPotPause or 0) < CurTime()) then
         ent.MoneyPotPause = CurTime() + 100 -- Fix a stupid glitch
-		self:SetDTInt(0, self:GetDTInt(0) + ent.dt.amount);
-		self:UpdateOverlay();
+        self:SetDTInt(0, self:GetDTInt(0) + ent.dt.amount);
+        self:UpdateOverlay();
         self:UpdateWireOutputs(ent.dt.amount);
-		ent:Remove();
-	end
+        ent:Remove();
+    end
 end
 
 local spos = Vector(0, 0, 17);
 function ENT:SpawnAmount(amount)
-	amount = math.Clamp(amount, 0, self:GetDTInt(0));
-	if (amount == 0) then return; end
+    amount = math.Clamp(amount, 0, self:GetDTInt(0));
+    if (amount == 0) then return; end
     -- Prevent people spawning too many
     if (self:GetNumMoneyEntities() >= 50) then return; end
-	
-	local cash = self:SpawnMoneyEntity(amount);
+    
+    local cash = self:SpawnMoneyEntity(amount);
     if (cash == NULL) then
         error("Moneypot (" .. self.ClassName .. ") unable to create cash entity!");
     end
-	cash:SetPos(self:LocalToWorld(spos));
-	cash:Spawn();
-	cash:Activate();
-	cash.MoneyPotPause = CurTime() + 5;
-	self:SetDTInt(0, self:GetDTInt(0) - amount);
+    cash:SetPos(self:LocalToWorld(spos));
+    cash:Spawn();
+    cash:Activate();
+    cash.MoneyPotPause = CurTime() + 5;
+    self:SetDTInt(0, self:GetDTInt(0) - amount);
     self:UpdateWireOutputs(-amount);
-	self:UpdateOverlay()
+    self:UpdateOverlay()
 end
 
 -- For calling from lua (ie so /givemoney can give direct to it)
@@ -124,12 +124,12 @@ function ENT:AddMoney(amount)
 end
 
 function ENT:UpdateOverlay()
-	self:SetOverlayText("- Money Pot -\nAmount: $" .. self:GetDTInt(0));
+    self:SetOverlayText("- Money Pot -\nAmount: $" .. self:GetDTInt(0));
 end
 
 function ENT:DelayedSpawn(amount)
-	amount = math.Clamp(amount, 0, self:GetDTInt(0));
-	if (amount == 0) then return; end
+    amount = math.Clamp(amount, 0, self:GetDTInt(0));
+    if (amount == 0) then return; end
     if (self.DoSpawn) then
         self.DoSpawn = self.DoSpawn + amount;
     else
@@ -142,7 +142,7 @@ end
 ENT.DoSpawn = false;
 ENT.SpawnTime = 0;
 function ENT:Think()
-	BaseClass.Think(self);
+    BaseClass.Think(self);
     if (not self.DoSpawn) then
         return;
     end
@@ -153,23 +153,23 @@ function ENT:Think()
         return;
     end
 
-	local effectdata = EffectData();
-	effectdata:SetOrigin(self:GetPos());
-	effectdata:SetMagnitude(1);
-	effectdata:SetScale(1);
-	effectdata:SetRadius(2);
-	util.Effect("Sparks", effectdata);
+    local effectdata = EffectData();
+    effectdata:SetOrigin(self:GetPos());
+    effectdata:SetMagnitude(1);
+    effectdata:SetScale(1);
+    effectdata:SetRadius(2);
+    util.Effect("Sparks", effectdata);
 end
 
 function ENT:OnRemove()
-	self:SpawnAmount(self:GetDTInt(0))
-	BaseClass.OnRemove(self);
+    self:SpawnAmount(self:GetDTInt(0))
+    BaseClass.OnRemove(self);
 end
 
 function ENT:TriggerInput(key, value)
-	if (key == "SpawnAll" and value ~= 0) then
-		self:Use();
-	elseif (key == "SpawnAmount"  and value ~= 0) then
+    if (key == "SpawnAll" and value ~= 0) then
+        self:Use();
+    elseif (key == "SpawnAmount"  and value ~= 0) then
         self:DelayedSpawn(value);
-	end
+    end
 end
