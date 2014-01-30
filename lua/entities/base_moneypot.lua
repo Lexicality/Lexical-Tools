@@ -41,6 +41,9 @@ function ENT:GetNumMoneyEntities()
     return math.huge;
 end
 
+function ENT:InvalidateMoneyEntity(ent)
+end
+
 --------------------------------------
 --                                  --
 --              / END               --
@@ -93,6 +96,7 @@ function ENT:StartTouch(ent)
         self:UpdateOverlay();
         self:UpdateWireOutputs(ent.dt.amount);
         ent:Remove();
+        self:InvalidateMoneyEntity(ent);
     end
 end
 
