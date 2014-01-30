@@ -25,7 +25,7 @@ if (CLIENT) then return; end
 --------------------------------------
 
 function ENT:IsMoneyEntity(ent)
-    return ent:GetClass() == "spawned_money" and not ent.hasMerged;
+    return ent:GetClass() == "spawned_money";
 end
 
 function ENT:SpawnMoneyEntity(amount)
@@ -42,6 +42,9 @@ function ENT:InvalidateMoneyEntity(ent)
     ent.hasMerged = true;
 end
 
+function ENT:IsMoneyEntityInvalid(ent)
+    return ent.hasMerged or ent.USED;
+end
 --------------------------------------
 --                                  --
 --        Duplicator support        --
