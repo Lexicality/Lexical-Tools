@@ -44,6 +44,10 @@ end
 function ENT:InvalidateMoneyEntity(ent)
 end
 
+function ENT:IsMoneyEntityInvalid(ent)
+    return false
+end
+
 --------------------------------------
 --                                  --
 --              / END               --
@@ -90,7 +94,7 @@ function ENT:UpdateWireOutputs(amount)
 end
 
 function ENT:StartTouch(ent)
-    if (self:IsMoneyEntity(ent) and (ent.MoneyPotPause or 0) < CurTime()) then
+    if (self:IsMoneyEntity(ent) and not self:IsMoneyEntityInvalid(ent) and (ent.MoneyPotPause or 0) < CurTime()) then
         ent.MoneyPotPause = CurTime() + 100 -- Fix a stupid glitch
         self:SetDTInt(0, self:GetDTInt(0) + ent.dt.amount);
         self:UpdateOverlay();
