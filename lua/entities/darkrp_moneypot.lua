@@ -25,7 +25,7 @@ if (CLIENT) then return; end
 --------------------------------------
 
 function ENT:IsMoneyEntity(ent)
-    return ent:GetClass() == "spawned_money";
+    return ent:GetClass() == "spawned_money" and not ent.hasMerged;
 end
 
 function ENT:SpawnMoneyEntity(amount)
@@ -36,6 +36,10 @@ end
 
 function ENT:GetNumMoneyEntities()
     return #ents.FindByClass("spawned_money");
+end
+
+function ENT:InvalidateMoneyEntity(ent)
+    ent.hasMerged = true;
 end
 
 --------------------------------------
