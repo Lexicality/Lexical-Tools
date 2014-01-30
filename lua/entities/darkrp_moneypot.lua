@@ -40,6 +40,7 @@ end
 
 function ENT:InvalidateMoneyEntity(ent)
     ent.hasMerged = true;
+    ent.USED = true;
 end
 
 function ENT:IsMoneyEntityInvalid(ent)
