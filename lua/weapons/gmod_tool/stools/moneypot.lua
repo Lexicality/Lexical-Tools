@@ -1,6 +1,6 @@
 --[[
     Moneypot STool
-    Copyright (c) 2010-2012 Lex Robinson
+    Copyright (c) 2010-2014 Lex Robinson
     This code is freely available under the MIT License
 --]]
 
