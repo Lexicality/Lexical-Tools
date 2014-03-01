@@ -42,10 +42,11 @@ function ENT:GetNumMoneyEntities()
 end
 
 function ENT:InvalidateMoneyEntity(ent)
+    ent._InvalidMoney = true;
 end
 
 function ENT:IsMoneyEntityInvalid(ent)
-    return false
+    return ent._InvalidMoney == true;
 end
 
 --------------------------------------
