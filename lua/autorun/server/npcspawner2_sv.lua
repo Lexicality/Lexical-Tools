@@ -27,6 +27,13 @@ if (file.IsDir(datapath, "DATA")) then
         end
     end
 end
+local function writefile(fname, table)
+    if (not file.IsDir(datapath, "DATA")) then
+        file.CreateDir(datapath, "DATA");
+    end
+    fname = datapath .. "/" .. fname .. ".txt";
+    file.Write(fname, util.TableToJSON(table));
+end
 
 util.AddNetworkString("NPCSpawner Config");
 
@@ -42,6 +49,7 @@ concommand.Add("npcspawner_config", function(ply, _, args)
     umsg.String(var);
     umsg.Float(val);
     umsg.End();
+    writefile("config", npcspawner.config);
 end);
 
 hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", function(ply)
