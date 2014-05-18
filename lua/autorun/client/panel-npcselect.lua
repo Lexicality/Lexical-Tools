@@ -11,9 +11,9 @@ function PANEL:Init()
 	ctrl:AddColumn( "#npcs" );
 	ctrl:AddColumn( "#category" );
 
-	for _, data in pairs( npcs ) do
+	for nicename, data in pairs( npcs ) do
 		local line = ctrl:AddLine( data.Name, data.Category )
-		line.nicename = data.Class;
+		line.nicename = nicename;
 	end
 
 	ctrl:SetTall( 150 );
