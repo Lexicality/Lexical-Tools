@@ -9,19 +9,20 @@ function PANEL:Init()
 	local ctrl = vgui.Create( "DListView" );
 	ctrl:SetMultiSelect( false );
 	ctrl:AddColumn( "#npcs" );
+	ctrl:AddColumn( "#category" );
 
-	for nicename, data in pairs( npcs ) do
-		local line = ctrl:AddLine( data.Name )
-		line.nicename = nicename;
+	for _, data in pairs( npcs ) do
+		local line = ctrl:AddLine( data.Name, data.Category )
+		line.nicename = data.Class;
 	end
 
 	ctrl:SetTall( 150 );
-	ctrl:SortByColumn( 1, false )
+	ctrl:SortByColumn( 2, false )
 
 	ctrl.OnRowSelected = function(ctrl, LineID, Line)
 		RunConsoleCommand( self:GetConVar(), Line.nicename )
 	end
-	
+
 	ctrl:SetParent( self )
 	ctrl:Dock(FILL);
 	self:SetTall(150);
