@@ -27,52 +27,20 @@ AddCSLuaFile("shared.lua");
 include('shared.lua');
 local model1 = Model("models/props_c17/streetsign004e.mdl");
 local model2 = Model("models/props_c17/streetsign004f.mdl");
-
-local complextypes = {
-        npc_citizen_medic = {
-			class   = "npc_citizen",
-			kvs     = {
-					citizentype = CT_REBEL,
-					spawnflags  = 131072
-			}
-        },
-        npc_citizen_rebel = {
-			class = "npc_citizen",
-			kvs = {
-					citizentype = CT_REBEL
-			}
-        },
-        npc_citizen_dt = {
-			class = "npc_citizen",
-			kvs = {
-					citizentype = CT_DOWNTRODDEN
-			}
-        },
-        npc_citizen = {
-			class = "npc_citizen",
-			kvs = {
-					citizentype = CT_DEFAULT
-			}
-        },
-		npc_citizen_refugee = {
-			class = "npc_citizen",
-			kvs = {
-					citizentype = CT_REFUGEE
-			}
-		},
-        npc_combine_e = {
-			class = "npc_combine_s",
-			kvs = {
-					model = "models/combine_super_soldier.mdl"
-			}
-        },
-        npc_combine_p = {
-			class = "npc_combine_s",
-			kvs = {
-					model = "models/combine_soldier_prisonguard.mdl"
-			}
-        }
-};
+--[[
+Medic:
+		SpawnFlags	=	131072
+		Class	=	npc_citizen
+		Category	=	Humans + Resistance
+		Name	=	Medic
+		Weapons:
+				1	=	weapon_pistol
+				2	=	weapon_smg1
+				3	=	weapon_ar2
+				4	=	weapon_shotgun
+		KeyValues:
+				citizentype	=	3
+]]
 local weaponsets = {
 	weapon_rebel	= {"weapon_pistol",  "weapon_smg1",  "weapon_ar2",  "weapon_shotgun"},
 	weapon_combine	= {"weapon_smg1",  "weapon_ar2",  "weapon_shotgun"},
@@ -351,59 +319,92 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Ang
 
 end
 
-local function onremove(npc, platform)
-		if (IsValid(platform)) then
-			platform:NPCKilled(npc);
-		end
-	end
-local ang = Angle(0, 0, 0);
-function ENT:SpawnOne()
-	local class, kvs = self.k_npc, {};
-	npcspawner.debug(self,  "is spawning a",  class);
-	local cplex = complextypes[class]
-	if (cplex) then
-		class	= cplex.class;
-		kvs 	= cplex.kvs;
-	end
-	local wep = (weaponsets[self.k_weapon]) and table.Random(weaponsets[self.k_weapon]) or self.k_weapon;
-	if (npcspawner.config.callhooks == 1) then
-		if (IsValid(self.Ply)) then
-			if (not gamemode.Call("PlayerSpawnNPC", self.Ply, class, (wep ~= "weapon_none") and wep or nil)) then
-				self.LastSpawn = CurTime() + 5; -- Disable spawning for 5 seconds so the user isn't spammed
-				npcspawner.debug(self.Ply,  "has failed the PlayerSpawnNPC hook.");
-				return false;
-			end
-		end
-	end
+local function legacySpawn(player, position, normal, class, weapon, angles, offset)
 	local npc = ents.Create(class);
 	if (not IsValid(npc)) then
+		return npc, true;
+	end
+	npc:SetPos(positionb + normal * offset);
+	npc:SetAngles(angles);
+	if (weapon ~= "none") then
+		npc:SetKeyValue("additionalequipment", weapon);
+	end
+	return npc;
+end
+
+local function rand()
+	return math.random() * 2 - 1;
+end
+
+local function onremove(npc, platform)
+	if (IsValid(platform)) then
+		platform:NPCKilled(npc);
+	end
+end
+local angles = Angle(0, 0, 0);
+function ENT:SpawnOne()
+	local class = self.k_npc;
+	if ( npcspawner.legacy[ class ] ) then
+		class = npcspawner.legacy[ class ];
+	end
+	local npcdata = list.Get('NPC')[ class ];
+	if ( not npcdata and not npcspawner.config.allowdodgy ) then
+		-- TODO: Error? Message?
+		npcspawner.debug(self, "tried to spawn an invalid NPC", class);
 		self:TurnOff();
-		error("Failed to create a NPC of type '"..class.."'!");
+		return false;
 	end
-	local pos = VectorRand() * self.k_spawnradius;
-	pos.z = self.k_spawnheight;
-	npcspawner.debug2("Offset:",  pos);
-	npc:SetPos(self:GetPos() + pos);
-	--[ Test rotational shit
-	ang.y = pos:Angle().y
-	npcspawner.debug2("Angles:",  ang);
-	npc:SetAngles(ang);
-	--]]
-	npcspawner.debug2("Weapon:", wep);
-	if (wep ~= "weapon_none") then
-		npc:SetKeyValue("additionalequipment", wep);
+	local weapon = self.k_weapon;
+	npcspawner.debug(self, "is spawning a", class, "with a", weapon);
+	if (weapon == 'weapon_none' or weapon == 'none') then
+		weapon = nil;
+	elseif (weaponsets[ weapon ]) then
+		weapon = table.Random(weaponsets[ weapon ]);
 	end
-	local debugstr = "";
-	for k, v in pairs(kvs) do
-		npc:SetKeyValue(k, v);
-		debugstr = debugstr.."\tKey = "..k.."; Value = "..v.."\n";
+	if (npcspawner.config.callhooks == 1 and IsValid(self.Ply)) then
+		if (not gamemode.Call("PlayerSpawnNPC", self.Ply, class, weapon)) then
+			self.LastSpawn = CurTime() + 5; -- Disable spawning for 5 seconds so the user isn't spammed
+			npcspawner.debug(self.Ply,  "has failed the PlayerSpawnNPC hook.");
+			return false;
+		end
 	end
-	npcspawner.debug2("Keyvalues:\n", debugstr);
+	local position = (self:GetUp() * rand() + self:GetForward() * rand() ) * self.k_spawnradius;
+	local offset = self.k_spawnheight;
+	npcspawner.debug2("Offset:",  position);
+	debugoverlay.Line(self:GetPos(), self:GetPos() + position, 10, color_white, true );
+	angles.y = position:Angle().y
+	debugoverlay.Axis(self:GetPos() + position, angles, 10, 10, true);
+	npcspawner.debug2("Angles:",  angles);
+	position = self:GetPos() + position;
+	local normal = self:GetRight() * -1;
+	debugoverlay.Line(position, position + normal * offset, 10, Color(255, 255, 0), true );
+
+	local npc, isError;
+	if (npcdata) then
+		npc = InternalSpawnNPC(self.Ply, position, normal, class, weapon, angles, offset);
+	else
+		npc, isError = legacySpawn(self.Ply, position, normal, class, weapon, angles, offset);
+	end
+
+	if (not IsValid(npc)) then
+		self.LastSpawn = CurTime() + 1; -- Disable spawning for a second
+		npcspawner.debug( self, "failed to create npc of type", class );
+		if (isError) then
+			self:TurnOff();
+			error("Failed to create a NPC of type '"..class.."'!");
+		end
+		return false;
+	end
+
+	debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(255,0,0), true);
+	timer.Simple(0.1, function()
+		debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(0,255,0), true);
+	end)
+
 	--
 	local squad = (self.k_customsquads == 1) and "squad"..self.k_squadoverride or tostring(self);
 	npcspawner.debug2("Squad:", squad);
 	npc:SetKeyValue("squadname", squad);
-	npc:Spawn();
 	local hp = npc:GetMaxHealth() * self.k_healthmul;
 	npcspawner.debug2("Health:", hp);
 	npc:SetMaxHealth(hp);
@@ -418,6 +419,7 @@ function ENT:SpawnOne()
 	if (npcspawner.config.callhooks == 1)then
 		if (IsValid(self.Ply)) then
 			gamemode.Call("PlayerSpawnedNPC", self.Ply, npc);
+			debugoverlay.Cross(npc:GetPos(), 10, 10, color_white, true);
 		end
 	end
 	self.NPCs[npc] = npc;
