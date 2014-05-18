@@ -220,7 +220,7 @@ end
 -- gmod v14.04.19
 -- garrysmod\gamemodes\sandbox\gamemode\commands.lua:288
 --
-local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment )
+local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Angles, Offset )
 
 	local NPCList = list.Get( "NPC" )
 	local NPCData = NPCList[ Class ]
@@ -258,7 +258,7 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment )
 	--
 	-- Offset the position
 	--
-	local Offset = NPCData.Offset or 32
+	Offset = NPCData.Offset or Offset or 32
 	Position = Position + Normal * Offset
 
 
@@ -269,7 +269,8 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment )
 	NPC:SetPos( Position )
 
 	-- Rotate to face player (expected behaviour)
-	local Angles = Angle( 0, 0, 0 )
+	if (not Angles) then
+		Angles = Angle( 0, 0, 0 )
 
 		if ( IsValid( Player ) ) then
 			Angles = Player:GetAngles()
@@ -278,6 +279,7 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment )
 		Angles.pitch = 0
 		Angles.roll = 0
 		Angles.yaw = Angles.yaw + 180
+	end
 
 	if ( NPCData.Rotate ) then Angles = Angles + NPCData.Rotate end
 
