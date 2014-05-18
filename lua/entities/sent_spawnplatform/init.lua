@@ -360,7 +360,7 @@ function ENT:SpawnOne()
 		weapon = nil;
 	elseif (weaponsets[ weapon ]) then
 		weapon = table.Random(weaponsets[ weapon ]);
-	elseif (npcdata and (not weapon or weapon == '' or weapon == 'weapon_default')) then
+	elseif (npcdata and npcdata.Weapons and (not weapon or weapon == '' or weapon == 'weapon_default')) then
 		weapon = table.Random(npcdata.Weapons);
 	end
 	if (npcspawner.config.callhooks == 1 and IsValid(self.Ply)) then
