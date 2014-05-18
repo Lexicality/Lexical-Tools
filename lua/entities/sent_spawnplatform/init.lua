@@ -227,27 +227,27 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment )
 
 	-- Don't let them spawn this entity if it isn't in our NPC Spawn list.
 	-- We don't want them spawning any entity they like!
-	if ( !NPCData ) then
+	if ( not NPCData ) then
 		if ( IsValid( Player ) ) then
 			Player:SendLua( "Derma_Message( \"Sorry! You can't spawn that NPC!\" )" )
 		end
 	return end
 
-	if ( NPCData.AdminOnly && !Player:IsAdmin() ) then return end
+	if ( NPCData.AdminOnly and not Player:IsAdmin() ) then return end
 
 	local bDropToFloor = false
 
 	--
 	-- This NPC has to be spawned on a ceiling ( Barnacle )
 	--
-	if ( NPCData.OnCeiling && Vector( 0, 0, -1 ):Dot( Normal ) < 0.95 ) then
+	if ( NPCData.OnCeiling and Vector( 0, 0, -1 ):Dot( Normal ) < 0.95 ) then
 		return nil
 	end
 
 	--
 	-- This NPC has to be spawned on a floor ( Turrets )
 	--
-	if ( NPCData.OnFloor && Vector( 0, 0, 1 ):Dot( Normal ) < 0.95 ) then
+	if ( NPCData.OnFloor and Vector( 0, 0, 1 ):Dot( Normal ) < 0.95 ) then
 		return nil
 	else
 		bDropToFloor = true
@@ -264,7 +264,7 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment )
 
 	-- Create NPC
 	local NPC = ents.Create( NPCData.Class )
-	if ( !IsValid( NPC ) ) then return end
+	if ( not IsValid( NPC ) ) then return end
 
 	NPC:SetPos( Position )
 
@@ -331,7 +331,7 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment )
 		if v.class == Equipment then valid = true break end
 	end
 
-	if ( Equipment && Equipment != "none" && valid ) then
+	if ( Equipment and Equipment ~= "none" and valid ) then
 		NPC:SetKeyValue( "additionalequipment", Equipment )
 		NPC.Equipment = Equipment
 	end
@@ -341,7 +341,7 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment )
 	NPC:Spawn()
 	NPC:Activate()
 
-	if ( bDropToFloor && !NPCData.OnCeiling ) then
+	if ( bDropToFloor and not NPCData.OnCeiling ) then
 		NPC:DropToFloor()
 	end
 
