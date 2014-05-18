@@ -11,7 +11,9 @@
 		"LICENSE",
 		"*.mkdn",
 		".git*",
+		"*.sublime*",
 		"*.jpg",
-		"*.sublime*"
+		"*.psd",
+		"*.png"
 	]
 }
