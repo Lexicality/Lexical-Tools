@@ -4,12 +4,12 @@
     This code is freely available under the MIT License
 --]]
 
-function printd(...)
+local function printd(...)
     if (GetConVarNumber("developer") > 0) then
         print(...)
     end
 end
-function printd2(...)
+local function printd2(...)
     if (GetConVarNumber("developer") > 1) then
         print(...)
     end
