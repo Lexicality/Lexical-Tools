@@ -18,6 +18,9 @@ Features
 
 Changelog
 ---------
+* __2.2.1__:
+  - Fixed some global space polution
+  - Platforms are frozen when spawned (configurable)
 * __2.2__:
   - Improve the tool menu
   - Changed the spawning system to GM13's, allowing SNPCs and so forth
