@@ -1,4 +1,4 @@
-NPC Spawn Platforms 2.1
+NPC Spawn Platforms 2.2
 =======================
 About
 -----

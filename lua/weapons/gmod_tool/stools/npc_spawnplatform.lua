@@ -1,5 +1,5 @@
 --[[
-    NPC Spawn Platforms V2.1
+    NPC Spawn Platforms V2.2
     Copyright (c) 2011-2012 Lex Robinson
     This code is freely available under the MIT License
 --]]
@@ -93,7 +93,7 @@ end
 
 function TOOL:SetKVs(ent)
     for key in pairs(cvars) do
-        -- Things that've been 
+        -- Things that've been
         ent:SetKeyValue(key, self:GetClientInfo(key));
     end
 end
@@ -106,7 +106,7 @@ end
 AddToolLanguage( "name", "NPC Spawn Platforms 2.2" );
 AddToolLanguage( "desc", "Create a platform that will constantly make NPCs." );
 AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data." );
--- Controls 
+-- Controls
 AddToolLanguage( "npc",           "NPC" );
 AddToolLanguage( "weapon",        "Weapon" );
 AddToolLanguage( "skill",         "Weapon Skill" );
