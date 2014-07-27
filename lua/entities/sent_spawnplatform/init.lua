@@ -399,9 +399,9 @@ function ENT:SpawnOne()
 	end
 
 	debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(255,0,0), true);
-	timer.Simple(0.1, function()
+	timer.Simple(0.1, function() if (IsValid(npc)) then
 		debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(0,255,0), true);
-	end)
+	end end)
 
 	--
 	local squad = (self.k_customsquads == 1) and "squad"..self.k_squadoverride or tostring(self);
