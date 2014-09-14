@@ -449,6 +449,7 @@ function ENT:SpawnOne()
 end
 
 function ENT:NPCKilled(npc)
+	npcspawner.debug2("NPC Killed:", npc);
 	self.NPCs[npc] = nil;
 	self.Spawned = self.Spawned - 1;
 	if (Wire_TriggerOutput) then
