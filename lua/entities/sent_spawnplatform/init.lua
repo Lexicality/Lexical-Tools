@@ -411,7 +411,9 @@ function ENT:SpawnOne()
 	npcspawner.debug2("Health:", hp);
 	npc:SetMaxHealth(hp);
 	npc:SetHealth(hp);
-	npc:SetCurrentWeaponProficiency(self.k_skill);
+	if (npc.SetCurrentWeaponProficiency) then
+		npc:SetCurrentWeaponProficiency(self.k_skill);
+	end
 	if (self.k_nocollide == 1) then
 		npcspawner.debug2("Nocollided.");
 		npc:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE_DEBRIS); -- Collides with everything except interactive debris or debris
