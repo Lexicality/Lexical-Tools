@@ -29,6 +29,9 @@ function ENT:IsMoneyEntity(ent)
 end
 
 function ENT:SpawnMoneyEntity(amount)
+    if (amount <= 0) then
+        error("Attempt to spawn invalid money!");
+    end
     local cash = ents.Create("spawned_money");
     cash.dt.amount = amount;
     return cash;

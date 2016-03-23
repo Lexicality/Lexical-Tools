@@ -119,7 +119,7 @@ end
 
 local spos = Vector(0, 0, 17);
 function ENT:SpawnAmount(amount)
-    amount = math.Clamp(amount, 0, self:GetMoney());
+    amount = math.Clamp(math.floor(amount), 0, self:GetMoney());
     if (amount == 0) then return; end
     -- Prevent people spawning too many
     if (self:GetNumMoneyEntities() >= 50) then return; end
@@ -190,7 +190,7 @@ end
 function ENT:TriggerInput(key, value)
     if (key == "SpawnAll" and value ~= 0) then
         self:SpawnAll(false);
-    elseif (key == "SpawnAmount"  and value ~= 0) then
+    elseif (key == "SpawnAmount" and value > 0) then
         self:DelayedSpawn(value);
     end
 end
