@@ -82,8 +82,12 @@ function ENT:Initialize()
     phys:Wake()
 end
 
-function ENT:Use(activator)
+function ENT:SpawnAll()
     self:DelayedSpawn(self:GetDTInt(0));
+end
+
+function ENT:Use(activator)
+    self:SpawnAll();
 end
 
 function ENT:UpdateWireOutputs(amount)
@@ -112,7 +116,7 @@ function ENT:SpawnAmount(amount)
     if (amount == 0) then return; end
     -- Prevent people spawning too many
     if (self:GetNumMoneyEntities() >= 50) then return; end
-    
+
     local cash = self:SpawnMoneyEntity(amount);
     if (cash == NULL) then
         error("Moneypot (" .. self.ClassName .. ") unable to create cash entity!");
@@ -178,7 +182,7 @@ end
 
 function ENT:TriggerInput(key, value)
     if (key == "SpawnAll" and value ~= 0) then
-        self:Use();
+        self:SpawnAll();
     elseif (key == "SpawnAmount"  and value ~= 0) then
         self:DelayedSpawn(value);
     end
