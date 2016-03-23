@@ -2,11 +2,11 @@
 	"title":   "Lexical Tools",
 	"author":  "Lex Robinson",
 	"contact": "lex@lex.me.uk",
-	"updated": "Mar '14",
+	"updated": "Mar '16",
 	"license": "MIT",
 	"type":    "tool",
 	"tags":    ["build"],
-	"ignore": 
+	"ignore":
 	[
 		"LICENSE",
 		"*.mkdn",
