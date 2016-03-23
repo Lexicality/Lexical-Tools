@@ -21,6 +21,10 @@ else
 end
 DEFINE_BASECLASS(BaseClass);
 
+function ENT:SetupDataTables()
+    self:NetworkVar("Int", 0, "Money");
+end
+
 if (CLIENT) then return; end
 
 --------------------------------------
@@ -82,17 +86,22 @@ function ENT:Initialize()
     phys:Wake()
 end
 
-function ENT:SpawnAll()
-    self:DelayedSpawn(self:GetDTInt(0));
+function ENT:SpawnAll(immediate)
+    local amount = self:GetMoney();
+    if (immediate) then
+        self:SpawnAmount(amount)
+    else
+        self:DelayedSpawn(amount);
+    end
 end
 
 function ENT:Use(activator)
-    self:SpawnAll();
+    self:SpawnAll(false);
 end
 
 function ENT:UpdateWireOutputs(amount)
     if (not Wire_TriggerOutput) then return; end
-    Wire_TriggerOutput(self, "StoredAmount", self:GetDTInt(0));
+    Wire_TriggerOutput(self, "StoredAmount", self:GetMoney());
     Wire_TriggerOutput(self, "LastAmount", amount);
     Wire_TriggerOutput(self, "Updated", 1);
     Wire_TriggerOutput(self, "Updated", 0);
@@ -104,15 +113,13 @@ function ENT:StartTouch(ent)
         ent.MoneyPotPause = CurTime() + 100
         local amt = ent.dt.amount;
         ent:Remove();
-        self:SetDTInt(0, self:GetDTInt(0) + amt);
-        self:UpdateOverlay();
-        self:UpdateWireOutputs(amt);
+        self:AddMoney(amt);
     end
 end
 
 local spos = Vector(0, 0, 17);
 function ENT:SpawnAmount(amount)
-    amount = math.Clamp(amount, 0, self:GetDTInt(0));
+    amount = math.Clamp(amount, 0, self:GetMoney());
     if (amount == 0) then return; end
     -- Prevent people spawning too many
     if (self:GetNumMoneyEntities() >= 50) then return; end
@@ -121,28 +128,28 @@ function ENT:SpawnAmount(amount)
     if (cash == NULL) then
         error("Moneypot (" .. self.ClassName .. ") unable to create cash entity!");
     end
+    -- Remove our money before the new money exists
+    self:AddMoney(-amount);
+
     cash:SetPos(self:LocalToWorld(spos));
     cash:Spawn();
     cash:Activate();
     cash.MoneyPotPause = CurTime() + 5;
-    self:SetDTInt(0, self:GetDTInt(0) - amount);
-    self:UpdateWireOutputs(-amount);
-    self:UpdateOverlay()
 end
 
 -- For calling from lua (ie so /givemoney can give direct to it)
 function ENT:AddMoney(amount)
-    self:SetDTInt(0, self:GetDTInt(0) + amount);
+    self:SetMoney(self:GetMoney() + amount);
     self:UpdateOverlay();
     self:UpdateWireOutputs(amount);
 end
 
 function ENT:UpdateOverlay()
-    self:SetOverlayText("- Money Pot -\nAmount: $" .. self:GetDTInt(0));
+    self:SetOverlayText("- Money Pot -\nAmount: $" .. self:GetMoney());
 end
 
 function ENT:DelayedSpawn(amount)
-    amount = math.Clamp(amount, 0, self:GetDTInt(0));
+    amount = math.Clamp(amount, 0, self:GetMoney());
     if (amount == 0) then return; end
     if (self.DoSpawn) then
         self.DoSpawn = self.DoSpawn + amount;
@@ -176,13 +183,13 @@ function ENT:Think()
 end
 
 function ENT:OnRemove()
-    self:SpawnAmount(self:GetDTInt(0))
+    self:SpawnAll(true);
     BaseClass.OnRemove(self);
 end
 
 function ENT:TriggerInput(key, value)
     if (key == "SpawnAll" and value ~= 0) then
-        self:SpawnAll();
+        self:SpawnAll(false);
     elseif (key == "SpawnAmount"  and value ~= 0) then
         self:DelayedSpawn(value);
     end
