@@ -6,14 +6,14 @@
 
 --[[ Tool Related Settings ]]--
 TOOL.Category = "Lexical Tools";
-TOOL.Name = "#Fading Doors";
+TOOL.Name     = "#Fading Doors";
 
-TOOL.ClientConVar["key"] = "5"
-TOOL.ClientConVar["toggle"] = "0"
+TOOL.ClientConVar["key"]      = "5"
+TOOL.ClientConVar["toggle"]   = "0"
 TOOL.ClientConVar["reversed"] = "0"
 
 local function checkTrace(tr)
-    return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle());
+	return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle());
 end
 
 if (CLIENT) then
@@ -21,26 +21,27 @@ if (CLIENT) then
 		GAMEMODE:AddNotify("Fading door has been created!", NOTIFY_GENERIC, 10);
 		surface.PlaySound ("ambient/water/drip" .. math.random(1, 4) .. ".wav");
 	end);
+
 	language.Add("Tool_fading_doors_name", "Fading Doors");
 	language.Add("Tool_fading_doors_desc", "Makes anything into a fadable door");
 	language.Add("Tool_fading_doors_0", "Click on something to make it a fading door. Reload to set it back to normal");
 	language.Add("Undone_fading_door", "Undone Fading Door");
-	
+
 	function TOOL.BuildCPanel(panel)
-        panel:CheckBox("Reversed (Starts invisible, becomes solid)", "fading_doors_reversed");
-	    panel:CheckBox("Toggle Active", "fading_doors_toggle");
-        panel:AddControl("Numpad",
-            {
-                Label = "Button",
-                Command = "fading_doors_key"
-            }
-        );
+		panel:CheckBox("Reversed (Starts invisible, becomes solid)", "fading_doors_reversed");
+		panel:CheckBox("Toggle Active", "fading_doors_toggle");
+		panel:AddControl("Numpad",
+			{
+				Label = "Button",
+				Command = "fading_doors_key"
+			}
+		);
 	end
-	
+
 	TOOL.LeftClick = checkTrace;
-	
+
 	return;
-end	
+end
 
 local function fadeActivate(self)
 	if (self.fadeActive) then return; end
@@ -50,11 +51,13 @@ local function fadeActivate(self)
 	self:DrawShadow(false)
 	self:SetNotSolid(true)
 	--self:SetCollisionGroup(COLLISION_GROUP_WORLD)
+
 	local phys = self:GetPhysicsObject();
 	if (IsValid(phys)) then
 		self.fadeMoveable = phys:IsMoveable();
 		phys:EnableMotion(false);
 	end
+
 	if (WireLib) then
 		Wire_TriggerOutput(self,  "FadeActive",  1);
 	end
@@ -123,19 +126,19 @@ end
 numpad.Register("Fading Doors onUp", onUp);
 
 local function doWireInputs(ent)
-    if (not WireLib.AddInputs) then
-        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
-        return;
-    end
-    WireLib.AddInputs(ent, {"Fade"});
+	if (not WireLib.AddInputs) then
+		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
+		return;
+	end
+	WireLib.AddInputs(ent, {"Fade"});
 end
 
 local function doWireOutputs(ent)
-    if (not WireLib.AddOutputs) then
-        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
-        return;
-    end
-    WireLib.AddOutputs(ent, {"FadeActive"}, {"If this entity is currently faded."});
+	if (not WireLib.AddOutputs) then
+		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
+		return;
+	end
+	WireLib.AddOutputs(ent, {"FadeActive"}, {"If this entity is currently faded."});
 end
 
 local function TriggerInput(self, name, value, ...)
@@ -161,6 +164,7 @@ local function PreEntityCopy(self)
 	if (info) then
 		duplicator.StoreEntityModifier(self, "WireDupeInfo", info);
 	end
+
 	if (self.wireSupportPreEntityCopy) then
 		self:wireSupportPreEntityCopy();
 	end
@@ -170,11 +174,12 @@ local function PostEntityPaste(self, ply, ent, ents)
 	if (self.EntityMods and self.EntityMods.WireDupeInfo) then
 		WireLib.ApplyDupeInfo(ply, self, self.EntityMods.WireDupeInfo, function(id) return ents[id]; end);
 	end
+
 	if (self.wireSupportPostEntityPaste) then
 		self:wireSupportPostEntityPaste(ply, ent, ents);
 	end
 end
-	
+
 
 local function onRemove(self)
 	numpad.Remove(self.fadeUpNum);
@@ -205,16 +210,20 @@ local function dooEet(ply, ent, stuff)
 				ent.wireSupportPostEntityPaste = ent.PostEntityPaste;
 				ent.PostEntityPaste = PostEntityPaste;
 				ent.addedWireSupport = true
-			end				
+			end
 		end
 	end
+
 	ent.fadeUpNum = numpad.OnUp(ply, stuff.key, "Fading Doors onUp", ent);
 	ent.fadeDownNum = numpad.OnDown(ply, stuff.key, "Fading Doors onDown", ent);
 	ent.fadeToggle = stuff.toggle;
+
 	if (stuff.reversed) then
 		ent:fadeActivate();
 	end
+
 	duplicator.StoreEntityModifier(ent, "Fading Door", stuff);
+
 	return true;
 end
 
@@ -223,7 +232,7 @@ duplicator.RegisterEntityModifier("Fading Door", dooEet);
 if (not FadingDoor) then
 	local function legacy(ply, ent, data)
 		return dooEet(ply, ent, {
-			key      = data.Key;
+			key	  = data.Key;
 			toggle   = data.Toggle;
 			reversed = data.Inverse;
 		});
@@ -242,10 +251,10 @@ local function doUndo(undoData, ent)
 			ent.TriggerInput = ent.fadeTriggerInput; -- Purge our input checker
 			if (ent.Inputs) then
 				Wire_Link_Clear(ent, "Fade");
-				ent.Inputs['Fade'] = nil;
+				ent.Inputs["Fade"] = nil;
 				WireLib._SetInputs(ent);
 			end if (ent.Outputs) then
-				local port = ent.Outputs['FadeActive']
+				local port = ent.Outputs["FadeActive"]
 				if (port) then
 					for i,inp in ipairs(port.Connected) do -- From WireLib.lua: -- fix by Syranide: unlinks wires of removed outputs
 						if (inp.Entity:IsValid()) then
@@ -253,7 +262,7 @@ local function doUndo(undoData, ent)
 						end
 					end
 				end
-				ent.Outputs['FadeActive'] = nil;
+				ent.Outputs["FadeActive"] = nil;
 				WireLib._SetOutputs(ent);
 			end
 		end
@@ -266,19 +275,23 @@ function TOOL:LeftClick(tr)
 	if (not checkTrace(tr)) then
 		return false;
 	end
+
 	local ent = tr.Entity;
 	local ply = self:GetOwner();
+
 	dooEet(ply, ent, {
-		key      = self:GetClientNumber("key");
+		key	  = self:GetClientNumber("key");
 		toggle   = self:GetClientNumber("toggle") == 1;
 		reversed = self:GetClientNumber("reversed") == 1;
 	});
+
 	undo.Create("fading_door");
 		undo.AddFunction(doUndo, ent);
 		undo.SetPlayer(ply);
 	undo.Finish();
-	
+
 	SendUserMessage("FadingDoorHurrah!", ply);
+
 	return true
 end
 

@@ -44,7 +44,7 @@ function ENT:Think()
 		-- self:SetModelWorldScale(Vector(scale, scale, scale));
 		vec = vec * 2;
 		self:SetRenderBounds(-vec, vec);
-		self:SetupBones();	
+		self:SetupBones();
 	end
 end
 
@@ -69,7 +69,7 @@ function MakeCrate(ply, pos, angles, scale, data)
 	end
 	ent:SetScale(scale);
 	ent:Think(); -- Update the boundries NOW
-	
+
 	ply:AddCount("props",   ent);
 	ply:AddCleanup("props", ent);
 	return ent;

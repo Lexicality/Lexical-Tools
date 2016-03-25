@@ -3,31 +3,31 @@
 	~ Lexi ~
 --]]
 AddCSLuaFile();
-ENT.Type 			= "anim";
-ENT.Base 			= "base_anim";
-ENT.PrintName		= "Prop Cannon Shot";
-ENT.Author			= "Lexi";
-ENT.Contact			= "lexi@lexi.org.uk";
-ENT.Spawnable		= false;
-ENT.AdminSpawnable	= false;
+ENT.Type            = "anim";
+ENT.Base            = "base_anim";
+ENT.PrintName       = "Prop Cannon Shot";
+ENT.Author          = "Lexi";
+ENT.Contact         = "lexi@lexi.org.uk";
+ENT.Spawnable       = false;
+ENT.AdminSpawnable  = false;
 if (CLIENT) then
 	language.Add("cannon_prop", ENT.PrintName);
 	return;
-end 
+end
 
 function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:SetSolid	(SOLID_VPHYSICS);
-	
+
 	if (not IsValid(self.Owner)) then
 		self.Owner = self;
 		ErrorNoHalt("cannon_prop created without a valid owner.");
 	end
-	
+
 	self:SetPhysicsAttacker(self.Owner);
 
-    local phys = self:GetPhysicsObject();
+	local phys = self:GetPhysicsObject();
 	if (IsValid(phys)) then
 		phys:Wake();
 	end
@@ -59,7 +59,7 @@ end
 function ENT:OnTakeDamage(damageInfo)
 	if (self.explosive) then
 		self:Explode()
-	end 
+	end
 	self:TakePhysicsDamage(damageInfo);
 end
 

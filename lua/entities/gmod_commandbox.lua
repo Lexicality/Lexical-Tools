@@ -45,7 +45,7 @@ ENT.AdminSpawnable = false;
 if (CLIENT) then
 	usermessage.Hook("Commandbox Command Request", function(um)
 		local command = um:ReadString();
-		Derma_Query("Run Command '" .. command .."'?", "Command Box SENT", "Yes", function() LocalPlayer():ConCommand(command) end, "No", function() end);
+		Derma_Query("Run Command '" .. command .. "'?", "Command Box SENT", "Yes", function() LocalPlayer():ConCommand(command) end, "No", function() end);
 	end);
 	usermessage.Hook("Commandbox Command", function(um)
 		LocalPlayer():ConCommand(um:ReadString())
@@ -66,7 +66,7 @@ function ENT:Initialize()
 end
 
 ENT.Command = "";
-ENT.Key		= 0; 
+ENT.Key     = 0;
 
 local function prest(ply, ent)
 	if (not IsValid(ent)) then
@@ -77,7 +77,7 @@ local function prest(ply, ent)
 		SendUserMessage("Commandbox Command", ply, command);
 	else
 		SendUserMessage("Commandbox Command Request", ply, command);
-	end	
+	end
 end
 numpad.Register("CommandBox", prest);
 
