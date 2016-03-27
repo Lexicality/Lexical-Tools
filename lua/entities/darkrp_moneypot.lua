@@ -65,6 +65,10 @@ function MakeMoneyPot(ply, pos, angles, model, data)
         Angle = angles,
     };
     data.Class = "darkrp_moneypot";
+    if (data.DT) then
+        data.DT.Money = 0;
+    end
+
     local box  = duplicator.GenericDuplicatorFunction(ply, data);
     if (not box) then
         -- uh oh

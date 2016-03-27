@@ -194,3 +194,22 @@ function ENT:TriggerInput(key, value)
         self:DelayedSpawn(value);
     end
 end
+
+function ENT:OnEntityCopyTableFinish(data)
+    if (data.DT) then
+        data.DT.Money = 0;
+    end
+end
+
+function ENT:OnDuplicated(data)
+    self:SetMoney(0);
+    -- AdvDupe restores DTVars *AFTER* calling this function 😒
+    if (data.DT) then
+        data.DT.Money = 0;
+    end
+end
+
+function ENT:PostEntityPaste()
+    self:SetMoney(0);
+    self:UpdateOverlay();
+end
