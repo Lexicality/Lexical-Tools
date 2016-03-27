@@ -21,10 +21,6 @@ else
 end
 DEFINE_BASECLASS(BaseClass);
 
-function ENT:SetupDataTables()
-    self:NetworkVar("Int", 0, "Money");
-end
-
 if (CLIENT) then return; end
 
 --------------------------------------
@@ -58,6 +54,14 @@ end
 --              / END               --
 --                                  --
 --------------------------------------
+
+function ENT:SetMoney(amount)
+    self:SetDTInt(0, amount);
+end
+
+function ENT:GetMoney()
+    return self:GetDTInt(0);
+end
 
 function ENT:Initialize()
     self:SetModel("models/props_lab/powerbox02b.mdl")
