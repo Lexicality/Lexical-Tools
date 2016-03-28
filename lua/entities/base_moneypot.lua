@@ -53,6 +53,10 @@ function ENT:IsMoneyEntityInvalid(ent)
     return ent._InvalidMoney == true;
 end
 
+function ENT:GetMoneyAmount(ent)
+    return 0;
+end
+
 --------------------------------------
 --                                  --
 --              / END               --
@@ -107,14 +111,28 @@ function ENT:UpdateWireOutputs(amount)
     Wire_TriggerOutput(self, "Updated", 0);
 end
 
+function ENT:IsGoodMoneyEntity(ent)
+    return IsValid(ent)
+    and    self:IsMoneyEntity(ent)
+    and not self:IsMoneyEntityInvalid(ent)
+    and    (ent.MoneyPotPause or 0) < CurTime();
+end
+
 function ENT:StartTouch(ent)
-    if (IsValid(ent) and self:IsMoneyEntity(ent) and not self:IsMoneyEntityInvalid(ent) and (ent.MoneyPotPause or 0) < CurTime()) then
-        self:InvalidateMoneyEntity(ent);
-        ent.MoneyPotPause = CurTime() + 100
-        local amt = ent.dt.amount;
-        ent:Remove();
-        self:AddMoney(amt);
+    if (not self:IsGoodMoneyEntity(ent)) then
+        return;
     end
+
+    local amt = self:GetMoneyAmount(ent);
+    if (amt <= 0) then
+        return;
+    end
+
+    self:InvalidateMoneyEntity(ent);
+    ent.MoneyPotPause = CurTime() + 100
+    ent:Remove();
+
+    self:AddMoney(amt);
 end
 
 local spos = Vector(0, 0, 17);

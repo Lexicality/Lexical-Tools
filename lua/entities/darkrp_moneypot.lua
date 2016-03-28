@@ -49,6 +49,11 @@ end
 function ENT:IsMoneyEntityInvalid(ent)
     return ent.hasMerged or ent.USED;
 end
+
+function ENT:GetMoneyAmount(ent)
+    return ent.dt.amount;
+end
+
 --------------------------------------
 --                                  --
 --        Duplicator support        --
