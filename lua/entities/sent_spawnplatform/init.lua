@@ -344,9 +344,11 @@ end
 local angles = Angle(0, 0, 0);
 function ENT:SpawnOne()
 	local class = self.k_npc;
+
 	if ( npcspawner.legacy[ class ] ) then
 		class = npcspawner.legacy[ class ];
 	end
+
 	local npcdata = list.Get('NPC')[ class ];
 	if ( not npcdata and not npcspawner.config.allowdodgy ) then
 		-- TODO: Error? Message?
@@ -354,6 +356,7 @@ function ENT:SpawnOne()
 		self:TurnOff();
 		return false;
 	end
+
 	local weapon = self.k_weapon;
 	npcspawner.debug(self, "is spawning a", class, "with a", weapon);
 	if (weapon == 'weapon_none' or weapon == 'none') then
@@ -363,6 +366,7 @@ function ENT:SpawnOne()
 	elseif (npcdata and npcdata.Weapons and (not weapon or weapon == '' or weapon == 'weapon_default')) then
 		weapon = table.Random(npcdata.Weapons);
 	end
+
 	if (npcspawner.config.callhooks == 1 and IsValid(self.Ply)) then
 		if (not gamemode.Call("PlayerSpawnNPC", self.Ply, class, weapon)) then
 			self.LastSpawn = CurTime() + 5; -- Disable spawning for 5 seconds so the user isn't spammed
@@ -370,13 +374,16 @@ function ENT:SpawnOne()
 			return false;
 		end
 	end
+
 	local position = (self:GetUp() * rand() + self:GetForward() * rand() ) * self.k_spawnradius;
 	local offset = self.k_spawnheight;
 	npcspawner.debug2("Offset:",  position);
 	debugoverlay.Line(self:GetPos(), self:GetPos() + position, 10, color_white, true );
+
 	angles.y = position:Angle().y
 	debugoverlay.Axis(self:GetPos() + position, angles, 10, 10, true);
 	npcspawner.debug2("Angles:",  angles);
+
 	position = self:GetPos() + position;
 	local normal = self:GetRight() * -1;
 	debugoverlay.Line(position, position + normal * offset, 10, Color(255, 255, 0), true );
@@ -407,6 +414,7 @@ function ENT:SpawnOne()
 	local squad = (self.k_customsquads == 1) and "squad"..self.k_squadoverride or tostring(self);
 	npcspawner.debug2("Squad:", squad);
 	npc:SetKeyValue("squadname", squad);
+
 	local hp = npc:GetMaxHealth();
 	local chp = npc:Health();
 	-- Bug with nextbots
@@ -417,29 +425,37 @@ function ENT:SpawnOne()
 	npcspawner.debug2("Health:", hp);
 	npc:SetMaxHealth(hp);
 	npc:SetHealth(hp);
+
 	if (npc.SetCurrentWeaponProficiency) then
 		npc:SetCurrentWeaponProficiency(self.k_skill);
 	end
+
 	if (self.k_nocollide == 1) then
 		npcspawner.debug2("Nocollided.");
 		npc:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE_DEBRIS); -- Collides with everything except interactive debris or debris
 	end
+
 	npc:CallOnRemove("NPCSpawnPlatform", onremove, self);
 	npcspawner.debug2("NPC Entity:", npc);
+
 	if (npcspawner.config.callhooks == 1)then
 		if (IsValid(self.Ply)) then
 			gamemode.Call("PlayerSpawnedNPC", self.Ply, npc);
 			debugoverlay.Cross(npc:GetPos(), 10, 10, color_white, true);
 		end
 	end
+
 	self.NPCs[npc] = npc;
 	self.Spawned = self.Spawned + 1;
 	self.TotalSpawned = self.TotalSpawned + 1;
 	self.LastSpawn = CurTime();
+
 	if (self.TotalSpawned % self.k_maximum == 0) then
 		npcspawner.debug(self.TotalSpawned.." NPCs spawned,  decreasing delay ("..self.k_delay..") by "..self.k_decrease);
 		self.k_delay = math.max(self.k_delay - self.k_decrease, npcspawner.config.mindelay);
 	end
+
+
 	if (Wire_TriggerOutput) then
 		Wire_TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
 		Wire_TriggerOutput(self,  "TotalNPCsSpawned",  self.TotalSpawned);
@@ -448,6 +464,7 @@ function ENT:SpawnOne()
 		Wire_TriggerOutput(self,  "OnNPCSpawned",  0);
 		--self._WireSpawnedActive = true;
 	end
+
 	if (self.TotalSpawned == self.k_totallimit) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point,  shit works.
 		npcspawner.debug("totallimit ("..self.k_totallimit..") hit. Turning off.");
 		self:TurnOff();
