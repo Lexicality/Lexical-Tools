@@ -1,4 +1,4 @@
-NPC Spawn Platforms 2.2
+NPC Spawn Platforms v2
 =======================
 About
 -----
@@ -55,12 +55,14 @@ Credits
 
 Links
 -----
-* [Latest gmod.org release][latest]
+* [Steam Workshop][workshop]
+* [Legacy gmod.org release][legacy]
 * [Facepunch thread][fpthread]
 * [Original STool][original]
 
-  [gmod]:     http://garrysmod.com/                           "Garry's Mod"
-  [wire]:     http://wiremod.com/                             "Wire Mod"
-  [latest]:   http://garrysmod.org/downloads/?a=view&id=99245 "Latest 'stable' release"
-  [fpthread]: http://facepunch.com/threads/845444             "Facepunch forums release thread"
-  [original]: http://garrysmod.org/downloads/?a=view&id=3898  "STool this is based off"
+  [gmod]:     http://garrysmod.com/
+  [wire]:     http://wiremod.com/
+  [workshop]: http://steamcommunity.com/sharedfiles/filedetails/?id=107821465
+  [legacy]:   http://garrysmod.org/downloads/?a=view&id=99245
+  [fpthread]: http://facepunch.com/threads/845444
+  [original]: http://garrysmod.org/downloads/?a=view&id=3898

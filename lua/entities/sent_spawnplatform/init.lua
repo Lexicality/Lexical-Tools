@@ -1,6 +1,6 @@
 --[[
-	NPC Spawn Platforms V2.2
-    Copyright (c) 2011-2012 Lex Robinson
+	NPC Spawn Platforms V2
+    Copyright (c) 2011-2016 Lex Robinson
     This code is freely available under the MIT License
 --]]
 
