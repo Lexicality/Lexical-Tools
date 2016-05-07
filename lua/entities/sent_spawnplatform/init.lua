@@ -1,27 +1,27 @@
 --[[
 	NPC Spawn Platforms V2
-    Copyright (c) 2011-2016 Lex Robinson
-    This code is freely available under the MIT License
+	Copyright (c) 2011-2016 Lex Robinson
+	This code is freely available under the MIT License
 --]]
 
 --[[ Make the platform dupable ]]--
 duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angles,  data)
-    local ent = ents.Create("sent_spawnplatform");
-    ent:SetAngles(angles);
-    ent:SetPos(pos);
-    for key, value in pairs(data) do
-        if (key:sub(1, 2) == "k_") then
-            ent:SetKeyValue(key:sub(3), value);
-        end
-    end
-    ent:Spawn();
-    ent:Activate();
-    -- If it's being loaded from a savegame ply might be nil
-    if (IsValid(ply)) then
-        ent:SetKeyValue("ply", ply:EntIndex());
-        ply:AddCount("sent_spawnplatform", ent);
-    end
-    return ent;
+	local ent = ents.Create("sent_spawnplatform");
+	ent:SetAngles(angles);
+	ent:SetPos(pos);
+	for key, value in pairs(data) do
+		if (key:sub(1, 2) == "k_") then
+			ent:SetKeyValue(key:sub(3), value);
+		end
+	end
+	ent:Spawn();
+	ent:Activate();
+	-- If it's being loaded from a savegame ply might be nil
+	if (IsValid(ply)) then
+		ent:SetKeyValue("ply", ply:EntIndex());
+		ply:AddCount("sent_spawnplatform", ent);
+	end
+	return ent;
 end,  "Pos",  "Angle",  "Data");
 AddCSLuaFile("shared.lua");
 include('shared.lua');
@@ -503,36 +503,36 @@ function ENT:CheckActive()
 	if (self.k_active == 1) then
 		self:SetModel (model1);
 		self.LastSpawn = CurTime();
-        if (oldStyleGetColor) then
-            self:SetColor (0, 255, 0, a);
-        else
-            if (self.GetAlpha) then
-                local a = self:GetAlpha();
-                self:SetColor(color_on);
-                self:SetAlpha(a);
-            else
-                c.r = 0;
-                c.g = 255;
-                c.b = 0;
-                self:SetColor(c);
-            end
-        end
+		if (oldStyleGetColor) then
+			self:SetColor (0, 255, 0, a);
+		else
+			if (self.GetAlpha) then
+				local a = self:GetAlpha();
+				self:SetColor(color_on);
+				self:SetAlpha(a);
+			else
+				c.r = 0;
+				c.g = 255;
+				c.b = 0;
+				self:SetColor(c);
+			end
+		end
 	else
 		self:SetModel (model2);
-        if (oldStyleGetColor) then
-            self:SetColor (255, 0, 0, a);
-        else
-            if (self.GetAlpha) then
-                local a = self:GetAlpha();
-                self:SetColor(color_off);
-                self:SetAlpha(a);
-            else
-                c.r = 255;
-                c.g = 0;
-                c.b = 0;
-                self:SetColor(c);
-            end
-        end
+		if (oldStyleGetColor) then
+			self:SetColor (255, 0, 0, a);
+		else
+			if (self.GetAlpha) then
+				local a = self:GetAlpha();
+				self:SetColor(color_off);
+				self:SetAlpha(a);
+			else
+				c.r = 255;
+				c.g = 0;
+				c.b = 0;
+				self:SetColor(c);
+			end
+		end
 	end
 	if (Wire_TriggerOutput) then
 		Wire_TriggerOutput(self,  "IsOn",  self.k_active);
@@ -550,10 +550,10 @@ local nwablekeys = {
 -- Using keyvalues allows us to have a callback for each value,  should it be needed.
 function ENT:KeyValue(key,  value)
 	npcspawner.debug2("Key:", key, "Value:", value);
-    key = string.lower(key);
+	key = string.lower(key);
 	if (key == "delay") then
-        value = tonumber(value);
-        if (not value) then return; end
+		value = tonumber(value);
+		if (not value) then return; end
 		self.LastSpawn = CurTime();
 		self.Delay = value;
 		value = math.max(value,npcspawner.config.mindelay);
