@@ -407,7 +407,13 @@ function ENT:SpawnOne()
 	local squad = (self.k_customsquads == 1) and "squad"..self.k_squadoverride or tostring(self);
 	npcspawner.debug2("Squad:", squad);
 	npc:SetKeyValue("squadname", squad);
-	local hp = npc:GetMaxHealth() * self.k_healthmul;
+	local hp = npc:GetMaxHealth();
+	local chp = npc:Health();
+	-- Bug with nextbots
+	if (chp > hp) then
+		hp = chp;
+	end
+	hp = hp * self.k_healthmul;
 	npcspawner.debug2("Health:", hp);
 	npc:SetMaxHealth(hp);
 	npc:SetHealth(hp);
