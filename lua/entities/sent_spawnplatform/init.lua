@@ -495,44 +495,16 @@ function ENT:TurnOff()
 	self:CheckActive();
 end
 
-local color_on  = Color(0, 255, 0);
-local color_off = Color(255, 0, 0);
-local _, oldStyleGetColor, a, c;
 function ENT:CheckActive()
-	c, oldStyleGetColor, _, a = self:GetColor();
+	local c = self:GetColor();
+	local a = c.a;
 	if (self.k_active == 1) then
-		self:SetModel (model1);
+		self:SetModel(model1);
 		self.LastSpawn = CurTime();
-		if (oldStyleGetColor) then
-			self:SetColor (0, 255, 0, a);
-		else
-			if (self.GetAlpha) then
-				local a = self:GetAlpha();
-				self:SetColor(color_on);
-				self:SetAlpha(a);
-			else
-				c.r = 0;
-				c.g = 255;
-				c.b = 0;
-				self:SetColor(c);
-			end
-		end
+		self:SetColor(Color(0, 255, 0, a));
 	else
-		self:SetModel (model2);
-		if (oldStyleGetColor) then
-			self:SetColor (255, 0, 0, a);
-		else
-			if (self.GetAlpha) then
-				local a = self:GetAlpha();
-				self:SetColor(color_off);
-				self:SetAlpha(a);
-			else
-				c.r = 255;
-				c.g = 0;
-				c.b = 0;
-				self:SetColor(c);
-			end
-		end
+		self:SetModel(model2);
+		self:SetColor(Color(255, 0, 0, a));
 	end
 	if (Wire_TriggerOutput) then
 		Wire_TriggerOutput(self,  "IsOn",  self.k_active);
