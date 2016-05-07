@@ -209,14 +209,6 @@ function TOOL.BuildCPanel( CPanel )
     do -- NPC Selector
 
         local CPanel = AddControl( CPanel, "ControlPanel", "panel_npc" );
-        local function workaround(panel)
-            -- This is because ListBox doesn't actually return the listbox.
-            -- I've submitted a pull request so that might change but for now . . .
-            if (not panel) then
-                panel = CPanel.Items[#CPanel.Items]:GetChild(1);
-            end
-            return panel;
-        end
 
         --Type select
         --[[
@@ -227,11 +219,11 @@ function TOOL.BuildCPanel( CPanel )
         for k,v in pairs(npcspawner.npcs) do
             combo.Options[v] = {npc_spawnplatform_npc = k};
         end
-        local npcs = workaround( AddControl( CPanel, "ListBox", "npc", combo ) );
+        local npcs = AddControl( CPanel, "ListBox", "npc", combo );
         --]]
         AddControl( CPanel, "NPCSelect", "npc" );
 
-        local weapons = workaround( AddControl( CPanel, "ListBox", "weapon" ) );
+        local weapons = AddControl( CPanel, "ListBox", "weapon" );
         do
             local key = cvar"weapon";
             function option( title, class )
