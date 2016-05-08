@@ -9,6 +9,7 @@ duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angle
 	local ent = ents.Create("sent_spawnplatform");
 	ent:SetAngles(angles);
 	ent:SetPos(pos);
+	-- Legacy support
 	for key, value in pairs(data) do
 		if (key:sub(1, 2) == "k_") then
 			ent:SetKeyValue(key:sub(3), value);
@@ -18,7 +19,7 @@ duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angle
 	ent:Activate();
 	-- If it's being loaded from a savegame ply might be nil
 	if (IsValid(ply)) then
-		ent:SetKeyValue("ply", ply:EntIndex());
+		ent:SetPlayer(ply);
 		ply:AddCount("sent_spawnplatform", ent);
 	end
 	return ent;
@@ -47,36 +48,17 @@ local weaponsets = {
 	weapon_citizen	= {"weapon_citizenpackage",  "weapon_citizensuitcase",  "weapon_none"}
 };
 
--- Default Settings
-ENT.k_npc				= "npc_combine_s";
-ENT.k_weapon			= "weapon_smg1";
-ENT.k_spawnheight		= 16;
-ENT.k_spawnradius		= 16;
-ENT.k_maximum			= 5;
-ENT.k_delay				= 5;
-ENT.k_onkey				= 2;
-ENT.k_offkey			= 1;
-ENT.k_healthmul			= 1;
-ENT.k_toggleable		= 1;
-ENT.k_autoremove		= 1;
-ENT.k_squadoverride		= 1;
-ENT.k_customsquads		= 0;
-ENT.k_totallimit		= 0;
-ENT.k_decrease			= 0;
-ENT.k_active			= 0;
-ENT.k_ply				= 0;
-ENT.k_skill				= WEAPON_PROFICIENCY_AVERAGE;
 ENT.NPCs 				= {};
 ENT.Spawned             = 0;
 ENT.LastSpawn           = 0;
 ENT.LastChange          = 0;
 ENT.TotalSpawned		= 0;
-ENT.Delay               = 5;
 
 function ENT:SpawnFunction(ply,  tr)
 	if (not tr.Hit) then return end
 	local ent = ents.Create ("sent_spawnplatform");
 	ent:SetPos (tr.HitPos + tr.HitNormal * 16);
+	ent:SetPlayer(ply);
 	ent:Spawn();
 	ent:Activate();
 	return ent;
@@ -101,7 +83,9 @@ numpad.Register ("NPCSpawnerOff",  function(ply,  ent)
 end);
 
 function ENT:Initialize ()
-	self:SetModel(model1);
+	npcspawner.debug2(self, "now exists!");
+	-- Ensure the right model etc is set
+	self:OnActiveChange(nil, nil, self:IsActive());
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:SetSolid	(SOLID_VPHYSICS);
@@ -109,10 +93,9 @@ function ENT:Initialize ()
 	if (IsValid(phys)) then
 		phys:Wake();
 	else
-		ErrorNoHalt("No physics object for ", tostring(self), " using model ", model1, "?\n");
+		ErrorNoHalt("No physics object for ", tostring(self), " using model ", self:GetModel(), "?\n");
 	end
-	self.LastSpawn  = 0;
-	self:CheckActive();
+	self:ResetLastSpawn();
 	self.Spawned  = 0;
 	self.NPCs   = {};
 	if (WireLib) then
@@ -168,10 +151,68 @@ function ENT:Initialize ()
 			"Triggered every time a NPC is spawned."--]]
 		});
 	end
-	self.Ply = player.GetByID(tonumber(self.k_ply));
-	if (not IsValid(self.Ply)) then return end
-	numpad.OnDown (self.Ply,  self.k_onkey,   "NPCSpawnerOn",   self);
-	numpad.OnDown (self.Ply,  self.k_offkey,  "NPCSpawnerOff",  self);
+end
+
+function ENT:RegisterListeners()
+	self:NetworkVarNotify("Active", self.OnActiveChange);
+	self:NetworkVarNotify("StartDelay", self.OnStartDelayChange);
+	self:NetworkVarNotify("PlayerID", self.OnPlayerIDChange);
+	self:NetworkVarNotify("Player", self.OnPlayerChange);
+	self:NetworkVarNotify("OnKey", function(self, _, _, onKey)
+		self:RebindNumpads(self:GetPlayer(), onKey, self:GetOffKey());
+	end)
+	self:NetworkVarNotify("OffKey", function(self, _, _, offKey)
+		self:RebindNumpads(self:GetPlayer(), self:GetOnKey(), offKey);
+	end)
+end
+
+function ENT:OnStartDelayChange(_, _, delay)
+	self:SetSpawnDelay(delay);
+	self:ResetLastSpawn();
+end
+
+-- Recursive functions are fun
+local _isInPlayerSet = false;
+
+function ENT:OnPlayerIDChange(_, _, plyID)
+	local ply = player.GetByID(plyID);
+	_isInPlayerSet = true;
+	self:SetPlayer(ply);
+	_isInPlayerSet = false;
+end
+
+function ENT:OnPlayerChange(_, oldPly, ply)
+	if (not _isInPlayerSet) then
+		-- Keep this dumb shit synchronised
+		local plyIndex = 0;
+		if (IsValid(ply)) then
+			plyIndex = ply:EntIndex();
+		end
+		self:SetPlayerID(plyIndex);
+	end
+	if (ply ~= oldPly) then
+		self:RebindNumpads(ply, self:GetOnKey(), self:GetOffKey());
+	end
+end
+
+ENT._prevOnKepad = false;
+ENT._prevOffKeypad = false;
+function ENT:RebindNumpads(ply, keyOn, keyOff)
+	numpad.Remove(self._prevOffKeypad);
+	numpad.Remove(self._prevOnKepad);
+	self._prevOnKepad = false;
+	self._prevOffKeypad = false;
+
+	if (not IsValid(ply)) then
+		return;
+	end
+
+	if (keyOn) then
+		self._prevOnKepad = numpad.OnDown(ply, keyOn, "NPCSpawnerOn", self);
+	end
+	if (keyOff) then
+		self._prevOffKepad = numpad.OnDown(ply, keyOff, "NPCSpawnerOff", self);
+	end
 end
 
 function ENT:Think()
@@ -180,7 +221,12 @@ function ENT:Think()
 		Wire_TriggerOutput(self,  "OnNPCSpawned",  0);
 		self._WireSpawnedActive = nil;
 	end
-	if (self.k_active == 0 or self.Spawned >= self.k_maximum or self.LastSpawn + self.k_delay > CurTime()) then return end
+	if ((not self:IsActive()) or
+		self.Spawned >= self:GetMaxNPCs() or
+		self.LastSpawn + self:GetSpawnDelay() > CurTime()
+	) then
+		return;
+	end
 	self:SpawnOne();
 end
 
@@ -343,7 +389,7 @@ local function onremove(npc, platform)
 end
 local angles = Angle(0, 0, 0);
 function ENT:SpawnOne()
-	local class = self.k_npc;
+	local class = self:GetNPC();
 
 	if ( npcspawner.legacy[ class ] ) then
 		class = npcspawner.legacy[ class ];
@@ -357,7 +403,7 @@ function ENT:SpawnOne()
 		return false;
 	end
 
-	local weapon = self.k_weapon;
+	local weapon = self:GetNPCWeapon();
 	npcspawner.debug(self, "is spawning a", class, "with a", weapon);
 	if (weapon == 'weapon_none' or weapon == 'none') then
 		weapon = nil;
@@ -367,16 +413,17 @@ function ENT:SpawnOne()
 		weapon = table.Random(npcdata.Weapons);
 	end
 
-	if (npcspawner.config.callhooks == 1 and IsValid(self.Ply)) then
-		if (not gamemode.Call("PlayerSpawnNPC", self.Ply, class, weapon)) then
+	local ply = self:GetPlayer();
+	if (npcspawner.config.callhooks == 1 and IsValid(ply)) then
+		if (not gamemode.Call("PlayerSpawnNPC", ply, class, weapon)) then
 			self.LastSpawn = CurTime() + 5; -- Disable spawning for 5 seconds so the user isn't spammed
-			npcspawner.debug(self.Ply,  "has failed the PlayerSpawnNPC hook.");
+			npcspawner.debug(ply,  "has failed the PlayerSpawnNPC hook.");
 			return false;
 		end
 	end
 
-	local position = (self:GetUp() * rand() + self:GetForward() * rand() ) * self.k_spawnradius;
-	local offset = self.k_spawnheight;
+	local position = (self:GetUp() * rand() + self:GetForward() * rand() ) * self:GetSpawnRadius();
+	local offset = self:GetSpawnHeight();
 	npcspawner.debug2("Offset:",  position);
 	debugoverlay.Line(self:GetPos(), self:GetPos() + position, 10, color_white, true );
 
@@ -390,9 +437,9 @@ function ENT:SpawnOne()
 
 	local npc, isError;
 	if (npcdata) then
-		npc = InternalSpawnNPC(self.Ply, position, normal, class, weapon, angles, offset);
+		npc = InternalSpawnNPC(ply, position, normal, class, weapon, angles, offset);
 	else
-		npc, isError = legacySpawn(self.Ply, position, normal, class, weapon, angles, offset);
+		npc, isError = legacySpawn(ply, position, normal, class, weapon, angles, offset);
 	end
 
 	if (not IsValid(npc)) then
@@ -411,7 +458,7 @@ function ENT:SpawnOne()
 	end end)
 
 	--
-	local squad = (self.k_customsquads == 1) and "squad"..self.k_squadoverride or tostring(self);
+	local squad = self:GetCustomSquad() and "squad" .. self:GetSquadOverride() or tostring(self);
 	npcspawner.debug2("Squad:", squad);
 	npc:SetKeyValue("squadname", squad);
 
@@ -421,16 +468,16 @@ function ENT:SpawnOne()
 	if (chp > hp) then
 		hp = chp;
 	end
-	hp = hp * self.k_healthmul;
+	hp = hp * self:GetNPCHealthMultiplier();
 	npcspawner.debug2("Health:", hp);
 	npc:SetMaxHealth(hp);
 	npc:SetHealth(hp);
 
 	if (npc.SetCurrentWeaponProficiency) then
-		npc:SetCurrentWeaponProficiency(self.k_skill);
+		npc:SetCurrentWeaponProficiency(self:GetNPCSkillLevel());
 	end
 
-	if (self.k_nocollide == 1) then
+	if (self:GetNoCollideNPCs()) then
 		npcspawner.debug2("Nocollided.");
 		npc:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE_DEBRIS); -- Collides with everything except interactive debris or debris
 	end
@@ -439,8 +486,8 @@ function ENT:SpawnOne()
 	npcspawner.debug2("NPC Entity:", npc);
 
 	if (npcspawner.config.callhooks == 1)then
-		if (IsValid(self.Ply)) then
-			gamemode.Call("PlayerSpawnedNPC", self.Ply, npc);
+		if (IsValid(ply)) then
+			gamemode.Call("PlayerSpawnedNPC", ply, npc);
 			debugoverlay.Cross(npc:GetPos(), 10, 10, color_white, true);
 		end
 	end
@@ -450,9 +497,9 @@ function ENT:SpawnOne()
 	self.TotalSpawned = self.TotalSpawned + 1;
 	self.LastSpawn = CurTime();
 
-	if (self.TotalSpawned % self.k_maximum == 0) then
-		npcspawner.debug(self.TotalSpawned.." NPCs spawned,  decreasing delay ("..self.k_delay..") by "..self.k_decrease);
-		self.k_delay = math.max(self.k_delay - self.k_decrease, npcspawner.config.mindelay);
+	if (self.TotalSpawned % self:GetMaxNPCs() == 0) then
+		npcspawner.debug(self.TotalSpawned.." NPCs spawned,  decreasing delay ("..self:GetSpawnDelay()..") by "..self:GetDelayDecrease());
+		self:SetSpawnDelay(math.max(self:GetSpawnDelay() - self:GetDelayDecrease(), npcspawner.config.mindelay));
 	end
 
 
@@ -465,8 +512,8 @@ function ENT:SpawnOne()
 		--self._WireSpawnedActive = true;
 	end
 
-	if (self.TotalSpawned == self.k_totallimit) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point,  shit works.
-		npcspawner.debug("totallimit ("..self.k_totallimit..") hit. Turning off.");
+	if (self.TotalSpawned == self:GetMaxNPCsTotal()) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point,  shit works.
+		npcspawner.debug("totallimit ("..self:GetMaxNPCsTotal()..") hit. Turning off.");
 		self:TurnOff();
 	end
 end
@@ -481,7 +528,7 @@ function ENT:NPCKilled(npc)
 end
 
 function ENT:Use (activator,  caller)
-	if (self.k_toggleable == 0 or self.LastChange + 1 > CurTime()) then
+	if (not self:GetCanToggle() or self.LastChange + 1 > CurTime()) then
 		return;
 	end
 	npcspawner.debug(self, "has been used by", activator, caller)
@@ -489,33 +536,32 @@ function ENT:Use (activator,  caller)
 end
 
 function ENT:Toggle()
-	if (self.k_active == 0) then
-		npcspawner.debug(self, "has toggled from off to on.");
-		self:TurnOn();
-	else
+	if (self:IsActive()) then
 		npcspawner.debug(self, "has toggled from on to off.");
 		self:TurnOff();
+	else
+		npcspawner.debug(self, "has toggled from off to on.");
+		self:TurnOn();
 	end
 end
 
 function ENT:TurnOn()
-	self.k_active = 1;
+	self:SetActive(true);
 	self.TotalSpawned = 0;
-	self.k_delay = self.Delay;
+	self:SetSpawnDelay(self:GetStartDelay());
 	if (Wire_TriggerOutput) then
 		Wire_TriggerOutput(self,  "TotalNPCsSpawned",  self.TotalSpawned);
 	end
-	self:CheckActive();
 end
 function ENT:TurnOff()
-	self.k_active = 0;
-	self:CheckActive();
+	self:SetActive(false);
 end
 
-function ENT:CheckActive()
+function ENT:OnActiveChange(_, _, active)
+	npcspawner.debug2(self, "is set to active state:", active);
 	local c = self:GetColor();
 	local a = c.a;
-	if (self.k_active == 1) then
+	if (active) then
 		self:SetModel(model1);
 		self.LastSpawn = CurTime();
 		self:SetColor(Color(0, 255, 0, a));
@@ -524,36 +570,33 @@ function ENT:CheckActive()
 		self:SetColor(Color(255, 0, 0, a));
 	end
 	if (Wire_TriggerOutput) then
-		Wire_TriggerOutput(self,  "IsOn",  self.k_active);
+		Wire_TriggerOutput(self, "IsOn", active and 1 or 0);
 	end
-	self:SetNWString("active",  self.k_active);
 	self.LastChange = CurTime();
 end
 
-local nwablekeys = {
-	npc		= true,
-	weapon	= true,
-	maximum	= true,
-	delay	= true
-}
 -- Using keyvalues allows us to have a callback for each value,  should it be needed.
 function ENT:KeyValue(key,  value)
-	npcspawner.debug2("Key:", key, "Value:", value);
-	key = string.lower(key);
-	if (key == "delay") then
-		value = tonumber(value);
-		if (not value) then return; end
-		self.LastSpawn = CurTime();
-		self.Delay = value;
-		value = math.max(value,npcspawner.config.mindelay);
-	elseif (key == "active") then
-		self:CheckActive();
+	npcspawner.debug2(self, "Key:", key, "Value:", value);
+
+	if ( self:SetNetworkKeyValue( key, value ) ) then
+		npcspawner.debug2("Swallowed by magic!~")
+		return
 	end
-	self["k_"..key] = tonumber(value) or value;
-	if (nwablekeys[key]) then -- Only some keys need to be networked,  let's try to keep traffic as low as possible :D
-		self:SetNWString(key,  value);
-		self:UpdateLabel();
+	npcspawner.debug2("REJECTED")
+end
+
+function ENT:OnEntityCopyTableFinish(tab)
+	-- Purge all legacy cruft from the dupe
+	for key in pairs(tab) do
+		if (key:sub(1, 2) == "k_") then
+			tab[key] = nil;
+		end
 	end
+end
+
+function ENT:ResetLastSpawn()
+	self.LastSpawn = CurTime();
 end
 
 function ENT:RemoveNPCs()
@@ -571,9 +614,10 @@ end
 
 function ENT:OnRemove()
 	npcspawner.debug(self, "has been removed.");
-	if (self.k_autoremove == 1) then
+	if (self:GetAutoRemove()) then
 		self:RemoveNPCs();
 	end
+	self:RebindNumpads(NULL, false, false);
 end
 
 --[[ Wire based shit ]]--

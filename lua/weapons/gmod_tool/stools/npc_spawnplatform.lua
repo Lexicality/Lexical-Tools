@@ -85,13 +85,17 @@ function TOOL:LeftClick(trace)
 end
 
 function TOOL:RightClick(trace)
-	npcspawner.debug2(owner,"has right-clicked the STool.");
+	local owner = self:GetOwner();
 	local ent = trace.Entity;
+	npcspawner.debug2(owner,"has right-clicked the STool on", ent);
 	if (IsValid(ent) and ent:GetClass() == "sent_spawnplatform") then
 		if (CLIENT) then return true end
-		local owner = self:GetOwner();
 		for key in pairs(self.ClientConVar) do
-			owner:ConCommand("npc_spawnplatform_"..key.." "..tostring(ent["k_"..key]).."\n");
+			local res = ent:GetNetworkKeyValue(key)
+			npcspawner.debug2("Got value", res, "for key", key);
+			if (res) then
+				owner:ConCommand("npc_spawnplatform_"..key.." "..tostring(res).."\n");
+			end
 		end
 	end
 end
