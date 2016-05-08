@@ -229,7 +229,7 @@ function ENT:RebindNumpads(ply, keyOn, keyOff)
 end
 
 function ENT:Think()
-	BaseClass.Think(self);
+	if (BaseClass.Think) then BaseClass.Think(self); end
 	if (self.Spawned < 0) then self.Spawned = 0 end
 	if (self._WireSpawnedActive) then
 		WireLib.TriggerOutput(self, "OnNPCSpawned", 0);
@@ -629,7 +629,7 @@ function ENT:RemoveNPCs()
 end
 
 function ENT:OnRemove()
-	BaseClass.OnRemove(self);
+	if (BaseClass.OnRemove) then BaseClass.OnRemove(self); end
 	npcspawner.debug(self, "has been removed.");
 	if (self:GetAutoRemove()) then
 		self:RemoveNPCs();
