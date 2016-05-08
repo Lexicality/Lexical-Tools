@@ -9,7 +9,7 @@ include('shared.lua');
 DEFINE_BASECLASS(ENT.Base);
 
 --[[ Make the platform dupable ]]--
-duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angles,  data)
+duplicator.RegisterEntityClass("sent_spawnplatform", function(ply, pos, angles, data)
 	local ent = ents.Create("sent_spawnplatform");
 	ent:SetAngles(angles);
 	ent:SetPos(pos);
@@ -27,7 +27,7 @@ duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angle
 		ply:AddCount("sent_spawnplatform", ent);
 	end
 	return ent;
-end,  "Pos",  "Angle",  "Data");
+end, "Pos", "Angle", "Data");
 
 local model1 = Model("models/props_c17/streetsign004e.mdl");
 local model2 = Model("models/props_c17/streetsign004f.mdl");
@@ -46,18 +46,18 @@ Medic:
 				citizentype	=	3
 ]]
 local weaponsets = {
-	weapon_rebel	= {"weapon_pistol",  "weapon_smg1",  "weapon_ar2",  "weapon_shotgun"},
-	weapon_combine	= {"weapon_smg1",  "weapon_ar2",  "weapon_shotgun"},
-	weapon_citizen	= {"weapon_citizenpackage",  "weapon_citizensuitcase",  "weapon_none"}
+	weapon_rebel	= {"weapon_pistol", "weapon_smg1", "weapon_ar2", "weapon_shotgun"},
+	weapon_combine	= {"weapon_smg1", "weapon_ar2", "weapon_shotgun"},
+	weapon_citizen	= {"weapon_citizenpackage", "weapon_citizensuitcase", "weapon_none"}
 };
 
-ENT.NPCs 				= {};
-ENT.Spawned             = 0;
-ENT.LastSpawn           = 0;
-ENT.LastChange          = 0;
-ENT.TotalSpawned		= 0;
+ENT.NPCs         = {};
+ENT.Spawned      = 0;
+ENT.LastSpawn    = 0;
+ENT.LastChange   = 0;
+ENT.TotalSpawned = 0;
 
-function ENT:SpawnFunction(ply,  tr)
+function ENT:SpawnFunction(ply, tr)
 	if (not tr.Hit) then return end
 	local ent = ents.Create ("sent_spawnplatform");
 	ent:SetPos (tr.HitPos + tr.HitNormal * 16);
@@ -67,7 +67,7 @@ function ENT:SpawnFunction(ply,  tr)
 	return ent;
 end
 
-numpad.Register ("NPCSpawnerOn",  function(ply,  ent)
+numpad.Register ("NPCSpawnerOn", function(ply, ent)
 	npcspawner.debug("Numpad on called for", ent, "by", ply);
 	if (IsValid(ent)) then
 		ent:TurnOn();
@@ -76,8 +76,8 @@ numpad.Register ("NPCSpawnerOn",  function(ply,  ent)
 	end
 end);
 
-numpad.Register ("NPCSpawnerOff",  function(ply,  ent)
-	npcspawner.debug("Numpad off called for",  ent,  "by",  ply);
+numpad.Register ("NPCSpawnerOff", function(ply, ent)
+	npcspawner.debug("Numpad off called for", ent, "by", ply);
 	if (IsValid(ent)) then
 		ent:TurnOff();
 	else
@@ -91,7 +91,7 @@ function ENT:Initialize ()
 	self:OnActiveChange(nil, nil, self:IsActive());
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
-	self:SetSolid	(SOLID_VPHYSICS);
+	self:SetSolid   (SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject();
 	if (not IsValid(phys)) then
 		ErrorNoHalt("No physics object for ", tostring(self), " using model ", self:GetModel(), "?\n");
@@ -102,13 +102,13 @@ function ENT:Initialize ()
 	end
 
 	self:ResetLastSpawn();
-	self.Spawned  = 0;
-	self.NPCs   = {};
+	self.Spawned = 0;
+	self.NPCs    = {};
 	self:UpdateLabel();
 
 	if (WireLib) then
-	--[[ People wanted wire control,  here is your wire control. ]]--
-		WireLib.CreateSpecialInputs (self,  {
+	--[[ People wanted wire control, here is your wire control. ]]--
+		WireLib.CreateSpecialInputs (self, {
 			"SetActive",
 			"SpawnOne",
 			"NPCClass",
@@ -119,7 +119,7 @@ function ENT:Initialize ()
 			"MaxSpawnedNPCs",
 			"DelayDecreaseAmount",
 			"RemoveNPCs",
-				},  {
+		}, {
 			"NORMAL",
 			"NORMAL",
 			"STRING",
@@ -131,7 +131,7 @@ function ENT:Initialize ()
 			"NORMAL",
 			"NORMAL"
 		});
-		WireLib.CreateSpecialOutputs(self,  {
+		WireLib.CreateSpecialOutputs(self, {
 			"IsOn",
 			"ActiveNPCs",
 			"TotalNPCsSpawned",
@@ -232,7 +232,7 @@ function ENT:Think()
 	BaseClass.Think(self);
 	if (self.Spawned < 0) then self.Spawned = 0 end
 	if (self._WireSpawnedActive) then
-		WireLib.TriggerOutput(self,  "OnNPCSpawned",  0);
+		WireLib.TriggerOutput(self, "OnNPCSpawned", 0);
 		self._WireSpawnedActive = nil;
 	end
 	if ((not self:IsActive()) or
@@ -406,12 +406,12 @@ local angles = Angle(0, 0, 0);
 function ENT:SpawnOne()
 	local class = self:GetNPC();
 
-	if ( npcspawner.legacy[ class ] ) then
-		class = npcspawner.legacy[ class ];
+	if (npcspawner.legacy[class]) then
+		class = npcspawner.legacy[class];
 	end
 
-	local npcdata = list.Get('NPC')[ class ];
-	if ( not npcdata and not npcspawner.config.allowdodgy ) then
+	local npcdata = list.Get('NPC')[class];
+	if (not npcdata and not npcspawner.config.allowdodgy) then
 		-- TODO: Error? Message?
 		npcspawner.debug(self, "tried to spawn an invalid NPC", class);
 		self:TurnOff();
@@ -422,8 +422,8 @@ function ENT:SpawnOne()
 	npcspawner.debug(self, "is spawning a", class, "with a", weapon);
 	if (weapon == 'weapon_none' or weapon == 'none') then
 		weapon = nil;
-	elseif (weaponsets[ weapon ]) then
-		weapon = table.Random(weaponsets[ weapon ]);
+	elseif (weaponsets[weapon]) then
+		weapon = table.Random(weaponsets[weapon]);
 	elseif (npcdata and npcdata.Weapons and (not weapon or weapon == '' or weapon == 'weapon_default')) then
 		weapon = table.Random(npcdata.Weapons);
 	end
@@ -432,23 +432,23 @@ function ENT:SpawnOne()
 	if (npcspawner.config.callhooks == 1 and IsValid(ply)) then
 		if (not gamemode.Call("PlayerSpawnNPC", ply, class, weapon)) then
 			self.LastSpawn = CurTime() + 5; -- Disable spawning for 5 seconds so the user isn't spammed
-			npcspawner.debug(ply,  "has failed the PlayerSpawnNPC hook.");
+			npcspawner.debug(ply, "has failed the PlayerSpawnNPC hook.");
 			return false;
 		end
 	end
 
-	local position = (self:GetUp() * rand() + self:GetForward() * rand() ) * self:GetSpawnRadius();
+	local position = (self:GetUp() * rand() + self:GetForward() * rand()) * self:GetSpawnRadius();
 	local offset = self:GetSpawnHeight();
-	npcspawner.debug2("Offset:",  position);
-	debugoverlay.Line(self:GetPos(), self:GetPos() + position, 10, color_white, true );
+	npcspawner.debug2("Offset:", position);
+	debugoverlay.Line(self:GetPos(), self:GetPos() + position, 10, color_white, true);
 
 	angles.y = position:Angle().y
 	debugoverlay.Axis(self:GetPos() + position, angles, 10, 10, true);
-	npcspawner.debug2("Angles:",  angles);
+	npcspawner.debug2("Angles:", angles);
 
 	position = self:GetPos() + position;
 	local normal = self:GetRight() * -1;
-	debugoverlay.Line(position, position + normal * offset, 10, Color(255, 255, 0), true );
+	debugoverlay.Line(position, position + normal * offset, 10, Color(255, 255, 0), true);
 
 	local npc, isError;
 	if (npcdata) then
@@ -459,7 +459,7 @@ function ENT:SpawnOne()
 
 	if (not IsValid(npc)) then
 		self.LastSpawn = CurTime() + 1; -- Disable spawning for a second
-		npcspawner.debug( self, "failed to create npc of type", class );
+		npcspawner.debug(self, "failed to create npc of type", class);
 		if (isError) then
 			self:TurnOff();
 			error("Failed to create a NPC of type '"..class.."'!");
@@ -513,21 +513,21 @@ function ENT:SpawnOne()
 	self.LastSpawn = CurTime();
 
 	if (self.TotalSpawned % self:GetMaxNPCs() == 0) then
-		npcspawner.debug(self.TotalSpawned.." NPCs spawned,  decreasing delay ("..self:GetSpawnDelay()..") by "..self:GetDelayDecrease());
+		npcspawner.debug(self.TotalSpawned.." NPCs spawned, decreasing delay ("..self:GetSpawnDelay()..") by "..self:GetDelayDecrease());
 		self:SetSpawnDelay(math.max(self:GetSpawnDelay() - self:GetDelayDecrease(), npcspawner.config.mindelay));
 	end
 
 
 	if (WireLib) then
-		WireLib.TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
-		WireLib.TriggerOutput(self,  "TotalNPCsSpawned",  self.TotalSpawned);
-		WireLib.TriggerOutput(self,  "LastNPCSpawned",  npc);
-		WireLib.TriggerOutput(self,  "OnNPCSpawned",  1);
-		WireLib.TriggerOutput(self,  "OnNPCSpawned",  0);
+		WireLib.TriggerOutput(self, "ActiveNPCs", self.Spawned);
+		WireLib.TriggerOutput(self, "TotalNPCsSpawned", self.TotalSpawned);
+		WireLib.TriggerOutput(self, "LastNPCSpawned", npc);
+		WireLib.TriggerOutput(self, "OnNPCSpawned", 1);
+		WireLib.TriggerOutput(self, "OnNPCSpawned", 0);
 		--self._WireSpawnedActive = true;
 	end
 
-	if (self.TotalSpawned == self:GetMaxNPCsTotal()) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point,  shit works.
+	if (self.TotalSpawned == self:GetMaxNPCsTotal()) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point, shit works.
 		npcspawner.debug("totallimit ("..self:GetMaxNPCsTotal()..") hit. Turning off.");
 		self:TurnOff();
 	end
@@ -538,11 +538,11 @@ function ENT:NPCKilled(npc)
 	self.NPCs[npc] = nil;
 	self.Spawned = self.Spawned - 1;
 	if (WireLib) then
-		WireLib.TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
+		WireLib.TriggerOutput(self, "ActiveNPCs", self.Spawned);
 	end
 end
 
-function ENT:Use (activator,  caller)
+function ENT:Use (activator, caller)
 	if (not self:GetCanToggle() or self.LastChange + 1 > CurTime()) then
 		return;
 	end
@@ -565,7 +565,7 @@ function ENT:TurnOn()
 	self.TotalSpawned = 0;
 	self:SetSpawnDelay(self:GetStartDelay());
 	if (WireLib) then
-		WireLib.TriggerOutput(self,  "TotalNPCsSpawned",  self.TotalSpawned);
+		WireLib.TriggerOutput(self, "TotalNPCsSpawned", self.TotalSpawned);
 	end
 end
 function ENT:TurnOff()
@@ -590,11 +590,11 @@ function ENT:OnActiveChange(_, _, active)
 	self.LastChange = CurTime();
 end
 
--- Using keyvalues allows us to have a callback for each value,  should it be needed.
-function ENT:KeyValue(key,  value)
+-- Using keyvalues allows us to have a callback for each value, should it be needed.
+function ENT:KeyValue(key, value)
 	npcspawner.debug2(self, "Key:", key, "Value:", value);
 
-	if ( self:SetNetworkKeyValue( key, value ) ) then
+	if (self:SetNetworkKeyValue(key, value)) then
 		npcspawner.debug2("Swallowed by magic!~")
 		return
 	end
@@ -624,7 +624,7 @@ function ENT:RemoveNPCs()
 	end
 	self.Spawned = 0;
 	if (WireLib) then
-		WireLib.TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
+		WireLib.TriggerOutput(self, "ActiveNPCs", self.Spawned);
 	end
 end
 
@@ -638,7 +638,7 @@ function ENT:OnRemove()
 end
 
 --[[ Wire based shit ]]--
-function ENT:TriggerInput(name,  val)
+function ENT:TriggerInput(name, val)
 	npcspawner.debug2(self, "has recieved wire input with name", name, "and value", val);
 	if (name == "SetActive") then
 		if (val == 0) then
