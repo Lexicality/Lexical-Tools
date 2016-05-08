@@ -23,7 +23,6 @@ local cvars = {
 	offkey        = "1";
 	nocollide     = "1";
 	healthmul     = "1";
-	autotarget    = "1";
 	toggleable    = "1";
 	autoremove    = "1";
 	squadoverride = "1";
