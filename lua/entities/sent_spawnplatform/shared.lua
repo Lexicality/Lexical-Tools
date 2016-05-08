@@ -163,6 +163,12 @@ ENT._NWVars = {
 		LegacyName = "nocollide";
 		Default = true;
 	},
+	{
+		Type = "Bool";
+		Name = "Frozen";
+		LegacyName = "frozen";
+		Default = true;
+	},
 
 	{
 		Type = "Entity";

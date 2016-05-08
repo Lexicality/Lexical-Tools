@@ -31,12 +31,11 @@ local cvars = {
 	decrease      = "0";
 	active        = "0";
 	skill         = WEAPON_PROFICIENCY_AVERAGE;
+	frozen        = "1";
 }
 
 cleanup.Register("Spawnplatforms");
 table.Merge( TOOL.ClientConVar, cvars );
--- TOOL only, not one of the kvs
-TOOL.ClientConVar["frozen"] = 0;
 
 function TOOL:LeftClick(trace)
 	local owner = self:GetOwner()
@@ -70,10 +69,6 @@ function TOOL:LeftClick(trace)
 	ent:SetPlayer(owner)
 	local min = ent:OBBMins()
 	ent:SetPos( trace.HitPos - trace.HitNormal * min.y );
-	local phys = ent:GetPhysicsObject();
-	if (IsValid(phys)) then
-		phys:EnableMotion(self:GetClientNumber("frozen", 1) == 0);
-	end
 	owner:AddCount("sent_spawnplatform", ent);
 	undo.Create("NPC Spawn Platform");
 		undo.SetPlayer(self:GetOwner());

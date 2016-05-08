@@ -90,11 +90,14 @@ function ENT:Initialize ()
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:SetSolid	(SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject();
-	if (IsValid(phys)) then
-		phys:Wake();
-	else
+	if (not IsValid(phys)) then
 		ErrorNoHalt("No physics object for ", tostring(self), " using model ", self:GetModel(), "?\n");
+	elseif (self:GetFrozen()) then
+		phys:EnableMotion(false);
+	else
+		phys:Wake();
 	end
+
 	self:ResetLastSpawn();
 	self.Spawned  = 0;
 	self.NPCs   = {};
@@ -158,6 +161,7 @@ function ENT:RegisterListeners()
 	self:NetworkVarNotify("StartDelay", self.OnStartDelayChange);
 	self:NetworkVarNotify("PlayerID", self.OnPlayerIDChange);
 	self:NetworkVarNotify("Player", self.OnPlayerChange);
+	self:NetworkVarNotify("Frozen", self.OnFrozenStateChange);
 	self:NetworkVarNotify("OnKey", function(self, _, _, onKey)
 		self:RebindNumpads(self:GetPlayer(), onKey, self:GetOffKey());
 	end)
@@ -192,6 +196,16 @@ function ENT:OnPlayerChange(_, oldPly, ply)
 	end
 	if (ply ~= oldPly) then
 		self:RebindNumpads(ply, self:GetOnKey(), self:GetOffKey());
+	end
+end
+
+function ENT:OnFrozenStateChange(_, _, freeze)
+	local phys = self:GetPhysicsObject();
+	if (IsValid(phys)) then
+		phys:EnableMotion(not freeze);
+		if (not freeze) then
+			phys:Wake();
+		end
 	end
 end
 
