@@ -18,6 +18,14 @@ Features
 
 Changelog
 ---------
+* __2.3.0__:
+  - Completely rebuilt internal vars + networking - API is now platform:GetMaxNPCs() instead of platform.k_maximum.
+    (k_* vars are still available for compatability reasons, but are deprecated)
+  - Now compatible with Saves, Duplication and persistence
+  - Fixed WireMod not duplicating correctly
+  - Now uses the WireMod overlay when available
+  - Added tabs to the NPC selection
+  - Fix "None" missing from the weapons menu
 * __2.2.3__:
   - Fixed NextBots having 0 health when spawned
 * __2.2.2__:
