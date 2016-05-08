@@ -185,25 +185,27 @@ ENT._NWVars = {
 function ENT:SetupDataTables()
 	-- In order not to break existing compatability, make sure all
 	--  keys are still available under their old names.
-	local argh = {};
-	local function legacyShite(ent, key, old, new)
-		local what = argh[key];
-		if (what) then
-			ent["k_" .. what.LegacyName] = tostring(new);
+	local legacy = {};
+	local function onDataChanged(ent, key, old, new)
+		local data = legacy[key];
+		if (data) then
+			ent["k_" .. data.LegacyName] = tostring(new);
 		end
 	end
 
 	local NWCounts = {};
 
 	for _, nwvar in pairs(self._NWVars) do
-		argh[nwvar.Name] = nwvar;
 		local id = NWCounts[nwvar.Type] or 0;
 		local special = nwvar.Special or {};
 		special.KeyName = nwvar.LegacyName;
 		self:NetworkVar(nwvar.Type, id, nwvar.Name, special);
+
 		if (nwvar.LegacyName) then
-			self:NetworkVarNotify(nwvar.Name, legacyShite);
+			legacy[nwvar.Name] = nwvar;
+			self:NetworkVarNotify(nwvar.Name, onDataChanged);
 		end
+
 		if (nwvar.Default ~= nil) then
 			self["Set" .. nwvar.Name](self, nwvar.Default);
 		end
