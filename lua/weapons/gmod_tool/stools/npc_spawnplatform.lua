@@ -224,17 +224,16 @@ function TOOL.BuildCPanel( CPanel )
 			function option( title, class )
 				weapons:AddOption( title, { [ key ] = class } );
 			end
-			option( "Default Weapon", "weapon_default" );
+
+			option( "  Default Weapon",       "weapon_default" );
+			option( "  None",                 "weapon_none"    );
+			option( " Random Rebel Weapon",   "weapon_rebel"   );
+			option( " Random Combine Weapon", "weapon_combine" );
+			option( " Random Citizen Weapon", "weapon_citizen" );
+
 			for _, tab in pairs( list.Get( "NPCUsableWeapons" ) ) do
-				local title, class = tab.title, tab.class;
-				if ( class == "none" ) then
-					class = "weapon_none";
-				end
-				option( title, class );
+				option( tab.title, tab.class );
 			end
-			option( "Random Rebel Weapon",   "weapon_rebel"   );
-			option( "Random Combine Weapon", "weapon_combine" );
-			option( "Random Citizen Weapon", "weapon_citizen" );
 
 		end
 		-- Skill select
