@@ -3,6 +3,10 @@
 	Copyright (c) 2011-2016 Lex Robinson
 	This code is freely available under the MIT License
 --]]
+AddCSLuaFile("shared.lua");
+include('shared.lua');
+
+DEFINE_BASECLASS(ENT.Base);
 
 --[[ Make the platform dupable ]]--
 duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angles,  data)
@@ -24,8 +28,7 @@ duplicator.RegisterEntityClass("sent_spawnplatform",  function(ply,  pos,  angle
 	end
 	return ent;
 end,  "Pos",  "Angle",  "Data");
-AddCSLuaFile("shared.lua");
-include('shared.lua');
+
 local model1 = Model("models/props_c17/streetsign004e.mdl");
 local model2 = Model("models/props_c17/streetsign004f.mdl");
 --[[
@@ -106,15 +109,15 @@ function ENT:Initialize ()
 	if (WireLib) then
 	--[[ People wanted wire control,  here is your wire control. ]]--
 		WireLib.CreateSpecialInputs (self,  {
-			"SetActive", 				-- active
+			"SetActive",
 			"SpawnOne",
-			"NPCClass", 				-- npc
-			"MaxActiveNPCs", 		-- maximum
-			"SpawnDelay", 			-- delay
-			"Weapon", 				-- weapon
-			"HealthMultiplier", 		-- healthmul
-			"MaxSpawnedNPCs", 		-- totallimit
-			"DelayDecreaseAmount", 	-- decrease
+			"NPCClass",
+			"MaxActiveNPCs",
+			"SpawnDelay",
+			"Weapon",
+			"HealthMultiplier",
+			"MaxSpawnedNPCs",
+			"DelayDecreaseAmount",
 			"RemoveNPCs",
 				},  {
 			"NORMAL",
@@ -127,18 +130,6 @@ function ENT:Initialize ()
 			"NORMAL",
 			"NORMAL",
 			"NORMAL"
-			--[[
-				}, {
-			"Set the active state of the platform",
-			"Force the spawning of a NPC",
-			"Set the class of NPC to spawn",
-			"Set the max number of active NPCs",
-			"Set the spawn delay",
-			"Set what weapon to give the NPCs",
-			"Set the health multiplier for the NPCs",
-			"Set how much to decrease the delay by every MaxActiveNPCs spawned",
-			"Delete all NPCs currently spawned."
-			--]]
 		});
 		WireLib.CreateSpecialOutputs(self,  {
 			"IsOn",
@@ -146,14 +137,12 @@ function ENT:Initialize ()
 			"TotalNPCsSpawned",
 			"LastNPCSpawned",
 			"OnNPCSpawned"
-				},  {
-			"NORMAL",  "NORMAL",  "NORMAL",  "ENTITY",  "NORMAL"
-			--[[	}, {
-			"Is the platform on?",
-			"The number of currently active NPCs",
-			"The total number of NPCs spawned this active session",
-			"The last NPC the platform spawned",
-			"Triggered every time a NPC is spawned."--]]
+		}, {
+			"NORMAL",
+			"NORMAL",
+			"NORMAL",
+			"ENTITY",
+			"NORMAL"
 		});
 	end
 end
@@ -240,9 +229,10 @@ function ENT:RebindNumpads(ply, keyOn, keyOff)
 end
 
 function ENT:Think()
+	BaseClass.Think(self);
 	if (self.Spawned < 0) then self.Spawned = 0 end
 	if (self._WireSpawnedActive) then
-		Wire_TriggerOutput(self,  "OnNPCSpawned",  0);
+		WireLib.TriggerOutput(self,  "OnNPCSpawned",  0);
 		self._WireSpawnedActive = nil;
 	end
 	if ((not self:IsActive()) or
@@ -407,6 +397,7 @@ local function rand()
 end
 
 local function onremove(npc, platform)
+	npcspawner.debug2("onremove", npc, platform);
 	if (IsValid(platform)) then
 		platform:NPCKilled(npc);
 	end
@@ -527,12 +518,12 @@ function ENT:SpawnOne()
 	end
 
 
-	if (Wire_TriggerOutput) then
-		Wire_TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
-		Wire_TriggerOutput(self,  "TotalNPCsSpawned",  self.TotalSpawned);
-		Wire_TriggerOutput(self,  "LastNPCSpawned",  npc);
-		Wire_TriggerOutput(self,  "OnNPCSpawned",  1);
-		Wire_TriggerOutput(self,  "OnNPCSpawned",  0);
+	if (WireLib) then
+		WireLib.TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
+		WireLib.TriggerOutput(self,  "TotalNPCsSpawned",  self.TotalSpawned);
+		WireLib.TriggerOutput(self,  "LastNPCSpawned",  npc);
+		WireLib.TriggerOutput(self,  "OnNPCSpawned",  1);
+		WireLib.TriggerOutput(self,  "OnNPCSpawned",  0);
 		--self._WireSpawnedActive = true;
 	end
 
@@ -546,8 +537,8 @@ function ENT:NPCKilled(npc)
 	npcspawner.debug2("NPC Killed:", npc);
 	self.NPCs[npc] = nil;
 	self.Spawned = self.Spawned - 1;
-	if (Wire_TriggerOutput) then
-		Wire_TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
+	if (WireLib) then
+		WireLib.TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
 	end
 end
 
@@ -573,8 +564,8 @@ function ENT:TurnOn()
 	self:SetActive(true);
 	self.TotalSpawned = 0;
 	self:SetSpawnDelay(self:GetStartDelay());
-	if (Wire_TriggerOutput) then
-		Wire_TriggerOutput(self,  "TotalNPCsSpawned",  self.TotalSpawned);
+	if (WireLib) then
+		WireLib.TriggerOutput(self,  "TotalNPCsSpawned",  self.TotalSpawned);
 	end
 end
 function ENT:TurnOff()
@@ -593,8 +584,8 @@ function ENT:OnActiveChange(_, _, active)
 		self:SetModel(model2);
 		self:SetColor(Color(255, 0, 0, a));
 	end
-	if (Wire_TriggerOutput) then
-		Wire_TriggerOutput(self, "IsOn", active and 1 or 0);
+	if (WireLib) then
+		WireLib.TriggerOutput(self, "IsOn", active and 1 or 0);
 	end
 	self.LastChange = CurTime();
 end
@@ -611,6 +602,7 @@ function ENT:KeyValue(key,  value)
 end
 
 function ENT:OnEntityCopyTableFinish(tab)
+	if (BaseClass.OnEntityCopyTableFinish) then BaseClass.OnEntityCopyTableFinish(self, tab) end;
 	-- Purge all legacy cruft from the dupe
 	for key in pairs(tab) do
 		if (key:sub(1, 2) == "k_") then
@@ -631,12 +623,13 @@ function ENT:RemoveNPCs()
 		end
 	end
 	self.Spawned = 0;
-	if (Wire_TriggerOutput) then
-		Wire_TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
+	if (WireLib) then
+		WireLib.TriggerOutput(self,  "ActiveNPCs",  self.Spawned);
 	end
 end
 
 function ENT:OnRemove()
+	BaseClass.OnRemove(self);
 	npcspawner.debug(self, "has been removed.");
 	if (self:GetAutoRemove()) then
 		self:RemoveNPCs();

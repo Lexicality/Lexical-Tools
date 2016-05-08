@@ -5,12 +5,20 @@
 --]]
 
 ENT.Type           = "anim";
-ENT.Base           = "base_gmodentity";
 ENT.PrintName      = "NPC Spawn Platform";
+ENT.WireDebugName  = "Spawn Platform";
 ENT.Author         = "Lexi/Devenger";
 ENT.Purpose        = "Spawn a constant(ish) stream of NPCs";
 ENT.Spawnable      = false;
 ENT.AdminSpawnable = true;
+
+local BaseClass;
+if (WireLib) then
+    BaseClass = "base_wire_entity"
+else
+    BaseClass = "base_gmodentity"
+end
+DEFINE_BASECLASS(BaseClass);
 
 print("Hello from the Spawn Platform!");
 
