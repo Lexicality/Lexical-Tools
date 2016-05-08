@@ -174,9 +174,6 @@ local function AddControl( CPanel, control, name, data )
 	end
 	return ctrl;
 end
--- Derp. CPanel:AddControl lowercases control names for you (so kind)
-vgui.Register("controlpanel", {}, "ControlPanel");
-vgui.Register("npcselect", {}, "NPCSelect");
 
 function TOOL.BuildCPanel( CPanel )
 	CPanel:AddControl( "Header", {
