@@ -10,7 +10,7 @@ local ClassName = 'npc_spawnplatform';
 MsgN( ClassName, ' reloaded');
 
 TOOL.Category     = "Lexical Tools"             -- Name of the category
-TOOL.Name         = "NPC Spawn Platforms 2.2"   -- Name to display
+TOOL.Name         = "NPC Spawn Platforms v2"   -- Name to display
 --- Default Values
 local cvars = {
 	npc           = "npc_combine_s";
@@ -107,7 +107,7 @@ if ( SERVER ) then return; end
 local function AddToolLanguage( id, lang )
 	language.Add( 'tool.' .. ClassName .. '.' .. id, lang );
 end
-AddToolLanguage( "name", "NPC Spawn Platforms 2.2" );
+AddToolLanguage( "name", "NPC Spawn Platforms v2" );
 AddToolLanguage( "desc", "Create a platform that will constantly make NPCs." );
 AddToolLanguage( "0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data." );
 -- Controls
