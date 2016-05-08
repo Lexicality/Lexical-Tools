@@ -87,7 +87,7 @@ end
 function TOOL:RightClick(trace)
 	npcspawner.debug2(owner,"has right-clicked the STool.");
 	local ent = trace.Entity;
-	if (IsValid(ent) and ent:GetClass() == "sent_npcspawner") then
+	if (IsValid(ent) and ent:GetClass() == "sent_spawnplatform") then
 		if (CLIENT) then return true end
 		local owner = self:GetOwner();
 		for key in pairs(self.ClientConVar) do
