@@ -1,31 +1,47 @@
 local PANEL = {};
 
+DEFINE_BASECLASS "DPropertySheet";
+
 AccessorFunc( PANEL, "m_ConVar", "ConVar" );
 
 function PANEL:Init()
 	local npcs = list.Get('NPC');
 
-	-- Temp standin
-	local ctrl = vgui.Create( "DListView" );
-	ctrl:SetMultiSelect( false );
-	ctrl:AddColumn( "#npcs" );
-	ctrl:AddColumn( "#category" );
+	local categories = {};
 
-	for nicename, data in pairs( npcs ) do
-		local line = ctrl:AddLine( data.Name, data.Category )
-		line.nicename = nicename;
+	for nicename, data in pairs(npcs) do
+		local cat = data.Category;
+		categories[cat] = categories[cat] or {};
+		categories[cat][nicename] = data;
 	end
 
-	ctrl:SetTall( 150 );
-	ctrl:SortByColumn( 2, false )
-
-	ctrl.OnRowSelected = function(ctrl, LineID, Line)
-		RunConsoleCommand( self:GetConVar(), Line.nicename )
+	function onNPCSelected(_, _, line)
+		RunConsoleCommand( self:GetConVar(), line.nicename )
 	end
 
-	ctrl:SetParent( self )
-	ctrl:Dock(FILL);
-	self:SetTall(150);
+	local catNames = table.GetKeys(categories);
+	table.sort(catNames);
+
+	for _, category in ipairs(catNames) do
+		local npcs = categories[category];
+
+		-- Temp standin
+		local ctrl = vgui.Create( "DListView" );
+		ctrl:SetMultiSelect( false );
+		ctrl:AddColumn( "#npcs" );
+
+		for nicename, data in pairs( npcs ) do
+			local line = ctrl:AddLine( data.Name )
+			line.nicename = nicename;
+		end
+		ctrl.OnRowSelected = onNPCSelected;
+
+		ctrl:SortByColumn( 1, false )
+
+		self:AddSheet(category, ctrl);
+	end
+
+	self:SetTall(200);
 	self.list = ctrl;
 
 end
@@ -38,5 +54,4 @@ end
 
 -- TODO: Think hook!
 
-
-vgui.Register( "NPCSelect", PANEL, "DPanel" )
+derma.DefineControl("NPCSpawnSelecter", "Selects a NPC fo' spawnin'", PANEL, "DPropertySheet")

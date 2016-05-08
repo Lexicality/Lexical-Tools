@@ -216,7 +216,7 @@ function TOOL.BuildCPanel( CPanel )
 		end
 		local npcs = AddControl( CPanel, "ListBox", "npc", combo );
 		--]]
-		AddControl( CPanel, "NPCSelect", "npc" );
+		AddControl( CPanel, "NPCSpawnSelecter", "npc" );
 
 		local weapons = AddControl( CPanel, "ListBox", "weapon" );
 		do
