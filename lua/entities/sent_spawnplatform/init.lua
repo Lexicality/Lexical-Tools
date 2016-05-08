@@ -101,6 +101,8 @@ function ENT:Initialize ()
 	self:ResetLastSpawn();
 	self.Spawned  = 0;
 	self.NPCs   = {};
+	self:UpdateLabel();
+
 	if (WireLib) then
 	--[[ People wanted wire control,  here is your wire control. ]]--
 		WireLib.CreateSpecialInputs (self,  {
@@ -168,6 +170,14 @@ function ENT:RegisterListeners()
 	self:NetworkVarNotify("OffKey", function(self, _, _, offKey)
 		self:RebindNumpads(self:GetPlayer(), self:GetOnKey(), offKey);
 	end)
+
+	local function labelr(self)
+		timer.Simple(0, function() self:UpdateLabel() end);
+	end
+	self:NetworkVarNotify("NPC", labelr);
+	self:NetworkVarNotify("NPCWeapon", labelr);
+	self:NetworkVarNotify("SpawnDelay", labelr);
+	self:NetworkVarNotify("MaxNPCs", labelr);
 end
 
 function ENT:OnStartDelayChange(_, _, delay)

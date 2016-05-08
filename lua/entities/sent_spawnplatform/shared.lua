@@ -25,7 +25,7 @@ function ENT:UpdateLabel()
 		"NPC: "       .. convert(self:GetNPC()      )  ..
 		"\nWeapon: "  .. convert(self:GetNPCWeapon())  ..
 		"\nDelay: "   ..         self:GetSpawnDelay()  ..
-		"\nMaximum: " ..         self:GetMaximumNPCs()
+		"\nMaximum: " ..         self:GetMaxNPCs()
 	);
 end
 
