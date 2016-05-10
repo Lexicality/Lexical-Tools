@@ -10,7 +10,7 @@ function PANEL:Init()
 	local categories = {};
 
 	for nicename, data in pairs(npcs) do
-		local cat = data.Category;
+		local cat = data.Category or "Uncategorized";
 		categories[cat] = categories[cat] or {};
 		categories[cat][nicename] = data;
 	end
