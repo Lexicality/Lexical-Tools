@@ -7,24 +7,19 @@ AccessorFunc( PANEL, "m_ConVar", "ConVar" );
 function PANEL:Init()
 	local npcs = list.Get('NPC');
 
-	local categories = {};
-
-	for nicename, data in pairs(npcs) do
-		local cat = data.Category or "Uncategorized";
-		categories[cat] = categories[cat] or {};
-		categories[cat][nicename] = data;
-	end
-
 	function onNPCSelected(_, _, line)
 		RunConsoleCommand( self:GetConVar(), line.nicename )
 	end
 
-	local catNames = table.GetKeys(categories);
-	table.sort(catNames);
+	local categories = {};
 
-	for _, category in ipairs(catNames) do
-		local npcs = categories[category];
+	for nicename, data in pairs(npcs) do
+		local cat = data.Category or "Other";
+		categories[cat] = categories[cat] or {};
+		categories[cat][nicename] = data;
+	end
 
+	for category, npcs in SortedPairs(categories) do
 		-- Temp standin
 		local ctrl = vgui.Create( "DListView" );
 		ctrl:SetMultiSelect( false );
