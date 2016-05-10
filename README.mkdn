@@ -18,6 +18,10 @@ Features
 
 Changelog
 ---------
+* __2.3.2__:
+  - Fix NPCs with no category breaking the tool
+* __2.3.1__:
+  - Fix old wire installations breaking the platform
 * __2.3.0__:
   - Completely rebuilt internal vars + networking - API is now platform:GetMaxNPCs() instead of platform.k_maximum.
     (k_* vars are still available for compatability reasons, but are deprecated)
