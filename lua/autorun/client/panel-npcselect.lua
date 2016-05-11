@@ -18,7 +18,7 @@ function PANEL:Init()
 	ctrl:AddColumn( "#category" );
 
 	for nicename, data in pairs( npcs ) do
-		local line = ctrl:AddLine( data.Name, data.Category )
+		local line = ctrl:AddLine( data.Name, data.Category or "Other" )
 		line.nicename = nicename;
 	end
 
