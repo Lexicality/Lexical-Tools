@@ -11,6 +11,20 @@ function PANEL:Init()
 		RunConsoleCommand( self:GetConVar(), line.nicename )
 	end
 
+	-- All tab
+	local ctrl = vgui.Create( "DListView" );
+	ctrl:SetMultiSelect( false );
+	ctrl:AddColumn( "#npcs" );
+	ctrl:AddColumn( "#category" );
+
+	for nicename, data in pairs( npcs ) do
+		local line = ctrl:AddLine( data.Name, data.Category )
+		line.nicename = nicename;
+	end
+
+	ctrl:SortByColumn(2, false);
+	self:AddSheet("#All", ctrl);
+
 	local categories = {};
 
 	for nicename, data in pairs(npcs) do
