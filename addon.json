@@ -1,0 +1,21 @@
+{
+	"title"   : "Weapon Spawn Platforms",
+	"author"  : "Lex Robinson",
+	"contact" : "lexi@lexi.org.uk",
+	"updated" : "June '16",
+	"license" : "MIT",
+	"type"    : "tool",
+	"tags"    : ["fun", "build"],
+	"ignore"  :
+	[
+		"LICENSE",
+		"*.mkdn",
+		".git*",
+		"*.sublime*",
+		"*.jpg",
+		"*.psd",
+		"*.png",
+		"*.gma",
+		"workshop_screenies/*"
+	]
+}
