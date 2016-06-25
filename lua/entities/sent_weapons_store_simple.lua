@@ -4,7 +4,6 @@
 	This code is freely available under the MIT License
 --]]
 AddCSLuaFile();
-print("123")
 
 ENT.Type          = "anim";
 ENT.PrintName     = "Weapon Spawner (simple)";
