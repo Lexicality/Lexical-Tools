@@ -246,6 +246,8 @@ function ENT:OnDuplicated(entTable)
 	if (BaseClass.OnDuplicated) then BaseClass.OnDuplicated(self, entTable); end
 	-- Reset lifetime vars
 	self:SetNumSpawned(0);
+	self.NextSpawn = 0;
+	self.CurrentWeapon = NULL;
 end
 
 function ENT:SpawnFunction(ply,  tr)
