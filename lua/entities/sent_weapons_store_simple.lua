@@ -21,10 +21,12 @@ DEFINE_BASECLASS "sent_maybe_its_wire";
 duplicator.Allow("sent_weapons_store_simple");
 
 function ENT:Initialize()
+	if (self.BaseClass.Initialize) then self.BaseClass.Initialize(self); end
+
+	if (CLIENT) then return; end
+
 	self:SetModel("models/props_c17/streetsign004e.mdl");
 	self:PhysicsInit(SOLID_VPHYSICS);
-	self:SetMoveType(MOVETYPE_VPHYSICS);
-	self:SetSolid   (SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject();
 	if (not IsValid(phys)) then
 		ErrorNoHalt("No physics object for ", tostring(self), " using model ", self:GetModel(), "?\n");
@@ -33,7 +35,7 @@ function ENT:Initialize()
 		phys:EnableMotion(self:GetUnfrozen());
 	end
 
-	if (WireLib and SERVER) then
+	if (WireLib) then
 		WireLib.CreateSpecialInputs (self, {
 			"SpawnOne",
 			"RemoveCurrentWeapon",
@@ -58,6 +60,8 @@ function ENT:Initialize()
 end
 
 function ENT:SetupDataTables()
+	if (self.BaseClass.SetupDataTables) then self.BaseClass.SetupDataTables(self); end
+
 	self:NetworkVar("Bool", 0, "SpawnOnce", {
 		KeyName = "once";
 		Edit = {
