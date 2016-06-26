@@ -15,7 +15,7 @@ ENT.AdminSpawnable = false;
 local BaseClass;
 if (WireLib) then
     BaseClass = "base_wire_entity"
-elseif (engine.ActiveGameode() == "sandbox") then
+elseif (engine.ActiveGamemode() == "sandbox") then
     BaseClass = "base_gmodentity"
 else
 	BaseClass = "base_anim";
