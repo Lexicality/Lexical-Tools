@@ -16,14 +16,68 @@ ENT.Spawnable     = true;
 ENT.AdminOnly     = true;
 ENT.Editable      = true;
 
-DEFINE_BASECLASS "sent_maybe_its_wire";
+DEFINE_BASECLASS "base_lexentity";
 
 duplicator.Allow("sent_weapons_store_simple");
 
-function ENT:Initialize()
-	if (self.BaseClass.Initialize) then self.BaseClass.Initialize(self); end
+ENT._NWVars = {
+	{
+		Name = "SpawnOnce";
+		Type = "Bool";
+		KeyName = "once";
+		Edit = {
+			title = "Only Spawn One";
+			type  = "Boolean";
+			order = 2;
+		};
+	};
+	{
+		Name = "Weapon";
+		Type = "String";
+		KeyName = "weapon";
+		Edit = {
+			title = "Weapon to spawn";
+			type  = "Generic";
+			order = 1;
+			waitforenter = true;
+		};
+	};
+	{
+		Name = "Delay";
+		Type = "Float";
+		KeyName = "spawndelay";
+		Edit = {
+			title = "Delay Between Spawns (seconds)";
+			type  = "Float";
+			order = 3;
+			min   = 0;
+			max   = 60;
+		};
+	};
+	-- Helpers for maps
+	{
+		Name = "Invisible";
+		Type = "Bool";
+		KeyName = "hidden";
+	};
+	{
+		Name = "Unfrozen";
+		Type = "Bool";
+		KeyName = "movable";
+	};
+	-- Self help
+	{
+		Name = "NumSpawned";
+		Type = "Int";
+	}
+}
 
-	if (CLIENT) then return; end
+if (CLIENT) then
+	return;
+end
+
+function ENT:Initialize()
+	if (BaseClass.Initialize) then BaseClass.Initialize(self); end
 
 	self:SetModel("models/props_c17/streetsign004e.mdl");
 	self:PhysicsInit(SOLID_VPHYSICS);
@@ -35,69 +89,44 @@ function ENT:Initialize()
 		phys:EnableMotion(self:GetUnfrozen());
 	end
 
-	if (WireLib) then
-		WireLib.CreateSpecialInputs (self, {
-			"SpawnOne",
-			"RemoveCurrentWeapon",
-			"SetWeaponClass",
-			"SetDelay",
-		}, {
-			"NORMAL",
-			"NORMAL",
-			"STRING",
-			"NORMAL",
-		});
-		WireLib.CreateSpecialOutputs(self, {
-			"CurrentWeapon",
-			"NumSpawned",
-			"OnWeaponSpawned"
-		}, {
-			"ENTITY",
-			"NORMAL",
-			"NORMAL"
-		});
-	end
+	self:CreateWireInputs({
+		{
+			Name = "SpawnOne";
+			Desc = "Spawn a weapon immediately";
+		};
+		{
+			Name = "RemoveCurrentWeapon";
+			Desc = "Deletes the currently spawned weapon";
+		};
+		{
+			Name = "SetWeaponClass";
+			Desc = "Picks the class of weapon to spawn";
+			Type = "String";
+		};
+		{
+			Name = "SetDelay";
+			Desc = "Sets the delay between spawns";
+		};
+	});
+
+	self:CreateWireOutputs({
+		{
+			Name = "CurrentWeapon";
+			Type = "Entity";
+			Desc = "The currently spawned weapon";
+		};
+		{
+			Name = "NumSpawned";
+			Desc = "Lifetime number of weapons spawned";
+		};
+		{
+			Name = "OnWeaponSpawned";
+			Desc = "Triggered when a new weapon is spawned";
+		};
+	})
 end
 
-function ENT:SetupDataTables()
-	if (self.BaseClass.SetupDataTables) then self.BaseClass.SetupDataTables(self); end
-
-	self:NetworkVar("Bool", 0, "SpawnOnce", {
-		KeyName = "once";
-		Edit = {
-			title = "Only Spawn One";
-			type  = "Boolean";
-			order = 2;
-		};
-	});
-	-- Helpers for maps
-	self:NetworkVar("Bool", 1, "Invisible", {
-		KeyName = "hidden";
-	});
-	self:NetworkVar("Bool", 2, "Unfrozen", {
-		KeyName = "movable";
-	});
-	self:NetworkVar("String", 0, "Weapon",    {
-		KeyName = "weapon";
-		Edit = {
-			title = "Weapon to spawn";
-			type  = "Generic";
-			order = 1;
-			waitforenter = true;
-		};
-	});
-	self:NetworkVar("Float", 0, "Delay",     {
-		KeyName = "spawndelay";
-		Edit = {
-			title = "Delay Between Spawns (seconds)";
-			type  = "Float";
-			order = 3;
-			min   = 0;
-			max   = 60;
-		};
-	});
-	self:NetworkVar("Int", 0, "NumSpawned");
-
+function ENT:RegisterListeners()
 	self:NetworkVarNotify("Invisible", function(self, _, _, shouldNotDraw)
 		self:SetNoDraw(shouldNotDraw);
 	end);
@@ -109,29 +138,23 @@ function ENT:SetupDataTables()
 		end
 	end);
 
-	if (SERVER) then
-		self:NetworkVarNotify("Weapon", function(self, _, old, new)
-			if (new ~= old) then
-				self:RemoveWeapon(true);
-			end
-		end);
-
-		if (WireLib) then
-			self:NetworkVarNotify("NumSpawned", function(self, _, _, num)
-				WireLib.TriggerOutput(self, "NumSpawned", num);
-			end);
+	self:NetworkVarNotify("Weapon", function(self, _, old, new)
+		if (new ~= old) then
+			self:RemoveWeapon(true);
 		end
-	end
-end
+	end);
 
-if (CLIENT) then
-	return;
+	if (WireLib) then
+		self:NetworkVarNotify("NumSpawned", function(self, _, _, num)
+			self:TriggerWireOutput("NumSpawned", num);
+		end);
+	end
 end
 
 ENT.NextSpawn = 0;
 ENT.CurrentWeapon = NULL;
 function ENT:Think()
-	if (self.BaseClass.Think) then self.BaseClass.Think(self); end
+	if (BaseClass.Think) then BaseClass.Think(self); end
 
 	-- Crude pickup detection
 	if (IsValid(self.CurrentWeapon)) then
@@ -188,12 +211,9 @@ function ENT:SpawnWeapon()
 	self:SetNumSpawned(self:GetNumSpawned() + 1);
 
 	self:TriggerOutput("spawned", self);
-
-	if (WireLib) then
-		WireLib.TriggerOutput(self, "CurrentWeapon", ent);
-		WireLib.TriggerOutput(self, "OnWeaponSpawned", 1);
-		WireLib.TriggerOutput(self, "OnWeaponSpawned", 0);
-	end
+	self:TriggerWireOutput("CurrentWeapon", ent);
+	self:TriggerWireOutput("OnWeaponSpawned", 1);
+	self:TriggerWireOutput("OnWeaponSpawned", 0);
 end
 
 ---
