@@ -15,15 +15,19 @@ local function printd2(...)
     end
 end
 
+local function svorcl()
+    return SERVER and "SV" or "CL";
+end
+
 npcspawner = {
     debug = function(...)
         if (npcspawner.config.debug == 1) then
-            printd("Spawn Platforms Debug ("..(SERVER and "server" or "client")..")",...);
+            printd("PLFM (" .. svorcl() .. "):", ...);
         end
     end;
     debug2 = function(...)
         if (npcspawner.config.debug == 1) then
-            printd2("Spawn Platforms Debug (Level 2) ("..(SERVER and "server" or "client")..")",...);
+            printd("PLFM L2 (" .. svorcl() .. "):", ...);
         end
     end;
     send = function(name, tab, who)
