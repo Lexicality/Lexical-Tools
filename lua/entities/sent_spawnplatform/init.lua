@@ -517,6 +517,7 @@ function ENT:SpawnOne()
 		self:SetSpawnDelay(math.max(self:GetSpawnDelay() - self:GetDelayDecrease(), npcspawner.config.mindelay));
 	end
 
+	self:TriggerOutput("OnNPCSpawned", self);
 
 	if (WireLib) then
 		WireLib.TriggerOutput(self, "ActiveNPCs", self.Spawned);
@@ -529,6 +530,7 @@ function ENT:SpawnOne()
 
 	if (self.TotalSpawned == self:GetMaxNPCsTotal()) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point, shit works.
 		npcspawner.debug("totallimit ("..self:GetMaxNPCsTotal()..") hit. Turning off.");
+		self:TriggerOutput("OnLimitReached", self);
 		self:TurnOff();
 	end
 end
@@ -537,6 +539,7 @@ function ENT:NPCKilled(npc)
 	npcspawner.debug2("NPC Killed:", npc);
 	self.NPCs[npc] = nil;
 	self.Spawned = self.Spawned - 1;
+	self:TriggerOutput("OnNPCKilled", self);
 	if (WireLib) then
 		WireLib.TriggerOutput(self, "ActiveNPCs", self.Spawned);
 	end
@@ -597,6 +600,10 @@ function ENT:KeyValue(key, value)
 	if (self:SetNetworkKeyValue(key, value)) then
 		npcspawner.debug2("Swallowed by magic!~")
 		return
+	elseif (key:sub(1, 2) == "On") then
+		npcspawner.debug2("Hammer output added");
+		self:StoreOutput(key, value);
+		return;
 	end
 	npcspawner.debug2("REJECTED")
 end
@@ -673,9 +680,19 @@ end
 
 
 --[[ Hammer I/O ]]--
--- function ENT:AcceptInput(name, activator, called, value)
--- 	--npcspawner.debug2(self, "has just had their", name, "triggered by", tostring(called), "which was caused by", tostring(activator), "and was passed", value);
--- 	MsgN(self, " had their '", name, "' input triggered by ", tostring(called), " which was caused by ", tostring(activator), " and was passed '", value, "'");
---     name = string.lower(name);
---     return true;
--- end
+function ENT:AcceptInput(name, activator, called, value)
+	npcspawner.debug2(self, "has just had their", name, "triggered by", tostring(called), "which was caused by", tostring(activator), "and was passed", value);
+	name = name:lower();
+
+	if (name == "turnon") then
+		self:TurnOn();
+	elseif (name == "turnoff") then
+		self:TurnOff();
+	elseif (name == "removenpcs") then
+		self:RemoveNPCs();
+	elseif (name == "spawnone") then
+		self:SpawnOne();
+	end
+
+    return true;
+end

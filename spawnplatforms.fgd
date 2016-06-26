@@ -78,4 +78,6 @@
 	input RemoveNPCs(void) : "Deletes all existing NPCs."
 
 	output OnNPCSpawned(void) : "Fired after spawning a NPC."
+	output OnNPCKiled(void) : "Fired after a spawned NPC dies"
+	output OnLimitReached(void) : "Fired when the max number of NPCs specified has been reached."
 ]
