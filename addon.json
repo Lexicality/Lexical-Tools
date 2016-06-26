@@ -16,6 +16,7 @@
 		"*.psd",
 		"*.png",
 		"*.gma",
+		"*.fgd",
 		"workshop_screenies/*"
 	]
 }
