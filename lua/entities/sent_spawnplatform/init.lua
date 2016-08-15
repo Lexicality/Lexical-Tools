@@ -504,6 +504,9 @@ function ENT:SpawnOne()
 		if (IsValid(ply)) then
 			gamemode.Call("PlayerSpawnedNPC", ply, npc);
 			debugoverlay.Cross(npc:GetPos(), 10, 10, color_white, true);
+			if (CPPI) then
+				npc:CPPISetOwner(ply);
+			end
 		end
 	end
 
