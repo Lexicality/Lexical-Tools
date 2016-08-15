@@ -18,6 +18,11 @@ Features
 
 Changelog
 ---------
+* __2.4.0__:
+  - Add support for Hammer IO
+  - Rejig the NPC categories
+  - Add an "All" tab with the old style gigantic list
+  - Support the Common Prop Protection Interface (FPP et al)
 * __2.3.2__:
   - Fix NPCs with no category breaking the tool
 * __2.3.1__:
