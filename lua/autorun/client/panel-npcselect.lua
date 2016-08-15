@@ -22,6 +22,7 @@ function PANEL:Init()
 		line.nicename = nicename;
 	end
 
+	ctrl.OnRowSelected = onNPCSelected;
 	ctrl:SortByColumn(2, false);
 	self:AddSheet("#All", ctrl);
 
