@@ -127,7 +127,7 @@ AddToolLanguage( "nocollide",     "Disable NPC Collisions" );
 AddToolLanguage( "spawnheight",   "Spawn Height" );
 AddToolLanguage( "spawnradius",   "Spawn Radius" );
 AddToolLanguage( "healthmul",     "Health Multiplier" );
-AddToolLanguage( "frozen",  "Spawn the platform frozen" );
+AddToolLanguage( "frozen",        "Spawn the platform frozen" );
 AddToolLanguage( "customsquads",  "Use Global Squad" );
 AddToolLanguage( "squadoverride", "Global Squad Number" );
 -- Control Descs
