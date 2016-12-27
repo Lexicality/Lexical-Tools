@@ -231,10 +231,6 @@ end
 function ENT:Think()
 	if (BaseClass.Think) then BaseClass.Think(self); end
 	if (self.Spawned < 0) then self.Spawned = 0 end
-	if (self._WireSpawnedActive) then
-		WireLib.TriggerOutput(self, "OnNPCSpawned", 0);
-		self._WireSpawnedActive = nil;
-	end
 	if ((not self:IsActive()) or
 		self.Spawned >= self:GetMaxNPCs() or
 		self.LastSpawn + self:GetSpawnDelay() > CurTime()
@@ -528,7 +524,6 @@ function ENT:SpawnOne()
 		WireLib.TriggerOutput(self, "LastNPCSpawned", npc);
 		WireLib.TriggerOutput(self, "OnNPCSpawned", 1);
 		WireLib.TriggerOutput(self, "OnNPCSpawned", 0);
-		--self._WireSpawnedActive = true;
 	end
 
 	if (self.TotalSpawned == self:GetMaxNPCsTotal()) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point, shit works.
