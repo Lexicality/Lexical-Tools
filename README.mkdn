@@ -18,6 +18,8 @@ Features
 
 Changelog
 ---------
+* __3.0.0__:
+  - ~ REWRITE OF CORE IN PROGRESS~
 * __2.4.0__:
   - Add support for Hammer IO
   - Rejig the NPC categories
