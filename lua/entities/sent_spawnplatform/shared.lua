@@ -139,6 +139,12 @@ ENT._NWVars = {
 		Type = "Float";
 		Name = "SpawnDelay";
 	},
+	{
+		Type = "Bool";
+		Name = "LegacySpawnMode";
+		LegacyName = "oldspawning";
+		Default = False;
+	},
 
 	{
 		Type = "Bool";

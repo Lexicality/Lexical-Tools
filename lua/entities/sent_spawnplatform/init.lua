@@ -536,6 +536,10 @@ end
 function ENT:NPCKilled(npc)
 	npcspawner.debug2("NPC Killed:", npc);
 	self.NPCs[npc] = nil;
+	-- Make the delay apply after the nth NPC dies.
+	if (not self:GetLegacySpawnMode() and self.Spawned >= self:GetMaxNPCs()) then
+		self.LastSpawn = CurTime();
+	end
 	self.Spawned = self.Spawned - 1;
 	self:TriggerOutput("OnNPCKilled", self);
 	if (WireLib) then

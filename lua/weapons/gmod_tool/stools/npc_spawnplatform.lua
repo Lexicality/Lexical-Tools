@@ -30,6 +30,7 @@ local cvars = {
 	totallimit    = "0";
 	decrease      = "0";
 	active        = "0";
+	oldspawning   = "0";
 	skill         = WEAPON_PROFICIENCY_AVERAGE;
 	frozen        = "1";
 }
@@ -130,6 +131,7 @@ AddToolLanguage( "healthmul",     "Health Multiplier" );
 AddToolLanguage( "frozen",        "Spawn the platform frozen" );
 AddToolLanguage( "customsquads",  "Use Global Squad" );
 AddToolLanguage( "squadoverride", "Global Squad Number" );
+AddToolLanguage( "oldspawning",   "Use old spawning mode");
 -- Control Descs
 AddToolLanguage( "skill.desc",         string.format( "Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT ) );
 AddToolLanguage( "delay.desc",         "The delay between each NPC spawn." );
@@ -347,5 +349,7 @@ function TOOL.BuildCPanel( CPanel )
 			Min         = 1;
 			Max         = 50;
 		} );
+		-- Global Squad On/Off
+		AddControl( CPanel, "Checkbox", "oldspawning" );
 	end
 end
