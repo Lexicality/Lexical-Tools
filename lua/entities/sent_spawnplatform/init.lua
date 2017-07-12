@@ -704,15 +704,14 @@ function ENT:AcceptInput(name, activator, called, value)
 	if (BaseClass.AcceptInput) then BaseClass.AcceptInput(self, name, activator, called, value); end
 
 	npcspawner.debug2(self, "has just had their", name, "triggered by", tostring(called), "which was caused by", tostring(activator), "and was passed", value);
-	name = name:lower();
 
-	if (name == "turnon") then
+	if (name == "TurnOn") then
 		self:TurnOn();
-	elseif (name == "turnoff") then
+	elseif (name == "TurnOff") then
 		self:TurnOff();
-	elseif (name == "removenpcs") then
+	elseif (name == "RemoveNPCs") then
 		self:RemoveNPCs();
-	elseif (name == "spawnone") then
+	elseif (name == "SpawnOne") then
 		self:SpawnOne();
 	end
 
