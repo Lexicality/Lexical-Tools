@@ -41,8 +41,8 @@ duplicator.RegisterEntityClass("sent_spawnplatform", function(ply, pos, angles, 
 	return ent;
 end, "Pos", "Angle", "Data");
 
-local model1 = Model("models/props_c17/streetsign004e.mdl");
-local model2 = Model("models/props_c17/streetsign004f.mdl");
+local model_active = Model("models/props_c17/streetsign004e.mdl");
+local model_inactive = Model("models/props_c17/streetsign004f.mdl");
 --[[
 Medic:
 		SpawnFlags	=	131072
@@ -616,11 +616,11 @@ function ENT:OnActiveChange(_, _, active)
 	local c = self:GetColor();
 	local a = c.a;
 	if (active) then
-		self:SetModel(model1);
+		self:SetModel(model_active);
 		self.LastSpawn = CurTime();
 		self:SetColor(Color(0, 255, 0, a));
 	else
-		self:SetModel(model2);
+		self:SetModel(model_inactive);
 		self:SetColor(Color(255, 0, 0, a));
 	end
 	self:TriggerWireOutput("IsOn", active and 1 or 0);
