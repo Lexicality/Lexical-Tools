@@ -248,12 +248,12 @@ function ENT:OnFrozenStateChange(_, _, freeze)
 	end
 end
 
-ENT._prevOnKepad = false;
+ENT._prevOnKeypad = false;
 ENT._prevOffKeypad = false;
 function ENT:RebindNumpads(ply, keyOn, keyOff)
 	numpad.Remove(self._prevOffKeypad);
-	numpad.Remove(self._prevOnKepad);
-	self._prevOnKepad = false;
+	numpad.Remove(self._prevOnKeypad);
+	self._prevOnKeypad = false;
 	self._prevOffKeypad = false;
 
 	if (not IsValid(ply)) then
@@ -261,10 +261,10 @@ function ENT:RebindNumpads(ply, keyOn, keyOff)
 	end
 
 	if (keyOn) then
-		self._prevOnKepad = numpad.OnDown(ply, keyOn, "NPCSpawnerOn", self);
+		self._prevOnKeypad = numpad.OnDown(ply, keyOn, "NPCSpawnerOn", self);
 	end
 	if (keyOff) then
-		self._prevOffKepad = numpad.OnDown(ply, keyOff, "NPCSpawnerOff", self);
+		self._prevOffKeypad = numpad.OnDown(ply, keyOff, "NPCSpawnerOff", self);
 	end
 end
 

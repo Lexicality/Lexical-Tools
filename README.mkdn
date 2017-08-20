@@ -17,6 +17,7 @@ It allows you to create SEnts which spawn a stream of NPCs without user interact
 * __3.0.0__:
   - ~ REWRITE OF CORE IN PROGRESS~
   - Change NPC spawn delay to pause once the maximum NPC limit is reached
+  - Fix key bindings not being cleaned up properly
 * __2.4.0__:
   - Add support for Hammer IO
   - Rejig the NPC categories
