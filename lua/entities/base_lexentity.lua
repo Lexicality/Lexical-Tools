@@ -137,3 +137,50 @@ function ENT:TriggerWireOutput(name, value)
 		WireLib.TriggerOutput(self, name, value);
 	end
 end
+
+-- 'Class' function
+function ENT.CanDuplicate(ply, data)
+	-- A mixture of duplicator copy/paste & sandbox boilerplate
+	if (not duplicator.IsAllowed(data.Class)) then
+		return false;
+	elseif (not IsValid(ply)) then
+		return true;
+	end
+
+	if (not ply:IsAdmin()) then
+		if (not scripted_ents.GetMember(data.Class, "Spawnable")) then
+			return false;
+		elseif (scripted_ents.GetMember(data.Class, "AdminOnly")) then
+			return false;
+		end
+	end
+
+	if (ply.CheckLimit and not ply:CheckLimit(data.Class)) then
+		return false;
+	end
+
+	return true;
+end
+
+-- This is just like duplicator.GenericDuplicatorFunction but it doesn't merge the data table with the entity
+-- It also handles sandbox limits
+function ENT.GenericDuplicate(ply, data)
+	local ent = ents.Create(data.Class);
+	if (not IsValid(ent)) then
+		return;
+	end
+
+	duplicator.DoGeneric(ent, data);
+
+	ent:Spawn();
+	ent:Activate();
+
+	duplicator.DoGenericPhysics(ent, ply, data);
+
+	if (IsValid(ply)) then
+		if (ent.SetPlayer) then ent:SetPlayer(ply) end
+		if (ply.AddCount) then ply:AddCount(data.Class, ent) end
+		if (ply.AddCleanup) then ply:AddCleanup(data.Class, ent) end
+	end
+	return ent;
+end

@@ -20,26 +20,22 @@ include('shared.lua');
 
 DEFINE_BASECLASS(ENT.Base);
 
---[[ Make the platform dupable ]]--
-duplicator.RegisterEntityClass("sent_spawnplatform", function(ply, pos, angles, data)
-	local ent = ents.Create("sent_spawnplatform");
-	ent:SetAngles(angles);
-	ent:SetPos(pos);
-	-- Legacy support
+--[[ The built in duplicator function messes with the platform too much ]]--
+duplicator.RegisterEntityClass("sent_spawnplatform", function(ply, data)
+	if (BaseClass.CanDuplicate(ply, data)) then
+		return BaseClass.GenericDuplicate(ply, data);
+	end
+	return nil;
+end, "Data");
+
+-- Deal with old save data
+function ENT:OnDuplicated(data)
 	for key, value in pairs(data) do
 		if (key:sub(1, 2) == "k_") then
-			ent:SetKeyValue(key:sub(3), value);
+			self:SetKeyValue(key:sub(3), value);
 		end
 	end
-	ent:Spawn();
-	ent:Activate();
-	-- If it's being loaded from a savegame ply might be nil
-	if (IsValid(ply)) then
-		ent:SetPlayer(ply);
-		ply:AddCount("sent_spawnplatform", ent);
-	end
-	return ent;
-end, "Pos", "Angle", "Data");
+end
 
 local model_active = Model("models/props_c17/streetsign004e.mdl");
 local model_inactive = Model("models/props_c17/streetsign004f.mdl");
