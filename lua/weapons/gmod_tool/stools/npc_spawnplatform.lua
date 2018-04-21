@@ -218,38 +218,12 @@ function TOOL.BuildCPanel(CPanel)
 
 		local CPanel = AddControl(CPanel, "ControlPanel", "panel_npc");
 
-		--Type select
-		--[[
-		combo = {
-			Height  = 150;
-			Options = {};
-		};
-		for k, v in pairs(npcspawner.npcs) do
-			combo.Options[v] = {npc_spawnplatform_npc = k};
-		end
-		local npcs = AddControl(CPanel, "ListBox", "npc", combo);
-		--]]
+		-- Type select
 		AddControl(CPanel, "NPCSpawnSelecter", "npc");
 
-		local weapons = AddControl(CPanel, "ListBox", "weapon");
-		do
-			local key = cvar"weapon";
-			function option(title, class)
-				weapons:AddOption(title, { [key] = class });
-			end
+		-- Weapon select
+		AddControl(CPanel, "NPCWeaponSelecter", "weapon");
 
-			-- Use spaces to sort these options to the top
-			option("  Default Weapon",       "weapon_default");
-			option("  None",                 "weapon_none"   );
-			option(" Random Rebel Weapon",   "weapon_rebel"  );
-			option(" Random Combine Weapon", "weapon_combine");
-			option(" Random Citizen Weapon", "weapon_citizen");
-
-			for _, tab in pairs(list.Get("NPCUsableWeapons")) do
-				option(tab.title, tab.class);
-			end
-
-		end
 		-- Skill select
 		AddControl(CPanel, "Slider", "skill", {
 			-- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
