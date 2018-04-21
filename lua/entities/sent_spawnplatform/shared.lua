@@ -27,10 +27,27 @@ DEFINE_BASECLASS "base_lexentity";
 
 print("Hello from the Spawn Platform!");
 
+local reverseLookupCache;
+local function primeLookupCache()
+	reverseLookupCache = {}
+	for _, tab in pairs(list.Get("NPCUsableWeapons")) do
+		reverseLookupCache[tab.class] = tab.title
+	end
+	for className, tab in pairs(list.Get("NPC")) do
+		reverseLookupCache[className] = tab.Name
+	end
+	reverseLookupCache["weapon_default"] = "Default Weapon"
+	reverseLookupCache["weapon_none"   ] = "None"
+	reverseLookupCache["weapon_rebel"  ] = "Random Rebel Weapon"
+	reverseLookupCache["weapon_combine"] = "Random Combine Weapon"
+	reverseLookupCache["weapon_citizen"] = "Random Citizen Weapon"
+end
+
 local function convert( text )
-	-- return npcspawner.npcs[text] or npcspawner.weps[text] or text;
-	-- TODO: Look in the "NPC" and "NPCUsableWeapons" lists for the names
-	return text;
+	if (not reverseLookupCache) then
+		primeLookupCache()
+	end
+	return reverseLookupCache[text] or text;
 end
 
 function ENT:UpdateLabel()
