@@ -1,0 +1,3 @@
+[submodule "lua/entities/base_lexentity"]
+	path = lua/entities/base_lexentity
+	url = git@github.com:Lexicality/base_lexentity.git
