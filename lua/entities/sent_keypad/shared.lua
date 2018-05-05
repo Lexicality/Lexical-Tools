@@ -14,7 +14,7 @@ ENT.AdminSpawnable	= false;
 ENT.IsKeypad        = true;
 
 function ENT:SetupDataTables()
-    self:DTVar("Int", 0, "Password");
+    self:DTVar("Int", 0, "PasswordDisplay");
     self:DTVar("Bool", 0, "Secure");
     self:DTVar("Bool", 1, "Access");
     self:DTVar("Bool", 2, "ShowAccess");

@@ -161,7 +161,7 @@ ENT.PressSound = "buttons/button15.wav"
 local function ResetKeypad(self)
     if (not IsValid(self)) then return; end
     self._Password = 0;
-    self.dt.Password = 0;
+    self.dt.PasswordDisplay = 0;
     self.dt.Access = false;
     self.dt.ShowAccess = false;
 end
@@ -178,9 +178,9 @@ function ENT:KeypadInput(input)
         if (newnum > 9999) then return; end
         self._Password = newnum;
         if (self.dt.Secure) then
-            self.dt.Password = self.dt.Password * 10 + 1
+            self.dt.PasswordDisplay = self.dt.PasswordDisplay * 10 + 1
         else
-            self.dt.Password = self._Password;
+            self.dt.PasswordDisplay = self._Password;
         end
         self:EmitSound(self.PressSound);
     end
@@ -328,15 +328,15 @@ local KeyPos = {
     {-2.2, 1.25,  4.55, 1.3},
     {-0.6, 1.25,  4.55, 1.3},
     { 1.0, 1.25,  4.55, 1.3},
-    
+
     {-2.2, 1.25,  2.90, 1.3},
     {-0.6, 1.25,  2.90, 1.3},
     { 1.0, 1.25,  2.90, 1.3},
-    
+
     {-2.2, 1.25,  1.30, 1.3},
     {-0.6, 1.25,  1.30, 1.3},
     { 1.0, 1.25,  1.30, 1.3},
-    
+
     {-2.2, 2, -0.30, 1.6},
     { 0.3, 2, -0.30, 1.6}
 }
@@ -402,7 +402,7 @@ function MakeKeypad(ply, _, angles, pos, _, _, ...)
     return duplicator.CreateEntityFromTable(ply, data);
 end
 
--- Old style 
+-- Old style
 local inverse_lookup = {
 	['length1']     = 'access_rep_length';
 	['keygroup1']   = 'access_numpad_key';

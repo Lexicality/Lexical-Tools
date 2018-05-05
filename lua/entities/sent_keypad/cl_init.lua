@@ -4,15 +4,15 @@ local KeyPos = {
 	{-2.2, 1.25,  4.55, 1.3},
 	{-0.6, 1.25,  4.55, 1.3},
 	{ 1.0, 1.25,  4.55, 1.3},
-	
+
 	{-2.2, 1.25,  2.90, 1.3},
 	{-0.6, 1.25,  2.90, 1.3},
 	{ 1.0, 1.25,  2.90, 1.3},
-	
+
 	{-2.2, 1.25,  1.30, 1.3},
 	{-0.6, 1.25,  1.30, 1.3},
 	{ 1.0, 1.25,  1.30, 1.3},
-	
+
 	{-2.2, 2, -0.30, 1.6},
 	{ 0.3, 2, -0.30, 1.6}
 }
@@ -111,25 +111,25 @@ local denied_colour = Color(255, 0, 0, 255);
 local secnoise = surface.GetTextureID('effects/tvscreen_noise001a');
 local background = Material('keypad/background.png');
 function ENT:Draw()
-	
+
 	self:DrawModel()
-	
+
 	if (LocalPlayer():GetShootPos():DistToSqr(self:GetPos()) > visual_cutoff) then
 		return;
 	end
-	
+
 	local pos = self:GetPos() + (self:GetForward() * 1.02) + (self:GetRight() * 2.75) + (self:GetUp() * 5.25);
 	local ang = self:GetAngles();
-	
+
 	ang:RotateAroundAxis(ang:Right(), -90);
 	ang:RotateAroundAxis(ang:Up(),     90);
-	
+
 	cam.Start3D2D(pos, ang, 0.05)
 
 		surface.SetMaterial(background);
 		surface.SetDrawColor(color_white);
 		surface.DrawTexturedRect(0, 0, 110, 210);
-		
+
 		if (self.dt.Cracking) then
 			surface.SetTexture(secnoise);
 			local scroll = CurTime() - math.floor(CurTime());
@@ -152,7 +152,7 @@ function ENT:Draw()
 			surface.SetTextPos(data[1], data[2]);
 			surface.DrawText(data[3]);
 		end
-		
+
 		if (self.dt.ShowAccess) then
 			local access = self.dt.Access;
 			surface.SetFont('Keypad Message');
@@ -167,7 +167,7 @@ function ENT:Draw()
 				surface.DrawText('DENIED');
 			end
 		else
-			local pass = self.dt.Password;
+			local pass = self.dt.PasswordDisplay;
 			if (not self.dt.Cracking and pass > 0) then
 				surface.SetFont('Keypad Input');
 				surface.SetTextColor(color_white);
