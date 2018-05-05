@@ -89,6 +89,9 @@ function ENT:Initialize()
 		phys:EnableMotion(self:GetUnfrozen());
 	end
 
+	-- Deal with stupid permaprop style libraries
+	self:SetNumSpawned(0);
+
 	self:CreateWireInputs({
 		{
 			Name = "SpawnOne";
