@@ -77,7 +77,33 @@ local maxes = {
     rep_length      = 10;
     repetitions     = 5;
 };
+-- Old style
+local inverse_lookup = {
+	['length1']     = 'access_rep_length';
+	['keygroup1']   = 'access_numpad_key';
+	['delay1']      = 'access_rep_delay';
+	['initdelay1']  = 'access_initial_delay';
+	['repeats1']    = 'access_repetitions';
+	['toggle1']     = 'access_wire_toggle';
+	['valueon1']    = 'access_wire_value_on';
+	['valueoff1']   = 'access_wire_value_off';
+	['length2']     = 'denied_rep_length';
+	['keygroup2']   = 'denied_numpad_key';
+	['delay2']      = 'denied_rep_delay';
+	['initdelay2']  = 'denied_initial_delay';
+	['repeats2']    = 'denied_repetitions';
+	['toggle2']     = 'denied_wire_toggle';
+	['valueon2']    = 'denied_wire_value_on';
+	['valueoff2']   = 'denied_wire_value_off';
+	['secure']      = 'secure';
+	['Pass']        = 'password';
+};
 function ENT:KeyValue(key, value)
+    -- Support the old style keypad KVs too
+    if (inverse_lookup[key]) then
+        key = inverse_lookup[key];
+    end
+
     BaseClass.KeyValue(self, key, value);
 
     local subcat = string.sub(key, 1, 6);
@@ -357,28 +383,6 @@ function MakeKeypad(ply, _, angles, pos, _, _, ...)
     end
     return duplicator.CreateEntityFromTable(ply, data);
 end
-
--- Old style
-local inverse_lookup = {
-	['length1']     = 'access_rep_length';
-	['keygroup1']   = 'access_numpad_key';
-	['delay1']      = 'access_rep_delay';
-	['initdelay1']  = 'access_initial_delay';
-	['repeats1']    = 'access_repetitions';
-	['toggle1']     = 'access_wire_toggle';
-	['valueon1']    = 'access_wire_value_on';
-	['valueoff1']   = 'access_wire_value_off';
-	['length2']     = 'denied_rep_length';
-	['keygroup2']   = 'denied_numpad_key';
-	['delay2']      = 'denied_rep_delay';
-	['initdelay2']  = 'denied_initial_delay';
-	['repeats2']    = 'denied_repetitions';
-	['toggle2']     = 'denied_wire_toggle';
-	['valueon2']    = 'denied_wire_value_on';
-	['valueoff2']   = 'denied_wire_value_off';
-	['secure']      = 'secure';
-	['Pass']        = 'password';
-};
 
 local function do_dupe(ply, data)
     if (not BaseClass.CanDuplicate(ply, data)) then
