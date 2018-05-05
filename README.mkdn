@@ -5,4 +5,4 @@ I decided to make my own keypads because why not?
 
 **WARNING** This addon is not yet complete and probably shouldn't be used. It's only on GitHub so I can sync it between computers.
 
-Thanks to Robis_1 and TommyLobo for their sterling work on the original keypad STool.
+Thanks to Robbis_1 and TomyLobo for their sterling work on the original keypad STool.
