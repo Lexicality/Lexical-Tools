@@ -27,7 +27,7 @@ ENT.Spawnable = false;
 local BaseClass;
 if (WireLib) then
     BaseClass = "base_wire_entity"
-elseif (engine.ActiveGamemode() == "sandbox") then
+elseif (gmod.GetGamemode().IsSandboxDerived) then
     BaseClass = "base_gmodentity"
 else
 	BaseClass = "base_anim";
