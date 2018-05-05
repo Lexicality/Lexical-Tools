@@ -1,3 +1,5 @@
+DEFINE_BASECLASS "base_lexentity";
+
 include('shared.lua')
 
 local KeyPos = {

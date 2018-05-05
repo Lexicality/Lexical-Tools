@@ -1,16 +1,8 @@
+DEFINE_BASECLASS "base_lexentity";
+
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 include('shared.lua')
-
--- Woo, stupid workarounds
-local BaseClass;
-if (WireLib) then
-    BaseClass = "base_wire_entity"
-else
-    BaseClass = "base_gmodentity"
-end
-DEFINE_BASECLASS(BaseClass);
-
 
 util.PrecacheSound("buttons/button14.wav")
 util.PrecacheSound("buttons/button9.wav")
@@ -19,24 +11,13 @@ util.PrecacheSound("buttons/button15.wav")
 
 ENT.WireDebugName = "Keypad"
 
--- Boilerplate
-function ENT:RemoveIfPhysicsInvalidElseWake()
-    local phys = self:GetPhysicsObject();
-    if (not phys:IsValid()) then
-        local mdl = self:GetModel();
-        self:Remove();
-        error("No Physics Object available for entity '" .. self.ClassName .. "'! Do you have the model '" .. mdl .. "' installed?", 2);
-    end
-    phys:Wake();
-end
-
 function ENT:Initialize()
     self:SetModel("models/props_lab/keypad.mdl");
     self:PhysicsInit(SOLID_VPHYSICS);
     self:SetMoveType(MOVETYPE_VPHYSICS);
     self:SetSolid(SOLID_VPHYSICS);
     self:SetUseType(SIMPLE_USE);
-    self:RemoveIfPhysicsInvalidElseWake();
+    self:GetValidPhysicsObject():Wake();
 
     -- Defaults
     self.kvs = {
@@ -70,12 +51,16 @@ function ENT:Initialize()
     self._WireToggleStates = { Valid = false, Invalid = false };
     self._Password = 0;
 
-    if (WireLib) then
-        WireLib.CreateSpecialOutputs(self, {
-            "Valid";
-            "Invalid";
-        });
-    end
+    self:CreateWireOutputs({
+        {
+            Name = "Valid";
+            Desc = "Triggered when the right code is entered";
+        };
+        {
+            Name = "Invalid";
+            Desc = "Triggered when the wrong code is entered";
+        };
+    })
 end
 
 function ENT:SetPassword(pass)
@@ -93,6 +78,8 @@ local maxes = {
     repetitions     = 5;
 };
 function ENT:KeyValue(key, value)
+    BaseClass.KeyValue(self, key, value);
+
     local subcat = string.sub(key, 1, 6);
     if (subcat == 'access' or subcat == 'denied') then
         key = string.sub(key, 8);
@@ -128,29 +115,10 @@ function ENT:KeyValue(key, value)
         return;
     elseif (key == 'secure') then
         value = tobool(value);
-        self.dt.Secure = value;
     elseif (key == 'password') then
         value = tonumber(value) or 0;
     end
     self.kvs[key] = value;
-end
-
--- Don't instantly forget who we belong to on disconnect
-function ENT:GetPlayer()
-    local ply = BaseClass.GetPlayer(self);
-    if (IsValid(ply)) then
-        return ply;
-    end
-    local uid = BaseClass.GetPlayerIndex(self);
-    if (uid ~= 0) then
-        for _, ply in pairs(player.GetAll()) do
-            if (ply:UniqueID() == uid) then
-                BaseClass.SetPlayer(self, ply);
-                return ply;
-            end
-        end
-    end
-    return NULL;
 end
 
 ENT.ResetSound = "buttons/button14.wav";
@@ -370,18 +338,6 @@ end
 if (not ConVarExists("sbox_maxkeypads")) then
     CreateConVar("sbox_maxkeypads", 10);
 end
-local function checklimit(ply)
-    return not IsValid(ply) or not ply:CheckLimit('keypads');
-end
-local function dolimits(ply, ent)
-    if (ply) then
-        ent:SetPlayer(ply);
-        ply:AddCount('keypads', ent);
-    end
-end
-
-local function make_from_old(ent, table)
-end
 
 local funcargs = {
     "length1", "keygroup1", "delay1", "initdelay1", "repeats1", "toggle1", "valueon1", "valueoff1",
@@ -425,14 +381,14 @@ local inverse_lookup = {
 };
 
 local function do_dupe(ply, data)
-    if checklimit(ply) then return false; end
+    if (not BaseClass.CanDuplicate(ply, data)) then
+        return;
+    end
 
-    local keypad = duplicator.GenericDuplicatorFunction(ply, data);
+    local keypad = BaseClass.GenericDuplicate(ply, data);
     if (not IsValid(keypad)) then
         return keypad;
     end
-
-    dolimits(ply, keypad);
 
     if (data.kvs) then
         for key, value in pairs(data.kvs) do
