@@ -184,3 +184,46 @@ function ENT.GenericDuplicate(ply, data)
 	end
 	return ent;
 end
+
+-- Sandbox's player system, revamped a little
+function ENT:SetPlayer(ply)
+	self.Founder = ply;
+	if (IsValid(ply)) then
+		self:SetNWString("FounderName", ply:Nick());
+		self.FounderSID = ply:SteamID64();
+		-- Legacy
+		self.FounderIndex = ply:UniqueID();
+	else
+		self:SetNWString("FounderName", "");
+		self.FounderSID = "";
+		self.FounderIndex = 0;
+	end
+end
+
+function ENT:GetPlayer()
+	if (self.Founder == nil) then
+		-- SetPlayer has not been called
+		return NULL;
+	elseif (IsValid(self.Founder)) then
+		-- Normal operations
+		return self.Founder;
+	end
+	-- See if the player has left the server then rejoined
+	local ply = player.GetBySteamID64(self.FounderSID);
+	if (not IsValid(ply)) then
+		-- Oh well
+		return NULL;
+	end
+	-- Save us the check next time
+	self:SetPlayer(ply);
+	return ply;
+end
+
+function ENT:GetPlayerName()
+	local ply = self:GetPlayer()
+	if (IsValid(ply)) then
+		return ply:Nick()
+	end
+
+	return self:GetNWString("FounderName")
+end
