@@ -147,15 +147,17 @@ function ENT.CanDuplicate(ply, data)
 		return true;
 	end
 
+	local sent_table = scripted_ents.Get(data.Class);
+
 	if (not ply:IsAdmin()) then
-		if (not scripted_ents.GetMember(data.Class, "Spawnable")) then
+		if (not sent_table.Spawnable) then
 			return false;
-		elseif (scripted_ents.GetMember(data.Class, "AdminOnly")) then
+		elseif (sent_table.AdminOnly) then
 			return false;
 		end
 	end
 
-	if (ply.CheckLimit and not ply:CheckLimit(data.Class)) then
+	if (ply.CheckLimit and not ply:CheckLimit(sent_table.CountKey or data.Class)) then
 		return false;
 	end
 
@@ -179,7 +181,7 @@ function ENT.GenericDuplicate(ply, data)
 
 	if (IsValid(ply)) then
 		if (ent.SetPlayer) then ent:SetPlayer(ply) end
-		if (ply.AddCount) then ply:AddCount(data.Class, ent) end
+		if (ply.AddCount) then ply:AddCount(ent.CountKey or data.Class, ent) end
 		if (ply.AddCleanup) then ply:AddCleanup(data.Class, ent) end
 	end
 	return ent;
