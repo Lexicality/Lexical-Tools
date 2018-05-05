@@ -14,7 +14,7 @@ SWEP.DrawAmmo       = false
 SWEP.Primary.Ammo   = ""
 SWEP.Slot           = 5
 
-SWEP.Spawnable      = true; 
+SWEP.Spawnable      = true;
 SWEP.AdminOnly      = true;
 
 function SWEP:PrimaryAttack()

@@ -23,7 +23,7 @@ SWEP.ViewModelFlip  = false;
 SWEP.ViewModel      = Model("models/weapons/v_c4.mdl");
 SWEP.WorldModel     = Model("models/weapons/w_c4.mdl");
 
-SWEP.Spawnable      = true; 
+SWEP.Spawnable      = true;
 SWEP.AdminOnly      = true;
 
 SWEP.Primary.ClipSize       = -1
@@ -111,7 +111,7 @@ function SWEP:PrimaryAttack()
     -- Alow (super) admin on duty to break in instantly (for base testing)
     if (team == TEAM_ADMIN or team == TEAM_SADMIN) then
         self.CrackEnd = self.CrackStart + 0.1;
-	else		
+	else
         self.CrackEnd = self.CrackStart + self.CrackTime;
     end
 

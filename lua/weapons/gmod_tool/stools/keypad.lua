@@ -44,7 +44,7 @@ if (CLIENT) then
 	language.Add("Undone_Keypad",   "Undone Keypad" )
 	language.Add("Cleanup_keypads", "Keypads" )
 	language.Add("Cleaned_keypads", "Cleaned up all keypads" )
-	
+
 	language.Add("SBoxLimit_keypads", "You've hit the keypad limit!")
 end
 
