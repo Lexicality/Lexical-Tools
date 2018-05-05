@@ -227,3 +227,14 @@ function ENT:GetPlayerName()
 
 	return self:GetNWString("FounderName")
 end
+
+-- All or nothing GetPhysicsObject
+function ENT:GetValidPhysicsObject()
+    local phys = self:GetPhysicsObject();
+    if (not phys:IsValid()) then
+        local mdl = self:GetModel();
+        self:Remove();
+        error("No Physics Object available for entity '" .. self.ClassName .. "'! Do you have the model '" .. mdl .. "' installed?", 2);
+	end
+	return phys;
+end
