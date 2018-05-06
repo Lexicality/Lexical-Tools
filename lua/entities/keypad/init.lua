@@ -161,6 +161,10 @@ function ENT:KeyValue(key, value)
         value = tobool(value);
     elseif (key == 'password') then
         value = tonumber(value) or 0;
+        value = math.floor(tonumber(value) or 0);
+        if (value < 0 or value > 9999) then
+            value = 0;
+        end
     end
 
     if (self.kvs[key] ~= value) then
