@@ -50,6 +50,7 @@ function ENT:Initialize()
             rep_delay       = 0;
             rep_length      = 0.1,
 
+            wire_name = "Access Granted",
             wire_value_on   = 1,
             wire_value_off  = 0,
             wire_toggle     = false,
@@ -62,21 +63,22 @@ function ENT:Initialize()
             rep_delay       = 0;
             rep_length      = 0.1,
 
+            wire_name = "Access Denied",
             wire_value_on   = 1,
             wire_value_off  = 0,
             wire_toggle     = false,
         },
     };
-    self._WireToggleStates = { Valid = false, Invalid = false };
+    self._WireToggleStates = { [self.kvs.access.wire_name] = false, [self.kvs.denied.wire_name] = false };
     self._Password = 0;
 
     self:CreateWireOutputs({
         {
-            Name = "Valid";
+            Name = self.kvs.access.wire_name;
             Desc = "Triggered when the right code is entered";
         };
         {
-            Name = "Invalid";
+            Name = self.kvs.denied.wire_name;
             Desc = "Triggered when the wrong code is entered";
         };
     })
@@ -143,8 +145,10 @@ function ENT:KeyValue(key, value)
                 if (value < 1) then
                     value = 1;
                 end
-            elseif (value < 0) then
-                value = 0;
+            elseif (not (key == "wire_value_on" or key == "wire_value_off")) then
+                if (value < 0) then
+                    value = 0;
+                end
             end
         end
         if (maxes[key]) then
@@ -156,12 +160,10 @@ function ENT:KeyValue(key, value)
             self:_UpdateLegacyFromKVs();
         end
 
-        if (key == "wire_value_off" and WireLib) then
-            local output = subcat == 'access' and "Valid" or "Invalid"
-            if (not self._WireToggleStates[output]) then
-                WireLib.TriggerOutput(self, output, value);
-            end
+        if (key == "wire_value_on" or key == "wire_value_off") then
+            self:HandleWireValueChange(self.kvs[subcat]);
         end
+
         return;
     elseif (key == 'secure') then
         value = tobool(value);
@@ -214,52 +216,47 @@ end
 
 --[[ Keypad Triggerin Locals ]]--
 do
-    local function GetPlayer(self)
-        local ply = self:GetPlayer();
-        return IsValid(ply) and ply or false;
+    local function set_numpad_state(ent, kvs, state)
+        if (not IsValid(ent)) then return; end
+        local ply = ent:GetPlayer();
+        if (not IsValid(ply)) then return; end
+        local func = state and numpad.Activate or numpad.Deactivate;
+        func(ply, kvs.numpad_key, true);
     end
 
-    local function numpad_activate(self, kvs)
-        if (not IsValid(self)) then return; end
-        local ply = GetPlayer(self);
-        if (ply) then
-            numpad.Activate(ply, kvs.numpad_key, true);
+    local function set_wire_state(ent, kvs, state)
+        if (not IsValid(ent)) then return; end
+
+        local value = state and kvs.wire_value_on or kvs.wire_value_off;
+
+        ent:TriggerWireOutput(kvs.wire_name, value)
+    end
+
+    local function toggle_wire_state(ent, kvs)
+        if (not IsValid(ent)) then return; end
+
+        local state = ent._WireToggleStates[kvs.wire_name];
+        state = not state;
+        ent._WireToggleStates[kvs.wire_name] = state;
+
+        set_wire_state(ent, kvs, state);
+    end
+
+    local function on_off(ent, kvs, func, delay, length)
+        timer.Simple(delay,          function() func(ent, kvs, true);  end)
+        timer.Simple(delay + length, function() func(ent, kvs, false); end)
+    end
+
+    function ENT:HandleWireValueChange(kvs)
+        if (not WireLib) then return; end
+        -- Don't do anything if we're mid-play
+        if (self.dt.ShowAccess) then return; end
+
+        local state = false;
+        if (kvs.wire_toggle) then
+            state = self._WireToggleStates[kvs.wire_name];
         end
-    end
-
-    local function numpad_deactivate(self, kvs)
-        if (not IsValid(self)) then return; end
-        local ply = GetPlayer(self);
-        if (ply) then
-            numpad.Deactivate(ply, kvs.numpad_key, true);
-        end
-    end
-
-    local function GetWireOutput(valid)
-        return valid and "Valid" or "Invalid";
-    end
-
-    local function wire_on(self, kvs, valid)
-        if (not IsValid(self)) then return; end
-        WireLib.TriggerOutput(self, GetWireOutput(valid), kvs.wire_value_on);
-    end
-
-    local function wire_off(self, kvs, valid)
-        if (not IsValid(self)) then return; end
-        WireLib.TriggerOutput(self, GetWireOutput(valid), kvs.wire_value_off);
-    end
-
-    local function wire_toggle(self, kvs, valid)
-        if (not IsValid(self)) then return; end
-        local name = GetWireOutput(valid);
-        local state = not self._WireToggleStates[name];
-        print("WIRE TOGGLE", name, state);
-        if (state) then
-            wire_on(self, kvs, valid);
-        else
-            wire_off(self, kvs, valid);
-        end
-        self._WireToggleStates[name] = state;
+        set_wire_state(self, kvs, state);
     end
 
     function ENT:TriggerKeypad(access)
@@ -282,16 +279,14 @@ do
         local rep_length = kvs.rep_length;
         for rep = 0, kvs.repetitions - 1 do
             if (numpad_key) then
-                timer.Simple(delay,              function() numpad_activate(self, kvs)   end);
-                timer.Simple(delay + rep_length, function() numpad_deactivate(self, kvs) end);
+                on_off(self, kvs, set_numpad_state, delay, rep_length)
             end
             if (WireLib) then
                 if (kvs.wire_toggle) then
                     local delay = kvs.initial_delay + rep_delay * rep;
-                    timer.Simple(delay,              function() wire_toggle(self, kvs, access) end);
+                    timer.Simple(delay, function() toggle_wire_state(self, kvs, access) end);
                 else
-                    timer.Simple(delay,              function() wire_on(self, kvs, access)  end);
-                    timer.Simple(delay + rep_length, function() wire_off(self, kvs, access) end);
+                    on_off(self, kvs, set_wire_state, delay, rep_length)
                 end
             end
             delay = delay + rep_length + rep_delay;
