@@ -245,7 +245,6 @@ function PANEL:ControlValues(data)
     self:SetMinimumCVar(data.minimum);
     self:SetActualCVar(data.cvar);
     self:CheckValidity();
-    PrintTable(data)
 
     cvars.AddChangeCallback(data.minimum, function() self:CheckValidity() end, self.id);
     cvars.AddChangeCallback(data.cvar, function() self:CheckValidity() end, self.id);
