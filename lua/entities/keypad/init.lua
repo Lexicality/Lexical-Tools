@@ -87,6 +87,26 @@ function ENT:CheckPassword(pass)
     return self.kvs.password == (tonumber(pass) or 0);
 end
 
+local allowed_kvs = {
+    password              = true,
+    secure                = true,
+    access_numpad_key     = true,
+    access_initial_delay  = true,
+    access_repetitions    = true,
+    access_rep_delay      = true,
+    access_rep_length     = true,
+    access_wire_value_on  = true,
+    access_wire_value_off = true,
+    access_wire_toggle    = true,
+    denied_numpad_key     = true,
+    denied_initial_delay  = true,
+    denied_repetitions    = true,
+    denied_rep_delay      = true,
+    denied_rep_length     = true,
+    denied_wire_value_on  = true,
+    denied_wire_value_off = true,
+    denied_wire_toggle    = true,
+}
 local maxes = {
     rep_length      = 20;
     initial_delay   = 10;
@@ -96,9 +116,12 @@ local maxes = {
 function ENT:KeyValue(key, value)
     BaseClass.KeyValue(self, key, value);
 
+    if (not allowed_kvs[key]) then return; end
+
     local subcat = string.sub(key, 1, 6);
     if (subcat == 'access' or subcat == 'denied') then
         key = string.sub(key, 8);
+
         if (key == 'wire_toggle') then
             value = tobool(value);
         else
@@ -360,14 +383,20 @@ local function do_dupe(ply, data)
     end
 
     if (data.kvs) then
+        local function setkv(key, value)
+            if (allowed_kvs[key]) then
+                keypad:SetKeyValue(key, tostring(value));
+            end
+        end
+
         keypad._Restoring = true
         for key, value in pairs(data.kvs) do
             if (type(value) == 'table') then
                 for subkey, value in pairs(value) do
-                    keypad:SetKeyValue(key .. '_' .. subkey, tostring(value));
+                    setkv(key .. '_' .. subkey, value);
                 end
             else
-                keypad:SetKeyValue(key, tostring(value));
+                setkv(key, value);
             end
         end
         keypad._Restoring = false
