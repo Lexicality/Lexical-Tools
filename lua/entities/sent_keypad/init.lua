@@ -93,33 +93,7 @@ local maxes = {
     rep_length      = 10;
     repetitions     = 5;
 };
--- Old style
-local inverse_lookup = {
-	['length1']     = 'access_rep_length';
-	['keygroup1']   = 'access_numpad_key';
-	['delay1']      = 'access_rep_delay';
-	['initdelay1']  = 'access_initial_delay';
-	['repeats1']    = 'access_repetitions';
-	['toggle1']     = 'access_wire_toggle';
-	['valueon1']    = 'access_wire_value_on';
-	['valueoff1']   = 'access_wire_value_off';
-	['length2']     = 'denied_rep_length';
-	['keygroup2']   = 'denied_numpad_key';
-	['delay2']      = 'denied_rep_delay';
-	['initdelay2']  = 'denied_initial_delay';
-	['repeats2']    = 'denied_repetitions';
-	['toggle2']     = 'denied_wire_toggle';
-	['valueon2']    = 'denied_wire_value_on';
-	['valueoff2']   = 'denied_wire_value_off';
-	['secure']      = 'secure';
-	['Pass']        = 'password';
-};
 function ENT:KeyValue(key, value)
-    -- Support the old style keypad KVs too
-    if (inverse_lookup[key]) then
-        key = inverse_lookup[key];
-    end
-
     BaseClass.KeyValue(self, key, value);
 
     local subcat = string.sub(key, 1, 6);
@@ -251,6 +225,7 @@ do
         self:EmitSound(access and self.RightSound or self.WrongSound);
         self.dt.Access = access;
         self.dt.ShowAccess = true;
+        -- TODO: Uhhhh
         timer.Simple(2, function() ResetKeypad(self) end);
         -- Triggering
         local kvs;
@@ -361,28 +336,8 @@ function ENT:Use(activator)
     end
 end
 
---[[ Duplicashion ]]--
 if (not ConVarExists("sbox_maxkeypads")) then
     CreateConVar("sbox_maxkeypads", 10);
-end
-
-local funcargs = {
-    "length1", "keygroup1", "delay1", "initdelay1", "repeats1", "toggle1", "valueon1", "valueoff1",
-    "length2", "keygroup2", "delay2", "initdelay2", "repeats2", "toggle2", "valueon2", "valueoff2",
-    "secure", "Pass"
-}
--- Backwards compatibility
-function MakeKeypad(ply, _, angles, pos, _, _, ...)
-    local data = {
-        Pos = pos,
-        Angle = angles,
-        Class = 'sent_keypad',
-    };
-    local arg = {...};
-    for index, key in pairs(funcargs) do
-        data[key] = arg[index];
-    end
-    return duplicator.CreateEntityFromTable(ply, data);
 end
 
 local function do_dupe(ply, data)
@@ -407,15 +362,8 @@ local function do_dupe(ply, data)
                 keypad:SetKeyValue(key, value);
             end
         end
-    else
-        for oldkey, newkey in pairs(inverse_lookup) do
-            local value = data[oldkey];
-            if (value) then
-                value = tostring(value);
-                keypad:SetKeyValue(newkey, value);
-            end
-        end
     end
+
     return keypad;
 end
 
