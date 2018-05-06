@@ -110,7 +110,7 @@ function TOOL:LeftClick(tr)
         Pos = tr.HitPos + tr.HitNormal;
         Angle = tr.HitNormal:Angle();
         kvs = kv;
-        Class = 'sent_keypad';
+        Class = 'keypad';
     });
     if (not IsValid(ent)) then
         return false;
@@ -144,7 +144,7 @@ end
 
 function TOOL:RightClick(tr)
     local ent = tr.Entity;
-    if (not (IsValid(ent) and ent:GetClass() == 'sent_keypad')) then
+    if (not (IsValid(ent) and ent:GetClass() == 'keypad')) then
         return false;
     elseif (CLIENT) then
         return true;

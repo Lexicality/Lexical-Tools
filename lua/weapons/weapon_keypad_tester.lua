@@ -31,7 +31,7 @@ SWEP.AdminOnly      = true;
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + .4)
     local tr = self.Owner:GetEyeTrace();
-    if (SERVER and self.Owner:IsAdmin() and IsValid(tr.Entity) and tr.Entity:GetClass() == 'sent_keypad') then
+    if (SERVER and self.Owner:IsAdmin() and IsValid(tr.Entity) and tr.Entity:GetClass() == 'keypad') then
     	tr.Entity:TriggerKeypad(true);
     end
 end

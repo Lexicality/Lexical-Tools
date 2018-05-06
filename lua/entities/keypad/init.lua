@@ -1,5 +1,5 @@
 --[[
-	Keypads - lua/entities/sent_keypad/cl_init.lua
+	Keypads - lua/entities/keypad/cl_init.lua
     Copyright 2012-2018 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -367,4 +367,4 @@ local function do_dupe(ply, data)
     return keypad;
 end
 
-duplicator.RegisterEntityClass('sent_keypad', do_dupe, "Data");
+duplicator.RegisterEntityClass('keypad', do_dupe, "Data");

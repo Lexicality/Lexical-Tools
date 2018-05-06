@@ -1,5 +1,5 @@
 --[[
-	Keypads - lua/entities/sent_keypad/cl_init.lua
+	Keypads - lua/entities/keypad/cl_init.lua
     Copyright 2012-2018 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");

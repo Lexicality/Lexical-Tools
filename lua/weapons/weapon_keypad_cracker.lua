@@ -55,7 +55,7 @@ SWEP.CrackTime = 15; -- seconds
 
 -- Utilities
 function SWEP:IsTargetEntity(ent)
-    return ent:GetClass() == "sent_keypad";
+    return ent:GetClass() == "keypad";
 end
 
 local function cancrack(tr)
