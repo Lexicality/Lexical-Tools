@@ -169,7 +169,7 @@ local function subpanel(CPanel, kind, data)
     local function k(name)
         return c(kind .. "_" .. name);
     end
-    local CPanel = CPanel:AddControl("CPanel", data);
+    local CPanel = CPanel:AddControl("ControlPanel", data);
     CPanel:AddControl("Numpad", {
         Label   = "Key",
         Command = k"numpad_key",
@@ -179,7 +179,7 @@ local function subpanel(CPanel, kind, data)
         CPanel:TextEntry("Wire Output Value", k"wire_value_on");
     end
     do
-        local CPanel = CPanel:AddControl("CPanel", {
+        local CPanel = CPanel:AddControl("ControlPanel", {
             Label       = "Advanced",
             Closed      = true,
         });
@@ -207,16 +207,3 @@ function TOOL.BuildCPanel( CPanel )
         Closed      = true
     });
 end
-
-local PANEL = {}
-
-function PANEL:ControlValues(data)
-    if (data.label) then
-        self:SetLabel(data.label);
-    end
-    if (data.closed) then
-        self:SetExpanded(false);
-    end
-end
-
-vgui.Register("cpanel", PANEL, "ControlPanel");
