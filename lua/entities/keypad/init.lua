@@ -368,3 +368,17 @@ local function do_dupe(ply, data)
 end
 
 duplicator.RegisterEntityClass('keypad', do_dupe, "Data");
+
+local function do_dupe_alias(ply, data)
+    data.Class = "keypad";
+    return do_dupe(ply, data);
+end
+local function setup_alias(name)
+    scripted_ents.Alias(name, "keypad");
+    duplicator.RegisterEntityClass(name, do_dupe_alias, "Data");
+end
+
+-- ALL OF THE BACKWARDS COMPATIBILITY
+setup_alias('sent_keypad');
+setup_alias('sent_keypad_wire');
+setup_alias('keypad_wire');
