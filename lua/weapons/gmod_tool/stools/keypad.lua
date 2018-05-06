@@ -189,7 +189,7 @@ local function subpanel(CPanel, kind, data)
         end
         CPanel:NumSlider("Initial Delay", k'initial_delay', 0, 10, 1);
         CPanel:NumSlider("Repititions", k'repetitions', 1, 5, 0);
-        CPanel:NumSlider("Delay between repititions", k'rep_length', 0, 10, 1);
+        CPanel:NumSlider("Delay between repititions", k'rep_delay', 0, 10, 1);
     end
 end
 
