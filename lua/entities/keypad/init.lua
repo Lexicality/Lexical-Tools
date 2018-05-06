@@ -135,11 +135,6 @@ function ENT:KeyValue(key, value)
                 if (value < 0) then
                     value = nil;
                 end
-            elseif (key == "rep_length") then
-                min = cvar_min_length:GetFloat();
-                if (value < min) then
-                    value = min;
-                end
             elseif (key == "repetitions") then
                 value = math.floor(value);
                 if (value < 1) then
@@ -277,6 +272,10 @@ do
         local delay = kvs.initial_delay;
         local rep_delay  = kvs.rep_delay;
         local rep_length = kvs.rep_length;
+        local rep_length_min = cvar_min_length:GetFloat();
+        if (rep_length < rep_length_min) then
+            rep_length = rep_length_min;
+        end
         for rep = 0, kvs.repetitions - 1 do
             if (numpad_key) then
                 on_off(self, kvs, set_numpad_state, delay, rep_length)

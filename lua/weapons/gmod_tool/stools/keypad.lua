@@ -174,7 +174,17 @@ local function subpanel(CPanel, kind, data)
         Label   = "Key",
         Command = k"numpad_key",
     });
-    CPanel:NumSlider("Key Hold Length", k"rep_length", 0.1, 20, 1);
+
+    CPanel:NumSlider("Key Hold Length", k"rep_length", 0, 20, 1);
+
+    CPanel:AddControl("NagLabel", {
+        Name = "Key Hold Length",
+        CVar = k"rep_length",
+        Minimum = "keypad_min_length",
+    })
+    -- HACK: Make this right up against the previous item
+    CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0);
+
     if (WireLib) then
         CPanel:TextEntry("Wire Output Value", k"wire_value_on");
     end
@@ -207,3 +217,43 @@ function TOOL.BuildCPanel( CPanel )
         Closed      = true
     });
 end
+
+local PANEL = {};
+
+AccessorFunc(PANEL, "m_sName", "CtrlName");
+AccessorFunc(PANEL, "m_sCVarMin", "MinimumCVar");
+AccessorFunc(PANEL, "m_sCVarActual", "ActualCVar");
+
+function PANEL:Init()
+    self.id = tostring(math.random(10000, 99999));
+    self:SetHighlight(true)
+end
+
+function PANEL:CheckValidity()
+    local min = cvars.Number(self:GetMinimumCVar(), 0);
+    local val = cvars.Number(self:GetActualCVar(), 0);
+    if (val < min) then
+        self:SetHeight(20);
+        self:SetText("This server's minimum " .. self:GetCtrlName() .. " is " .. min);
+    else
+        self:SetHeight(0);
+    end
+end
+
+function PANEL:ControlValues(data)
+    self:SetCtrlName(data.name);
+    self:SetMinimumCVar(data.minimum);
+    self:SetActualCVar(data.cvar);
+    self:CheckValidity();
+    PrintTable(data)
+
+    cvars.AddChangeCallback(data.minimum, function() self:CheckValidity() end, self.id);
+    cvars.AddChangeCallback(data.cvar, function() self:CheckValidity() end, self.id);
+end
+
+function PANEL:OnRemove()
+    cvars.RemoveChangeCallback(self:GetMinimumCVar(), self.id);
+    cvars.RemoveChangeCallback(self:GetActualCVar(), self.id);
+end
+
+derma.DefineControl("NagLabel", "Tell players about defined minima", PANEL, "DLabel");
