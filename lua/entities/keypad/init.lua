@@ -121,7 +121,12 @@ function ENT:KeyValue(key, value)
         if (maxes[key]) then
             value = math.min(value, maxes[key]);
         end
-        self.kvs[subcat][key] = value;
+
+        if (self.kvs[subcat][key] ~= value) then
+            self.kvs[subcat][key] = value;
+            self:_UpdateLegacyFromKVs();
+        end
+
         if (key == "wire_value_off" and WireLib) then
             local output = subcat == 'access' and "Valid" or "Invalid"
             if (not self._WireToggleStates[output]) then
@@ -134,7 +139,11 @@ function ENT:KeyValue(key, value)
     elseif (key == 'password') then
         value = tonumber(value) or 0;
     end
-    self.kvs[key] = value;
+
+    if (self.kvs[key] ~= value) then
+        self.kvs[key] = value;
+        self:_UpdateLegacyFromKVs();
+    end
 end
 
 ENT.ResetSound = "buttons/button14.wav";
@@ -351,16 +360,22 @@ local function do_dupe(ply, data)
     end
 
     if (data.kvs) then
+        keypad._Restoring = true
         for key, value in pairs(data.kvs) do
             if (type(value) == 'table') then
                 for subkey, value in pairs(value) do
-                    value = tostring(value);
-                    keypad:SetKeyValue(key .. '_' .. subkey, value);
+                    keypad:SetKeyValue(key .. '_' .. subkey, tostring(value));
                 end
             else
-                value = tostring(value);
-                keypad:SetKeyValue(key, value);
+                keypad:SetKeyValue(key, tostring(value));
             end
+        end
+        keypad._Restoring = false
+
+        -- The old style data isn't compatible with the new style wire outputs.
+        if (data.EntityMods and data.EntityMods['keypad_password_passthrough']) then
+            data.EntityMods['keypad_password_passthrough']['OutputOn'] = nil;
+            data.EntityMods['keypad_password_passthrough']['OutputOff'] = nil;
         end
     end
 
@@ -382,3 +397,92 @@ end
 setup_alias('sent_keypad');
 setup_alias('sent_keypad_wire');
 setup_alias('keypad_wire');
+
+ENT.Process = ENT.TriggerKeypad;
+ENT.SetKeypadOwner = ENT.SetPlayer;
+ENT.GetKeypadOwner = ENT.GetPlayer;
+
+local w2m = {
+    Password = 'password',
+    Secure = 'secure',
+
+    KeyGranted = 'access_numpad_key',
+    InitDelayGranted = 'access_initial_delay',
+    RepeatsGranted = 'access_repetitions',
+    DelayGranted = 'access_rep_delay',
+    LengthGranted = 'access_rep_length',
+
+    KeyDenied = 'denied_numpad_key',
+    InitDelayDenied = 'denied_initial_delay',
+    RepeatsDenied = 'denied_repetitions',
+    DelayDenied = 'denied_rep_delay',
+    LengthDenied = 'denied_rep_length',
+}
+
+duplicator.RegisterEntityModifier("keypad_password_passthrough", function(ply, ent, data) ent:SetData(data) end)
+
+ENT._Restoring = false;
+function ENT:SetData(data)
+    self._Restoring = true;
+    for key, kv in pairs(w2m) do
+        if data[key] then
+            self:SetKeyValue(kv, tostring(data[key]));
+        end
+    end
+    -- :(
+    if (data["OutputOn"]) then
+        self:SetKeyValue("access_wire_value_on", data["OutputOn"])
+        self:SetKeyValue("denied_wire_value_on", data["OutputOn"])
+    end
+    if (data["OutputOff"]) then
+        self:SetKeyValue("access_wire_value_off", data["OutputOff"])
+        self:SetKeyValue("denied_wire_value_on", data["OutputOn"])
+    end
+    self._Restoring = false;
+    self:_UpdateLegacyFromKVs();
+end
+
+function ENT:GetData()
+    return {
+        Password = self.kvs.password,
+
+        RepeatsGranted = self.kvs.access.repetitions,
+        RepeatsDenied = self.kvs.denied.repetitions,
+
+        LengthGranted = self.kvs.access.rep_length,
+        LengthDenied = self.kvs.denied.rep_length,
+
+        DelayGranted = self.kvs.access.rep_delay,
+        DelayDenied = self.kvs.denied.rep_delay,
+
+        InitDelayGranted = self.kvs.access.initial_delay,
+        InitDelayDenied = self.kvs.denied.initial_delay,
+
+        KeyGranted = self.kvs.access.numpad_key,
+        KeyDenied = self.kvs.denied.numpad_key,
+
+        OutputOn = self.kvs.access.wire_value_on,
+        OutputOff = self.kvs.access.wire_value_off,
+
+        Secure = self.kvs.secure,
+    };
+end
+
+function ENT:_UpdateLegacyFromKVs()
+    if (self._Restoring) then return; end
+    duplicator.StoreEntityModifier(self, "keypad_password_passthrough", self:GetData())
+end
+
+-- I don't think these are strictly necessary but whatever
+function ENT:PreEntityCopy()
+    self.KeypadData = self:GetData();
+end
+
+function ENT:PostEntityCopy()
+    self.KeypadData = nil;
+end
+
+function ENT:PostEntityPaste(ply, ent, all_ents)
+    -- Update the entity modifier to the combination of everything that's just happened
+    self:_UpdateLegacyFromKVs();
+end
