@@ -20,6 +20,9 @@ AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 include('shared.lua')
 
+CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
+local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for.")
+
 util.PrecacheSound("buttons/button14.wav")
 util.PrecacheSound("buttons/button9.wav")
 util.PrecacheSound("buttons/button8.wav")
@@ -130,8 +133,11 @@ function ENT:KeyValue(key, value)
                 if (value < 0) then
                     value = nil;
                 end
-            elseif (key == 'rep_length' and value < 0.1) then
-                value = 0.1
+            elseif (key == 'rep_length') then
+                min = cvar_min_length:GetFloat();
+                if (value < min) then
+                    value = min;
+                end
             elseif (key == 'repetitions') then
                 value = math.floor(value);
                 if (value < 1) then
@@ -370,10 +376,6 @@ function ENT:Use(activator)
             return;
         end
     end
-end
-
-if (not ConVarExists("sbox_maxkeypads")) then
-    CreateConVar("sbox_maxkeypads", 10);
 end
 
 local function do_dupe(ply, data)
