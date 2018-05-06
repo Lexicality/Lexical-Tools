@@ -16,7 +16,7 @@
 --]]
 DEFINE_BASECLASS "base_lexentity";
 
-include('shared.lua')
+include("shared.lua")
 
 surface.CreateFont("Keypad Key", {
     font   = "Trebuchet MS";
@@ -70,8 +70,8 @@ do
 	keys[11] = CreateKeyTab(x + offset, bigy, bigw, size, "OK");
 end
 
-surface.SetFont('Keypad Input');
-local input_width, input_height = surface.GetTextSize('*');
+surface.SetFont("Keypad Input");
+local input_width, input_height = surface.GetTextSize("*");
 
 local button_cutoff = 90 ^ 2;
 local visual_cutoff = 750 ^ 2;
@@ -108,8 +108,8 @@ end
 local access_colour = Color(0, 255, 0, 255);
 local denied_colour = Color(255, 0, 0, 255);
 
-local secnoise = surface.GetTextureID('effects/tvscreen_noise001a');
-local background = Material('keypad/background.png');
+local secnoise = surface.GetTextureID("effects/tvscreen_noise001a");
+local background = Material("keypad/background.png");
 function ENT:Draw()
 
 	self:DrawModel()
@@ -136,7 +136,7 @@ function ENT:Draw()
 			surface.DrawTexturedRectUV(9, 9, 92, 51, 0, scroll, 0.3, scroll + 1)
 		end
 
-		surface.SetFont('Keypad Key');
+		surface.SetFont("Keypad Key");
 		surface.SetTextColor(color_black);
 		for i, data in pairs(keys) do
 			if (self.CurrentKey == i) then
@@ -155,21 +155,21 @@ function ENT:Draw()
 
 		if (self.dt.ShowAccess) then
 			local access = self.dt.Access;
-			surface.SetFont('Keypad Message');
+			surface.SetFont("Keypad Message");
 			surface.SetTextPos(19, 16);
 			surface.SetTextColor( access and access_colour or denied_colour );
-			surface.DrawText('ACCESS');
+			surface.DrawText("ACCESS");
 			if (access) then
 				surface.SetTextPos(13, 35);
-				surface.DrawText('GRANTED');
+				surface.DrawText("GRANTED");
 			else
 				surface.SetTextPos(19, 35);
-				surface.DrawText('DENIED');
+				surface.DrawText("DENIED");
 			end
 		else
 			local pass = self.dt.PasswordDisplay;
 			if (not self.dt.Cracking and pass > 0) then
-				surface.SetFont('Keypad Input');
+				surface.SetFont("Keypad Input");
 				surface.SetTextColor(color_white);
 				if (self.dt.Secure) then
 					surface.SetTextPos(15, 24);

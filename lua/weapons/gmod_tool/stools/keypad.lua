@@ -68,8 +68,8 @@ end
 function TOOL:CheckSettings()
     local ply = self:GetOwner();
     -- Check they haven't done something silly with the password
-    local password = self:GetClientNumber('password');
-    if (not password or password < 1 or password > 9999 or string.find(tostring(password), '0')) then
+    local password = self:GetClientNumber("password");
+    if (not password or password < 1 or password > 9999 or string.find(tostring(password), "0")) then
         ply:ChatPrint("Invalid keypad password!");
         return false;
     end
@@ -82,7 +82,7 @@ function TOOL:CheckSettings()
         end
     end
     -- Some people are silly
-    local k1, k2 = self:GetClientNumber('access_numpad_key'), self:GetClientNumber('denied_numpad_key');
+    local k1, k2 = self:GetClientNumber("access_numpad_key"), self:GetClientNumber("denied_numpad_key");
     if (k1 and k2 and k1 == k2 and k1 > 0) then
         ply:ChatPrint("Your Access key is the same as your Denied key!");
         return false;
@@ -110,18 +110,18 @@ function TOOL:LeftClick(tr)
         Pos = tr.HitPos + tr.HitNormal;
         Angle = tr.HitNormal:Angle();
         kvs = kv;
-        Class = 'keypad';
+        Class = "keypad";
     });
     if (not IsValid(ent)) then
         return false;
     end
     DoPropSpawnedEffect(ent);
 
-    if (tobool(self:GetClientNumber('freeze'))) then
+    if (tobool(self:GetClientNumber("freeze"))) then
         ent:GetPhysicsObject():EnableMotion(false);
     end
     local weld;
-    if (tobool(self:GetClientNumber('weld')) and tr.Hit) then
+    if (tobool(self:GetClientNumber("weld")) and tr.Hit) then
         local target = tr.Entity;
         weld = constraint.Weld(ent, target, 0, tr.PhysicsBone);
         if (not tr.HitWorld) then
@@ -131,7 +131,7 @@ function TOOL:LeftClick(tr)
         ent:DeleteOnRemove(weld);
     end
 
-    undo.Create('Keypad');
+    undo.Create("Keypad");
     undo.SetPlayer(owner);
     undo.AddEntity(ent);
     undo.AddEntity(weld);
@@ -144,7 +144,7 @@ end
 
 function TOOL:RightClick(tr)
     local ent = tr.Entity;
-    if (not (IsValid(ent) and ent:GetClass() == 'keypad')) then
+    if (not (IsValid(ent) and ent:GetClass() == "keypad")) then
         return false;
     elseif (CLIENT) then
         return true;
@@ -167,16 +167,16 @@ end
 
 local function subpanel(CPanel, kind, data)
     local function k(name)
-        return c(kind .. '_' .. name);
+        return c(kind .. "_" .. name);
     end
     local CPanel = CPanel:AddControl("CPanel", data);
     CPanel:AddControl("Numpad", {
         Label   = "Key",
-        Command = k'numpad_key',
+        Command = k"numpad_key",
     });
-    CPanel:NumSlider("Key Hold Length", k'rep_length', 0.1, 20, 1);
+    CPanel:NumSlider("Key Hold Length", k"rep_length", 0.1, 20, 1);
     if (WireLib) then
-        CPanel:TextEntry("Wire Output Value", k'wire_value_on');
+        CPanel:TextEntry("Wire Output Value", k"wire_value_on");
     end
     do
         local CPanel = CPanel:AddControl("CPanel", {
@@ -184,25 +184,25 @@ local function subpanel(CPanel, kind, data)
             Closed      = true,
         });
         if (WireLib) then
-            CPanel:TextEntry("Wire Default Value", k'wire_value_off');
-            CPanel:CheckBox("Toggle Wire Output", k'wire_toggle');
+            CPanel:TextEntry("Wire Default Value", k"wire_value_off");
+            CPanel:CheckBox("Toggle Wire Output", k"wire_toggle");
         end
-        CPanel:NumSlider("Initial Delay", k'initial_delay', 0, 10, 1);
-        CPanel:NumSlider("Repititions", k'repetitions', 1, 5, 0);
-        CPanel:NumSlider("Delay between repititions", k'rep_delay', 0, 10, 1);
+        CPanel:NumSlider("Initial Delay", k"initial_delay", 0, 10, 1);
+        CPanel:NumSlider("Repititions", k"repetitions", 1, 5, 0);
+        CPanel:NumSlider("Delay between repititions", k"rep_delay", 0, 10, 1);
     end
 end
 
 function TOOL.BuildCPanel( CPanel )
-    CPanel:TextEntry("Password",        c'password');
-    CPanel:CheckBox("Secure Mode",      c'secure');
-    CPanel:CheckBox("Weld Keypad",      c'weld');
-    CPanel:CheckBox("Freeze Keypad",    c'freeze');
+    CPanel:TextEntry("Password",        c"password");
+    CPanel:CheckBox("Secure Mode",      c"secure");
+    CPanel:CheckBox("Weld Keypad",      c"weld");
+    CPanel:CheckBox("Freeze Keypad",    c"freeze");
 
-    subpanel(CPanel, 'access', {
+    subpanel(CPanel, "access", {
         Label       = "Access Granted",
     });
-    subpanel(CPanel, 'denied', {
+    subpanel(CPanel, "denied", {
         Label       = "Access Denied",
         Closed      = true
     });

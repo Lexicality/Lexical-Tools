@@ -18,7 +18,7 @@ DEFINE_BASECLASS "base_lexentity";
 
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
-include('shared.lua')
+include("shared.lua")
 
 CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
 local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for.")
@@ -85,7 +85,7 @@ function ENT:Initialize()
 end
 
 function ENT:SetPassword(pass)
-    self:SetKeyValue('password', pass);
+    self:SetKeyValue("password", pass);
 end
 
 function ENT:CheckPassword(pass)
@@ -124,23 +124,23 @@ function ENT:KeyValue(key, value)
     if (not allowed_kvs[key]) then return; end
 
     local subcat = string.sub(key, 1, 6);
-    if (subcat == 'access' or subcat == 'denied') then
+    if (subcat == "access" or subcat == "denied") then
         key = string.sub(key, 8);
 
-        if (key == 'wire_toggle') then
+        if (key == "wire_toggle") then
             value = tobool(value);
         else
             value = tonumber(value) or -1;
-            if (key == 'numpad_key') then
+            if (key == "numpad_key") then
                 if (value < 0) then
                     value = nil;
                 end
-            elseif (key == 'rep_length') then
+            elseif (key == "rep_length") then
                 min = cvar_min_length:GetFloat();
                 if (value < min) then
                     value = min;
                 end
-            elseif (key == 'repetitions') then
+            elseif (key == "repetitions") then
                 value = math.floor(value);
                 if (value < 1) then
                     value = 1;
@@ -165,9 +165,9 @@ function ENT:KeyValue(key, value)
         end
 
         return;
-    elseif (key == 'secure') then
+    elseif (key == "secure") then
         value = tobool(value);
-    elseif (key == 'password') then
+    elseif (key == "password") then
         value = tonumber(value) or 0;
         value = math.floor(tonumber(value) or 0);
         if (value < 0 or value > 9999) then
@@ -195,10 +195,10 @@ local function ResetKeypad(self)
 end
 
 function ENT:KeypadInput(input)
-    if (input == 'reset') then
+    if (input == "reset") then
         self:EmitSound(self.ResetSound);
         ResetKeypad(self);
-    elseif (input == 'accept') then
+    elseif (input == "accept") then
         local valid = self:CheckPassword(self._Password)
         self:TriggerKeypad(valid);
     elseif (not self.dt.ShowAccess) then -- You can't modify the keypad while it's doin stuff
@@ -308,8 +308,8 @@ function ENT:Think()
     self:EmitSound(self.PressSound);
 end
 
-util.AddNetworkString('gmod_keypad');
-net.Receive('gmod_keypad', function(_, ply)
+util.AddNetworkString("gmod_keypad");
+net.Receive("gmod_keypad", function(_, ply)
     if (not IsValid(ply)) then return; end
     local tr = ply:GetEyeTrace();
     if (not (IsValid(tr.Entity) and tr.Entity.IsKeypad) or tr.StartPos:Distance(tr.HitPos) > 50) then
@@ -363,9 +363,9 @@ function ENT:Use(activator)
         if (x >= 0 and x <= 1 and y >= 0 and y <= 1) then
             local cmd = i;
             if (i == 10) then
-                cmd = 'reset';
+                cmd = "reset";
             elseif (i == 11) then
-                cmd = 'accept';
+                cmd = "accept";
             end
             self:KeypadInput(cmd);
             return;
@@ -392,9 +392,9 @@ local function do_dupe(ply, data)
 
         keypad._Restoring = true
         for key, value in pairs(data.kvs) do
-            if (type(value) == 'table') then
+            if (type(value) == "table") then
                 for subkey, value in pairs(value) do
-                    setkv(key .. '_' .. subkey, value);
+                    setkv(key .. "_" .. subkey, value);
                 end
             else
                 setkv(key, value);
@@ -403,16 +403,16 @@ local function do_dupe(ply, data)
         keypad._Restoring = false
 
         -- The old style data isn't compatible with the new style wire outputs.
-        if (data.EntityMods and data.EntityMods['keypad_password_passthrough']) then
-            data.EntityMods['keypad_password_passthrough']['OutputOn'] = nil;
-            data.EntityMods['keypad_password_passthrough']['OutputOff'] = nil;
+        if (data.EntityMods and data.EntityMods["keypad_password_passthrough"]) then
+            data.EntityMods["keypad_password_passthrough"]["OutputOn"] = nil;
+            data.EntityMods["keypad_password_passthrough"]["OutputOff"] = nil;
         end
     end
 
     return keypad;
 end
 
-duplicator.RegisterEntityClass('keypad', do_dupe, "Data");
+duplicator.RegisterEntityClass("keypad", do_dupe, "Data");
 
 local function do_dupe_alias(ply, data)
     data.Class = "keypad";
@@ -424,29 +424,29 @@ local function setup_alias(name)
 end
 
 -- ALL OF THE BACKWARDS COMPATIBILITY
-setup_alias('sent_keypad');
-setup_alias('sent_keypad_wire');
-setup_alias('keypad_wire');
+setup_alias("sent_keypad");
+setup_alias("sent_keypad_wire");
+setup_alias("keypad_wire");
 
 ENT.Process = ENT.TriggerKeypad;
 ENT.SetKeypadOwner = ENT.SetPlayer;
 ENT.GetKeypadOwner = ENT.GetPlayer;
 
 local w2m = {
-    Password = 'password',
-    Secure = 'secure',
+    Password = "password",
+    Secure = "secure",
 
-    KeyGranted = 'access_numpad_key',
-    InitDelayGranted = 'access_initial_delay',
-    RepeatsGranted = 'access_repetitions',
-    DelayGranted = 'access_rep_delay',
-    LengthGranted = 'access_rep_length',
+    KeyGranted = "access_numpad_key",
+    InitDelayGranted = "access_initial_delay",
+    RepeatsGranted = "access_repetitions",
+    DelayGranted = "access_rep_delay",
+    LengthGranted = "access_rep_length",
 
-    KeyDenied = 'denied_numpad_key',
-    InitDelayDenied = 'denied_initial_delay',
-    RepeatsDenied = 'denied_repetitions',
-    DelayDenied = 'denied_rep_delay',
-    LengthDenied = 'denied_rep_length',
+    KeyDenied = "denied_numpad_key",
+    InitDelayDenied = "denied_initial_delay",
+    RepeatsDenied = "denied_repetitions",
+    DelayDenied = "denied_rep_delay",
+    LengthDenied = "denied_rep_length",
 }
 
 duplicator.RegisterEntityModifier("keypad_password_passthrough", function(ply, ent, data) ent:SetData(data) end)

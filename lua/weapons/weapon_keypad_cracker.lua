@@ -183,10 +183,10 @@ local texes = {
 for i, name in ipairs(texes) do
     texes[i] = surface.GetTextureID(name);
 end
-local sprmat = Material('sprites/redglow1');
+local sprmat = Material("sprites/redglow1");
 function SWEP:ViewModelDrawn()
     local vm = self.Owner:GetViewModel();
-    local matt = vm:GetBoneMatrix(vm:LookupBone('v_weapon.c4'));
+    local matt = vm:GetBoneMatrix(vm:LookupBone("v_weapon.c4"));
     local pos = matt:GetTranslation();
     local ang = matt:GetAngles();
     local spritepos = pos
