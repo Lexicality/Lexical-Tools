@@ -21,7 +21,10 @@ AddCSLuaFile( "shared.lua" )
 include("shared.lua")
 
 CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
-local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for.")
+local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for.");
+local cvar_min_recharge = CreateConVar("keypad_min_recharge", 2, FCVAR_ARCHIVE, "How long keypads take to recharge");
+-- Potentially a user could lock out a keypad for two and a half minutes, so don't let them
+local cvar_max_recharge = CreateConVar("keypad_max_recharge", 30, FCVAR_ARCHIVE, "Prevent abuse of the access denied system");
 
 util.PrecacheSound("buttons/button14.wav")
 util.PrecacheSound("buttons/button9.wav")
@@ -255,8 +258,6 @@ do
         self:EmitSound(access and self.RightSound or self.WrongSound);
         self.dt.Access = access;
         self.dt.ShowAccess = true;
-        -- TODO: Uhhhh
-        timer.Simple(2, function() ResetKeypad(self) end);
         -- Triggering
         local kvs;
         if (access) then
@@ -264,15 +265,26 @@ do
         else
             kvs = self.kvs.denied;
         end
+
         local numpad_key = kvs.numpad_key;
-        local delay = kvs.initial_delay;
-        local rep_delay  = kvs.rep_delay;
-        local rep_length = kvs.rep_length;
-        local rep_length_min = cvar_min_length:GetFloat();
-        if (rep_length < rep_length_min) then
-            rep_length = rep_length_min;
+
+        -- If nothing is going to happen, do nothing.
+        if (not numpad_key and not self:IsWireOutputConnected(kvs.wire_name)) then
+            timer.Simple(cvar_min_recharge:GetFloat(), function() ResetKeypad(self) end)
+            return;
         end
-        for rep = 0, kvs.repetitions - 1 do
+
+        local delay      = kvs.initial_delay;
+        local num_reps   = kvs.repetitions;
+        local rep_delay  = kvs.rep_delay;
+        local rep_length = math.max(kvs.rep_length, cvar_min_length:GetFloat());
+
+        local total_time = delay + (num_reps * rep_length) + ((num_reps - 1) * rep_delay);
+        -- Show the "Access XXX" screen for quarter of a second after all effects finish
+        local recharge_time = math.min(math.max(total_time + 0.25, cvar_min_recharge:GetFloat()), cvar_max_recharge:GetFloat());
+        timer.Simple(recharge_time, function() ResetKeypad(self) end)
+
+        for rep = 0, num_reps - 1 do
             if (numpad_key) then
                 on_off(self, kvs, set_numpad_state, delay, rep_length)
             end
