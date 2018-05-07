@@ -138,6 +138,24 @@ function ENT:TriggerWireOutput(name, value)
 	end
 end
 
+function ENT:IsWireInputConnected(name)
+	return self.Inputs and self.Inputs[name] and IsVaild(self.Inputs[name].Src);
+end
+
+function ENT:IsWireOutputConnected(name)
+	if (not (self.Outputs and self.Outputs[name])) then
+		return false;
+	end
+
+	for _, input in pairs(self.Outputs[name].Connected) do
+		if (IsValid(input.Entity)) then
+			return true;
+		end
+	end
+
+	return false;
+end
+
 -- 'Class' function
 function ENT.CanDuplicate(ply, data)
 	-- A mixture of duplicator copy/paste & sandbox boilerplate
