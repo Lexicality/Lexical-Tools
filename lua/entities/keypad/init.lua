@@ -31,6 +31,7 @@ util.PrecacheSound("buttons/button15.wav")
 ENT.WireDebugName = "Keypad"
 
 function ENT:Initialize()
+    BaseClass.Initialize();
     self:SetModel("models/props_lab/keypad.mdl");
     self:PhysicsInit(SOLID_VPHYSICS);
     self:SetMoveType(MOVETYPE_VPHYSICS);
@@ -296,6 +297,7 @@ end
 
 ENT.NextCrackNum = 0;
 function ENT:Think()
+    if (BaseClass.Think) then BaseClass.Think(); end
     if (not self.dt.Cracking) then
         return;
     end
@@ -346,7 +348,8 @@ hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
     tr.Entity:KeypadInput(cmd);
 end);
 
-function ENT:Use(activator)
+function ENT:Use(activator, ...)
+    if (BaseClass.Use) then BaseClass.Use(self, activator, ...); end
     if (not (IsValid(activator) and activator:IsPlayer())) then
         return;
     end
@@ -504,14 +507,17 @@ end
 
 -- I don't think these are strictly necessary but whatever
 function ENT:PreEntityCopy()
+    if (BaseClass.PreEntityCopy) then BaseClass.PreEntityCopy(self); end
     self.KeypadData = self:GetData();
 end
 
 function ENT:PostEntityCopy()
+    if (BaseClass.PostEntityCopy) then BaseClass.PostEntityCopy(self); end
     self.KeypadData = nil;
 end
 
 function ENT:PostEntityPaste(ply, ent, all_ents)
+    if (BaseClass.PostEntityPaste) then BaseClass.PostEntityPaste(self, ply, ent, all_ents); end
     -- Update the entity modifier to the combination of everything that's just happened
     self:_UpdateLegacyFromKVs();
 end
