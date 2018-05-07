@@ -115,7 +115,7 @@ local allowed_kvs = {
 local maxes = {
     rep_length      = 20;
     initial_delay   = 10;
-    rep_length      = 10;
+    rep_delay       = 10;
     repetitions     = 5;
 };
 function ENT:KeyValue(key, value)
