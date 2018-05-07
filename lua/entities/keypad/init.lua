@@ -147,14 +147,12 @@ function ENT:KeyValue(key, value)
                 end
             end
         end
+
         if (maxes[key]) then
             value = math.min(value, maxes[key]);
         end
 
-        if (self.kvs[subcat][key] ~= value) then
-            self.kvs[subcat][key] = value;
-            self:_UpdateLegacyFromKVs();
-        end
+        self.kvs[subcat][key] = value;
 
         if (key == "wire_value_on" or key == "wire_value_off") then
             self:HandleWireValueChange(self.kvs[subcat]);
@@ -171,10 +169,7 @@ function ENT:KeyValue(key, value)
         end
     end
 
-    if (self.kvs[key] ~= value) then
-        self.kvs[key] = value;
-        self:_UpdateLegacyFromKVs();
-    end
+    self.kvs[key] = value;
 end
 
 ENT.ResetSound = "buttons/button14.wav";
@@ -392,7 +387,6 @@ local function do_dupe(ply, data)
             end
         end
 
-        keypad._Restoring = true
         for key, value in pairs(data.kvs) do
             if (type(value) == "table") then
                 for subkey, value in pairs(value) do
@@ -402,7 +396,6 @@ local function do_dupe(ply, data)
                 setkv(key, value);
             end
         end
-        keypad._Restoring = false
 
         -- The old style data isn't compatible with the new style wire outputs.
         if (data.EntityMods and data.EntityMods["keypad_password_passthrough"]) then
@@ -453,9 +446,7 @@ local w2m = {
 
 duplicator.RegisterEntityModifier("keypad_password_passthrough", function(ply, ent, data) ent:SetData(data) end)
 
-ENT._Restoring = false;
 function ENT:SetData(data)
-    self._Restoring = true;
     for key, kv in pairs(w2m) do
         if data[key] then
             self:SetKeyValue(kv, tostring(data[key]));
@@ -470,8 +461,6 @@ function ENT:SetData(data)
         self:SetKeyValue("access_wire_value_off", data["OutputOff"])
         self:SetKeyValue("denied_wire_value_on", data["OutputOn"])
     end
-    self._Restoring = false;
-    self:_UpdateLegacyFromKVs();
 end
 
 function ENT:GetData()
@@ -500,24 +489,14 @@ function ENT:GetData()
     };
 end
 
-function ENT:_UpdateLegacyFromKVs()
-    if (self._Restoring) then return; end
-    duplicator.StoreEntityModifier(self, "keypad_password_passthrough", self:GetData())
-end
-
 -- I don't think these are strictly necessary but whatever
 function ENT:PreEntityCopy()
     if (BaseClass.PreEntityCopy) then BaseClass.PreEntityCopy(self); end
     self.KeypadData = self:GetData();
+    duplicator.StoreEntityModifier(self, "keypad_password_passthrough", self.KeypadData);
 end
 
 function ENT:PostEntityCopy()
     if (BaseClass.PostEntityCopy) then BaseClass.PostEntityCopy(self); end
     self.KeypadData = nil;
-end
-
-function ENT:PostEntityPaste(ply, ent, all_ents)
-    if (BaseClass.PostEntityPaste) then BaseClass.PostEntityPaste(self, ply, ent, all_ents); end
-    -- Update the entity modifier to the combination of everything that's just happened
-    self:_UpdateLegacyFromKVs();
 end
