@@ -1,5 +1,5 @@
 --[[
-	Keypads - lua/weapons/weapon_keypad_cracker.lua
+	Keypads - lua/weapons/weapon_keypad_cracker/shared.lua
     Copyright 2012-2018 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
