@@ -27,6 +27,12 @@ ENT.AdminOnly = false;
 
 ENT.IsKeypad  = true;
 
+ENT.STATUSES = {
+	Normal        = 0;
+	AccessGranted = 1;
+	AccessDenied  = 2;
+};
+
 ENT._NWVars = {
 	{
 		Type = "Int";
@@ -38,12 +44,9 @@ ENT._NWVars = {
 		KeyName = "secure";
 	},
 	{
-		Type = "Bool";
-		Name = "Access";
-	},
-	{
-		Type = "Bool";
-		Name = "ShowAccess";
+		Type = "Int";
+		Name = "Status";
+		Default = ENT.STATUSES.Normal;
 	},
 	{
 		Type = "Bool";

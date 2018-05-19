@@ -184,8 +184,7 @@ local function ResetKeypad(self)
 	if (not IsValid(self)) then return; end
 	self._Password = 0;
 	self.dt.PasswordDisplay = 0;
-	self.dt.Access = false;
-	self.dt.ShowAccess = false;
+	self.dt.Status = self.STATUSES.Normal;
 end
 
 function ENT:KeypadInput(input)
@@ -195,7 +194,7 @@ function ENT:KeypadInput(input)
 	elseif (input == "accept") then
 		local valid = self:CheckPassword(self._Password)
 		self:TriggerKeypad(valid);
-	elseif (not self.dt.ShowAccess) then -- You can't modify the keypad while it's doin stuff
+	elseif (self.dt.Status == self.STATUSES.Normal) then -- You can't modify the keypad while it's doin stuff
 		local newnum = self._Password * 10 + (tonumber(input) or 0)
 		if (newnum > 9999) then return; end
 		self._Password = newnum;
@@ -244,7 +243,7 @@ do
 	function ENT:HandleWireValueChange(kvs)
 		if (not WireLib) then return; end
 		-- Don't do anything if we're mid-play
-		if (self.dt.ShowAccess) then return; end
+		if (self.dt.Status ~= self.STATUSES.Normal) then return; end
 
 		local state = false;
 		if (kvs.wire_toggle) then
@@ -254,15 +253,14 @@ do
 	end
 
 	function ENT:TriggerKeypad(access)
-		-- Look & Feel
-		self:EmitSound(access and self.RightSound or self.WrongSound);
-		self.dt.Access = access;
-		self.dt.ShowAccess = true;
-		-- Triggering
 		local kvs;
 		if (access) then
+			self:EmitSound(self.RightSound);
+			self.dt.Status = self.STATUSES.AccessGranted;
 			kvs = self.kvs.access;
 		else
+			self:EmitSound(self.WrongSound);
+			self.dt.Status = self.STATUSES.AccessDenied;
 			kvs = self.kvs.denied;
 		end
 

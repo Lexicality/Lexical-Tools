@@ -153,8 +153,8 @@ function ENT:Draw()
 			surface.DrawText(data[3]);
 		end
 
-		if (self.dt.ShowAccess) then
-			local access = self.dt.Access;
+		if (self.dt.Status ~= self.STATUSES.Normal) then
+			local access = self.dt.Status == self.STATUSES.AccessGranted;
 			surface.SetFont("Keypad Message");
 			surface.SetTextPos(19, 16);
 			surface.SetTextColor(access and access_colour or denied_colour);
