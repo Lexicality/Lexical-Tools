@@ -17,17 +17,17 @@
 
 AddCSLuaFile();
 
-SWEP.Category       = "Roleplay"
-SWEP.PrintName      = "Keypad Cracker"
-SWEP.Slot           = 4
-SWEP.SlotPos        = 1
-SWEP.DrawAmmo       = false
-SWEP.DrawCrosshair  = true
+SWEP.Category       = "Roleplay";
+SWEP.PrintName      = "Keypad Cracker";
+SWEP.Slot           = 4;
+SWEP.SlotPos        = 1;
+SWEP.DrawAmmo       = false;
+SWEP.DrawCrosshair  = true;
 
-SWEP.Author         = "Lexi"
+SWEP.Author         = "Lexi";
 SWEP.Instructions   = "Left click to crack a keypad";
-SWEP.Contact        = ""
-SWEP.Purpose        = ""
+SWEP.Contact        = "";
+SWEP.Purpose        = "";
 
 SWEP.ViewModelFOV   = 62;
 SWEP.ViewModelFlip  = false;
@@ -37,15 +37,15 @@ SWEP.WorldModel     = Model("models/weapons/w_c4.mdl");
 SWEP.Spawnable      = true;
 SWEP.AdminOnly      = true;
 
-SWEP.Primary.ClipSize       = -1
-SWEP.Primary.DefaultClip    = -1
-SWEP.Primary.Automatic      = false
-SWEP.Primary.Ammo           = ""
+SWEP.Primary.ClipSize       = -1;
+SWEP.Primary.DefaultClip    = -1;
+SWEP.Primary.Automatic      = false;
+SWEP.Primary.Ammo           = "";
 
-SWEP.Secondary.ClipSize     = -1
-SWEP.Secondary.DefaultClip  = -1
-SWEP.Secondary.Automatic    = false
-SWEP.Secondary.Ammo         = ""
+SWEP.Secondary.ClipSize     = -1;
+SWEP.Secondary.DefaultClip  = -1;
+SWEP.Secondary.Automatic    = false;
+SWEP.Secondary.Ammo         = "";
 
 function SWEP:GetPrintName()
     return "Keypad Cracker";

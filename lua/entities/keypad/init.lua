@@ -16,9 +16,9 @@
 --]]
 DEFINE_BASECLASS "base_lexentity";
 
-AddCSLuaFile( "cl_init.lua" )
-AddCSLuaFile( "shared.lua" )
-include("shared.lua")
+AddCSLuaFile( "cl_init.lua" );
+AddCSLuaFile( "shared.lua" );
+include("shared.lua");
 
 CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
 local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for.");

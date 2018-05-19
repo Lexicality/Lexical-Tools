@@ -15,8 +15,8 @@
     limitations under the License.
 --]]
 
-TOOL.Category		= "Lexical Tools"
-TOOL.Name			= "Keypad v2"
+TOOL.Category		= "Lexical Tools";
+TOOL.Name			= "Keypad v2";
 
 local kvs = {
 	password = 0;
@@ -51,18 +51,18 @@ end
 TOOL.ClientConVar["freeze"] = 1;
 TOOL.ClientConVar["weld"] = 0;
 
-cleanup.Register("keypads")
+cleanup.Register("keypads");
 
 if (CLIENT) then
-	language.Add("tool.keypad.name", "Keypad v2" )
-	language.Add("tool.keypad.desc", "Secure your contraptions with a password")
+	language.Add("tool.keypad.name", "Keypad v2" );
+	language.Add("tool.keypad.desc", "Secure your contraptions with a password");
 	language.Add("tool.keypad.0",    "Left click to spawn a Keypad. Right click to update an existing one");
 
-	language.Add("Undone_Keypad",   "Undone Keypad" )
-	language.Add("Cleanup_keypads", "Keypads" )
-	language.Add("Cleaned_keypads", "Cleaned up all keypads" )
+	language.Add("Undone_Keypad",   "Undone Keypad" );
+	language.Add("Cleanup_keypads", "Keypads" );
+	language.Add("Cleaned_keypads", "Cleaned up all keypads" );
 
-	language.Add("SBoxLimit_keypads", "You've hit the keypad limit!")
+	language.Add("SBoxLimit_keypads", "You've hit the keypad limit!");
 end
 
 function TOOL:CheckSettings()
@@ -226,7 +226,7 @@ AccessorFunc(PANEL, "m_sCVarActual", "ActualCVar");
 
 function PANEL:Init()
     self.id = tostring(math.random(10000, 99999));
-    self:SetHighlight(true)
+    self:SetHighlight(true);
 end
 
 function PANEL:CheckValidity()

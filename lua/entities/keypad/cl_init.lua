@@ -16,22 +16,22 @@
 --]]
 DEFINE_BASECLASS "base_lexentity";
 
-include("shared.lua")
+include("shared.lua");
 
 surface.CreateFont("Keypad Key", {
     font   = "Trebuchet MS";
     size   = 18;
     weight = 700
-})
+});
 surface.CreateFont("Keypad Input", {
     font   = "Lucida Console";
     size   = 34;
-})
+});
 surface.CreateFont("Keypad Message", {
     font   = "Lucida Console";
     size   = 19;
     weight = 600
-})
+});
 
 local keys = {};
 do
@@ -112,7 +112,7 @@ local secnoise = surface.GetTextureID("effects/tvscreen_noise001a");
 local background = Material("keypad/background.png");
 function ENT:Draw()
 
-	self:DrawModel()
+	self:DrawModel();
 
 	if (LocalPlayer():GetShootPos():DistToSqr(self:GetPos()) > visual_cutoff) then
 		return;
@@ -124,7 +124,7 @@ function ENT:Draw()
 	ang:RotateAroundAxis(ang:Right(), -90);
 	ang:RotateAroundAxis(ang:Up(),     90);
 
-	cam.Start3D2D(pos, ang, 0.05)
+	cam.Start3D2D(pos, ang, 0.05);
 
 		surface.SetMaterial(background);
 		surface.SetDrawColor(color_white);
@@ -133,7 +133,7 @@ function ENT:Draw()
 		if (self.dt.Cracking) then
 			surface.SetTexture(secnoise);
 			local scroll = CurTime() - math.floor(CurTime());
-			surface.DrawTexturedRectUV(9, 9, 92, 51, 0, scroll, 0.3, scroll + 1)
+			surface.DrawTexturedRectUV(9, 9, 92, 51, 0, scroll, 0.3, scroll + 1);
 		end
 
 		surface.SetFont("Keypad Key");
@@ -145,7 +145,7 @@ function ENT:Draw()
 				elseif (i == 11) then
 					surface.SetDrawColor(0, 255, 0);
 				else
-					surface.SetDrawColor(255, 255, 255)
+					surface.SetDrawColor(255, 255, 255);
 				end
 				surface.DrawRect(data[4], data[5], data[6], data[7]);
 			end
@@ -180,5 +180,5 @@ function ENT:Draw()
 				end
 			end
 		end
-	cam.End3D2D()
+	cam.End3D2D();
 end

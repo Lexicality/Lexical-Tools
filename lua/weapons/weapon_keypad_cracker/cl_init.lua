@@ -17,7 +17,7 @@
 include("shared.lua");
 
 function SWEP:PrimaryAttack()
-	self:SetNextPrimaryFire(CurTime() + .4)
+	self:SetNextPrimaryFire(CurTime() + .4);
 end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
@@ -69,7 +69,7 @@ function SWEP:ViewModelDrawn()
             surface.DrawTexturedRect(0, 0, 290, 155);
         end
     cam.End3D2D();
-    render.SetMaterial(sprmat)
+    render.SetMaterial(sprmat);
     cam.IgnoreZ(true);
     render.DrawSprite(spritepos, 1, 1, color_white);
     cam.IgnoreZ(false);

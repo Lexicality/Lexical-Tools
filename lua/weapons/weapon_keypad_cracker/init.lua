@@ -31,7 +31,7 @@ SWEP.CrackTarget = NULL;
 SWEP.Timer = 0;
 
 function SWEP:ResetState()
-    self:SetWeaponHoldType("normal")
+    self:SetWeaponHoldType("normal");
     self.Cracking = false;
     if (IsValid(self.CrackTarget)) then
         self.CrackTarget.dt.Cracking = false;
@@ -61,7 +61,7 @@ function SWEP:Holster()
 end
 
 function SWEP:PrimaryAttack()
-	self:SetNextPrimaryFire(CurTime() + .4)
+	self:SetNextPrimaryFire(CurTime() + .4);
 	if (self.Cracking) then
         return;
     end
@@ -71,7 +71,7 @@ function SWEP:PrimaryAttack()
         return;
     end
 
-    self.CrackStart = CurTime()
+    self.CrackStart = CurTime();
 
     local team = self.Owner:Team();
     -- Alow (super) admin on duty to break in instantly (for base testing)
@@ -81,7 +81,7 @@ function SWEP:PrimaryAttack()
         self.CrackEnd = self.CrackStart + self.CrackTime;
     end
 
-    self:SetWeaponHoldType("pistol")
+    self:SetWeaponHoldType("pistol");
 
     self.Cracking = true;
     self.CrackTarget = ent;
