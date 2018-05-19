@@ -91,7 +91,7 @@ function ENT:Think()
 	end
 	self.CurrentKey = nil;
 	local tr = LocalPlayer():GetEyeTrace();
-	if ( tr.Entity ~= self or tr.StartPos:DistToSqr(tr.HitPos) > button_cutoff ) then
+	if (tr.Entity ~= self or tr.StartPos:DistToSqr(tr.HitPos) > button_cutoff) then
 		return;
 	end
 	local pos = self:WorldToLocal(tr.HitPos);
@@ -157,7 +157,7 @@ function ENT:Draw()
 			local access = self.dt.Access;
 			surface.SetFont("Keypad Message");
 			surface.SetTextPos(19, 16);
-			surface.SetTextColor( access and access_colour or denied_colour );
+			surface.SetTextColor(access and access_colour or denied_colour);
 			surface.DrawText("ACCESS");
 			if (access) then
 				surface.SetTextPos(13, 35);

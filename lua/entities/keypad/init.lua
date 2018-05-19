@@ -16,8 +16,8 @@
 --]]
 DEFINE_BASECLASS "base_lexentity";
 
-AddCSLuaFile( "cl_init.lua" );
-AddCSLuaFile( "shared.lua" );
+AddCSLuaFile("cl_init.lua");
+AddCSLuaFile("shared.lua");
 include("shared.lua");
 
 CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
