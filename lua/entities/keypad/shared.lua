@@ -47,7 +47,7 @@ ENT._NWVars = {
 	},
 	{
 		Type = "Bool";
-		Name = "Cracking";
+		Name = "BeingCracked";
 	},
 };
 

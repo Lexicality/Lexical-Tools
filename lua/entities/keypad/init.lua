@@ -305,7 +305,7 @@ end
 ENT.NextCrackNum = 0;
 function ENT:Think()
 	if (BaseClass.Think) then BaseClass.Think(self); end
-	if (not self.dt.Cracking) then
+	if (not self.dt.BeingCracked) then
 		return;
 	end
 	local cn = CurTime();
@@ -348,7 +348,7 @@ hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
 	end
 
 	-- Don't allow input while being cracked
-	if (tr.Entity.dt.Cracking) then
+	if (tr.Entity.dt.BeingCracked) then
 		return;
 	end
 
@@ -361,7 +361,7 @@ function ENT:Use(activator, ...)
 		return;
 	end
 	-- Don't allow input while being cracked
-	if (self.dt.Cracking) then
+	if (self.dt.BeingCracked) then
 		return;
 	end
 	local tr = activator:GetEyeTrace();

@@ -80,7 +80,7 @@ ENT.CurrentKey = 11;
 ENT.NextCrackNum = 0;
 
 function ENT:Think()
-	if (self.dt.Cracking) then
+	if (self.dt.BeingCracked) then
 		local cn = CurTime();
 		if (cn < self.NextCrackNum) then
 			return;
@@ -130,7 +130,7 @@ function ENT:Draw()
 		surface.SetDrawColor(color_white);
 		surface.DrawTexturedRect(0, 0, 110, 210);
 
-		if (self.dt.Cracking) then
+		if (self.dt.BeingCracked) then
 			surface.SetTexture(secnoise);
 			local scroll = CurTime() - math.floor(CurTime());
 			surface.DrawTexturedRectUV(9, 9, 92, 51, 0, scroll, 0.3, scroll + 1);
@@ -168,7 +168,7 @@ function ENT:Draw()
 			end
 		else
 			local pass = self.dt.PasswordDisplay;
-			if (not self.dt.Cracking and pass > 0) then
+			if (not self.dt.BeingCracked and pass > 0) then
 				surface.SetFont("Keypad Input");
 				surface.SetTextColor(color_white);
 				if (self.dt.Secure) then
