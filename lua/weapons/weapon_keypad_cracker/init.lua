@@ -72,24 +72,13 @@ function SWEP:PrimaryAttack()
 	end
 
 	self.CrackStart = CurTime();
-
-	local team = self.Owner:Team();
-	-- Alow (super) admin on duty to break in instantly (for base testing)
-	if (team == TEAM_ADMIN or team == TEAM_SADMIN) then
-		self.CrackEnd = self.CrackStart + 0.1;
-	else
-		self.CrackEnd = self.CrackStart + self.CrackTime;
-	end
+	self.CrackEnd = self.CrackStart + self.CrackTime;
 
 	self:SetWeaponHoldType("pistol");
 
 	self.Cracking = true;
 	self.CrackTarget = ent;
 	ent.dt.Cracking = true;
-	if (team == TEAM_ADMIN or team == TEAM_SADMIN) then
-		self:Succeed();
-		return;
-	end
 end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
