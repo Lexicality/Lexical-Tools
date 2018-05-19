@@ -52,16 +52,24 @@ function SWEP:ViewModelDrawn()
 	local matt = vm:GetBoneMatrix(vm:LookupBone("v_weapon.c4"));
 	local pos = matt:GetTranslation();
 	local ang = matt:GetAngles();
-	local spritepos = pos
-					+ ang:Forward() * -1.6
-					+ ang:Up() * -0.25
-					+ ang:Right() * -2.8;
-	local screenpos = pos
-					+ ang:Forward() * -1.8
-					+ ang:Right() * -2.7
-					+ ang:Up() * 1.3;
+
+	-- Flip the angles round to be relative to the face of the weapon
+	-- This makes forward x, right y and up z
 	ang:RotateAroundAxis(ang:Forward(),-90);
 	ang:RotateAroundAxis(ang:Up(), 180);
+
+	local spritepos = pos
+					+ ang:Forward() * 1.59
+					+ ang:Right() * 0.26
+					+ ang:Up() * 2.86;
+
+
+	local screenpos = pos
+					+ ang:Forward() * 1.8
+					+ ang:Right() * -1.3
+					+ ang:Up() * 2.69;
+
+	-- Screen
 	cam.Start3D2D(screenpos, ang, 0.01);
 		surface.SetDrawColor(color_white);
 		for _, tex in ipairs(texes) do
@@ -69,6 +77,8 @@ function SWEP:ViewModelDrawn()
 			surface.DrawTexturedRect(0, 0, 290, 155);
 		end
 	cam.End3D2D();
+
+	-- Blinkenlite
 	render.SetMaterial(sprmat);
 	cam.IgnoreZ(true);
 	render.DrawSprite(spritepos, 1, 1, color_white);
