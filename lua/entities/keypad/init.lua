@@ -183,8 +183,8 @@ ENT.PressSound = "buttons/button15.wav"
 local function ResetKeypad(self)
 	if (not IsValid(self)) then return; end
 	self._Password = 0;
-	self.dt.PasswordDisplay = 0;
-	self.dt.Status = self.STATUSES.Normal;
+	self:SetPasswordDisplay(0);
+	self:SetStatus(self.STATUSES.Normal);
 end
 
 function ENT:KeypadInput(input)
@@ -194,14 +194,14 @@ function ENT:KeypadInput(input)
 	elseif (input == "accept") then
 		local valid = self:CheckPassword(self._Password)
 		self:TriggerKeypad(valid);
-	elseif (self.dt.Status == self.STATUSES.Normal) then -- You can't modify the keypad while it's doin stuff
+	elseif (self:GetStatus() == self.STATUSES.Normal) then -- You can't modify the keypad while it's doin stuff
 		local newnum = self._Password * 10 + (tonumber(input) or 0)
 		if (newnum > 9999) then return; end
 		self._Password = newnum;
-		if (self.dt.Secure) then
-			self.dt.PasswordDisplay = self.dt.PasswordDisplay * 10 + 1
+		if (self:GetSecure()) then
+			self:SetPasswordDisplay(self:GetPasswordDisplay() * 10 + 1);
 		else
-			self.dt.PasswordDisplay = self._Password;
+			self:SetPasswordDisplay(self._Password);
 		end
 		self:EmitSound(self.PressSound);
 	end
@@ -243,7 +243,7 @@ do
 	function ENT:HandleWireValueChange(kvs)
 		if (not WireLib) then return; end
 		-- Don't do anything if we're mid-play
-		if (self.dt.Status ~= self.STATUSES.Normal) then return; end
+		if (self:GetStatus() ~= self.STATUSES.Normal) then return; end
 
 		local state = false;
 		if (kvs.wire_toggle) then
@@ -256,11 +256,11 @@ do
 		local kvs;
 		if (access) then
 			self:EmitSound(self.RightSound);
-			self.dt.Status = self.STATUSES.AccessGranted;
+			self:SetStatus(self.STATUSES.AccessGranted);
 			kvs = self.kvs.access;
 		else
 			self:EmitSound(self.WrongSound);
-			self.dt.Status = self.STATUSES.AccessDenied;
+			self:SetStatus(self.STATUSES.AccessDenied);
 			kvs = self.kvs.denied;
 		end
 
@@ -303,7 +303,7 @@ end
 ENT.NextCrackNum = 0;
 function ENT:Think()
 	if (BaseClass.Think) then BaseClass.Think(self); end
-	if (not self.dt.BeingCracked) then
+	if (not self:IsBeingCracked()) then
 		return;
 	end
 	local cn = CurTime();
@@ -346,7 +346,7 @@ hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
 	end
 
 	-- Don't allow input while being cracked
-	if (tr.Entity.dt.BeingCracked) then
+	if (tr.Entity:IsBeingCracked()) then
 		return;
 	end
 
@@ -359,7 +359,7 @@ function ENT:Use(activator, ...)
 		return;
 	end
 	-- Don't allow input while being cracked
-	if (self.dt.BeingCracked) then
+	if (self:IsBeingCracked()) then
 		return;
 	end
 	local tr = activator:GetEyeTrace();

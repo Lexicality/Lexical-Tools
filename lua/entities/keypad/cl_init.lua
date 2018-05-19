@@ -80,7 +80,7 @@ ENT.CurrentKey = 11;
 ENT.NextCrackNum = 0;
 
 function ENT:Think()
-	if (self.dt.BeingCracked) then
+	if (self:IsBeingCracked()) then
 		local cn = CurTime();
 		if (cn < self.NextCrackNum) then
 			return;
@@ -130,7 +130,7 @@ function ENT:Draw()
 		surface.SetDrawColor(color_white);
 		surface.DrawTexturedRect(0, 0, 110, 210);
 
-		if (self.dt.BeingCracked) then
+		if (self:IsBeingCracked()) then
 			surface.SetTexture(secnoise);
 			local scroll = CurTime() - math.floor(CurTime());
 			surface.DrawTexturedRectUV(9, 9, 92, 51, 0, scroll, 0.3, scroll + 1);
@@ -153,8 +153,8 @@ function ENT:Draw()
 			surface.DrawText(data[3]);
 		end
 
-		if (self.dt.Status ~= self.STATUSES.Normal) then
-			local access = self.dt.Status == self.STATUSES.AccessGranted;
+		if (self:GetStatus() ~= self.STATUSES.Normal) then
+			local access = self:GetStatus() == self.STATUSES.AccessGranted;
 			surface.SetFont("Keypad Message");
 			surface.SetTextPos(19, 16);
 			surface.SetTextColor(access and access_colour or denied_colour);
@@ -167,11 +167,11 @@ function ENT:Draw()
 				surface.DrawText("DENIED");
 			end
 		else
-			local pass = self.dt.PasswordDisplay;
-			if (not self.dt.BeingCracked and pass > 0) then
+			local pass = self:GetPasswordDisplay();
+			if (not self:IsBeingCracked() and pass > 0) then
 				surface.SetFont("Keypad Input");
 				surface.SetTextColor(color_white);
-				if (self.dt.Secure) then
+				if (self:GetSecure()) then
 					surface.SetTextPos(15, 24);
 					surface.DrawText(string.rep("*", string.len(pass)));
 				else

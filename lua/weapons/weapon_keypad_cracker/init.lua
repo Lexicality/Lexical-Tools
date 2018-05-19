@@ -34,7 +34,7 @@ function SWEP:ResetState()
 	self:SetWeaponHoldType("normal");
 	self.Cracking = false;
 	if (IsValid(self.CrackTarget)) then
-		self.CrackTarget.dt.BeingCracked = false;
+		self.CrackTarget:SetBeingCracked(false);
 	end
 	self.CrackTarget = NULL;
 	self.Timer = 0;
@@ -78,7 +78,7 @@ function SWEP:PrimaryAttack()
 
 	self.Cracking = true;
 	self.CrackTarget = ent;
-	ent.dt.BeingCracked = true;
+	ent:SetBeingCracked(true);
 end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack

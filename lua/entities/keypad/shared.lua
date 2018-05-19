@@ -70,3 +70,8 @@ ENT.KeyPositions = {
 	{-2.2, 2, -0.30, 1.6},
 	{ 0.3, 2, -0.30, 1.6}
 }
+
+-- English
+function ENT:IsBeingCracked()
+	return self:GetBeingCracked();
+end
