@@ -34,7 +34,7 @@ util.PrecacheSound("buttons/button15.wav")
 ENT.WireDebugName = "Keypad"
 
 function ENT:Initialize()
-    BaseClass.Initialize();
+    BaseClass.Initialize(self);
     self:SetModel("models/props_lab/keypad.mdl");
     self:PhysicsInit(SOLID_VPHYSICS);
     self:SetMoveType(MOVETYPE_VPHYSICS);
@@ -304,7 +304,7 @@ end
 
 ENT.NextCrackNum = 0;
 function ENT:Think()
-    if (BaseClass.Think) then BaseClass.Think(); end
+    if (BaseClass.Think) then BaseClass.Think(self); end
     if (not self.dt.Cracking) then
         return;
     end
