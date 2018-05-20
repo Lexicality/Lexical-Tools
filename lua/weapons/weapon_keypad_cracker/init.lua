@@ -95,15 +95,24 @@ function SWEP:PrimaryAttack()
 	local ent = tr.Entity;
 
 	self:SetWeaponHoldType("pistol");
-	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK);
 
-	local start = CurTime();
-	self:SetCrackStart(start);
-	self:SetCrackEnd(start + self.CrackTime);
 	self:SetCracking(true);
 	self:SetCrackTarget(ent);
 
-	ent:SetBeingCracked(true);
+	-- Play the bootup animation
+	local id, length = self:LookupSequence("pressbutton");
+	local seq = self:GetSequenceInfo(id);
+	self:SendWeaponAnim(seq.activity);
+
+	-- Don't actually start cracking after the bootup animation (~2.7s)
+	local start = CurTime() + length;
+	self:SetCrackStart(start);
+	self:SetCrackEnd(start + self.CrackTime);
+	timer.Simple(length, function()
+		if (IsValid(self) and self:IsCracking() and self:GetCrackTarget() == ent) then
+			ent:SetBeingCracked(true);
+		end
+	end);
 end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack

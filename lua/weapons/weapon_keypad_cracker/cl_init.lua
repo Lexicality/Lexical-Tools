@@ -43,18 +43,6 @@ function SWEP:FireAnimationEvent(pos, ang, event, options)
 	print(options, self._BootupSequence)
 end
 
-local frames = {
-	28, -- LED on
-	37, -- Screen on (flicker)
-	45, -- Overlay1 on
-	51, -- Overlay2 on
-	57, -- background on
-	63, -- EMP the keypad
-	67, -- start flashing
-}
-local maxframes = 83;
-local sequenceduration = 2.7666666556729
-
 
 local texes = {
 	logo = "effects/combinedisplay001a",
