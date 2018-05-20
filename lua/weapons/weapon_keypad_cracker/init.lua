@@ -72,13 +72,20 @@ function SWEP:Succeed()
 end
 
 function SWEP:Fail()
+	local start = self:GetCrackStart();
+
 	self:ResetState();
-	-- :/ this is really abrupt, but it's what CS:S does and I can't work out how to blend the anims
-	self:SendWeaponAnim(ACT_VM_IDLE);
+
+	if (start > CurTime()) then
+		-- :/ this is really abrupt, but it's what CS:S does and I can't work out how to blend the anims
+		self:SendWeaponAnim(ACT_VM_IDLE);
+	else
+		self:DoRecovery();
+	end
 end
 
 function SWEP:Holster()
-	self:Fail();
+	self:ResetState();
 	return true;
 end
 
