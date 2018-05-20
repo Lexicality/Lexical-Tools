@@ -69,5 +69,5 @@ function SWEP:IsTargetEntity(ent)
 end
 
 function SWEP:IsValidTrace(tr)
-	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 300 and self:IsTargetEntity(tr.Entity);
+	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 30 and self:IsTargetEntity(tr.Entity);
 end
