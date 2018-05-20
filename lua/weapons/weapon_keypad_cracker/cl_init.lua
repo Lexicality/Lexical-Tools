@@ -35,14 +35,24 @@ end
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
 
 
+
+SWEP._Blink = false;
+SWEP._BlinkTimer = 0;
 SWEP._BootupSequence = 0
 
 function SWEP:FireAnimationEvent(pos, ang, event, options)
 	if (event ~= 7001) then return; end
 	self._BootupSequence = string.len(options);
-	print(options, self._BootupSequence)
-end
+	if (options == "*******") then
+		self._BootupSequence = 8;
+	end
 
+	-- Always blink the same way
+	if (self._BootupSequence == 0) then
+		self._Blink = false;
+		self._BlinkTimer = CurTime();
+	end
+end
 
 local texes = {
 	logo = "effects/combinedisplay001a",
@@ -69,10 +79,10 @@ function SWEP:DrawScreen()
 
 	surface.SetDrawColor(color_white);
 
-
-	if (i >= 2 and i <= 6) then
+	if (i >= 2 and i <= 7) then
 		drawTex(texes.logo);
-	elseif (i >= 7) then
+		drawTex(texes.grid);
+	elseif (i >= 8) then
 		drawTex(texes.map);
 	end
 
@@ -86,9 +96,9 @@ function SWEP:DrawScreen()
 	-- Missing: buttons #5 and #6
 
 	drawTex(texes.distortion);
-
-	drawTex(texes.grid);
-
+	if (i == 1) then
+		drawTex(texes.grid);
+	end
 end
 
 
@@ -123,12 +133,18 @@ function SWEP:ViewModelDrawn()
 	cam.End3D2D();
 
 	-- Blinkenlite
-	render.SetMaterial(sprmat);
-	cam.IgnoreZ(true);
-	render.DrawSprite(spritepos, 1, 1, color_white);
-	cam.IgnoreZ(false);
+	if (self._BootupSequence >= 7 and self._Blink) then
+		render.SetMaterial(sprmat);
+		cam.IgnoreZ(true);
+		render.DrawSprite(spritepos, 1, 1, color_white);
+		cam.IgnoreZ(false);
+	end
 end
 
 function SWEP:Think()
-	DebugInfo(1, self.Owner:GetViewModel():GetCycle());
+	if (not self:IsCracking()) then return; end
+	local now = CurTime();
+	if (self._BlinkTimer > now) then return; end
+	self._BlinkTimer = now + 0.1;
+	self._Blink = not self._Blink;
 end
