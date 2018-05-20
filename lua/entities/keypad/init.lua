@@ -20,6 +20,8 @@ AddCSLuaFile("cl_init.lua");
 AddCSLuaFile("shared.lua");
 include("shared.lua");
 
+resource.AddFile("materials/keypad/background.png");
+
 CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
 local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for.");
 local cvar_min_recharge = CreateConVar("keypad_min_recharge", 2, FCVAR_ARCHIVE, "How long keypads take to recharge");
