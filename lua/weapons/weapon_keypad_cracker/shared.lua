@@ -51,8 +51,18 @@ function SWEP:GetPrintName()
 	return "Keypad Cracker";
 end
 
-SWEP.CrackTime = 15; -- seconds
-
 function SWEP:IsTargetEntity(ent)
 	return ent:GetClass() == "keypad";
+end
+
+function SWEP:SetupDataTables()
+	self:NetworkVar("Bool", 0, "Cracking");
+	self:NetworkVar("Entity", 0, "CrackTarget")
+	self:NetworkVar("Float", 0, "CrackStart");
+	self:NetworkVar("Float", 1, "CrackEnd");
+end
+
+-- "GetCracking" sounds like an order
+function SWEP:IsCracking()
+	return self:GetCracking();
 end

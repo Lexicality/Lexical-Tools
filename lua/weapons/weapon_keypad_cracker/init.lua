@@ -19,25 +19,23 @@ AddCSLuaFile("cl_init.lua");
 AddCSLuaFile("shared.lua");
 include("shared.lua");
 
+SWEP.CrackTime = 15; -- seconds
+
 -- Utilities
 local function cancrack(tr)
 	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 300
 end
 
-SWEP.Cracking = false;
-SWEP.CrackStart = 0;
-SWEP.CrackEnd = 0;
-SWEP.CrackTarget = NULL;
-SWEP.Timer = 0;
-
 function SWEP:ResetState()
 	self:SetWeaponHoldType("normal");
-	self.Cracking = false;
-	if (IsValid(self.CrackTarget)) then
-		self.CrackTarget:SetBeingCracked(false);
+	local target = self:GetCrackTarget()
+	if (IsValid(target)) then
+		target:SetBeingCracked(false);
 	end
-	self.CrackTarget = NULL;
-	self.Timer = 0;
+	self:SetCracking(false);
+	self:SetCrackTarget(NULL);
+	self:SetCrackStart(0);
+	self:SetCrackEnd(0);
 end
 
 function SWEP:Initialize()
@@ -45,8 +43,9 @@ function SWEP:Initialize()
 end
 
 function SWEP:Succeed()
-	if (SERVER and IsValid(self.CrackTarget)) then
-		self.CrackTarget:TriggerKeypad(true);
+	local target = self:GetCrackTarget()
+	if (SERVER and IsValid(target)) then
+		target:TriggerKeypad(true);
 	end
 	self:ResetState();
 	self:SendWeaponAnim(ACT_VM_SECONDARYATTACK);
@@ -65,7 +64,7 @@ end
 
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + .4);
-	if (self.Cracking) then
+	if (self:IsCracking()) then
 		return;
 	end
 	local tr = self.Owner:GetEyeTrace();
@@ -74,31 +73,32 @@ function SWEP:PrimaryAttack()
 		return;
 	end
 
-	self.CrackStart = CurTime();
-	self.CrackEnd = self.CrackStart + self.CrackTime;
-
 	self:SetWeaponHoldType("pistol");
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK);
 
-	self.Cracking = true;
-	self.CrackTarget = ent;
+	local start = CurTime();
+	self:SetCrackStart(start);
+	self:SetCrackEnd(start + self.CrackTime);
+	self:SetCracking(true);
+	self:SetCrackTarget(ent);
+
 	ent:SetBeingCracked(true);
 end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
 
 function SWEP:Think()
-	if (not self.Cracking) then
+	if (not self:IsCracking()) then
 		return;
 	end
 	-- Make sure they haven't moved
 	local tr = self.Owner:GetEyeTrace();
-	if (not (cancrack(tr) and tr.Entity == self.CrackTarget)) then
+	if (not (cancrack(tr) and tr.Entity == self:GetCrackTarget())) then
 		self:Fail();
 		return;
 	end
 	-- Crack testing
-	if (self.CrackEnd <= CurTime()) then
+	if (self:GetCrackEnd() <= CurTime()) then
 		self:Succeed();
 	end
 end
