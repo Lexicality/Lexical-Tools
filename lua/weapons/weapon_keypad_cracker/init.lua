@@ -37,13 +37,38 @@ function SWEP:Initialize()
 	self:ResetState();
 end
 
+-- Play a lovely animation to indicate the end of cracking
+-- This should take ~2 seconds, depending on timer resolution.
+function SWEP:DoRecovery()
+	self:SetRecovering(true);
+
+	-- Play the drop animation
+	local id, length = self:LookupSequence("drop");
+	local seq = self:GetSequenceInfo(id);
+	self:SendWeaponAnim(seq.activity);
+	timer.Simple(length, function()
+		if (not IsValid(self)) then return; end
+
+		-- Play the undrop anmiation
+		local id, length = self:LookupSequence("draw");
+		local seq = self:GetSequenceInfo(id);
+		self:SendWeaponAnim(seq.activity);
+		timer.Simple(length, function()
+			if (not IsValid(self)) then return; end
+
+			self:SetRecovering(false);
+			self:SendWeaponAnim(ACT_VM_IDLE);
+		end);
+	end);
+end
+
 function SWEP:Succeed()
 	local target = self:GetCrackTarget()
 	if (SERVER and IsValid(target)) then
 		target:TriggerKeypad(true);
 	end
 	self:ResetState();
-	self:SendWeaponAnim(ACT_VM_SECONDARYATTACK);
+	self:DoRecovery();
 end
 
 function SWEP:Fail()
@@ -59,7 +84,7 @@ end
 
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + .4);
-	if (self:IsCracking()) then
+	if (self:IsCracking() or self:IsRecovering()) then
 		return;
 	end
 

@@ -53,6 +53,7 @@ end
 
 function SWEP:SetupDataTables()
 	self:NetworkVar("Bool", 0, "Cracking");
+	self:NetworkVar("Bool", 1, "Recovering");
 	self:NetworkVar("Entity", 0, "CrackTarget")
 	self:NetworkVar("Float", 0, "CrackStart");
 	self:NetworkVar("Float", 1, "CrackEnd");
@@ -61,6 +62,10 @@ end
 -- "GetCracking" sounds like an order
 function SWEP:IsCracking()
 	return self:GetCracking();
+end
+
+function SWEP:IsRecovering()
+	return self:GetRecovering();
 end
 
 -- Utilities

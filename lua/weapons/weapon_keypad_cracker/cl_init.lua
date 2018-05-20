@@ -18,7 +18,7 @@ include("shared.lua");
 
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + .4);
-	if (self:IsCracking()) then
+	if (self:IsCracking() or self:IsRecovering()) then
 		return;
 	end
 
