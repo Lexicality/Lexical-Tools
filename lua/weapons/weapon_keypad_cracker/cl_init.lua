@@ -34,6 +34,15 @@ end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
 
+
+SWEP._BootupSequence = 0
+
+function SWEP:FireAnimationEvent(pos, ang, event, options)
+	if (event ~= 7001) then return; end
+	self._BootupSequence = string.len(options);
+	print(options, self._BootupSequence)
+end
+
 local frames = {
 	28, -- LED on
 	37, -- Screen on (flicker)
@@ -48,18 +57,57 @@ local sequenceduration = 2.7666666556729
 
 
 local texes = {
-	-- "effects/combinedisplay001a",
-	"effects/prisonmap_disp",
-	"effects/tvscreen_noise002a",
-	"vgui/screens/vgui_overlay",
-	"dev/dev_prisontvoverlay001",
-	"dev/dev_prisontvoverlay002",
+	logo = "effects/combinedisplay001a",
+	map = "effects/prisonmap_disp",
+	distortion = "effects/tvscreen_noise002a",
+	grid = "vgui/screens/vgui_overlay",
+	overlay1 = "dev/dev_prisontvoverlay001",
+	overlay2 = "dev/dev_prisontvoverlay002",
 }
-for i, name in ipairs(texes) do
-	texes[i] = surface.GetTextureID(name);
+for name, matname in pairs(texes) do
+	texes[name] = surface.GetTextureID(matname);
 end
+
+local function drawTex(tex)
+	surface.SetTexture(tex);
+	surface.DrawTexturedRect(0, 0, 290, 155);
+end
+
+function SWEP:DrawScreen()
+	local i = self._BootupSequence;
+	if (i < 1) then
+		return;
+	end
+
+	surface.SetDrawColor(color_white);
+
+
+	if (i >= 2 and i <= 6) then
+		drawTex(texes.logo);
+	elseif (i >= 7) then
+		drawTex(texes.map);
+	end
+
+	if (i >= 3) then
+		drawTex(texes.overlay1);
+	end
+	if (i >= 4) then
+		drawTex(texes.overlay2);
+	end
+
+	-- Missing: buttons #5 and #6
+
+	drawTex(texes.distortion);
+
+	drawTex(texes.grid);
+
+end
+
+
 local sprmat = Material("sprites/redglow1");
 function SWEP:ViewModelDrawn()
+	if (not self:IsCracking()) then return end
+
 	local vm = self.Owner:GetViewModel();
 	local matt = vm:GetBoneMatrix(vm:LookupBone("v_weapon.c4"));
 	local pos = matt:GetTranslation();
@@ -83,11 +131,7 @@ function SWEP:ViewModelDrawn()
 
 	-- Screen
 	cam.Start3D2D(screenpos, ang, 0.01);
-		surface.SetDrawColor(color_white);
-		for _, tex in ipairs(texes) do
-			surface.SetTexture(tex);
-			surface.DrawTexturedRect(0, 0, 290, 155);
-		end
+	self:DrawScreen();
 	cam.End3D2D();
 
 	-- Blinkenlite
