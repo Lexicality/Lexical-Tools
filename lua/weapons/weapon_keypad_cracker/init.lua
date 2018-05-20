@@ -49,10 +49,13 @@ function SWEP:Succeed()
 		self.CrackTarget:TriggerKeypad(true);
 	end
 	self:ResetState();
+	self:SendWeaponAnim(ACT_VM_SECONDARYATTACK);
 end
 
 function SWEP:Fail()
 	self:ResetState();
+	-- :/ this is really abrupt, but it's what CS:S does and I can't work out how to blend the anims
+	self:SendWeaponAnim(ACT_VM_IDLE);
 end
 
 function SWEP:Holster()
@@ -75,6 +78,7 @@ function SWEP:PrimaryAttack()
 	self.CrackEnd = self.CrackStart + self.CrackTime;
 
 	self:SetWeaponHoldType("pistol");
+	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK);
 
 	self.Cracking = true;
 	self.CrackTarget = ent;
