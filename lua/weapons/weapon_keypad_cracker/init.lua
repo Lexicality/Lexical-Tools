@@ -111,7 +111,8 @@ function SWEP:PrimaryAttack()
 	local seq = self:GetSequenceInfo(id);
 	self:SendWeaponAnim(seq.activity);
 
-	-- Don't actually start cracking after the bootup animation (~2.7s)
+	-- Don't actually start cracking after the 7th button press in the bootup animation (~2s)
+	length = length - 0.64990234375; -- Scientifically discovered 100% correct number
 	local start = CurTime() + length;
 	self:SetCrackStart(start);
 	self:SetCrackEnd(start + self.CrackTime);
