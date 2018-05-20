@@ -21,11 +21,6 @@ include("shared.lua");
 
 SWEP.CrackTime = 15; -- seconds
 
--- Utilities
-local function cancrack(tr)
-	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 300
-end
-
 function SWEP:ResetState()
 	self:SetWeaponHoldType("normal");
 	local target = self:GetCrackTarget()
@@ -67,11 +62,12 @@ function SWEP:PrimaryAttack()
 	if (self:IsCracking()) then
 		return;
 	end
+
 	local tr = self.Owner:GetEyeTrace();
-	local ent = tr.Entity;
-	if (not (cancrack(tr) and self:IsTargetEntity(ent))) then
+	if (not self:IsValidTrace(tr)) then
 		return;
 	end
+	local ent = tr.Entity;
 
 	self:SetWeaponHoldType("pistol");
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK);
@@ -93,7 +89,7 @@ function SWEP:Think()
 	end
 	-- Make sure they haven't moved
 	local tr = self.Owner:GetEyeTrace();
-	if (not (cancrack(tr) and tr.Entity == self:GetCrackTarget())) then
+	if (not (self:IsValidTrace(tr) and tr.Entity == self:GetCrackTarget())) then
 		self:Fail();
 		return;
 	end

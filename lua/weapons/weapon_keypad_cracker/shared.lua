@@ -51,10 +51,6 @@ function SWEP:GetPrintName()
 	return "Keypad Cracker";
 end
 
-function SWEP:IsTargetEntity(ent)
-	return ent:GetClass() == "keypad";
-end
-
 function SWEP:SetupDataTables()
 	self:NetworkVar("Bool", 0, "Cracking");
 	self:NetworkVar("Entity", 0, "CrackTarget")
@@ -65,4 +61,13 @@ end
 -- "GetCracking" sounds like an order
 function SWEP:IsCracking()
 	return self:GetCracking();
+end
+
+-- Utilities
+function SWEP:IsTargetEntity(ent)
+	return ent:GetClass() == "keypad";
+end
+
+function SWEP:IsValidTrace(tr)
+	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 300 and self:IsTargetEntity(tr.Entity);
 end

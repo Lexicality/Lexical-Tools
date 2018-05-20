@@ -18,6 +18,18 @@ include("shared.lua");
 
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + .4);
+	if (self:IsCracking()) then
+		return;
+	end
+
+	local tr = self.Owner:GetEyeTrace();
+	if (not self:IsValidTrace(tr)) then
+		return;
+	end
+	local ent = tr.Entity;
+
+	self:SetWeaponHoldType("pistol");
+	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK);
 end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
