@@ -81,7 +81,7 @@ function SWEP:IsValidTrace(tr)
 end
 
 function SWEP:ResetState()
-	self:SetWeaponHoldType("normal");
+	self:SetWeaponHoldType("slam");
 	local target = self:GetCrackTarget()
 	if (IsValid(target)) then
 		target:SetBeingCracked(false);
@@ -143,7 +143,7 @@ function SWEP:PrimaryAttack()
 	end
 	local ent = tr.Entity;
 
-	self:SetWeaponHoldType("pistol");
+	self:SetWeaponHoldType("duel");
 	self:SetCrackTarget(ent);
 
 
