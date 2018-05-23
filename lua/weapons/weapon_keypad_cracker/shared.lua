@@ -33,6 +33,7 @@ SWEP.ViewModelFOV   = 62;
 SWEP.ViewModelFlip  = false;
 SWEP.ViewModel      = Model("models/weapons/v_c4.mdl");
 SWEP.WorldModel     = Model("models/weapons/w_c4.mdl");
+SWEP.RenderGroup    = RENDERGROUP_BOTH
 
 SWEP.Spawnable      = true;
 SWEP.AdminOnly      = true;

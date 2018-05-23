@@ -87,6 +87,13 @@ function ENT:Think()
 		end
 		self.NextCrackNum = cn + 0.05;
 		self.CurrentKey = math.random(1, 9);
+		local edata = EffectData();
+		edata:SetOrigin(self:GetZapPos());
+		edata:SetNormal(self:GetForward());
+		edata:SetScale(1);
+		edata:SetMagnitude(1);
+		edata:SetRadius(1);
+		util.Effect("sparks", edata);
 		return;
 	end
 	self.CurrentKey = nil;
@@ -110,6 +117,29 @@ local denied_colour = Color(255, 0, 0, 255);
 
 local secnoise = surface.GetTextureID("effects/tvscreen_noise001a");
 local background = Material("keypad/background.png");
+
+-- Horrendous hack to make sprites work
+local matCache = {}
+function getSaneMaterial(str)
+	local mat
+	mat = matCache[str]
+	if mat then
+		return mat
+	end
+	mat = Material(str)
+	matCache[str] = mat
+	if mat:IsError() then
+		return mat
+	end
+
+	-- Fun with rendermodes ¬_¬
+	if mat:GetInt("$spriterendermode") == 0 then
+		mat:SetInt("$spriterendermode", 5)
+	end
+	mat:Recompute()
+	return mat
+end
+
 function ENT:Draw()
 
 	self:DrawModel();
@@ -181,4 +211,11 @@ function ENT:Draw()
 			end
 		end
 	cam.End3D2D();
+
+	if (self:IsBeingCracked()) then
+		cam.IgnoreZ(true);
+		render.SetMaterial(getSaneMaterial("sprites/glow04"));
+		render.DrawSprite(self:GetZapPos() + self:GetForward() * 0.1, 10, 10, color_white);
+		cam.IgnoreZ(false);
+	end
 end

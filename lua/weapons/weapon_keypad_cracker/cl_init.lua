@@ -54,6 +54,8 @@ function SWEP:FireAnimationEvent(pos, ang, event, options)
 	end
 end
 
+local sprmat = Material("sprites/redglow1");
+local beammat = Material("cable/blue_elec");
 local texes = {
 	logo = "effects/combinedisplay001a",
 	map = "effects/prisonmap_disp",
@@ -101,12 +103,9 @@ function SWEP:DrawScreen()
 	end
 end
 
-
-local sprmat = Material("sprites/redglow1");
-function SWEP:ViewModelDrawn()
+function SWEP:ViewModelDrawn(vm)
 	if (not self:IsCracking()) then return end
 
-	local vm = self.Owner:GetViewModel();
 	local matt = vm:GetBoneMatrix(vm:LookupBone("v_weapon.c4"));
 	local pos = matt:GetTranslation();
 	local ang = matt:GetAngles();
@@ -116,29 +115,38 @@ function SWEP:ViewModelDrawn()
 	ang:RotateAroundAxis(ang:Forward(),-90);
 	ang:RotateAroundAxis(ang:Up(), 180);
 
-	local spritepos = pos
-					+ ang:Forward() * 1.59
-					+ ang:Right() * 0.26
-					+ ang:Up() * 2.86;
-
-
-	local screenpos = pos
-					+ ang:Forward() * 1.8
-					+ ang:Right() * -1.3
-					+ ang:Up() * 2.69;
-
 	-- Screen
+	local screenpos = pos
+		+ ang:Forward() * 1.8
+		+ ang:Right() * -1.3
+		+ ang:Up() * 2.70;
+
 	cam.Start3D2D(screenpos, ang, 0.01);
 	self:DrawScreen();
 	cam.End3D2D();
 
+	-- Everything else is for post bootup
+	if (self._BootupSequence < 7) then
+		return;
+	end
+
 	-- Blinkenlite
-	if (self._BootupSequence >= 7 and self._Blink) then
+	if (self._Blink) then
+		local spritepos = pos
+			+ ang:Forward() * 1.59
+			+ ang:Right() * 0.26
+			+ ang:Up() * 2.86;
+
 		render.SetMaterial(sprmat);
 		cam.IgnoreZ(true);
 		render.DrawSprite(spritepos, 1, 1, color_white);
 		cam.IgnoreZ(false);
 	end
+
+	-- Zappy
+	cam.Start3D();
+	self:DrawMagicBeam(pos);
+	cam.End3D();
 end
 
 function SWEP:Think()
@@ -147,4 +155,68 @@ function SWEP:Think()
 	if (self._BlinkTimer > now) then return; end
 	self._BlinkTimer = now + 0.1;
 	self._Blink = not self._Blink;
+end
+
+function SWEP:DrawWorldModel()
+	self:DrawModel();
+end
+
+function SWEP:DrawWorldModelTranslucent()
+	if (
+		not self:IsCracking()
+		or self:GetCrackStart() > CurTime()
+		or not IsValid(self:GetCrackTarget())
+	) then
+		return;
+	end
+
+	local bone = self:LookupBone("ValveBiped.Bip01_R_Hand")
+	if (not bone) then return; end
+	local matt = self:GetBoneMatrix(bone);
+	local pos = matt:GetTranslation();
+
+	pos = pos
+		+ matt:GetForward() * 5
+		+ matt:GetRight() * 5;
+
+	self:DrawMagicBeam(pos);
+end
+
+function SWEP:DrawMagicBeam(pos)
+	local target = self:GetCrackTarget();
+	local targetPos = target:GetZapPos()
+
+	-- Avoid the beam being stretched by the breathing animation
+	local dist = pos:Distance(targetPos) / 7;
+	local mat_start = dist;
+	local mat_end = 0;
+
+	-- Make the beam scroll into the keypad
+	local n = CurTime()
+	mat_start = mat_start + n;
+	mat_end = mat_end + n;
+
+	render.SetMaterial(beammat);
+	render.DrawBeam(
+		pos,
+		targetPos,
+		6,
+		mat_start,
+		mat_end,
+		color_white
+	);
+
+	n = n * 1.2
+
+	mat_start = mat_start + n;
+	mat_end = mat_end + n;
+
+	render.DrawBeam(
+		pos,
+		targetPos,
+		5,
+		mat_start,
+		mat_end,
+		color_white
+	);
 end
