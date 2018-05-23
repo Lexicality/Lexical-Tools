@@ -56,10 +56,12 @@ SWEP.States = {
 	RecoverStage2 = 4;
 }
 
-SWEP.CrackTime = 15; -- seconds
+if (SERVER) then
+	CreateConVar("keypad_cracker_time", 15, FCVAR_REPLICATED + FCVAR_ARCHIVE, "How many seconds it takes to crack a keypad");
+end
 
-function SWEP:GetPrintName()
-	return "Keypad Cracker";
+function SWEP:GetCrackTime(target)
+	return cvars.Number("keypad_cracker_time", 15)
 end
 
 function SWEP:SetupDataTables()
@@ -155,7 +157,7 @@ function SWEP:PrimaryAttack()
 	local length = self:SequenceDuration() - 0.64990234375; -- Scientifically discovered 100% correct number
 	local start = CurTime() + length;
 	self:SetCrackStart(start);
-	self:SetCrackEnd(start + self.CrackTime);
+	self:SetCrackEnd(start + self:GetCrackTime(ent));
 end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
