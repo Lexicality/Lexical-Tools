@@ -27,7 +27,7 @@ function SWEP:ResetState()
 	if (IsValid(target)) then
 		target:SetBeingCracked(false);
 	end
-	self:SetCracking(false);
+	self:SetCrackState(self.States.Idle);
 	self:SetCrackTarget(NULL);
 	self:SetCrackStart(0);
 	self:SetCrackEnd(0);
@@ -40,26 +40,9 @@ end
 -- Play a lovely animation to indicate the end of cracking
 -- This should take ~2 seconds, depending on timer resolution.
 function SWEP:DoRecovery()
-	self:SetRecovering(true);
-
-	-- Play the drop animation
-	local id, length = self:LookupSequence("drop");
-	local seq = self:GetSequenceInfo(id);
-	self:SendWeaponAnim(seq.activity);
-	timer.Simple(length, function()
-		if (not IsValid(self)) then return; end
-
-		-- Play the undrop anmiation
-		local id, length = self:LookupSequence("draw");
-		local seq = self:GetSequenceInfo(id);
-		self:SendWeaponAnim(seq.activity);
-		timer.Simple(length, function()
-			if (not IsValid(self)) then return; end
-
-			self:SetRecovering(false);
-			self:SendWeaponAnim(ACT_VM_IDLE);
-		end);
-	end);
+	self:SetCrackState(self.States.RecoverStage1);
+	self:SendWeaponAnim(ACT_VM_SECONDARYATTACK);
+	self:SetRecoveryTimer(CurTime() + self:SequenceDuration());
 end
 
 function SWEP:Succeed()
@@ -91,7 +74,7 @@ end
 
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + .4);
-	if (self:IsCracking() or self:IsRecovering()) then
+	if (self:GetCrackState() ~= self.States.Idle) then
 		return;
 	end
 
@@ -102,41 +85,75 @@ function SWEP:PrimaryAttack()
 	local ent = tr.Entity;
 
 	self:SetWeaponHoldType("pistol");
-
-	self:SetCracking(true);
 	self:SetCrackTarget(ent);
 
+
 	-- Play the bootup animation
-	local id, length = self:LookupSequence("pressbutton");
-	local seq = self:GetSequenceInfo(id);
-	self:SendWeaponAnim(seq.activity);
+	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+	self:SetCrackState(self.States.InitialAnimation);
 
 	-- Don't actually start cracking after the 7th button press in the bootup animation (~2s)
-	length = length - 0.64990234375; -- Scientifically discovered 100% correct number
+	local length = self:SequenceDuration() - 0.64990234375; -- Scientifically discovered 100% correct number
 	local start = CurTime() + length;
 	self:SetCrackStart(start);
 	self:SetCrackEnd(start + self.CrackTime);
-	timer.Simple(length, function()
-		if (IsValid(self) and self:IsCracking() and self:GetCrackTarget() == ent) then
-			ent:SetBeingCracked(true);
-		end
-	end);
 end
 
 SWEP.SecondaryAttack = SWEP.PrimaryAttack
 
-function SWEP:Think()
-	if (not self:IsCracking()) then
-		return;
+function SWEP:CheckFailState()
+	-- Make sure the keypad still exists
+	local target = self:GetCrackTarget();
+	if (not IsValid(target)) then
+		self:Fail();
+		return true;
 	end
 	-- Make sure they haven't moved
 	local tr = self.Owner:GetEyeTrace();
-	if (not (self:IsValidTrace(tr) and tr.Entity == self:GetCrackTarget())) then
+	if (tr.Entity ~= target or not self:IsValidTrace(tr)) then
 		self:Fail();
+		return true;
+	end
+
+	return false;
+end
+
+function SWEP:Think()
+	local state = self:GetCrackState();
+	if (state == self.States.Idle) then
 		return;
 	end
-	-- Crack testing
-	if (self:GetCrackEnd() <= CurTime()) then
-		self:Succeed();
+
+	local now = CurTime();
+	if (state == self.States.InitialAnimation) then
+		-- Waiting for the animation to end
+		if (self:CheckFailState()) then
+			return
+		elseif (self:GetCrackStart() <= now) then
+			self:GetCrackTarget():SetBeingCracked(true);
+			self:SetCrackState(self.States.Cracking);
+		end
+	elseif (state == self.States.Cracking) then
+		-- Crack testing
+		if (self:CheckFailState()) then
+			return
+		elseif (self:GetCrackEnd() <= now) then
+			self:Succeed();
+		end
+	elseif (state == self.States.RecoverStage1) then
+		if (self:GetRecoveryTimer() <= now) then
+			self:SetCrackState(self.States.RecoverStage2);
+			self:SendWeaponAnim(ACT_VM_DRAW);
+			self:SetRecoveryTimer(CurTime() + self:SequenceDuration());
+		end
+	elseif (state == self.States.RecoverStage2) then
+		if (self:GetRecoveryTimer() <= now) then
+			self:SetCrackState(self.States.Idle);
+			self:SendWeaponAnim(ACT_VM_IDLE);
+		end
+	else
+		ErrorNoHalt("Keypad cracker got into unknown state " .. state .. "!");
+		self:ResetState();
+		self:SendWeaponAnim(ACT_VM_IDLE);
 	end
 end

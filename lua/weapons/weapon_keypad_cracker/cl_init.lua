@@ -18,7 +18,7 @@ include("shared.lua");
 
 function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + .4);
-	if (self:IsCracking() or self:IsRecovering()) then
+	if (self:GetCrackState() ~= self.States.Idle) then
 		return;
 	end
 
@@ -37,7 +37,6 @@ SWEP.SecondaryAttack = SWEP.PrimaryAttack
 
 
 SWEP._Blink = false;
-SWEP._BlinkTimer = 0;
 SWEP._BootupSequence = 0
 
 function SWEP:FireAnimationEvent(pos, ang, event, options)
@@ -45,12 +44,6 @@ function SWEP:FireAnimationEvent(pos, ang, event, options)
 	self._BootupSequence = string.len(options);
 	if (options == "*******") then
 		self._BootupSequence = 8;
-	end
-
-	-- Always blink the same way
-	if (self._BootupSequence == 0) then
-		self._Blink = false;
-		self._BlinkTimer = CurTime();
 	end
 end
 
@@ -104,7 +97,10 @@ function SWEP:DrawScreen()
 end
 
 function SWEP:ViewModelDrawn(vm)
-	if (not self:IsCracking()) then return end
+	local state = self:GetCrackState();
+	if (state ~= self.States.InitialAnimation and state ~= self.States.Cracking) then
+		return
+	end
 
 	local matt = vm:GetBoneMatrix(vm:LookupBone("v_weapon.c4"));
 	local pos = matt:GetTranslation();
@@ -126,7 +122,7 @@ function SWEP:ViewModelDrawn(vm)
 	cam.End3D2D();
 
 	-- Everything else is for post bootup
-	if (self._BootupSequence < 7) then
+	if (state ~= self.States.Cracking) then
 		return;
 	end
 
@@ -150,11 +146,9 @@ function SWEP:ViewModelDrawn(vm)
 end
 
 function SWEP:Think()
-	if (not self:IsCracking()) then return; end
-	local now = CurTime();
-	if (self._BlinkTimer > now) then return; end
-	self._BlinkTimer = now + 0.1;
-	self._Blink = not self._Blink;
+	if (self:GetCrackState() == self.States.Cracking) then
+		self._Blink = math.floor(CurTime() * 10) % 2 == 0;
+	end
 end
 
 function SWEP:DrawWorldModel()
@@ -163,7 +157,7 @@ end
 
 function SWEP:DrawWorldModelTranslucent()
 	if (
-		not self:IsCracking()
+		self:GetCrackState() ~= self.States.Cracking
 		or self:GetCrackStart() > CurTime()
 		or not IsValid(self:GetCrackTarget())
 	) then
@@ -184,6 +178,7 @@ end
 
 function SWEP:DrawMagicBeam(pos)
 	local target = self:GetCrackTarget();
+	if (not IsValid(target)) then return; end
 	local targetPos = target:GetZapPos()
 
 	-- Avoid the beam being stretched by the breathing animation
