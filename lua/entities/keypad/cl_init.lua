@@ -140,8 +140,81 @@ function getSaneMaterial(str)
 	return mat
 end
 
-function ENT:Draw()
+-- Draws a burst of light where the beam hits to hide the ugly clipping
+function ENT:DrawCrackingLight()
+	cam.IgnoreZ(true);
+	render.SetMaterial(getSaneMaterial("sprites/glow04"));
+	render.DrawSprite(self:GetZapPos() + self:GetForward() * 0.1, 10, 10, color_white);
+	cam.IgnoreZ(false);
+end
 
+function ENT:DrawBackground()
+	surface.SetMaterial(background);
+	surface.SetDrawColor(color_white);
+	surface.DrawTexturedRect(0, 0, 110, 210);
+end
+
+function ENT:DrawKeys()
+	surface.SetFont("Keypad Key");
+	surface.SetTextColor(color_black);
+	for i, data in pairs(keys) do
+		if (self.CurrentKey == i) then
+			if (i == 10) then
+				surface.SetDrawColor(255, 0, 0);
+			elseif (i == 11) then
+				surface.SetDrawColor(0, 255, 0);
+			else
+				surface.SetDrawColor(255, 255, 255);
+			end
+			surface.DrawRect(data[4], data[5], data[6], data[7]);
+		end
+		surface.SetTextPos(data[1], data[2]);
+		surface.DrawText(data[3]);
+	end
+end
+
+function ENT:DrawCrackingScreen()
+	surface.SetTexture(secnoise);
+	local scroll = CurTime() - math.floor(CurTime());
+	surface.DrawTexturedRectUV(9, 9, 92, 51, 0, scroll, 0.3, scroll + 1);
+end
+
+-- This is copy/paste code because it's easier to read like this
+function ENT:DrawAccessGranted()
+	surface.SetFont("Keypad Message");
+	surface.SetTextColor(access_colour);
+
+	surface.SetTextPos(19, 16);
+	surface.DrawText("ACCESS");
+	surface.SetTextPos(13, 35);
+	surface.DrawText("GRANTED");
+end
+
+function ENT:DrawAccessDenied()
+	surface.SetFont("Keypad Message");
+	surface.SetTextColor(denied_colour);
+
+	surface.SetTextPos(19, 16);
+	surface.DrawText("ACCESS");
+	surface.SetTextPos(13, 35);
+	surface.DrawText("DENIED");
+end
+
+function ENT:DrawSecureInput(input)
+	surface.SetFont("Keypad Input");
+	surface.SetTextColor(color_white);
+	surface.SetTextPos(15, 24);
+	surface.DrawText(string.rep("*", string.len(input)));
+end
+
+function ENT:DrawInsecureInput(input)
+	surface.SetFont("Keypad Input");
+	surface.SetTextColor(color_white);
+	surface.SetTextPos(15, 20);
+	surface.DrawText(input);
+end
+
+function ENT:Draw()
 	self:DrawModel();
 
 	if (LocalPlayer():GetShootPos():DistToSqr(self:GetPos()) > visual_cutoff) then
@@ -155,67 +228,30 @@ function ENT:Draw()
 	ang:RotateAroundAxis(ang:Up(),     90);
 
 	cam.Start3D2D(pos, ang, 0.05);
+		-- Draw the background
+		self:DrawBackground();
+		self:DrawKeys();
 
-		surface.SetMaterial(background);
-		surface.SetDrawColor(color_white);
-		surface.DrawTexturedRect(0, 0, 110, 210);
-
+		local status = self:GetStatus();
+		local input = self:GetPasswordDisplay();
 		if (self:IsBeingCracked()) then
-			surface.SetTexture(secnoise);
-			local scroll = CurTime() - math.floor(CurTime());
-			surface.DrawTexturedRectUV(9, 9, 92, 51, 0, scroll, 0.3, scroll + 1);
-		end
-
-		surface.SetFont("Keypad Key");
-		surface.SetTextColor(color_black);
-		for i, data in pairs(keys) do
-			if (self.CurrentKey == i) then
-				if (i == 10) then
-					surface.SetDrawColor(255, 0, 0);
-				elseif (i == 11) then
-					surface.SetDrawColor(0, 255, 0);
-				else
-					surface.SetDrawColor(255, 255, 255);
-				end
-				surface.DrawRect(data[4], data[5], data[6], data[7]);
-			end
-			surface.SetTextPos(data[1], data[2]);
-			surface.DrawText(data[3]);
-		end
-
-		if (self:GetStatus() ~= self.STATUSES.Normal) then
-			local access = self:GetStatus() == self.STATUSES.AccessGranted;
-			surface.SetFont("Keypad Message");
-			surface.SetTextPos(19, 16);
-			surface.SetTextColor(access and access_colour or denied_colour);
-			surface.DrawText("ACCESS");
-			if (access) then
-				surface.SetTextPos(13, 35);
-				surface.DrawText("GRANTED");
+			self:DrawCrackingScreen();
+		elseif (status ~= self.STATUSES.Normal) then
+			if (status == self.STATUSES.AccessGranted) then
+				self:DrawAccessGranted();
 			else
-				surface.SetTextPos(19, 35);
-				surface.DrawText("DENIED");
+				self:DrawAccessDenied();
 			end
-		else
-			local pass = self:GetPasswordDisplay();
-			if (not self:IsBeingCracked() and pass > 0) then
-				surface.SetFont("Keypad Input");
-				surface.SetTextColor(color_white);
-				if (self:GetSecure()) then
-					surface.SetTextPos(15, 24);
-					surface.DrawText(string.rep("*", string.len(pass)));
-				else
-					surface.SetTextPos(15, 20);
-					surface.DrawText(pass);
-				end
+		elseif (input > 0) then
+			if (self:GetSecure()) then
+				self:DrawSecureInput(input);
+			else
+				self:DrawInsecureInput(input);
 			end
 		end
 	cam.End3D2D();
 
 	if (self:IsBeingCracked()) then
-		cam.IgnoreZ(true);
-		render.SetMaterial(getSaneMaterial("sprites/glow04"));
-		render.DrawSprite(self:GetZapPos() + self:GetForward() * 0.1, 10, 10, color_white);
-		cam.IgnoreZ(false);
+		self:DrawCrackingLight();
 	end
 end
