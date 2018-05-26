@@ -249,6 +249,17 @@ if (CLIENT) then
 	for name, matname in pairs(texes) do
 		texes[name] = surface.GetTextureID(matname);
 	end
+
+	surface.CreateFont("GarbageText", {
+		font   = "Verdana",
+		weight = 1200,
+		size   = 6,
+		blursize = 1,
+		additive=true,
+		-- scanlines=2,
+		-- shadow=true,
+	});
+
 end
 
 local function drawTex(tex)
@@ -256,6 +267,25 @@ local function drawTex(tex)
 	surface.DrawTexturedRect(0, 0, 290, 155);
 end
 
+local lipsum = {
+	"Lorem ipsum dolor sit amet,",
+	"consectetur adipiscing elit.",
+	"Suspendisse feugiat finibus",
+	"laoreet. Ut venenatis id",
+	"felis at feugiat. Cras ut",
+	"tristique sapien. Nulla",
+	"iaculis massa ac pretium ornare.",
+	"Suspendisse iaculis, arcu id",
+	"interdum feugiat, lectus nisl",
+	"feugiat augue, et tempor nulla",
+	"odio et nisl. Vestibulum eget",
+	"maximus turpis, in aliquet ex.",
+	"Phasellus magna elit, elementum",
+	"ac sapien sit amet, scelerisque",
+	"fermentum dolor. Donec vel",
+	"tortor sapien. Nam sollicitudin",
+	"scelerisque nulla nec maximus.",
+}
 function SWEP:DrawScreen()
 	local i = self._BootupSequence;
 	if (i < 1) then
@@ -263,6 +293,7 @@ function SWEP:DrawScreen()
 	end
 
 	surface.SetDrawColor(color_white);
+	surface.SetAlphaMultiplier(1);
 
 	if (i >= 2 and i <= 7) then
 		drawTex(texes.logo);
@@ -276,9 +307,88 @@ function SWEP:DrawScreen()
 	end
 	if (i >= 4) then
 		drawTex(texes.overlay2);
+		surface.SetAlphaMultiplier(0.8);
+		surface.DrawOutlinedRect(223, 74, 69, 10);
 	end
 
-	-- Missing: buttons #5 and #6
+	-- Bouncing bars of nonsense
+	if (i >= 5) then
+		local now = CurTime() * 2;
+		-- Left hand side
+		local len = -32;
+		len = len * ((math.sin(now) * math.sin(now * 2.7) + 1) / 2)
+		surface.DrawRect(255, 69, len, 3)
+		local len = -32;
+		len = len * ((math.cos(now * 2) * math.sin(now * 1.2) + 1) / 2)
+		surface.DrawRect(255, 72, len, 2)
+		-- Right hand side
+		local len = 34
+		len = len * ((math.cos(now * 5) * math.cos(now * 1.2) + 1) / 2)
+		surface.DrawRect(255, 69, len, 2)
+		local len = 34
+		len = len * ((math.cos(now) * math.cos(now * 1.2) + 1) / 2)
+		surface.DrawRect(255, 71, len, 2)
+		local len = 34
+		len = len * ((math.cos(now) + 1) / 2)
+		surface.DrawRect(255, 73, len, 2)
+	end
+
+	-- Actually useful bar
+	if (i >= 7) then
+		local startTime = self:GetCrackStart();
+		local endTime = self:GetCrackEnd();
+		local now = CurTime();
+		if (now > startTime) then
+			local max = endTime - startTime;
+			local cur = now - startTime;
+			cur = math.min(cur, max);
+			local len = cur / max;
+			surface.DrawRect(223, 74, 69 * len, 10);
+		end
+	end
+
+	surface.SetAlphaMultiplier(1);
+
+	if (i >= 6) then
+		local now = CurTime() * 50;
+		surface.SetTextColor(color_white);
+		surface.SetFont("GarbageText");
+		local _, h = surface.GetTextSize('M');
+		local num = #lipsum;
+		local sx, sy = 67, 70;
+		-- Idiotic stenciling to make the text look nice
+		surface.SetDrawColor(color_black);
+		-- Stencil boilerplate
+		render.ClearStencil()
+		render.SetStencilEnable(true)
+		-- Bitwise mask of what to read/write. We're not being clever here, so just use bit #1
+		render.SetStencilWriteMask(1)
+		render.SetStencilTestMask(1)
+		-- This could be anything as long as it bitwises with 1, but pick 1 because that's unsuprising
+		render.SetStencilReferenceValue(1)
+		-- We don't want to actually draw the box, so always fail
+		render.SetStencilCompareFunction(STENCIL_NEVER)
+		-- When the boxs fails, draw the result to the buffer
+		render.SetStencilFailOperation(STENCILOPERATION_REPLACE)
+		-- Fail to draw a box
+		surface.DrawRect(sx - 2, sy + 20, 105, 50)
+		-- Now, only draw things in the stencil buffer
+		render.SetStencilCompareFunction(STENCIL_EQUAL)
+		-- Prevent the text from putting itself into the stencil buffer
+		render.SetStencilFailOperation(STENCILOPERATION_KEEP)
+		-- Draw all of the text
+		for i, line in ipairs(lipsum) do
+			local voffset = (i - 1) * h
+			-- This just works, don't ask me how.
+			voffset = voffset - (now % (num * h));
+			if (voffset < 0) then
+				voffset = voffset + num * h;
+			end
+			surface.SetTextPos(sx, sy + voffset);
+			surface.DrawText(line);
+		end
+		render.SetStencilEnable(false)
+	end
 
 	drawTex(texes.distortion);
 	if (i == 1) then
