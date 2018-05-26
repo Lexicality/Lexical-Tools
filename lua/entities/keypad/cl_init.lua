@@ -23,9 +23,17 @@ surface.CreateFont("Keypad Key", {
 	size   = 18;
 	weight = 700
 });
+surface.CreateFont("Keypad Secure Input", {
+	font   = "Lucida Console";
+	size   = 34;
+});
 surface.CreateFont("Keypad Input", {
 	font   = "Lucida Console";
 	size   = 34;
+});
+surface.CreateFont("Keypad Input Long", {
+	font   = "Lucida Console";
+	size   = 26;
 });
 surface.CreateFont("Keypad Message", {
 	font   = "Lucida Console";
@@ -201,17 +209,34 @@ function ENT:DrawAccessDenied()
 end
 
 function ENT:DrawSecureInput(input)
-	surface.SetFont("Keypad Input");
+	surface.SetFont("Keypad Secure Input");
 	surface.SetTextColor(color_white);
-	surface.SetTextPos(15, 24);
-	surface.DrawText(string.rep("*", string.len(input)));
+	local inputLen = string.len(input);
+	if (inputLen <= 4) then
+		surface.SetTextPos(15, 24);
+		surface.DrawText(string.rep("*", string.len(input)));
+	else
+		surface.SetTextPos(15, 13);
+		surface.DrawText(string.rep("*", 4));
+		surface.SetTextPos(15, 34);
+		surface.DrawText(string.rep("*", inputLen - 4));
+	end
 end
 
 function ENT:DrawInsecureInput(input)
-	surface.SetFont("Keypad Input");
 	surface.SetTextColor(color_white);
-	surface.SetTextPos(15, 20);
-	surface.DrawText(input);
+	local inputLen = string.len(input);
+	if (inputLen <= 4) then
+		surface.SetFont("Keypad Input");
+		surface.SetTextPos(15, 20);
+		surface.DrawText(input);
+	else
+		surface.SetFont("Keypad Input Long");
+		surface.SetTextPos(22, 11);
+		surface.DrawText(string.sub(input, 1, 4));
+		surface.SetTextPos(22, 35);
+		surface.DrawText(string.sub(input, 5));
+	end
 end
 
 function ENT:Draw()

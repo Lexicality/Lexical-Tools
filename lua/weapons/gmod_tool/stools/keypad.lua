@@ -68,8 +68,9 @@ end
 function TOOL:CheckSettings()
 	local ply = self:GetOwner();
 	-- Check they haven't done something silly with the password
-	local password = self:GetClientNumber("password");
-	if (not password or password < 1 or password > 9999 or string.find(tostring(password), "0")) then
+	local password = tostring(self:GetClientNumber("password"));
+	local passwordLen = #password;
+	if (passwordLen == 0 or passwordLen > 8 or password:find("0") or password:find("%.")) then
 		ply:ChatPrint("Invalid keypad password!");
 		return false;
 	end
@@ -204,7 +205,21 @@ local function subpanel(CPanel, kind, data)
 end
 
 function TOOL.BuildCPanel(CPanel)
-	CPanel:TextEntry("Password", c"password");
+	local p = CPanel:TextEntry("Password", c"password");
+	function p:AllowInput(value)
+		-- Only allow numbers
+		local n = tonumber(value);
+		if (not n or n == 0) then
+			return true;
+		end
+		-- Only allow 8 characters
+		if (string.len(self:GetText() .. value) > 8) then
+			return true;
+		end
+
+		return nil;
+	end
+
 	CPanel:CheckBox("Secure Mode", c"secure");
 	CPanel:CheckBox("Weld Keypad", c"weld");
 	CPanel:CheckBox("Freeze Keypad", c"freeze");

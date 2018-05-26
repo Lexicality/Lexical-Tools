@@ -169,7 +169,7 @@ function ENT:KeyValue(key, value)
 	elseif (key == "password") then
 		value = tonumber(value) or 0;
 		value = math.floor(tonumber(value) or 0);
-		if (value < 0 or value > 9999) then
+		if (value < 0 or value > 99999999) then
 			value = 0;
 		end
 	end
@@ -198,7 +198,7 @@ function ENT:KeypadInput(input)
 		self:TriggerKeypad(valid);
 	elseif (self:GetStatus() == self.STATUSES.Normal) then -- You can't modify the keypad while it's doin stuff
 		local newnum = self._Password * 10 + (tonumber(input) or 0)
-		if (newnum > 9999) then return; end
+		if (newnum > 99999999) then return; end
 		self._Password = newnum;
 		if (self:GetSecure()) then
 			self:SetPasswordDisplay(self:GetPasswordDisplay() * 10 + 1);
