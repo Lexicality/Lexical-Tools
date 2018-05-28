@@ -204,7 +204,7 @@ function ENT:DrawAccessDenied()
 
 	surface.SetTextPos(19, 16);
 	surface.DrawText("ACCESS");
-	surface.SetTextPos(13, 35);
+	surface.SetTextPos(19, 35);
 	surface.DrawText("DENIED");
 end
 
