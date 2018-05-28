@@ -269,7 +269,7 @@ function ENT:Draw()
 				self:DrawAccessDenied();
 			end
 		elseif (input ~= "") then
-			if (self:GetSecure()) then
+			if (self:IsSecure()) then
 				self:DrawSecureInput(input);
 			else
 				self:DrawInsecureInput(input);

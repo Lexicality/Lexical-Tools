@@ -71,11 +71,6 @@ ENT.KeyPositions = {
 	{ 0.3, 2, -0.30, 1.6}
 }
 
--- English
-function ENT:IsBeingCracked()
-	return self:GetBeingCracked();
-end
-
 -- The spot on the keypad where special effects should hit the keypad
 function ENT:GetZapPos()
 	-- Work out the centre of the screen

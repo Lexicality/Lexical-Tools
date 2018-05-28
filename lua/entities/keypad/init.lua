@@ -222,7 +222,7 @@ function ENT:KeypadInput(input)
 
 	self._Password = newPassword;
 
-	if (self:GetSecure()) then
+	if (self:IsSecure()) then
 		self:SetPasswordDisplay(string.rep('*', #self._Password));
 	else
 		self:SetPasswordDisplay(self._Password);
