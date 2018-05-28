@@ -353,7 +353,7 @@ function SWEP:DrawScreen()
 		local now = CurTime() * 50;
 		surface.SetTextColor(color_white);
 		surface.SetFont("GarbageText");
-		local _, h = surface.GetTextSize('M');
+		local _, h = surface.GetTextSize("M");
 		local num = #lipsum;
 		local sx, sy = 67, 70;
 		-- Idiotic stenciling to make the text look nice
