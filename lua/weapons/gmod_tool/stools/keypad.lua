@@ -187,7 +187,7 @@ local function subpanel(CPanel, kind, data)
 	CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0);
 
 	if (WireLib) then
-		CPanel:TextEntry("Wire Output Value", k"wire_value_on");
+		CPanel:TextEntry("Wire Output Value", k"wire_value_on"):SetNumeric(true);
 	end
 	do
 		local CPanel = CPanel:AddControl("ControlPanel", {
@@ -195,7 +195,7 @@ local function subpanel(CPanel, kind, data)
 			Closed = true;
 		});
 		if (WireLib) then
-			CPanel:TextEntry("Wire Default Value", k"wire_value_off");
+			CPanel:TextEntry("Wire Default Value", k"wire_value_off"):SetNumeric(true);
 			CPanel:CheckBox("Toggle Wire Output", k"wire_toggle");
 		end
 		CPanel:NumSlider("Initial Delay", k"initial_delay", 0, 10, 1);
