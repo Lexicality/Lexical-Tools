@@ -57,6 +57,13 @@ function ENT:SetupDataTables()
 		special.Edit = nwvar.Edit;
 		self:NetworkVar(nwvar.Type, id, nwvar.Name, special);
 
+		if (nwvar.Type == "Bool") then
+			-- Booleans look better when you can call IsSecure rather than GetSecure etc.
+			self["Is" .. nwvar.Name] = function(self)
+				return self.dt[name];
+			end
+		end
+
 		if (nwvar.Default ~= nil) then
 			self["Set" .. nwvar.Name](self, nwvar.Default);
 		end
