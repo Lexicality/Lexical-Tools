@@ -68,9 +68,9 @@ end
 function TOOL:CheckSettings()
 	local ply = self:GetOwner();
 	-- Check they haven't done something silly with the password
-	local password = tostring(self:GetClientNumber("password"));
-	local passwordLen = #password;
-	if (passwordLen == 0 or passwordLen > 8 or password:find("0") or password:find("%.")) then
+	local password = self:GetClientInfo("password");
+	local matches, len = string.find(password, "^[1-9]+$");
+	if (not matches or len > 8) then
 		ply:ChatPrint("Invalid keypad password!");
 		return false;
 	end

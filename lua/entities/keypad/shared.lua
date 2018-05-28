@@ -35,7 +35,7 @@ ENT.STATUSES = {
 
 ENT._NWVars = {
 	{
-		Type = "Int";
+		Type = "String";
 		Name = "PasswordDisplay";
 	},
 	{
@@ -82,4 +82,14 @@ function ENT:GetZapPos()
 	return self:GetPos()
 		+ self:GetUp() * 3.5
 		+ self:GetForward() * 1;
+end
+
+-- Backwards compat etc etc
+-- Who names a var this generically??
+function ENT:GetText()
+	return self:GetPasswordDisplay();
+end
+
+function ENT:SetText(value)
+	return self:SetPasswordDisplay(value);
 end

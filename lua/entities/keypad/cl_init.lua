@@ -214,8 +214,9 @@ function ENT:DrawSecureInput(input)
 	local inputLen = string.len(input);
 	if (inputLen <= 4) then
 		surface.SetTextPos(15, 24);
-		surface.DrawText(string.rep("*", string.len(input)));
+		surface.DrawText(string.rep("*", inputLen));
 	else
+		inputLen = math.min(inputLen, 8);
 		surface.SetTextPos(15, 13);
 		surface.DrawText(string.rep("*", 4));
 		surface.SetTextPos(15, 34);
@@ -235,7 +236,7 @@ function ENT:DrawInsecureInput(input)
 		surface.SetTextPos(22, 11);
 		surface.DrawText(string.sub(input, 1, 4));
 		surface.SetTextPos(22, 35);
-		surface.DrawText(string.sub(input, 5));
+		surface.DrawText(string.sub(input, 5, 8));
 	end
 end
 
@@ -267,7 +268,7 @@ function ENT:Draw()
 			else
 				self:DrawAccessDenied();
 			end
-		elseif (input > 0) then
+		elseif (input ~= "") then
 			if (self:GetSecure()) then
 				self:DrawSecureInput(input);
 			else

@@ -46,7 +46,7 @@ function ENT:Initialize()
 
 	-- Defaults
 	self.kvs = {
-		password = 0;
+		password = "";
 		secure = false;
 		access = {
 			numpad_key      = nil,
@@ -76,7 +76,7 @@ function ENT:Initialize()
 		},
 	};
 	self._WireToggleStates = { [self.kvs.access.wire_name] = false, [self.kvs.denied.wire_name] = false };
-	self._Password = 0;
+	self._Password = "";
 
 	self:CreateWireOutputs({
 		{
@@ -95,7 +95,7 @@ function ENT:SetPassword(pass)
 end
 
 function ENT:CheckPassword(pass)
-	return self.kvs.password == (tonumber(pass) or 0);
+	return self.kvs.password == pass;
 end
 
 local allowed_kvs = {
@@ -167,10 +167,8 @@ function ENT:KeyValue(key, value)
 	elseif (key == "secure") then
 		value = tobool(value);
 	elseif (key == "password") then
-		value = tonumber(value) or 0;
-		value = math.floor(tonumber(value) or 0);
-		if (value < 0 or value > 99999999) then
-			value = 0;
+		if (not self:IsValidKeypadPassword(value)) then
+			error(string.format("Invalid keypad password %q", value));
 		end
 	end
 
@@ -184,28 +182,50 @@ ENT.PressSound = "buttons/button15.wav"
 
 local function ResetKeypad(self)
 	if (not IsValid(self)) then return; end
-	self._Password = 0;
-	self:SetPasswordDisplay(0);
+	self._Password = "";
+	self:SetPasswordDisplay("");
 	self:SetStatus(self.STATUSES.Normal);
+end
+
+-- Possibly people may wish to override this in a subclass
+function ENT:IsValidKeypadPassword(password)
+	local matches, len = string.find(password, "^[1-9]+$");
+	return matches and len <= 8;
 end
 
 function ENT:KeypadInput(input)
 	if (input == "reset") then
 		self:EmitSound(self.ResetSound);
 		ResetKeypad(self);
+		return;
 	elseif (input == "accept") then
 		local valid = self:CheckPassword(self._Password)
 		self:TriggerKeypad(valid);
-	elseif (self:GetStatus() == self.STATUSES.Normal) then -- You can't modify the keypad while it's doin stuff
-		local newnum = self._Password * 10 + (tonumber(input) or 0)
-		if (newnum > 99999999) then return; end
-		self._Password = newnum;
-		if (self:GetSecure()) then
-			self:SetPasswordDisplay(self:GetPasswordDisplay() * 10 + 1);
-		else
-			self:SetPasswordDisplay(self._Password);
-		end
-		self:EmitSound(self.PressSound);
+		return;
+	end
+
+	if (not tonumber(input) or #input ~= 1) then
+		-- Sanity check
+		return;
+	elseif (self:GetStatus() ~= self.STATUSES.Normal) then
+		-- You can't modify the keypad while it's doin stuff
+		return;
+	end
+
+	local newPassword = self._Password .. input;
+	if (not self:IsValidKeypadPassword(newPassword)) then
+		return;
+	end
+
+	-- Beep
+	self:EmitSound(self.PressSound);
+
+	self._Password = newPassword;
+
+	if (self:GetSecure()) then
+		self:SetPasswordDisplay(string.rep('*', #self._Password));
+	else
+		self:SetPasswordDisplay(self._Password);
 	end
 end
 
@@ -370,11 +390,12 @@ function ENT:Use(activator, ...)
 		local x = (pos.y - btn[1]) / btn[2];
 		local y = 1 - (pos.z + btn[3]) / btn[4];
 		if (x >= 0 and x <= 1 and y >= 0 and y <= 1) then
-			local cmd = i;
 			if (i == 10) then
 				cmd = "reset";
 			elseif (i == 11) then
 				cmd = "accept";
+			else
+				cmd = tostring(i);
 			end
 			self:KeypadInput(cmd);
 			return;
