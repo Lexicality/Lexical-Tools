@@ -95,6 +95,10 @@ function ENT:SetPassword(pass)
 end
 
 function ENT:CheckPassword(pass)
+	if (pass == "") then
+		return false;
+	end
+
 	return self.kvs.password == pass;
 end
 
@@ -167,7 +171,7 @@ function ENT:KeyValue(key, value)
 	elseif (key == "secure") then
 		value = tobool(value);
 	elseif (key == "password") then
-		if (not self:IsValidKeypadPassword(value)) then
+		if (value ~= "" and not self:IsValidKeypadPassword(value)) then
 			error(string.format("Invalid keypad password %q", value));
 		end
 	end

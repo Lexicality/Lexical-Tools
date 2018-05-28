@@ -19,7 +19,7 @@ TOOL.Category = "Lexical Tools";
 TOOL.Name    = "Keypad v2";
 
 local kvs = {
-	password              = 0;
+	password              = "";
 	secure                = 0;
 
 	access_numpad_key     = -1;
@@ -70,7 +70,7 @@ function TOOL:CheckSettings()
 	-- Check they haven't done something silly with the password
 	local password = self:GetClientInfo("password");
 	local matches, len = string.find(password, "^[1-9]+$");
-	if (not matches or len > 8) then
+	if (password ~= "" and (not matches or len > 8)) then
 		ply:ChatPrint("Invalid keypad password!");
 		return false;
 	end
@@ -101,7 +101,7 @@ function TOOL:LeftClick(tr)
 	end
 	local kv = {}
 	for key, def in pairs(kvs) do
-		local num = self:GetClientNumber(key);
+		local num = self:GetClientInfo(key);
 		if (num and num ~= def) then
 			kv[key] = num;
 		end
@@ -219,6 +219,9 @@ function TOOL.BuildCPanel(CPanel)
 
 		return nil;
 	end
+	CPanel:AddControl("KeypadPasswordNag", {});
+	-- HACK: Make this right up against the previous item
+	CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0);
 
 	CPanel:CheckBox("Secure Mode", c"secure");
 	CPanel:CheckBox("Weld Keypad", c"weld");

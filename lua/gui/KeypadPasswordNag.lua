@@ -1,5 +1,5 @@
 --[[
-	Keypads - lua/autorun/keypad_gui.lua
+	Keypads - lua/gui/KeypadPasswordNag.lua
 	Copyright 2018 Lex Robinson
 
 	Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,22 @@
 	limitations under the License.
 --]]
 
-local files = {
-	"gui/NagLabel.lua",
-	"gui/MinimumValueLabel.lua",
-	"gui/KeypadPasswordNag.lua",
-};
+local PANEL = {};
 
-for _, file in ipairs(files) do
-	if (SERVER) then
-		AddCSLuaFile(file);
+function PANEL:OnConVarChange(password)
+	if (password == "") then
+		self:DoText("You'll need a keypad cracker to use this keypad");
 	else
-		include(file);
+		self:DoText("");
 	end
 end
+
+function PANEL:ControlValues(data)
+	print("banana")
+	self:SetConVars({"keypad_password"});
+	self:HandleCVarChange();
+end
+
+derma.DefineControl("KeypadPasswordNag", "", PANEL, "NagLabel");
+
+
