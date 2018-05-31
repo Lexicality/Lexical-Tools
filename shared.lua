@@ -60,7 +60,7 @@ function ENT:SetupDataTables()
 		if (nwvar.Type == "Bool") then
 			-- Booleans look better when you can call IsSecure rather than GetSecure etc.
 			self["Is" .. nwvar.Name] = function(self)
-				return self.dt[name];
+				return self.dt[nwvar.Name];
 			end
 		end
 
