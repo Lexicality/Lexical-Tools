@@ -150,10 +150,19 @@ end
 
 -- Draws a burst of light where the beam hits to hide the ugly clipping
 function ENT:DrawCrackingLight()
-	cam.IgnoreZ(true);
-	render.SetMaterial(getSaneMaterial("sprites/glow04"));
-	render.DrawSprite(self:GetZapPos() + self:GetForward() * 0.1, 10, 10, color_white);
-	cam.IgnoreZ(false);
+	local target = self:GetZapPos()
+	local tr = util.TraceLine({
+		start = EyePos(),
+		endpos = target,
+		filter = { LocalPlayer() },
+	})
+
+	if (tr.Entity == self) then
+		cam.IgnoreZ(true);
+		render.SetMaterial(getSaneMaterial("sprites/glow04"));
+		render.DrawSprite(target + self:GetForward() * 0.1, 10, 10, color_white);
+		cam.IgnoreZ(false);
+	end
 end
 
 function ENT:DrawBackground()
