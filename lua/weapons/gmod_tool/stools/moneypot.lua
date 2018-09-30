@@ -2,17 +2,17 @@
 	Lexical Tools - lua\weapons\gmod_tool\stools\moneypot.lua
 	Copyright 2010-2012 Lex Robinson
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+		http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
 --]]
 
 TOOL.Category    = "Lexical Tools"
@@ -64,8 +64,8 @@ if (CLIENT) then
 	language.Add("Cleanup_moneypots", "Money Pots")
 	language.Add("Cleaned_moneypots", "Cleaned up all Money Pots")
 	function TOOL:LeftClick(tr)
-        return canTool(tr);
-    end
+		return canTool(tr);
+	end
 	function TOOL.BuildCPanel(cp)
 		cp:AddControl("Header", {Text = "#Tool_moneypot_name", Description = "#Tool_moneypot_desc"})
 
@@ -100,9 +100,9 @@ function TOOL:LeftClick(tr)
 		weld = constraint.Weld(box, ent, 0, tr.PhysicsBone, 0);
 		ent:DeleteOnRemove(box);
 	else
-	    box:GetPhysicsObject():EnableMotion(false);
+		box:GetPhysicsObject():EnableMotion(false);
 	end
-    DoPropSpawnedEffect(box);
+	DoPropSpawnedEffect(box);
 
 	undo.Create("moneypot");
 	undo.AddEntity(box);

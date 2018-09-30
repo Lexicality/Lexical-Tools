@@ -3,17 +3,17 @@
 	Copyright 2010-2013 Lex Robinson
 	It's fading doors but you can't walk through it
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+		http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
 --]]
 
 TOOL.Name     = "Cloaking";
@@ -28,7 +28,7 @@ TOOL.ClientConVar["all"]      = "1";
 TOOL.ClientConVar["material"] = "sprites/heatwave";
 
 local function checkTrace(tr)
-    return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC());
+	return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC());
 end
 
 if (CLIENT) then
@@ -45,29 +45,29 @@ if (CLIENT) then
 	list.Set("CloakingMaterials", "Light", "models/effects/vol_light001");
 
 	function TOOL.BuildCPanel(panel)
-        -- Header
-        panel:CheckBox("Inverted Controls",          "cloaking_reversed");
-        panel:CheckBox("Flicker on damage",          "cloaking_flicker" );
-        panel:CheckBox("Toggle Controls",            "cloaking_toggle"  );
-        panel:CheckBox("Cloak constrained entities", "cloaking_all"     );
+		-- Header
+		panel:CheckBox("Inverted Controls",          "cloaking_reversed");
+		panel:CheckBox("Flicker on damage",          "cloaking_flicker" );
+		panel:CheckBox("Toggle Controls",            "cloaking_toggle"  );
+		panel:CheckBox("Cloak constrained entities", "cloaking_all"     );
 
 		panel:AddControl("Numpad",
-            {
-                Label      = "Button",
-                Command    = "cloaking_key"
-            }
-        );
+			{
+				Label      = "Button",
+				Command    = "cloaking_key"
+			}
+		);
 		local options = {};
 		for name, material in pairs(list.Get( "CloakingMaterials" )) do
 			options[name] = { cloaking_material = material };
 		end
 		panel:AddControl("Listbox",
-            {
-                Label = "Material:",
-                Height = 120,
-                Options = options
-            }
-        );
+			{
+				Label = "Material:",
+				Height = 120,
+				Options = options
+			}
+		);
 	end
 
 	TOOL.LeftClick = checkTrace;
@@ -121,19 +121,19 @@ numpad.Register("Cloaking onUp", onUp);
 
 --[[ Wire Based Shit ]]--
 local function doWireInputs(ent)
-    if (not WireLib.AddInputs) then
-        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
-        return;
-    end
-    WireLib.AddInputs(ent, {"Cloak"});
+	if (not WireLib.AddInputs) then
+		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
+		return;
+	end
+	WireLib.AddInputs(ent, {"Cloak"});
 end
 
 local function doWireOutputs(ent)
-    if (not WireLib.AddOutputs) then
-        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
-        return;
-    end
-    WireLib.AddOutputs(ent, {"CloakActive"}, {"If this entity is currently cloaked"});
+	if (not WireLib.AddOutputs) then
+		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
+		return;
+	end
+	WireLib.AddOutputs(ent, {"CloakActive"}, {"If this entity is currently cloaked"});
 end
 
 local function TriggerInput(self, name, value, ...)

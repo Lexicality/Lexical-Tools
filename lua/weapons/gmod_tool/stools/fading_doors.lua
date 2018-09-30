@@ -3,17 +3,17 @@
 	Copyright 2010-2011 Lex Robinson
 	Walk through props on demand, originally written by Conna
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+		http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
 --]]
 
 --[[ Tool Related Settings ]]--
@@ -25,7 +25,7 @@ TOOL.ClientConVar["toggle"] = "0"
 TOOL.ClientConVar["reversed"] = "0"
 
 local function checkTrace(tr)
-    return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle());
+	return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle());
 end
 
 if (CLIENT) then
@@ -39,14 +39,14 @@ if (CLIENT) then
 	language.Add("Undone_fading_door", "Undone Fading Door");
 
 	function TOOL.BuildCPanel(panel)
-        panel:CheckBox("Reversed (Starts invisible, becomes solid)", "fading_doors_reversed");
-	    panel:CheckBox("Toggle Active", "fading_doors_toggle");
-        panel:AddControl("Numpad",
-            {
-                Label = "Button",
-                Command = "fading_doors_key"
-            }
-        );
+		panel:CheckBox("Reversed (Starts invisible, becomes solid)", "fading_doors_reversed");
+		panel:CheckBox("Toggle Active", "fading_doors_toggle");
+		panel:AddControl("Numpad",
+			{
+				Label = "Button",
+				Command = "fading_doors_key"
+			}
+		);
 	end
 
 	TOOL.LeftClick = checkTrace;
@@ -135,19 +135,19 @@ end
 numpad.Register("Fading Doors onUp", onUp);
 
 local function doWireInputs(ent)
-    if (not WireLib.AddInputs) then
-        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
-        return;
-    end
-    WireLib.AddInputs(ent, {"Fade"});
+	if (not WireLib.AddInputs) then
+		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
+		return;
+	end
+	WireLib.AddInputs(ent, {"Fade"});
 end
 
 local function doWireOutputs(ent)
-    if (not WireLib.AddOutputs) then
-        ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
-        return;
-    end
-    WireLib.AddOutputs(ent, {"FadeActive"}, {"If this entity is currently faded."});
+	if (not WireLib.AddOutputs) then
+		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
+		return;
+	end
+	WireLib.AddOutputs(ent, {"FadeActive"}, {"If this entity is currently faded."});
 end
 
 local function TriggerInput(self, name, value, ...)

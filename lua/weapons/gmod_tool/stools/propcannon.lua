@@ -2,17 +2,17 @@
 	Lexical Tools - lua\weapons\gmod_tool\stools\propcannon.lua
 	Copyright 2010-2013 Lex Robinson
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+		http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
 --]]
 
 TOOL.Category		= "Lexical Tools"
@@ -191,7 +191,7 @@ end
 
 function TOOL.BuildCPanel(cp)
 
-    local Combo = {};
+	local Combo = {};
 	Combo["Label"] = "#Presets";
 	Combo["MenuButton"] = "1";
 	Combo["Folder"] = "propcannon";
@@ -229,54 +229,54 @@ function TOOL.BuildCPanel(cp)
 		Models = list.Get( "CannonModels" );
 	});
 
-    cp:AddControl( "Numpad", {
+	cp:AddControl( "Numpad", {
 		Label = "Keypad button:";
 		Command = "propcannon_key";
 		Buttonsize = "22";
 	});
-    cp:AddControl( "Slider", {
+	cp:AddControl( "Slider", {
 		Label = "Force:";
 		Type = "float";
 		Min = "0";
 		Max = "100000";
 		Command = "propcannon_force";
 	});
-    cp:AddControl( "Slider", {
+	cp:AddControl( "Slider", {
 		Label = "Reload Delay:";
 		Type = "float";
 		Min = "0";
 		Max = "50";
 		Command = "propcannon_delay";
 	});
-    cp:AddControl( "Slider", {
+	cp:AddControl( "Slider", {
 		Label = "Recoil:";
 		Type = "float";
 		Min = "0";
 		Max = "10";
 		Command = "propcannon_recoil";
 	});
-    cp:AddControl( "Slider", {
+	cp:AddControl( "Slider", {
 		Label = "Prop Lifetime:";
 		Type = "float";
 		Min = "0";
 		Max = "30";
 		Command = "propcannon_kill_delay";
 	});
-    cp:AddControl( "Slider", {
+	cp:AddControl( "Slider", {
 		Label = "Explosive Power:";
 		Type = "float";
 		Min = "0";
 		Max = "200";
 		Command = "propcannon_explosive_power";
 	});
-    cp:AddControl( "Slider", {
+	cp:AddControl( "Slider", {
 		Label = "Explosive Radius:";
 		Type = "float";
 		Min = "0";
 		Max = "500";
 		Command = "propcannon_explosive_radius";
 	});
-    cp:AddControl( "Checkbox", {
+	cp:AddControl( "Checkbox", {
 		Label = "Explode on contact:";
 		Command = "propcannon_explosive";
 	});
