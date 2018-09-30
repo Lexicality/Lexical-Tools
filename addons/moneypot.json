@@ -1,0 +1,12 @@
+{
+	"title":   "Moneypot",
+	"author":  "Lex Robinson",
+	"contact" : "lexi@lexi.org.uk",
+	"type":    "tool",
+	"tags":    ["build", "roleplay"],
+	"workshopid": 109905241,
+	"include": [
+		"lua/autorun/entities/*_moneypot.lua",
+		"lua/weapons/gmod_tool/stools/moneypot.lua"
+	]
+}
