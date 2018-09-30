@@ -6,7 +6,7 @@
 	"tags":    ["build", "roleplay"],
 	"workshopid": 109905241,
 	"include": [
-		"lua/autorun/entities/*_moneypot.lua",
-		"lua/weapons/gmod_tool/stools/moneypot.lua"
+		"lua/entities/*_moneypot.lua",
+		"../lexical-tools/lua/../lua/./weapons/gmod_tool/stools/moneypot.lua"
 	]
 }
