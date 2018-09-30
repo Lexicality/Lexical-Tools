@@ -28,18 +28,18 @@ if (CLIENT) then
 	language.Add("Tool_byb_fading_doors_desc", "Makes anything into a fadable door");
 	language.Add("Tool_byb_fading_doors_0", "Click on something to make it a fading door. Reload to set it back to normal");
 	language.Add("Undone_byb_fading_door", "Undone Fading Door");
-	
+
 	function TOOL:BuildCPanel()
 		self:AddControl("Header",   {Text = "#Tool_byb_fading_doors_name", Description = "#Tool_byb_fading_doors_desc"});
 		self:AddControl("CheckBox", {Label = "Reversed (Starts invisible, becomes solid)", Command = "byb_fading_doors_reversed"});
 		self:AddControl("CheckBox", {Label = "Toggle Active", Command = "byb_fading_doors_toggle"});
 		self:AddControl("Numpad",   {Label = "Button", ButtonSize = "22", Command = "byb_fading_doors_key"});
 	end
-	
+
 	TOOL.LeftClick = checkTrace;
-	
+
 	return;
-end	
+end
 
 --[[ Disable the numpad ]]--
 concommand.Remove("+gm_special")
@@ -217,7 +217,7 @@ local function PostEntityPaste(self, ply, ent, ents)
 		self:wireSupportPostEntityPaste(ply, ent, ents);
 	end
 end
-	
+
 
 local function onRemove(self)
 	numpad.Remove(self.fadeUpNum);
@@ -248,7 +248,7 @@ local function dooEet(ply, ent, stuff)
 				ent.wireSupportPostEntityPaste = ent.PostEntityPaste;
 				ent.PostEntityPaste = PostEntityPaste;
 				ent.addedWireSupport = true
-			end				
+			end
 		end
 	end
 	ent.fadeUpNum = numpad.OnUp(ply, stuff.key, "ByB Fading Doors onUp", ent);
@@ -320,7 +320,7 @@ function TOOL:LeftClick(tr)
 		undo.AddFunction(doUndo, ent);
 		undo.SetPlayer(ply);
 	undo.Finish();
-	
+
 	SendUserMessage("FadingDoorHurrah!", ply);
 	return true
 end

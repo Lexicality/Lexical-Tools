@@ -31,7 +31,7 @@ if (SERVER) then
 			return false;
 		end
 		local cannon = ents.Create( "gmod_propcannon" )
-		cannon:SetPos(pos)	
+		cannon:SetPos(pos)
 		cannon:SetAngles(angles)
 		cannon:Setup(force, model, ammo, recoil, delay, kill, power, radius, effect, explosive);
 		cannon:Spawn()
@@ -45,10 +45,10 @@ if (SERVER) then
 			numpad.OnUp  (ply, key, "propcannon_Off",cannon)
 		);
 		cannon:SetCollisionGroup(COLLISION_GROUP_WORLD);
-		
+
 		ply:AddCount("propcannons", cannon)
 		return cannon;
-	end	
+	end
 	duplicator.RegisterEntityClass( "gmod_propcannon", MakeCannon, "Pos", "Ang", "numpadKey", "fireForce", "Model", "fireModel", "recoilAmount", "fireDelay", "killDelay", "explosivePower", "explosiveRadius", "fireEffect", "fireExplosives");
 else
 	language.Add("Tool_propcannon_name",	"Prop Cannons v2");
@@ -71,7 +71,7 @@ function TOOL:LeftClick(tr)
 	elseif (not util.IsValidPhysicsObject(tr.Entity, tr.PhysicsBone)) then
 		return false;
 	end
-	
+
 	local ply = self:GetOwner();
 	local key, force, model, ammo, recoil, delay, kill, power, radius, effect, explosive;
 	key 			= self:GetClientNumber("key");
@@ -86,23 +86,23 @@ function TOOL:LeftClick(tr)
 	power			= self:GetClientNumber("explosive_power");
 	radius			= self:GetClientNumber("explosive_radius");
 	explosive 		= tobool(explosive);
-	
+
 	if (not (util.IsValidModel(model) and util.IsValidProp(model) and util.IsValidModel(ammo) and util.IsValidProp(ammo))) then
 		return false;
-	end 
+	end
 	local ent = tr.Entity;
 	if (IsValid(ent) and ent:GetClass() == "gmod_propcannon" and ent:GetPlayer() == ply) then
 		ent:Setup(force, model, ammo, recoil, delay, kill, power, radius, effect, explosive);
 		return true;
 	end
-		
+
 	local angles = tr.HitNormal:Angle();
 	angles.pitch = angles.pitch + 90;
-	
+
 	local cannon = MakeCannon(ply, tr.HitPos, angles, key, force, model, ammo, recoil, delay, kill, power, radius, effect, explosive);
 	if (not cannon) then return false; end
 	cannon:SetPos(tr.HitPos - tr.HitNormal * cannon:OBBMins().z);
-	
+
 
 	local weld;
 	if (IsValid(ent)) then
@@ -114,16 +114,16 @@ function TOOL:LeftClick(tr)
 			phys:EnableMotion(false);
 		end
 	end
-	
+
 	undo.Create("propcannon");
 	undo.SetPlayer(ply);
 	undo.AddEntity(cannon);
 	undo.AddEntity(weld);
 	undo.Finish();
 	ply:AddCleanup("propcannons", cannon);
-	ply:AddCleanup("propcannons", weld);	
+	ply:AddCleanup("propcannons", weld);
 	return true
-	
+
 end
 
 function TOOL:RightClick(tr)
@@ -209,14 +209,14 @@ function TOOL.BuildCPanel(cp)
 	Combo["CVars"]["9"]  = "propcannon_explosive_power";
 	Combo["CVars"]["10"] = "propcannon_explosive_radius";
 	cp:AddControl("ComboBox", Combo )
-	
+
 	cp:AddControl( "PropSelect", {
 		Label = "Cannon Model:";
 		ConVar = "propcannon_cannon_model";
 		Category = "Cannons";
 		Models = list.Get( "CannonModels" );
 	});
-	
+
     cp:AddControl( "Numpad", {
 		Label = "Keypad button:";
 		Command = "propcannon_key";

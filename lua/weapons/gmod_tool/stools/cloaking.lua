@@ -27,10 +27,10 @@ if (CLIENT) then
 	language.Add("Tool_cloaking_desc", "Allows you to turn things invisible at the touch of a button");
 	language.Add("Tool_cloaking_0", "Click on something to make it a cloakable. Reload to remove cloaking from something.");
 	language.Add("Undone_cloaking", "Undone Cloaking");
-	
+
 	list.Set("CloakingMaterials", "Heatwave", "sprites/heatwave");
 	list.Set("CloakingMaterials", "Light", "models/effects/vol_light001");
-	
+
 	function TOOL.BuildCPanel(panel)
         -- Header
         panel:CheckBox("Inverted Controls",          "cloaking_reversed");
@@ -56,11 +56,11 @@ if (CLIENT) then
             }
         );
 	end
-	
+
 	TOOL.LeftClick = checkTrace;
-	
+
 	return;
-end	
+end
 
 
 local function cloakActivate(self)
@@ -161,7 +161,7 @@ local function PostEntityPaste(self, ply, ent, ents)
 		self:wireSupportPostEntityPaste(ply, ent, ents);
 	end
 end
-	
+
 
 local function onRemove(self)
 	numpad.Remove(self.cloakUpNum);
@@ -191,7 +191,7 @@ local function dooEet(ply, ent, stuff)
 				ent.wireSupportPostEntityPaste = ent.PostEntityPaste;
 				ent.PostEntityPaste = PostEntityPaste;
 				ent.addedWireSupport = true
-			end				
+			end
 		end
 	end
 	ent.cloakUpNum = numpad.OnUp(ply, stuff.key, "Cloaking onUp", ent);
@@ -209,7 +209,7 @@ end
 duplicator.RegisterEntityModifier("Lexical Cloaking", dooEet);
 
 -- Legacy
-duplicator.RegisterEntityModifier("Cloaking", function(ply, ent, Data) 
+duplicator.RegisterEntityModifier("Cloaking", function(ply, ent, Data)
 	return dooEet(ply, ent, {
 		key = Data.Key;
 		flicker = Data.Flicker;
@@ -275,7 +275,7 @@ function TOOL:LeftClick(tr)
 		flicker  = self:GetClientNumber("flicker") == 1;
 		reversed = self:GetClientNumber("reversed") == 1;
 		material = self:GetClientInfo("material");
-	};			
+	};
 	undo.Create("cloaking");
 	undo.SetPlayer(ply);
 	undo.AddFunction(massUndo)
@@ -289,7 +289,7 @@ function TOOL:LeftClick(tr)
 		end
 	end
 	undo.Finish();
-	
+
 	SendUserMessage("CloakingHurrah!", ply);
 	return true
 end

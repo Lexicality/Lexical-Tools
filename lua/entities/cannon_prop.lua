@@ -13,18 +13,18 @@ ENT.AdminSpawnable	= false;
 if (CLIENT) then
 	language.Add("cannon_prop", ENT.PrintName);
 	return;
-end 
+end
 
 function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:SetSolid	(SOLID_VPHYSICS);
-	
+
 	if (not IsValid(self.Owner)) then
 		self.Owner = self;
 		ErrorNoHalt("cannon_prop created without a valid owner.");
 	end
-	
+
 	self:SetPhysicsAttacker(self.Owner);
 
     local phys = self:GetPhysicsObject();
@@ -59,7 +59,7 @@ end
 function ENT:OnTakeDamage(damageInfo)
 	if (self.explosive) then
 		self:Explode()
-	end 
+	end
 	self:TakePhysicsDamage(damageInfo);
 end
 

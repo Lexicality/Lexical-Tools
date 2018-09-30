@@ -41,13 +41,13 @@ local function canTool(tr)
 end
 
 if (CLIENT) then
-	
+
 	language.Add("tool.moneypot.name", "Money Pot")
 	language.Add("tool.moneypot.desc", "Allows you to store vast amounts of money in a small box.")
 	language.Add("tool.moneypot.0", "Left click to spawn a Money Pot")
-	
+
 	// Other
-	
+
 	language.Add("Undone_moneypot", "Undone Money Pot")
 	language.Add("SBoxLimit_moneypots", "You've hit the Money Pots limit!")
 	language.Add("Cleanup_moneypots", "Money Pots")
@@ -57,7 +57,7 @@ if (CLIENT) then
     end
 	function TOOL.BuildCPanel(cp)
 		cp:AddControl("Header", {Text = "#Tool_moneypot_name", Description = "#Tool_moneypot_desc"})
-		
+
 		cp:AddControl( "Checkbox", {
 			Label = "Weld:";
 			Command = "moneypot_weld";
@@ -74,15 +74,15 @@ function TOOL:LeftClick(tr)
 	end
 
 	local ply = self:GetOwner();
-		
+
 	local angles = tr.HitNormal:Angle();
 	angles.pitch = angles.pitch + 90;
-	
+
 	local box = MakeMoneyPot(ply, tr.HitPos, angles, "models/props_lab/powerbox02b.mdl");
 	if (not box) then return false; end
 	box:SetPos(tr.HitPos - tr.HitNormal * box:OBBMins().z);
-	
-	
+
+
 	local weld;
 	local ent = tr.Entity
 	if (IsValid(ent) and not ent:IsWorld() and self:GetClientNumber("weld") ~= 0) then
@@ -92,13 +92,13 @@ function TOOL:LeftClick(tr)
 	    box:GetPhysicsObject():EnableMotion(false);
 	end
     DoPropSpawnedEffect(box);
-	
+
 	undo.Create("moneypot");
 	undo.AddEntity(box);
 	undo.AddEntity(weld);
 	undo.SetPlayer(ply);
 	undo.Finish();
-	
+
 	ply:AddCleanup("moneypots", box);
 	ply:AddCleanup("moneypots", weld);
 

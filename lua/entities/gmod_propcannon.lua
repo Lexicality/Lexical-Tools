@@ -72,9 +72,9 @@ function ENT:Setup(fireForce, cannonModel, fireModel, recoilAmount, fireDelay, k
 	self.explosiveRadius= explosiveRadius;
 	self.fireEffect		= fireEffect;
 	self.fireExplosives	= fireExplosives;
-	
-	self:SetOverlayText("- Prop Cannon -\nFiring Force: " .. math.floor(fireForce) .. ", Fire Delay: " .. math.floor(fireDelay) .. 
-						(fireExplosives and ("\nExplosive Power:"..math.floor(explosivePower)..", Explosive Radius:" .. math.floor(explosiveRadius)) or "") .. 
+
+	self:SetOverlayText("- Prop Cannon -\nFiring Force: " .. math.floor(fireForce) .. ", Fire Delay: " .. math.floor(fireDelay) ..
+						(fireExplosives and ("\nExplosive Power:"..math.floor(explosivePower)..", Explosive Radius:" .. math.floor(explosiveRadius)) or "") ..
 						"\nBullet Model: " .. fireModel);
 end
 
@@ -116,7 +116,7 @@ end
 
 function ENT:FireOne()
 	self.nextFire = CurTime() + self.fireDelay;
-	
+
 	local pos = self:GetPos();
 	if (self.fireEffect ~= "" and self.fireEffect ~= "none") then
 		local effectData = EffectData();
@@ -144,7 +144,7 @@ function ENT:FireOne()
 	end
 	ent:Spawn();
 	self:DeleteOnRemove(ent);
-	
+
 	local iPhys = self:GetPhysicsObject();
 	local uPhys =  ent:GetPhysicsObject();
 	local up = self:GetUp();

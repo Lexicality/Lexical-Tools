@@ -66,7 +66,7 @@ function ENT:Initialize()
 end
 
 ENT.Command = "";
-ENT.Key		= 0; 
+ENT.Key		= 0;
 
 local function prest(ply, ent)
 	if (not IsValid(ent)) then
@@ -77,7 +77,7 @@ local function prest(ply, ent)
 		SendUserMessage("Commandbox Command", ply, command);
 	else
 		SendUserMessage("Commandbox Command Request", ply, command);
-	end	
+	end
 end
 numpad.Register("CommandBox", prest);
 

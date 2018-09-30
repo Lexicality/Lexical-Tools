@@ -79,13 +79,13 @@ if (CLIENT) then
 		GAMEMODE:AddNotify(message, NOTIFY_GENERIC, 10);
 		surface.PlaySound ("ambient/water/drip" .. math.random(1, 4) .. ".wav");
 	end);
-	
+
 	language.Add("Tool_commandbox_name", "Command Box Tool")
 	language.Add("Tool_commandbox_desc", "Allows you to assign concommands to numpad keys.")
 	language.Add("Tool_commandbox_0", "Left click to spawn a Command Box")
-	
+
 	// Other
-	
+
 	language.Add("Undone_commandbox", "Undone Command Box")
 	language.Add("SBoxLimit_commandboxes", "You've hit the Command Boxes limit!")
 	language.Add("Cleanup_commandboxes", "Command Boxes")
@@ -93,7 +93,7 @@ if (CLIENT) then
 	TOOL.LeftClick = canTool;
 	function TOOL.BuildCPanel(cp)
 		cp:AddControl("Header", {Text = "#Tool_commandbox_name", Description = "#Tool_commandbox_desc"})
-		
+
 		cp:AddControl( "PropSelect", {
 			Label = "Model:";
 			ConVar = "commandbox_model";
@@ -135,7 +135,7 @@ function TOOL:LeftClick(tr)
 	key		= self:GetClientNumber("key");
 	model	= self:GetClientInfo("model");
 	command = self:GetClientInfo("command");
-	
+
 	local search = string.lower(command);
 	for i, words in pairs(disallowed) do
 		if (string.find(search, words)) then
@@ -143,7 +143,7 @@ function TOOL:LeftClick(tr)
 			return false;
 		end
 	end
-	
+
 	local ent = tr.Entity
 	if (IsValid(ent) and ent:GetClass() == "gmod_commandbox" and ent:GetPlayer() == ply) then
 		ent:SetCommand(command);
@@ -151,15 +151,15 @@ function TOOL:LeftClick(tr)
 		msg(ply, 2);
 		return true;
 	end
-		
+
 	local angles = tr.HitNormal:Angle();
 	angles.pitch = angles.pitch + 90;
-	
+
 	local box = MakeCommandBox(ply, tr.HitPos, angles, model, key, command);
 	if (not box) then return false; end
 	box:SetPos(tr.HitPos - tr.HitNormal * box:OBBMins().z);
-	
-	
+
+
 	local weld;
 	if (IsValid(ent) and not ent:IsWorld()) then
 		weld = constraint.Weld(box, ent, 0, tr.PhysicsBone, 0);
@@ -170,17 +170,17 @@ function TOOL:LeftClick(tr)
 			phys:EnableMotion(false);
 		end
 	end
-	
+
 	undo.Create("commandbox");
 	undo.AddEntity(box);
 	undo.AddEntity(weld);
 	undo.SetPlayer(ply);
 	undo.Finish();
-	
+
 	ply:AddCleanup("commandboxes", box);
 	ply:AddCleanup("commandboxes", weld);
-	
+
 	msg(ply, 3);
-	
+
 	return true;
 end

@@ -25,7 +25,7 @@ if (CLIENT) then
 	language.Add("Tool_fading_doors_desc", "Makes anything into a fadable door");
 	language.Add("Tool_fading_doors_0", "Click on something to make it a fading door. Reload to set it back to normal");
 	language.Add("Undone_fading_door", "Undone Fading Door");
-	
+
 	function TOOL.BuildCPanel(panel)
         panel:CheckBox("Reversed (Starts invisible, becomes solid)", "fading_doors_reversed");
 	    panel:CheckBox("Toggle Active", "fading_doors_toggle");
@@ -36,11 +36,11 @@ if (CLIENT) then
             }
         );
 	end
-	
+
 	TOOL.LeftClick = checkTrace;
-	
+
 	return;
-end	
+end
 
 local function fadeActivate(self)
 	if (self.fadeActive) then return; end
@@ -174,7 +174,7 @@ local function PostEntityPaste(self, ply, ent, ents)
 		self:wireSupportPostEntityPaste(ply, ent, ents);
 	end
 end
-	
+
 
 local function onRemove(self)
 	numpad.Remove(self.fadeUpNum);
@@ -205,7 +205,7 @@ local function dooEet(ply, ent, stuff)
 				ent.wireSupportPostEntityPaste = ent.PostEntityPaste;
 				ent.PostEntityPaste = PostEntityPaste;
 				ent.addedWireSupport = true
-			end				
+			end
 		end
 	end
 	ent.fadeUpNum = numpad.OnUp(ply, stuff.key, "Fading Doors onUp", ent);
@@ -277,7 +277,7 @@ function TOOL:LeftClick(tr)
 		undo.AddFunction(doUndo, ent);
 		undo.SetPlayer(ply);
 	undo.Finish();
-	
+
 	SendUserMessage("FadingDoorHurrah!", ply);
 	return true
 end
