@@ -42,7 +42,7 @@ if (CLIENT) then
 	return
 end
 
-// Left click
+-- Left click
 
 function TOOL:LeftClick(tr)
 	if (not tr.Hit) then

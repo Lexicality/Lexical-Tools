@@ -96,7 +96,7 @@ if (CLIENT) then
 	language.Add("Tool_commandbox_desc", "Allows you to assign concommands to numpad keys.")
 	language.Add("Tool_commandbox_0", "Left click to spawn a Command Box")
 
-	// Other
+	-- Other
 
 	language.Add("Undone_commandbox", "Undone Command Box")
 	language.Add("SBoxLimit_commandboxes", "You've hit the Command Boxes limit!")

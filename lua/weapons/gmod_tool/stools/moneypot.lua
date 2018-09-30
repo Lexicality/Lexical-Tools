@@ -57,7 +57,7 @@ if (CLIENT) then
 	language.Add("tool.moneypot.desc", "Allows you to store vast amounts of money in a small box.")
 	language.Add("tool.moneypot.0", "Left click to spawn a Money Pot")
 
-	// Other
+	-- Other
 
 	language.Add("Undone_moneypot", "Undone Money Pot")
 	language.Add("SBoxLimit_moneypots", "You've hit the Money Pots limit!")
