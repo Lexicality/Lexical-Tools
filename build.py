@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import itertools
 import json
 import logging
@@ -7,6 +6,7 @@ import os
 import os.path
 import shutil
 import subprocess
+import argparse
 from datetime import datetime
 from glob import iglob
 from typing import cast
@@ -37,6 +37,11 @@ AddonData = dict  # Dict[str, Any]
 # )
 
 BUILD_DIR = "_build"
+ADDON_DIR = "addons"
+
+ALL_ADDONS = [
+    os.path.splitext(os.path.basename(file))[0] for file in iglob(f"{ADDON_DIR}/*.json")
+]
 
 
 class Addon:
@@ -51,7 +56,7 @@ class Addon:
         # self.data = {}
 
     def _load_data(self) -> None:
-        self.datafile = f"addons/{self.name}.json"
+        self.datafile = f"{ADDON_DIR}/{self.name}.json"
         # Throw an error if the file doesn't exist
         os.stat(self.datafile)
 
@@ -107,13 +112,22 @@ class Addon:
             res.check_returncode()
 
 
+def get_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("addon", choices=ALL_ADDONS)
+
+    return parser.parse_args()
+
+
 def main():
     logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 
-    moneypot = Addon("moneypot")
+    args = get_args()
 
-    moneypot.copy_to_build()
-    moneypot.build()
+    addon = Addon(args.addon)
+
+    addon.copy_to_build()
+    addon.build()
 
 
 if __name__ == "__main__":
