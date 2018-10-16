@@ -56,7 +56,7 @@ class Addon:
         # self.data = {}
 
     def _load_data(self) -> None:
-        self.datafile = f"{ADDON_DIR}/{self.name}.json"
+        self.datafile = os.path.normpath(f"{ADDON_DIR}/{self.name}.json")
         # Throw an error if the file doesn't exist
         os.stat(self.datafile)
 
@@ -91,7 +91,12 @@ class Addon:
     def _target_gma_name(self) -> str:
         now = datetime.utcnow().strftime(r"%Y-%m-%d")
         # TODO: Semver?
-        return f"{self.name}_{now}_{self.data['workshopid']}.gma"
+        name = f"{self.name}_{now}"
+        wsid = self.data.get("workshopid", None)
+        if wsid:
+            name += f"_{wsid}"
+
+        return name + ".gma"
 
     def build(self) -> None:
         log.info("%s: Building GMA", self.name)
