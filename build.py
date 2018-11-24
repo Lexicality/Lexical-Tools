@@ -7,9 +7,10 @@ import os.path
 import shutil
 import subprocess
 import argparse
-from datetime import datetime
 from glob import iglob
 from typing import cast
+
+import semver
 
 # from typing import Any, Dict, List, Optional, cast
 # from mypy_extensions import TypedDict
@@ -32,6 +33,7 @@ AddonData = dict  # Dict[str, Any]
 #         "license": Optional[str],
 #         # Stuff for this tool
 #         "workshopid": int,  # From gmosh
+#         "version": str,
 #         "include": List[str],
 #     },
 # )
@@ -48,11 +50,13 @@ class Addon:
     name: str
     datafile: str
     data: AddonData
+    version: semver.SemVer
 
     def __init__(self, name: str) -> None:
         self.name = name
         self._load_data()
         self.build_dir = os.path.join(BUILD_DIR, name)
+        self.version = semver.parse(self.data.get("version", "0.0.0"), loose=True)
         # self.data = {}
 
     def _load_data(self) -> None:
@@ -89,9 +93,7 @@ class Addon:
         shutil.copyfile(self.datafile, dest)
 
     def _target_gma_name(self) -> str:
-        now = datetime.utcnow().strftime(r"%Y-%m-%d")
-        # TODO: Semver?
-        name = f"{self.name}_{now}"
+        name = f"{self.name}_{self.version.format()}"
         wsid = self.data.get("workshopid", None)
         if wsid:
             name += f"_{wsid}"

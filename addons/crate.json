@@ -2,6 +2,7 @@
 	"title":   "Resizable Crate",
 	"type":    "tool",
 	"tags":    ["build"],
+	"version": "1.0.0",
 	"include": [
 		"lua/entities/gmod_crate.lua",
 		"lua/weapons/gmod_tool/stools/crate.lua"
