@@ -45,6 +45,17 @@ ALL_ADDONS = [
     os.path.splitext(os.path.basename(file))[0] for file in iglob(f"{ADDON_DIR}/*.json")
 ]
 
+VALID_BUMPS = [
+    "major",
+    "minor",
+    "patch",
+    "pre",
+    "premajor",
+    "preminor",
+    "prepatch",
+    "prerelease",
+]
+
 
 class Addon:
     name: str
@@ -98,11 +109,11 @@ class Addon:
         if wsid:
             name += f"_{wsid}"
 
-        return name + ".gma"
+        return os.path.join(BUILD_DIR, name + ".gma")
 
     def build(self) -> None:
         log.info("%s: Building GMA", self.name)
-        target = os.path.join(BUILD_DIR, self._target_gma_name())
+        target = self._target_gma_name()
         log.debug("Creating GMA %s from %s", target, self.build_dir)
         res = subprocess.run(
             ["gmad", "create", "-folder", self.build_dir, "-out", target],
@@ -122,11 +133,43 @@ class Addon:
         with open(self.datafile, mode="wt") as f:
             json.dump(self.data, f, indent="\t")
 
-    def bump_version(self, release: str, identifier: Optional[str]) -> None:
+    def bump_version(self, release: str, identifier: Optional[str] = None) -> None:
         log.info("%s: Building version by %s", self.name, release)
         self.version.inc(release, identifier)
         self.data["version"] = self.version.format()
         log.debug("Version is now %s", self.data["version"])
+
+    def gma_exists(self) -> bool:
+        return os.path.isfile(self._target_gma_name())
+
+    def update(self, changes: str) -> None:
+        log.info("%s: Uploading %s to the workshop", self.name, self.version)
+        target = self._target_gma_name()
+        workshopid = str(self.data["workshopid"])
+        res = subprocess.run(
+            [
+                "gmpublish",
+                "update",
+                "-id",
+                workshopid,
+                "-addon",
+                target,
+                "-changes",
+                changes,
+            ],
+            stdout=subprocess.PIPE,
+            # Garry doesn't belive in stderr but some day he might
+            stderr=subprocess.STDOUT,
+            encoding="utf-8",
+        )
+
+        if res.returncode != 0:
+            log.critical("Unable to update to the workshop")
+            log.critical(res.stdout)
+            # ?
+            res.check_returncode()
+        else:
+            log.info(res.stdout)
 
 
 def get_args() -> argparse.Namespace:
@@ -136,24 +179,34 @@ def get_args() -> argparse.Namespace:
     parser.add_argument("addon", choices=ALL_ADDONS)
 
     actions.add_parser("build")
+
     bump_args = actions.add_parser("bump")
-    bump_args.add_argument(
-        "release",
-        choices=[
-            "major",
-            "minor",
-            "patch",
-            "pre",
-            "premajor",
-            "preminor",
-            "prepatch",
-            "prerelease",
-        ],
-    )
+    bump_args.add_argument("release", choices=VALID_BUMPS)
     bump_args.add_argument("pretag", nargs="?")
-    # parser.add_argument("release", choices=["patch", ""])
+
+    release_args = actions.add_parser("release")
+    release_args.add_argument("--bump", choices=VALID_BUMPS, const="minor", nargs="?")
+    release_args.add_argument("--changes")
 
     return parser.parse_args()
+
+
+def get_changes() -> str:
+    lines = []
+
+    print("Enter changes, . to stop")
+    while True:
+        try:
+            line = input().strip()
+        except EOFError:
+            break
+
+        if line == ".":
+            break
+
+        lines.append(line)
+
+    return "\n".join(lines).strip()
 
 
 def main():
@@ -170,6 +223,22 @@ def main():
     elif args.action == "bump":
         addon.bump_version(args.release, args.pretag)
         addon.write_data()
+    elif args.action == "release":
+        changes = args.changes
+        if not changes:
+            changes = get_changes()
+
+        if args.bump:
+            addon.bump_version(args.bump)
+            addon.write_data()
+
+        changes = f"v{addon.version}: {changes}"
+
+        if not addon.gma_exists():
+            addon.copy_to_build()
+            addon.build()
+
+        addon.update(changes)
 
 
 if __name__ == "__main__":
