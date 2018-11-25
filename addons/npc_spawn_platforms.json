@@ -1,22 +1,24 @@
 {
-	"title"   : "NPC Spawn Platforms v2",
-	"author"  : "Lex Robinson",
-	"contact" : "lexi@lexi.org.uk",
-	"updated" : "Aug '16",
-	"license" : "MIT",
-	"type"    : "tool",
-	"tags"    : ["fun", "build"],
-	"ignore"  :
-	[
-		"LICENSE",
-		"*.mkdn",
-		".git*",
-		"*.sublime*",
-		"*.jpg",
-		"*.psd",
-		"*.png",
-		"*.gma",
-		"*.fgd",
-		"workshop_screenies/*"
-	]
+	"title": "NPC Spawn Platforms v2",
+	"author": "Lex Robinson",
+	"contact": "lexi@lexi.org.uk",
+	"type": "tool",
+	"tags": [
+		"fun",
+		"build"
+	],
+	"include": [
+		"lua/autorun/client/npcspawner2_cl.lua",
+		"lua/autorun/client/panel-npcselect.lua",
+		"lua/autorun/client/panel-weaponselect.lua",
+		"lua/autorun/npcspawner2.lua",
+		"lua/autorun/server/npcspawner2_sv.lua",
+		"lua/entities/sent_spawnplatform/init.lua",
+		"lua/entities/sent_spawnplatform/shared.lua",
+		"lua/weapons/gmod_tool/stools/npc_spawnplatform.lua"
+	],
+	"import": [
+		"base_lexentity"
+	],
+	"version": "3.0.0-pre.0"
 }
