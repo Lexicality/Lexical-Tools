@@ -1,9 +1,12 @@
 {
-	"title"   : "Weapon Spawn Platforms",
-	"author"  : "Lex Robinson",
-	"contact" : "lexi@lexi.org.uk",
-	"type"    : "tool",
-	"tags"    : ["fun", "build"],
+	"title": "Weapon Spawn Platforms",
+	"author": "Lex Robinson",
+	"contact": "lexi@lexi.org.uk",
+	"type": "tool",
+	"tags": [
+		"fun",
+		"build"
+	],
 	"workshopid": 710793136,
 	"include": [
 		"lua/entities/sent_weapons_store_simple.lua",
@@ -11,5 +14,6 @@
 	],
 	"import": [
 		"base_lexentity"
-	]
+	],
+	"version": "0.0.3"
 }
