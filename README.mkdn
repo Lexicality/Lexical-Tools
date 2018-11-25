@@ -1,5 +1,0 @@
-Weapon Spawn Platforms
-======================
-
-This was created at the request of a map author.
-I built these a while ago, but the files got corrupted so it's essentially a rebuild now.
