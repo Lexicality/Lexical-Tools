@@ -98,7 +98,9 @@ local function splode(data)
 end
 
 function ENT:AcceptInput(name, activator, called, value)
-	if (BaseClass.AcceptInput) then BaseClass.AcceptInput(self, name, activator, called, value); end
+	if (BaseClass.AcceptInput and BaseClass.AcceptInput(self, name, activator, called, value)) then
+		return true;
+	end
 
 	if (name == "AddOutput") then
 		-- This is literally KeyValue but as an input and with ,s as :s.
@@ -106,7 +108,11 @@ function ENT:AcceptInput(name, activator, called, value)
 
 		value = value:gsub(":", ",");
 		self:KeyValue(name, value);
+
+		return true;
 	end
+
+	return false;
 end
 
 -- Wire nonsense
