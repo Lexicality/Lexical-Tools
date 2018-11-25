@@ -1,0 +1,22 @@
+{
+	"title"   : "NPC Spawn Platforms v2",
+	"author"  : "Lex Robinson",
+	"contact" : "lexi@lexi.org.uk",
+	"updated" : "Aug '16",
+	"license" : "MIT",
+	"type"    : "tool",
+	"tags"    : ["fun", "build"],
+	"ignore"  :
+	[
+		"LICENSE",
+		"*.mkdn",
+		".git*",
+		"*.sublime*",
+		"*.jpg",
+		"*.psd",
+		"*.png",
+		"*.gma",
+		"*.fgd",
+		"workshop_screenies/*"
+	]
+}

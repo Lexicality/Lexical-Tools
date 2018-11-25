@@ -1,0 +1,49 @@
+* __3.0.0__:
+  - ~ REWRITE OF CORE IN PROGRESS~
+  - Change NPC spawn delay to pause once the maximum NPC limit is reached
+  - Fix key bindings not being cleaned up properly
+* __2.4.0__:
+  - Add support for Hammer IO
+  - Rejig the NPC categories
+  - Add an "All" tab with the old style gigantic list
+  - Support the Common Prop Protection Interface (FPP et al)
+* __2.3.2__:
+  - Fix NPCs with no category breaking the tool
+* __2.3.1__:
+  - Fix old wire installations breaking the platform
+* __2.3.0__:
+  - Completely rebuilt internal vars + networking - API is now platform:GetMaxNPCs() instead of platform.k_maximum.
+    (k_* vars are still available for compatability reasons, but are deprecated)
+  - Now compatible with Saves, Duplication and persistence
+  - Fixed WireMod not duplicating correctly
+  - Now uses the WireMod overlay when available
+  - Added tabs to the NPC selection
+  - Fix "None" missing from the weapons menu
+* __2.2.3__:
+  - Fixed NextBots having 0 health when spawned
+* __2.2.2__:
+  - Fixed certain SNPCs breaking the platform
+* __2.2.1__:
+  - Fixed some global space polution
+  - Platforms are frozen when spawned (configurable)
+* __2.2__:
+  - Improve the tool menu
+  - Changed the spawning system to GM13's, allowing SNPCs and so forth
+  - NPCs are spawned relative to the platform's orentation - this lets you spawn barnicles
+* __2.1__:
+  - Wire support
+  - Added Hunter
+  - Added zombine
+  - Added admin config menu
+  - Added automatic corpse cleanup
+  - Added sandbox hooks
+  - Added delay reduction ability
+  - Added 'turn off after x npcs' ability
+  - Added NPC weapons Proficiency
+  - Made it cleaner
+* __2.0__:
+  - Rewrote everything
+  - added platform:TurnOn()
+  - platform:TurnOff()
+  - platform:Toggle()
+  - platform:RemoveNPCs()

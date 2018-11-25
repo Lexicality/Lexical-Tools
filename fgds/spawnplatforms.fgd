@@ -1,0 +1,83 @@
+@include "garrysmod.fgd"
+
+@PointClass base( Targetname, Parentname ) studioprop( "models/props_c17/streetsign004e.mdl" ) = sent_spawnplatform : "A Lua NPC Spawning system"
+[
+	// Custom angles definition due to silly initial angles.
+	angles(angle) : "Pitch Yaw Roll (Y Z X)" : "0 0 90" : "This entity's orientation in the world. Pitch is rotation around the Y axis, yaw is the rotation around the Z axis, roll is the rotation around the X axis."
+
+	active(choices) : "Start Active" : 1 : "Start spawning immedaitely or wait to be turned on" =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+
+	npc(string) : "NPC Classname" : "npc_combine_s" : "The type of NPC to spawn"
+	weapon(string) : "NPC Weapon" : "default" : "The weapon to give the NPC"
+
+	healthmul(float) : "NPC Health Multiplier" : "1.0" : "x their current health"
+
+	skill(Choices) : "NPC Weapon Skill" : 1 : "How accurate the NPC will be with their weapon" =
+	[
+		0 : "Poor"
+		1 : "Average"
+		2 : "Good"
+		3 : "Very Good"
+		4 : "Perfect"
+	]
+
+	maximum(integer) : "Max NPCs Active" : 5 : "How many NPCs should the platform have alive at any one time"
+
+	totallimit(integer) : "Turn off after" : : "Turn off after this many NPCs have spawned"
+
+	customsquads(Choices) : "NPC Squad" : 0 : "Determines who the NPCs spawned by the platform will talk to" =
+	[
+		0 : "Per-platform"
+		1 : "Global (specify!)"
+	]
+
+	squadoverride(integer) : "Global squad number" : : "Which global squad to spawn into"
+
+	delay(float) : "Spawn Delay" : "5.0" : "How long to wait between each spawn"
+
+	decrease(float) : "Decrease Delay" : : "How much to decrease the delay by every time you kill every NPC spawned. EG maximum is 5, delay is 5.0, decrease is 0.1. Every 5 NPCs killed delay goes down by 0.1. Resets on toggle."
+
+	toggleable(Choices) : "Allow users to enable/disable" : 0 : "If the platform will turn off when a user presses E on it." =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+
+	autoremove(Choices) : "Delete NPCs when removed" : 1 : "Cleans up when the platform is killed" =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+
+	spawnheight(integer) : "Spawn Height" : 16 : "How far above the platform NPCs should spawn"
+	spawnradius(integer) : "Spawn Radius" : 16 : "How far around the platform NPCs should spawn"
+
+	nocollide(Choices) : "Disable NPC Collisions" : 1 : "Prevents spawned NPCs colliding with each other" =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+
+	frozen(Choices) : "Enable motion" : 1 : "Allows the platform to be moved physically" =
+	[
+		1 : "No"
+		0 : "Yes"
+	]
+
+
+
+	input TurnOn(void) : "Enables spawning."
+	input TurnOff(void) : "Disables spawning."
+	input Toggle(void) : "Toggles spawn state."
+
+	input SpawnOne(void) : "Spawns a single NPC immediately."
+	input RemoveNPCs(void) : "Deletes all existing NPCs."
+
+	output OnNPCSpawned(void) : "Fired after spawning a NPC."
+	output OnNPCKiled(void) : "Fired after a spawned NPC dies"
+	output OnLimitReached(void) : "Fired when the max number of NPCs specified has been reached."
+]
