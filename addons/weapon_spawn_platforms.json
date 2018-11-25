@@ -2,20 +2,14 @@
 	"title"   : "Weapon Spawn Platforms",
 	"author"  : "Lex Robinson",
 	"contact" : "lexi@lexi.org.uk",
-	"updated" : "June '16",
-	"license" : "MIT",
 	"type"    : "tool",
 	"tags"    : ["fun", "build"],
-	"ignore"  :
-	[
-		"LICENSE",
-		"*.mkdn",
-		".git*",
-		"*.sublime*",
-		"*.jpg",
-		"*.psd",
-		"*.png",
-		"*.gma",
-		"workshop_screenies/*"
+	"workshopid": 710793136,
+	"include": [
+		"lua/entities/sent_weapons_store_simple.lua",
+		"materials/entities/sent_weapons_store_simple.png"
+	],
+	"import": [
+		"base_lexentity"
 	]
 }
