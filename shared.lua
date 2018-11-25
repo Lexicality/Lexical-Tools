@@ -83,18 +83,19 @@ function ENT:KeyValue(key, value)
 	if (BaseClass.KeyValue) then BaseClass.KeyValue(self, key, value); end
 
 	if (self:SetNetworkKeyValue(key, value)) then
-		-- NWVars
 		return;
-	elseif (key:sub(1, 2) == "On") then
-		-- Hammer IO
-		self:StoreOutput(key, value);
+	elseif (self:AddOutputFromKeyValue(key, value)) then
 		return;
 	end
 end
 
-local function splode(data)
-	local a, b = data:find(" ", 1, true);
-	return data:sub(1, a), data:sub(b);
+function ENT:AddOutputFromKeyValue(key, value)
+	if (key:sub( 1, 2 ) == "On") then
+		self:StoreOutput(key, value);
+		return true;
+	end
+
+	return false;
 end
 
 function ENT:AcceptInput(name, activator, called, value)
@@ -102,17 +103,29 @@ function ENT:AcceptInput(name, activator, called, value)
 		return true;
 	end
 
-	if (name == "AddOutput") then
-		-- This is literally KeyValue but as an input and with ,s as :s.
-		name, value = splode(value);
-
-		value = value:gsub(":", ",");
-		self:KeyValue(name, value);
-
+	if (self:AddOutputFromAcceptInput(name, value)) then
 		return true;
 	end
 
 	return false;
+end
+
+function ENT:AddOutputFromAcceptInput(name, value)
+	if (name ~= "AddOutput") then
+		return false;
+	end
+
+	local pos = string.find(value, " ", 1, true);
+	if (pos == nil) then
+		return false;
+	end
+
+	name, value = value:sub(1, pos - 1), value:sub(pos + 1);
+
+	-- This is literally KeyValue but as an input and with ,s as :s.
+	value = value:gsub(":", ",");
+
+	return self:AddOutputFromKeyValue(name, value);
 end
 
 -- Wire nonsense
