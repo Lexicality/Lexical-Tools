@@ -93,7 +93,7 @@ class Addon:
         shutil.copyfile(self.datafile, dest)
 
     def _target_gma_name(self) -> str:
-        name = f"{self.name}_{self.version.format()}"
+        name = f"{self.name}_v{self.version.format()}"
         wsid = self.data.get("workshopid", None)
         if wsid:
             name += f"_{wsid}"
