@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import itertools
 import json
 import logging
@@ -6,9 +7,8 @@ import os
 import os.path
 import shutil
 import subprocess
-import argparse
 from glob import iglob
-from typing import cast
+from typing import Optional, cast
 
 import semver
 
@@ -118,10 +118,40 @@ class Addon:
             # ?
             res.check_returncode()
 
+    def write_data(self) -> None:
+        with open(self.datafile, mode="wt") as f:
+            json.dump(self.data, f, indent="\t")
+
+    def bump_version(self, release: str, identifier: Optional[str]) -> None:
+        log.info("%s: Building version by %s", self.name, release)
+        self.version.inc(release, identifier)
+        self.data["version"] = self.version.format()
+        log.debug("Version is now %s", self.data["version"])
+
 
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    actions = parser.add_subparsers(dest="action")
+
     parser.add_argument("addon", choices=ALL_ADDONS)
+
+    actions.add_parser("build")
+    bump_args = actions.add_parser("bump")
+    bump_args.add_argument(
+        "release",
+        choices=[
+            "major",
+            "minor",
+            "patch",
+            "pre",
+            "premajor",
+            "preminor",
+            "prepatch",
+            "prerelease",
+        ],
+    )
+    bump_args.add_argument("pretag", nargs="?")
+    # parser.add_argument("release", choices=["patch", ""])
 
     return parser.parse_args()
 
@@ -130,11 +160,16 @@ def main():
     logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 
     args = get_args()
+    logging.debug("Doing a %s", args.action)
 
     addon = Addon(args.addon)
 
-    addon.copy_to_build()
-    addon.build()
+    if args.action == "build":
+        addon.copy_to_build()
+        addon.build()
+    elif args.action == "bump":
+        addon.bump_version(args.release, args.pretag)
+        addon.write_data()
 
 
 if __name__ == "__main__":
