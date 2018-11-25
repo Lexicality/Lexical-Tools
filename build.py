@@ -8,7 +8,7 @@ import os.path
 import shutil
 import subprocess
 from glob import iglob
-from typing import Optional, cast
+from typing import Iterator, List, Optional, cast
 
 import semver
 
@@ -35,6 +35,7 @@ AddonData = dict  # Dict[str, Any]
 #         "workshopid": int,  # From gmosh
 #         "version": str,
 #         "include": List[str],
+#         "import": List[str],
 #     },
 # )
 
@@ -62,12 +63,14 @@ class Addon:
     datafile: str
     data: AddonData
     version: semver.SemVer
+    sub_addons: List["Addon"]
 
     def __init__(self, name: str) -> None:
         self.name = name
         self._load_data()
         self.build_dir = os.path.join(BUILD_DIR, name)
         self.version = semver.parse(self.data.get("version", "0.0.0"), loose=True)
+        self._load_subaddons()
         # self.data = {}
 
     def _load_data(self) -> None:
@@ -78,6 +81,22 @@ class Addon:
         with open(self.datafile, mode="rt") as f:
             self.data = cast(AddonData, json.load(f))
 
+    def _load_subaddons(self) -> None:
+        self.sub_addons = [Addon(name) for name in self.data.get("import", [])]
+
+    def _get_my_files(self) -> Iterator[str]:
+        return itertools.chain.from_iterable(
+            iglob(path) for path in self.data["include"]
+        )
+
+    def _get_subfiles(self) -> Iterator[str]:
+        return itertools.chain.from_iterable(
+            addon._get_files() for addon in self.sub_addons
+        )
+
+    def _get_files(self) -> Iterator[str]:
+        return itertools.chain(self._get_my_files(), self._get_subfiles())
+
     def copy_to_build(self) -> None:
         log.info("%s: Copying to build directory", self.name)
         # TODO: Be clever about last modified dates etc and diff the directories
@@ -86,9 +105,7 @@ class Addon:
             log.debug("Build directory %s already exists, deleting", self.build_dir)
             shutil.rmtree(self.build_dir)
 
-        for file in itertools.chain.from_iterable(
-            iglob(path) for path in self.data["include"]
-        ):
+        for file in self._get_files():
             source = os.path.relpath(file)
             dest = os.path.join(self.build_dir, source)
             dirname = os.path.dirname(dest)

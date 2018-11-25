@@ -1,0 +1,9 @@
+{
+	"title": "Lex's Base Entity",
+	"type": "tool",
+	"tags": [],
+	"version": "1.0.0",
+	"include": [
+		"lua/entities/base_lexentity/*.lua"
+	]
+}
