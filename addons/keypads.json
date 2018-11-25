@@ -1,19 +1,27 @@
 {
-	"title"   : "Keypads 2.0",
-	"author"  : "Lex Robinson",
-	"contact" : "lexi@lexi.org.uk",
-	"credits" : "TomyLobo, Robbis_1",
-	"updated" : "Mar '13",
-	"license" : "Apache v2",
-	"type"    : "tool",
-	"tags"    : ["roleplay", "build"],
-	"ignore"  :
-	[
-		"LICENSE",
-		"NOTICE",
-		"*.mkdn",
-		".git*",
-		"*.jpg",
-		"*.sublime*"
-	]
+	"title": "Keypads 2.0",
+	"author": "Lex Robinson",
+	"contact": "lexi@lexi.org.uk",
+	"credits": "TomyLobo, Robbis_1",
+	"type": "tool",
+	"tags": [
+		"roleplay",
+		"build"
+	],
+	"include": [
+		"lua/autorun/keypad_gui.lua",
+		"lua/entities/keypad/*",
+		"lua/gui/KeypadPasswordNag.lua",
+		"lua/gui/MinimumValueLabel.lua",
+		"lua/gui/NagLabel.lua",
+		"lua/weapons/gmod_tool/stools/keypad.lua",
+		"lua/weapons/weapon_keypad_cracker.lua",
+		"lua/weapons/weapon_keypad_tester.lua",
+		"materials/keypad/background.png",
+		"materials/weapons/weapon_keypad_tester.png"
+	],
+	"import": [
+		"base_lexentity"
+	],
+	"version": "0.0.0"
 }
