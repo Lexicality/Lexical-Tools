@@ -8,7 +8,7 @@ import os.path
 import shutil
 import subprocess
 from glob import iglob
-from typing import Iterator, List, Optional, cast
+from typing import Callable, Iterable, Iterator, List, Optional, Tuple, TypeVar, cast
 
 import semver
 
@@ -36,6 +36,7 @@ AddonData = dict  # Dict[str, Any]
 #         "version": str,
 #         "include": List[str],
 #         "import": List[str],
+#         "versionables": List[str],
 #     },
 # )
 
@@ -56,6 +57,10 @@ VALID_BUMPS = [
     "prepatch",
     "prerelease",
 ]
+
+TEXT_EXTENSIONS = [".lua"]
+
+T = TypeVar("T")
 
 
 class Addon:
@@ -84,36 +89,66 @@ class Addon:
     def _load_subaddons(self) -> None:
         self.sub_addons = [Addon(name) for name in self.data.get("import", [])]
 
-    def _get_my_files(self) -> Iterator[str]:
-        return itertools.chain.from_iterable(
-            iglob(path) for path in self.data["include"]
+    def _listiculate(self, action: Callable[["Addon"], Iterable[T]]) -> Iterator[T]:
+        return itertools.chain(
+            action(self),
+            itertools.chain.from_iterable(
+                addon._listiculate(action) for addon in self.sub_addons
+            ),
         )
 
-    def _get_subfiles(self) -> Iterator[str]:
-        return itertools.chain.from_iterable(
-            addon._get_files() for addon in self.sub_addons
+    def _get_versionables(self) -> Iterator[Tuple[str, str]]:
+        return self._listiculate(
+            lambda addon: (
+                (name, f"{name}_v{addon.version.format().replace('.', '_')}")
+                for name in addon.data.get("versionables", [])
+            )
         )
+        pass
 
     def _get_files(self) -> Iterator[str]:
-        return itertools.chain(self._get_my_files(), self._get_subfiles())
+        return itertools.chain.from_iterable(
+            iglob(path)
+            for path in self._listiculate(lambda addon: addon.data["include"])
+        )
 
     def copy_to_build(self) -> None:
         log.info("%s: Copying to build directory", self.name)
-        # TODO: Be clever about last modified dates etc and diff the directories
 
         if os.path.isdir(self.build_dir):
             log.debug("Build directory %s already exists, deleting", self.build_dir)
             shutil.rmtree(self.build_dir)
 
+        versionables = list(self._get_versionables())
+
         for file in self._get_files():
             source = os.path.relpath(file)
-            dest = os.path.join(self.build_dir, source)
-            dirname = os.path.dirname(dest)
 
+            dest = source
+            for old, new in versionables:
+                dest = dest.replace(old, new)
+
+            dest = os.path.join(self.build_dir, dest)
+
+            dirname = os.path.dirname(dest)
             log.debug("Creating build directory %s", dirname)
             os.makedirs(dirname, exist_ok=True)
-            log.debug("Copying %s to %s", source, dest)
-            shutil.copyfile(source, dest)
+
+            (_, ext) = os.path.splitext(dest)
+            if versionables and ext in TEXT_EXTENSIONS:
+                log.debug("Copying %s to %s via sed", source, dest)
+
+                with open(source, "r") as f:
+                    filedata = f.read()
+
+                for old, new in versionables:
+                    filedata = filedata.replace(old, new)
+
+                with open(dest, "w") as f:
+                    f.write(filedata)
+            else:
+                log.debug("Copying %s to %s", source, dest)
+                shutil.copyfile(source, dest)
 
         dest = os.path.join(self.build_dir, "addon.json")
 
