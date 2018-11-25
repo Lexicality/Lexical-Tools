@@ -16,23 +16,28 @@
 --]]
 AddCSLuaFile();
 ENT.Type 			= "anim";
-ENT.Base 			= "base_anim";
+ENT.Base 			= "base_lexentity";
 ENT.PrintName		= "Resizable Crate";
 ENT.Author			= "Lexi";
 ENT.Contact			= "lexi@lexi.org.uk";
-ENT.Spawnable		= false;
-ENT.AdminSpawnable	= false;
+ENT.Spawnable		= true;
+ENT.Editable        = true;
+
+ENT._NWVars = {
+	{
+		Name = "Scale";
+		Type = "Int";
+		Default = 1;
+		KeyName = "scale";
+		Edit = {
+			type = "Int";
+			min = 1;
+			max = 10;
+		}
+	}
+}
 
 local radius = 32;
-function ENT:SetScale(scale)
-	self:SetDTInt(0, scale)
-	self.Scale = scale;
-end
-
-function ENT:GetScale(scale)
-	return self:GetDTInt(0);
-end
-
 function ENT:Think()
 	local scale = self:GetScale();
 	if (scale == self.prevScale) then
@@ -60,10 +65,14 @@ function ENT:Think()
 	end
 end
 
+if (CLIENT) then return; end
+
 function ENT:Initialize()
 	self:PhysicsInit(SOLID_BBOX);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:SetSolid(SOLID_BBOX);
+	self:SetModel("models/props/de_dust/du_crate_64x64.mdl");
+	self:Think();
 end
 
 function MakeCrate(ply, pos, angles, scale, data)
@@ -74,7 +83,6 @@ function MakeCrate(ply, pos, angles, scale, data)
 		ent = duplicator.GenericDuplicatorFunction(ply, data); -- This is actually better than doing it manually
 	else
 		ent = ents.Create("gmod_crate");
-		ent:SetModel("models/props/de_dust/du_crate_64x64.mdl");
 		ent:SetPos(pos);
 		ent:SetAngles(angles);
 		ent:Spawn();
