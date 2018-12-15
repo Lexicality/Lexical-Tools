@@ -73,17 +73,20 @@ function ENT:Initialize()
 	self:SetupWire();
 end
 
+function ENT:CanSpawnNPC()
+	return (
+		self:IsActive()
+		and self.Spawned < self:GetMaxNPCs()
+		and (self.LastSpawn + self:GetSpawnDelay()) <= CurTime()
+	)
+end
+
 function ENT:Think()
 	if (BaseClass.Think) then BaseClass.Think(self); end
-	if (self.Spawned < 0) then self.Spawned = 0 end
 
-	if ((not self:IsActive()) or
-		self.Spawned >= self:GetMaxNPCs() or
-		self.LastSpawn + self:GetSpawnDelay() > CurTime()
-	) then
-		return;
+	if (self:CanSpawnNPC()) then
+		self:SpawnOne();
 	end
-	self:SpawnOne();
 end
 
 function ENT:NPCKilled(npc)
@@ -94,6 +97,10 @@ function ENT:NPCKilled(npc)
 		self.LastSpawn = CurTime();
 	end
 	self.Spawned = self.Spawned - 1;
+	-- "This should never happen"
+	if (self.Spawned < 0) then
+		self.Spawned = 0
+	end
 	self:TriggerOutput("OnNPCKilled", self);
 	self:TriggerWireOutput("ActiveNPCs", self.Spawned);
 end
