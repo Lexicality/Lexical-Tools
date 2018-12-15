@@ -158,19 +158,25 @@ end
 
 --[[ Hammer I/O ]]--
 function ENT:AcceptInput(name, activator, called, value)
-	if (BaseClass.AcceptInput) then BaseClass.AcceptInput(self, name, activator, called, value); end
+	if (BaseClass.AcceptInput and BaseClass.AcceptInput(self, name, activator, called, value)) then
+		return true;
+	end
 
 	npcspawner.debug2(self, "has just had their", name, "triggered by", tostring(called), "which was caused by", tostring(activator), "and was passed", value);
 
 	if (name == "TurnOn") then
 		self:TurnOn();
+		return true;
 	elseif (name == "TurnOff") then
 		self:TurnOff();
+		return true;
 	elseif (name == "RemoveNPCs") then
 		self:RemoveNPCs();
+		return true;
 	elseif (name == "SpawnOne") then
 		self:SpawnOne();
+		return true;
 	end
 
-    return true;
+    return false;
 end
