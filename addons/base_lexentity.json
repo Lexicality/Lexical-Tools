@@ -4,7 +4,7 @@
 	"tags": [],
 	"version": "1.0.0",
 	"include": [
-		"lua/entities/base_lexentity/*.lua"
+		"lua/entities/base_lexentity.lua"
 	],
 	"versionables": [
 		"base_lexentity"
