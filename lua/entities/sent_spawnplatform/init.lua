@@ -159,6 +159,7 @@ function ENT:RemoveNPCs()
 			ent:Remove();
 		end
 	end
+	self.NPCs = {};
 	self.Spawned = 0;
 	self:TriggerWireOutput("ActiveNPCs", self.Spawned);
 end

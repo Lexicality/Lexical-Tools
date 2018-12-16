@@ -272,6 +272,10 @@ end
 function ENT:ConfigureNPCOwnership(npc)
 	npc:CallOnRemove("NPCSpawnPlatform", onremove, self);
 	self.NPCs[npc] = npc;
+	duplicator.StoreEntityModifier(npc, self.__MODIFIER_ID, {
+		id = self:GetCreationID(),
+		myid = npc:GetCreationID(),
+	});
 end
 
 function ENT:SpawnOne()
