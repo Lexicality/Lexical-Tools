@@ -1,3 +1,6 @@
+* __3.0.1__
+  - Fix corrupt GMA
+	- Fix spelling
 * __3.0.0__:
   - Rewrite pretty much everything
   - Change NPC spawn delay to pause once the maximum NPC limit is reached
