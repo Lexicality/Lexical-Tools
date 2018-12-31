@@ -50,23 +50,35 @@ end
 util.AddNetworkString("NPCSpawner Config");
 
 for k, v in pairs(npcspawner.config) do
-	umsg.PoolString(k)
 	npcspawner.config[k] = tonumber(v);
 end
+
+local function syncConfig(whomst)
+	npcspawner.send("NPCSpawner Config", npcspawner.config, whomst);
+end
+
 concommand.Add("npcspawner_config", function(ply, _, args)
-	local var, val = args[1], tonumber(args[2]);
-	if (not (ply:IsAdmin() and var and val)) then return; end
-	npcspawner.config[var] = val;
-	umsg.Start("npcspawner_config");
-	umsg.String(var);
-	umsg.Float(val);
-	umsg.End();
+	if (IsValid(ply) and not ply:IsAdmin()) then
+		return;
+	end
+
+	local name, value = args[1], tonumber(args[2]);
+	if (not value) then
+		local msg = string.format("%q is not a valid value for %s!", args[2], name)
+		if (IsValid(ply)) then
+			ply:ChatPrint(msg)
+		else
+			print(msg)
+		end
+		return
+	end
+
+	npcspawner.config[name] = value;
 	writefile("config", npcspawner.config);
+	syncConfig();
 end);
 
-hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", function(ply)
-	npcspawner.send("NPCSpawner Config", npcspawner.config, ply);
-end);
+hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", syncConfig);
 
 if (not ConVarExists("sbox_maxspawnplatforms")) then
 	CreateConVar("sbox_maxspawnplatforms", 3);

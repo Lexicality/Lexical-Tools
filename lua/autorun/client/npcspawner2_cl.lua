@@ -16,31 +16,38 @@
 --]]
 
 local cvarstr = "npcspawner_config_";
+
+local function cvar(id)
+	return cvarstr .. id;
+end
+
 local function callback(cvar, old, new)
-	cvar = cvar:gsub(cvarstr, "");
-	new = tonumber(new) or npcspawner.config[cvar];
-	if (npcspawner.config[cvar] ~= new) then
-		npcspawner.config[cvar] = new;
-		local lpl = LocalPlayer();
-		if (lpl and type(lpl) == 'Player' and IsValid(lpl) and lpl:IsAdmin()) then
-			RunConsoleCommand("npcspawner_config", cvar, new);
-		end
+	local lpl = LocalPlayer();
+	if (IsValid(lpl) and not lpl:IsAdmin()) then
+		return
 	end
+
+	local name = cvar:gsub(cvarstr, "");
+	local value = tonumber(new)
+
+	if (not value or value == npcspawner.config[name]) then
+		return;
+	end
+
+	RunConsoleCommand("npcspawner_config", name, value);
 end
-for k, v in pairs(npcspawner.config) do
-	CreateConVar(cvarstr .. k, tostring(v));
-	cvars.AddChangeCallback(cvarstr .. k, callback);
+
+for name, default in pairs(npcspawner.config) do
+	name = cvar(name)
+	CreateConVar(name, tostring(default));
+	cvars.AddChangeCallback(name, callback);
 end
-usermessage.Hook("npcspawner_config", function(msg)
-	local cvar, value = msg:ReadString(), msg:ReadFloat()
-	npcspawner.config[cvar] = value;
-	RunConsoleCommand(cvarstr .. cvar, tostring(value));
-end);
+
 npcspawner.recieve("NPCSpawner Config", function(data)
 	npcspawner.config = data;
 	npcspawner.debug("Just got new config vars.");
-	for k, v in pairs(npcspawner.config) do
-		RunConsoleCommand(cvarstr .. k, tostring(v))
+	for name, value in pairs(npcspawner.config) do
+		RunConsoleCommand(cvar(name), tostring(value))
 	end
 end);
 
@@ -55,68 +62,81 @@ timer.Create("Dead Body Deleter", 60, 0, function()
 	end
 end);
 
-local function OnPopulateToolPanel(panel)
-	panel:AddControl("Label", {
-		Text = "Cleanup Corpses: This will clean up all the clientside corpses every minute if enabled."
-	});
+local function addPanelLabel(id, label, help)
+	language.Add("utilities.spawnplatform." .. id, label)
+	if (help) then
+		language.Add("utilities.spawnplatform." .. id .. ".help", help)
+	end
+end
+
+local function lang(id)
+	return "#utilities.spawnplatform." .. id
+end
+
+language.Add("spawnmenu.utilities.spawnplatform", "NPC Spawn Platforms")
+addPanelLabel("cleanupcorpses", "Clean up corpses", "Automatically delete all NPC corpses every minute")
+addPanelLabel("adminonly", "Admins Only", "Prevent normal users from spawning platforms")
+addPanelLabel("callhooks", "Call Sandbox Hooks", "Act as if the user had used the spawn menu to spawn NPCs. This will force the platform to obey entity limits etc.")
+addPanelLabel("maxinplay", "Max NPCs per Platform", "How many NPCs a single platform may have alive at once")
+addPanelLabel("mindelay", "Minimum Spawn Delay", "The minimum delay a platform must wait before spawning a new NPC")
+addPanelLabel("sanity", "Valid NPC Check", "Only spawn NPCs on the NPC list. If you disable this option, players can potentially spawn literally any entity they want.")
+addPanelLabel("debug", "Enable Developer Logging", "Enable or disable diagnostic messages. Requires the convar 'developer' to be 1 or 2")
+
+local function clientOptions(panel)
 	panel:AddControl("CheckBox", {
-		Label = "Cleanup Corpses",
+		Label = lang("cleanupcorpses"),
+		Help = true,
 		Command = "cleanupcorpses",
 	});
-	if (not LocalPlayer():IsAdmin()) then
-		return;
-	end
-	panel:AddControl("Label", {
-		Text = "Admins only: This will stop non-admins from being able to use the spawnplatforms STool."
-	});
+end
+
+local function adminOptions(panel)
 	panel:AddControl("CheckBox", {
-		Label = "Admins Only",
-		Command = "npcspawner_config_adminonly",
+		Label   = lang("adminonly"),
+		Command = cvar("adminonly"),
+		Help    = true,
 	});
-	panel:AddControl("Label", {
-		Text = "Call Hooks: This will cause the platforms to call all the sandbox hooks, as if the player was using the Spawn Menu to make NPCs."
-	});
+
 	panel:AddControl("CheckBox", {
-		Label = "Call Hooks",
-		Command = "npcspawner_config_callhooks",
+		Label   = lang("callhooks"),
+		Command = cvar("callhooks"),
+		Help    = true,
 	});
-	panel:AddControl("Label", {
-		Text = "Sanity Check: This will limit what platforms can spawn to the registered \"NPC\" list."
-	});
-	panel:AddControl("CheckBox", {
-		Label = "Santiy Check",
-		Command = "npcspawner_config_sanity",
-	})
-	panel:AddControl("Label", {
-		Text = "Max In Play: The maximum number of NPCs a single spawnplatform can have out at once."
-	});
+
 	panel:AddControl("Slider", {
-		Label = "Max In Play",
-		Command = "npcspawner_config_maxinplay",
-		Type = "Float",
-		Min = "1",
-		Max = "50",
+		Label   = lang("maxinplay"),
+		Command = cvar("maxinplay"),
+		Help    = true,
+		Type    = "Float",
+		Min     = "1",
+		Max     = "50",
 	})
-	panel:AddControl("Label", {
-		Text = "Minimum Delay: The minimum delay between each npc spawn."
-	});
+
 	panel:AddControl("Slider", {
-		Label = "Minimum Delay",
-		Command = "npcspawner_config_mindelay",
-		Type = "Float",
-		Min = "0.1",
-		Max = "10",
+		Label   = lang("mindelay"),
+		Command = cvar("mindelay"),
+		Help    = true,
+		Type    = "Float",
+		Min     = "0.1",
+		Max     = "10",
 	})
+
+	panel:AddControl("CheckBox", {
+		Label   = lang("sanity"),
+		Command = cvar("sanity"),
+		Help    = true,
+	});
+
 	--[[
-	panel:AddControl("Label", {
-		Text = "Debug Mode: Enable printing debug info if the developer convar is greater than 0."
-	});
 	panel:AddControl("CheckBox", {
-		Label = "Debug Mode",
-		Command = "npcspawner_config_debug",
-	})
+		Label   = lang("debug"),
+		Command = cvar("debug"),
+		Help    = true,
+	});
 	--]]
 end
+
 hook.Add("PopulateToolMenu", "NPCSpawner Options", function()
-	spawnmenu.AddToolMenuOption("Options", "Addons", "NPC Spawn Platforms", "NPC Spawn Platforms", "", "", OnPopulateToolPanel)
+	spawnmenu.AddToolMenuOption("Utilities", "User",  "NPC Spawn Platforms User",  "#spawnmenu.utilities.spawnplatform", "", "", clientOptions)
+	spawnmenu.AddToolMenuOption("Utilities", "Admin", "NPC Spawn Platforms Admin", "#spawnmenu.utilities.spawnplatform", "", "", adminOptions )
 end)
