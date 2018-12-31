@@ -204,10 +204,9 @@ function ENT:GetSpawnClass()
 	end
 
 	local npcdata = list.Get('NPC')[class];
-	if (not npcdata and not npcspawner.config.allowdodgy) then
-		ErrorNoHalt(string.format("%s just tried to spawn NPC %s which is not on the NPC list!", self, class))
+	if (not npcdata and npcspawner.config.sanity) then
 		self:TurnOff();
-		return nil, nil;
+		error(string.format("%s just tried to spawn NPC %q which is not on the NPC list!", self, class))
 	end
 
 	return class, npcdata;
