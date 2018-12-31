@@ -1,7 +1,11 @@
 * __3.0.0__:
-  - ~ REWRITE OF CORE IN PROGRESS~
+  - Rewrite pretty much everything
   - Change NPC spawn delay to pause once the maximum NPC limit is reached
   - Fix key bindings not being cleaned up properly
+  - Block non-admins duplicating platforms in adminonly mode
+  - Fix saves
+  - Remove from spawn menu
+  - Show when platform is in the wrong orentation to spawn something
 * __2.4.0__:
   - Add support for Hammer IO
   - Rejig the NPC categories

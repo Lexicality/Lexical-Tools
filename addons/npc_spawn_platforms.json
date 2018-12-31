@@ -20,5 +20,6 @@
 	"import": [
 		"base_lexentity"
 	],
-	"version": "3.0.0-pre.0"
+	"version": "3.0.0",
+	"workshopid": 107821465
 }
