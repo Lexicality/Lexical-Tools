@@ -8,9 +8,9 @@
 		"roleplay"
 	],
 	"workshopid": 109905241,
-	"version": "0.2.0",
+	"version": "1.0.0",
 	"include": [
 		"lua/entities/*_moneypot.lua",
-		"../lexical-tools/lua/../lua/./weapons/gmod_tool/stools/moneypot.lua"
+		"lua/weapons/gmod_tool/stools/moneypot.lua"
 	]
 }
