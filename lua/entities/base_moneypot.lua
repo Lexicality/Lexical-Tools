@@ -178,6 +178,7 @@ function ENT:UpdateOverlay()
 	self:SetOverlayText("- Money Pot -\nAmount: $" .. self:GetMoney());
 end
 
+local cvar_delay = CreateConVar("moneypot_spawn_delay", 1, FCVAR_ARCHIVE, "How long in seconds to wait before spawning money")
 function ENT:DelayedSpawn(amount)
 	amount = math.Clamp(amount, 0, self:GetMoney());
 	if (amount == 0) then return; end
@@ -186,7 +187,7 @@ function ENT:DelayedSpawn(amount)
 	else
 		self.DoSpawn = amount;
 	end
-	self.SpawnTime = CurTime() + 1;
+	self.SpawnTime = CurTime() + cvar_delay:GetFloat();
 end
 
 -- From Moneyprinter
