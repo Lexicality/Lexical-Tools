@@ -18,10 +18,18 @@
 
 local ClassName = 'npc_spawnplatform';
 
+local function lang(id)
+	return '#Tool.' .. ClassName .. '.' .. id;
+end
+local function cvar(id)
+	return ClassName .. '_' .. id;
+end
+
+
 MsgN(ClassName, ' reloaded');
 
 TOOL.Category     = "Lexical Tools";
-TOOL.Name         = "NPC Spawn Platforms v2";
+TOOL.Name         = lang("name");
 --- Default Values
 local cvars = {
 	npc           = "npc_combine_s";
@@ -101,7 +109,7 @@ function TOOL:RightClick(trace)
 			local res = ent:GetNetworkKeyValue(key);
 			npcspawner.debug2("Got value", res, "for key", key);
 			if (res) then
-				owner:ConCommand("npc_spawnplatform_" .. key .. " " .. tostring(res) .. "\n");
+				owner:ConCommand(cvar(key) .. " " .. tostring(res) .. "\n");
 			end
 		end
 	end
@@ -119,7 +127,7 @@ if (SERVER) then return; end
 local function AddToolLanguage(id, lang)
 	language.Add('tool.' .. ClassName .. '.' .. id, lang);
 end
-AddToolLanguage("name", "NPC Spawn Platforms v2");
+AddToolLanguage("name", "NPC Spawn Platforms");
 AddToolLanguage("desc", "Create a platform that will constantly make NPCs.");
 AddToolLanguage("0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data.");
 -- Controls
@@ -166,13 +174,6 @@ AddToolLanguage("panel_other",        "Other");
 -- Inferior Tech
 language.Add("Cleanup_Spawnplatforms", "NPC Spawn Platforms");
 language.Add("Cleaned_Spawnplatforms", "Cleaned up all NPC Spawn Platforms");
-
-local function lang(id)
-	return '#Tool.' .. ClassName .. '.' .. id;
-end
-local function cvar(id)
-	return ClassName .. '_' .. id;
-end
 
 -- Because when don't you need to define your own builtins?
 local function AddControl(CPanel, control, name, data)
