@@ -13,8 +13,7 @@
 		"lua/autorun/client/panel-weaponselect.lua",
 		"lua/autorun/npcspawner2.lua",
 		"lua/autorun/server/npcspawner2_sv.lua",
-		"lua/entities/sent_spawnplatform/init.lua",
-		"lua/entities/sent_spawnplatform/shared.lua",
+		"lua/entities/sent_spawnplatform/*.lua",
 		"lua/weapons/gmod_tool/stools/npc_spawnplatform.lua"
 	],
 	"import": [
