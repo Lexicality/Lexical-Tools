@@ -16,7 +16,7 @@
 --]]
 
 TOOL.Category    = "Lexical Tools"
-TOOL.Name        = "#Money Pot"
+TOOL.Name        = "#tool.moneypot.name"
 TOOL.ClientConVar["weld"] = 1
 
 cleanup.Register("moneypots")
@@ -52,10 +52,11 @@ local function canTool(tr)
 end
 
 if (CLIENT) then
-
 	language.Add("tool.moneypot.name", "Money Pot")
-	language.Add("tool.moneypot.desc", "Allows you to store vast amounts of money in a small box.")
+	language.Add("tool.moneypot.desc", "Create a DarkRP Money Pot")
 	language.Add("tool.moneypot.0", "Left click to spawn a Money Pot")
+	language.Add("tool.moneypot.header", "Allows you to store vast amounts of money in a small box.")
+	language.Add("tool.moneypot.weld", "Weld to target")
 
 	-- Other
 
@@ -67,11 +68,13 @@ if (CLIENT) then
 		return canTool(tr);
 	end
 	function TOOL.BuildCPanel(cp)
-		cp:AddControl("Header", {Text = "#Tool_moneypot_name", Description = "#Tool_moneypot_desc"})
+		cp:AddControl("Label", {
+			Text = "#tool.moneypot.header",
+		});
 
 		cp:AddControl( "Checkbox", {
-			Label = "Weld:";
-			Command = "moneypot_weld";
+			Label = "#tool.moneypot.weld",
+			Command = "moneypot_weld",
 		});
 	end
 	return;
