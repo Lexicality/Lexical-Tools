@@ -182,7 +182,7 @@ local function onremove(npc, platform)
 	end
 end
 
-function ENT:CheckOrentation()
+function ENT:CheckOrientation()
 	local _, data = self:GetSpawnClass();
 	if (data) then
 		local normal = self:GetSpawnNormal();

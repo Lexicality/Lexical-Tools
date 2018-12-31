@@ -90,7 +90,7 @@ function ENT:OrentationThink()
 		return true;
 	end
 
-	if (not self:CheckOrentation()) then
+	if (not self:CheckOrientation()) then
 		if (not self:IsFlipped()) then
 			self:SetFlipped(true);
 			self:DoColour(colour_flipped)
