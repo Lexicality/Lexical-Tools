@@ -284,7 +284,7 @@ def main():
             addon.bump_version(args.bump)
             addon.write_data()
 
-        changes = f"v{addon.version}: {changes}"
+        changes = f"[h1][b]v{addon.version}[/b][/h1]\n{changes}"
 
         if not addon.gma_exists():
             addon.copy_to_build()
