@@ -40,7 +40,7 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Ang
 		end
 	return end
 
-	if ( NPCData.AdminOnly and not Player:IsAdmin() ) then return end
+	-- if ( NPCData.AdminOnly and not Player:IsAdmin() ) then return end
 
 	local bDropToFloor = false
 
@@ -288,7 +288,12 @@ function ENT:SpawnOne()
 			self.LastSpawn = CurTime() + 5; -- Disable spawning for 5 seconds so the user isn't spammed
 			npcspawner.debug(ply, "has failed the PlayerSpawnNPC hook.");
 			return false;
+		elseif (npcdata.AdminOnly and not ply:IsAdmin()) then
+			ply:ChatPrint("You may not spawn this NPC!");
+			self:TurnOff();
+			return false;
 		end
+
 	end
 
 	npcspawner.debug(self, "is spawning a", class, "with a", weapon);
