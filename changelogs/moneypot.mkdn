@@ -1,2 +1,5 @@
+* __1.1.0__:
+  - Add a `moneypot_spawn_delay` cvar to control how long it takes for money to drop
+  - Fix UI having untranslated strings on it
 * __1.0.0__:
   - Changelog starts
