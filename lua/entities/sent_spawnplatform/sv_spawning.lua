@@ -182,6 +182,20 @@ local function onremove(npc, platform)
 	end
 end
 
+function ENT:CheckOrentation()
+	local _, data = self:GetSpawnClass();
+	if (data) then
+		local normal = self:GetSpawnNormal();
+
+		if (data.OnCeiling and Vector(0, 0, -1):Dot(normal) < 0.95) then
+			return false
+		elseif (data.OnFloor and Vector(0, 0, 1):Dot(normal) < 0.95) then
+			return false
+		end
+	end
+	return true
+end
+
 function ENT:GetSpawnClass()
 	local class = self:GetNPC();
 
@@ -212,6 +226,10 @@ function ENT:GetSpawnWeapon(npcdata)
 	return weapon;
 end
 
+function ENT:GetSpawnNormal()
+	return self:GetRight() * -1;
+end
+
 function ENT:GetSpawnLocation()
 	local x, y, z = self:GetUp(), self:GetForward(), self:GetRight();
 
@@ -219,7 +237,6 @@ function ENT:GetSpawnLocation()
 	-- Face the NPC away from the centre of the platform
 	local angles = Angle(0, position:Angle().y, 0)
 	local offset = self:GetSpawnHeight();
-	local normal = z * -1;
 
 	npcspawner.debug2("Offset:", position);
 	npcspawner.debug2("Angles:", angles);
@@ -227,7 +244,7 @@ function ENT:GetSpawnLocation()
 
 	position = self:GetPos() + position;
 
-	return position, angles, normal, offset;
+	return position, angles, offset;
 end
 
 function ENT:ConfigureNPCSquad(npc)
@@ -298,7 +315,8 @@ function ENT:SpawnOne()
 
 	npcspawner.debug(self, "is spawning a", class, "with a", weapon);
 
-	local position, angles, normal, offset = self:GetSpawnLocation();
+	local position, angles, offset = self:GetSpawnLocation();
+	local normal = self:GetSpawnNormal();
 
 	debugoverlay.Line(self:GetPos(), position, 10, color_white, true);
 	debugoverlay.Axis(position, angles, 10, 10, true);

@@ -51,12 +51,29 @@ local function convert( text )
 	return reverseLookupCache[text] or text;
 end
 
+local overlayText = [[
+NPC: %s
+Weapon: %s
+Delay: %0.2f
+Maximum: %d]]
+
+local overlayTextFlipped = "Cannot spawn %ss at this angle!"
+
+
 function ENT:UpdateLabel()
+	if (self:IsActive() and self:IsFlipped()) then
+		self:SetOverlayText(string.format(overlayTextFlipped, convert(self:GetNPC())))
+		return
+	end
+
 	self:SetOverlayText(
-		"NPC: "       .. convert(self:GetNPC()      )  ..
-		"\nWeapon: "  .. convert(self:GetNPCWeapon())  ..
-		"\nDelay: "   ..         self:GetSpawnDelay()  ..
-		"\nMaximum: " ..         self:GetMaxNPCs()
+		string.format(
+			overlayText,
+			convert(self:GetNPC()      ),
+			convert(self:GetNPCWeapon()),
+					self:GetSpawnDelay(),
+					self:GetMaxNPCs()
+		)
 	);
 end
 
@@ -78,6 +95,11 @@ ENT._NWVars = {
 		Type = "Bool";
 		Name = "Active";
 		KeyName = "active";
+		Default = false;
+	},
+	{
+		Type = "Bool";
+		Name = "Flipped";
 		Default = false;
 	},
 

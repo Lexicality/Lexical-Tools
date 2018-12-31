@@ -31,6 +31,10 @@ ENT.LastSpawn    = 0;
 ENT.LastChange   = 0;
 ENT.TotalSpawned = 0;
 
+local colour_on = Color(0, 255, 0)
+local colour_off = Color(255, 0, 0)
+local colour_flipped = Color(0, 255, 255)
+
 numpad.Register("NPCSpawnerOn", function(ply, ent)
 	npcspawner.debug("Numpad on called for", ent, "by", ply);
 	if (IsValid(ent)) then
@@ -81,8 +85,32 @@ function ENT:CanSpawnNPC()
 	)
 end
 
+function ENT:OrentationThink()
+	if (not self:IsActive()) then
+		return true;
+	end
+
+	if (not self:CheckOrentation()) then
+		if (not self:IsFlipped()) then
+			self:SetFlipped(true);
+			self:DoColour(colour_flipped)
+		end
+
+		return false;
+	elseif (self:IsFlipped()) then
+		self:SetFlipped(false);
+		self:DoColour(colour_on)
+	end
+
+	return true;
+end
+
 function ENT:Think()
 	if (BaseClass.Think) then BaseClass.Think(self); end
+
+	if (not self:OrentationThink()) then
+		return;
+	end
 
 	if (self:CanSpawnNPC()) then
 		self:SpawnOne();
@@ -134,6 +162,11 @@ function ENT:TurnOff()
 	self:SetActive(false);
 end
 
+function ENT:DoColour(new)
+	new.a = self:GetColor().a
+	self:SetColor(new)
+end
+
 local model_active = Model("models/props_c17/streetsign004e.mdl");
 local model_inactive = Model("models/props_c17/streetsign004f.mdl");
 function ENT:OnActiveChange(_, _, active)
@@ -143,10 +176,14 @@ function ENT:OnActiveChange(_, _, active)
 	if (active) then
 		self:SetModel(model_active);
 		self.LastSpawn = CurTime();
-		self:SetColor(Color(0, 255, 0, a));
+		if (self:IsFlipped()) then
+			self:DoColour(colour_flipped)
+		else
+			self:DoColour(colour_on)
+		end
 	else
 		self:SetModel(model_inactive);
-		self:SetColor(Color(255, 0, 0, a));
+		self:DoColour(colour_off)
 	end
 	self:TriggerWireOutput("IsOn", active and 1 or 0);
 	self.LastChange = CurTime();

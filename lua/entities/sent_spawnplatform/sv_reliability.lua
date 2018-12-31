@@ -41,6 +41,8 @@ function ENT:RegisterListeners()
 	self:NetworkVarNotify("NPCWeapon", labelr);
 	self:NetworkVarNotify("SpawnDelay", labelr);
 	self:NetworkVarNotify("MaxNPCs", labelr);
+	self:NetworkVarNotify("Flipped", labelr);
+	self:NetworkVarNotify("Active", labelr);
 end
 
 function ENT:OnStartDelayChange(_, _, delay)
