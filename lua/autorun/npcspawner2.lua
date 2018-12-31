@@ -38,7 +38,7 @@ npcspawner = {
     end;
     debug2 = function(...)
         if (npcspawner.config.debug == 1) then
-            printd("PLFM L2 (" .. svorcl() .. "):", ...);
+            printd2("PLFM L2 (" .. svorcl() .. "):", ...);
         end
     end;
     send = function(name, tab, who)
