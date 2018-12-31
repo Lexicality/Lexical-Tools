@@ -81,6 +81,11 @@ addPanelLabel("maxinplay", "Max NPCs per Platform", "How many NPCs a single plat
 addPanelLabel("mindelay", "Minimum Spawn Delay", "The minimum delay a platform must wait before spawning a new NPC")
 addPanelLabel("sanity", "Valid NPC Check", "Only spawn NPCs on the NPC list. If you disable this option, players can potentially spawn literally any entity they want.")
 addPanelLabel("debug", "Enable Developer Logging", "Enable or disable diagnostic messages. Requires the convar 'developer' to be 1 or 2")
+addPanelLabel("dangerzone", "Danger Zone")
+addPanelLabel("rehydrate", "Missing NPCs on Dupe Fix", [[
+If you duplicate a platform but not it's NPCs, it will re-spawn all NPCs the old platform had.
+This is important for saves and persistance (which use the duplicator under the hood) but may be suprising with the duplicator tool.
+If you do not use persistance and want freshly duplicated platforms to have no NPCs, untick this.]])
 
 local function clientOptions(panel)
 	panel:AddControl("CheckBox", {
@@ -121,14 +126,26 @@ local function adminOptions(panel)
 		Max     = "10",
 	})
 
-	panel:AddControl("CheckBox", {
+	local dzpanel = panel:AddControl("ControlPanel", {
+		Label = lang("dangerzone"),
+		Closed = true,
+	});
+
+	dzpanel:AddControl("CheckBox", {
 		Label   = lang("sanity"),
 		Command = cvar("sanity"),
 		Help    = true,
 	});
 
+	dzpanel:AddControl("CheckBox", {
+		Label   = lang("rehydrate"),
+		Command = cvar("rehydrate"),
+		Help    = true,
+	});
+
+
 	--[[
-	panel:AddControl("CheckBox", {
+	dzpanel:AddControl("CheckBox", {
 		Label   = lang("debug"),
 		Command = cvar("debug"),
 		Help    = true,

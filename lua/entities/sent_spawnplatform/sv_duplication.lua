@@ -83,7 +83,7 @@ function ENT:PostEntityPaste(ply, _, entList)
 
 	-- Check to see if we didn't manage to save some of our NPCs
 	local missing = self._saveRestore.numSpawned - self.Spawned;
-	if (missing > 0) then
+	if (missing > 0 and npcspawner.config.rehydrate == 1) then
 		npcspawner.debug(self, "is spawning", missing, "NPCs to make up its deficit")
 		for i = 1, missing do
 			local n = self:SpawnOne();
