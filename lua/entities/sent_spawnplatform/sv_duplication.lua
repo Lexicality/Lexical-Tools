@@ -17,16 +17,6 @@
 
 DEFINE_BASECLASS(ENT.Base);
 
-function ENT:SpawnFunction(ply, tr)
-	if (not tr.Hit) then return end
-	local ent = ents.Create("sent_spawnplatform");
-	ent:SetPos(tr.HitPos + tr.HitNormal * 16);
-	ent:SetPlayer(ply);
-	ent:Spawn();
-	ent:Activate();
-	return ent;
-end
-
 -- The built in duplicator function messes with the platform too much
 duplicator.RegisterEntityClass("sent_spawnplatform", function(ply, data)
 	if (BaseClass.CanDuplicate(ply, data)) then

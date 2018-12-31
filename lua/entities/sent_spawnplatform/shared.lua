@@ -20,7 +20,7 @@ ENT.PrintName      = "NPC Spawn Platform";
 ENT.WireDebugName  = "Spawn Platform";
 ENT.Author         = "Lexi/Devenger";
 ENT.Purpose        = "Spawn a constant(ish) stream of NPCs";
-ENT.Spawnable      = true;
+ENT.Spawnable      = false;
 ENT.AdminOnly      = false;
 ENT.CountKey       = "spawnplatforms";
 
