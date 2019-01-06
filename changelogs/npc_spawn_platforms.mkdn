@@ -1,3 +1,5 @@
+* __3.0.2__
+  - Remove "v2" from tool name
 * __3.0.1__
   - Fix corrupt GMA
 	- Fix spelling
