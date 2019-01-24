@@ -52,6 +52,7 @@ local cvars = {
 	oldspawning   = "0";
 	skill         = WEAPON_PROFICIENCY_AVERAGE;
 	frozen        = "1";
+	killvalue     = "-1";
 }
 
 cleanup.Register("Spawnplatforms");
@@ -152,6 +153,8 @@ AddToolLanguage("frozen",        "Spawn the platform frozen");
 AddToolLanguage("customsquads",  "Use Global Squad");
 AddToolLanguage("squadoverride", "Global Squad Number");
 AddToolLanguage("oldspawning",   "Use old spawning mode");
+AddToolLanguage("killvalue",     "RP Money Value");
+
 -- Control Descs
 AddToolLanguage("skill.desc",         string.format("Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR, WEAPON_PROFICIENCY_PERFECT));
 AddToolLanguage("delay.desc",         "The delay between each NPC spawn.");
@@ -163,6 +166,7 @@ AddToolLanguage("spawnheight.desc",   "Spawn NPCs higher than the platform to av
 AddToolLanguage("spawnradius.desc",   "Spawn NPCs in a circle around the platform. 0 spawns them on the platform");
 AddToolLanguage("healthmul.desc",     "Increase the health of spawned NPCs for more longer fights");
 AddToolLanguage("oldspawning.desc",   "By default the spawn timer pauses when the platform is full. This makes it not pause.");
+AddToolLanguage("killvalue.desc",     "Some RP gamemodes / addons can give you money for killing NPCs. This lets you override the amount.\nSet to -1 to disable");
 
 -- Help!
 AddToolLanguage("positioning.help", "Prevent your NPCs getting stuck in each other by disabling collisions or spacing their spawns out.");
@@ -347,6 +351,14 @@ function TOOL.BuildCPanel(CPanel)
 
 		-- Legacy spawning system
 		AddControl(CPanel, "Checkbox", "oldspawning", {
+			Description = true;
+		});
+
+		-- NPC Kill Value
+		AddControl(CPanel, "Slider", "killvalue", {
+			Type        = "Integer";
+			Min         = -1;
+			Max         = 1000;
 			Description = true;
 		});
 	end

@@ -294,6 +294,19 @@ function ENT:ConfigureNPCOwnership(npc)
 	});
 end
 
+function ENT:ConfigureNPCValue(npc)
+	local value = self:GetRPValue();
+	if (value == -1) then
+		return;
+	end
+
+	npc.KillValue = value;
+	-- Vrondakis' Leveling System
+	if (LevelSystemConfiguration) then
+		npc.GiveXP = value;
+	end
+end
+
 function ENT:SpawnOne()
 	local class, npcdata = self:GetSpawnClass();
 	local weapon = self:GetSpawnWeapon();
@@ -343,6 +356,7 @@ function ENT:SpawnOne()
 	self:ConfigureNPCWeapons(npc);
 	self:ConfigureNPCCollisions(npc);
 	self:ConfigureNPCOwnership(npc);
+	self:ConfigureNPCValue(npc);
 
 	self.Spawned = self.Spawned + 1;
 	self:TriggerWireOutput("ActiveNPCs", self.Spawned);

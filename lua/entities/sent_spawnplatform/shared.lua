@@ -228,6 +228,12 @@ ENT._NWVars = {
 		KeyName = "frozen";
 		Default = true;
 	},
+	{
+		Type = "Int";
+		Name = "RPValue";
+		KeyName = "killvalue";
+		Default = -1;
+	},
 
 	{
 		Type = "Entity";
