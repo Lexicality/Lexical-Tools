@@ -1,3 +1,6 @@
+* __3.1.0__
+	- Make the legacy spawn option easier to understand
+  - Add a config variable for configuring DarkRP money / xp granted on NPC kill
 * __3.0.2__
   - Remove "v2" from tool name
 * __3.0.1__
