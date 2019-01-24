@@ -130,6 +130,7 @@ end
 AddToolLanguage("name", "NPC Spawn Platforms");
 AddToolLanguage("desc", "Create a platform that will constantly make NPCs.");
 AddToolLanguage("0",    "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data.");
+
 -- Controls
 AddToolLanguage("npc",           "NPC");
 AddToolLanguage("weapon",        "Weapon");
@@ -161,16 +162,20 @@ AddToolLanguage("autoremove.desc",    "All NPCs spawned by a platform will be re
 AddToolLanguage("spawnheight.desc",   "Spawn NPCs higher than the platform to avoid obsticles");
 AddToolLanguage("spawnradius.desc",   "Spawn NPCs in a circle around the platform. 0 spawns them on the platform");
 AddToolLanguage("healthmul.desc",     "Increase the health of spawned NPCs for more longer fights");
+AddToolLanguage("oldspawning.desc",   "By default the spawn timer pauses when the platform is full. This makes it not pause.");
+
 -- Help!
 AddToolLanguage("positioning.help", "Prevent your NPCs getting stuck in each other by disabling collisions or spacing their spawns out.");
 AddToolLanguage("squads.help1", "NPCs in a squad talk to each other to improve tactics. By default, all NPCs spawned by a spawn platform are in the same squad.");
 AddToolLanguage("squads.help2", "If you want a squad to cover more than one platform, use a global squad. Be careful not to let your squads get to big or your game will lag!");
+
 -- Panels
 AddToolLanguage("panel_npc",          "NPC Selection");
 AddToolLanguage("panel_spawning",     "NPC Spawn Rates");
 AddToolLanguage("panel_activation",   "Platform Activation");
 AddToolLanguage("panel_positioning",  "NPC Positioning");
 AddToolLanguage("panel_other",        "Other");
+
 -- Inferior Tech
 language.Add("Cleanup_Spawnplatforms", "NPC Spawn Platforms");
 language.Add("Cleaned_Spawnplatforms", "Cleaned up all NPC Spawn Platforms");
@@ -316,6 +321,7 @@ function TOOL.BuildCPanel(CPanel)
 		local CPanel = AddControl(CPanel, "ControlPanel", "panel_other", {
 			Closed = true;
 		});
+
 		--Healthmul select
 		AddControl(CPanel, "Slider", "healthmul", {
 			Type        = "Float";
@@ -323,8 +329,10 @@ function TOOL.BuildCPanel(CPanel)
 			Max         = 5;
 			Description = true;
 		});
+
 		-- Global Squad On/Off
 		AddControl(CPanel, "Checkbox", "frozen");
+
 		-- Global Squads
 		CPanel:Help(lang "squads.help1");
 		CPanel:Help(lang "squads.help2");
@@ -336,7 +344,10 @@ function TOOL.BuildCPanel(CPanel)
 			Min         = 1;
 			Max         = 50;
 		});
-		-- Global Squad On/Off
-		AddControl(CPanel, "Checkbox", "oldspawning");
+
+		-- Legacy spawning system
+		AddControl(CPanel, "Checkbox", "oldspawning", {
+			Description = true;
+		});
 	end
 end
