@@ -27,6 +27,8 @@ local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + 
 local cvar_min_recharge = CreateConVar("keypad_min_recharge", 2, FCVAR_ARCHIVE, "The minimum time between keypad code attempts");
 -- Potentially a user could lock out a keypad for two and a half minutes, so don't let them
 local cvar_max_recharge = CreateConVar("keypad_max_recharge", 30, FCVAR_ARCHIVE, "The maximum time between keypad code attempts (to avoid long timer abuse)");
+-- This is a highly abusable mechanic, so disable it by default but let servers enable it if they trust their players
+local cvar_wire_cracking = CreateConVar("keypad_cracking_wire_output", 0, FCVAR_ARCHIVE, "Add a wire output that shows if a keypad is being cracked")
 
 util.PrecacheSound("buttons/button14.wav")
 util.PrecacheSound("buttons/button9.wav")
@@ -78,7 +80,7 @@ function ENT:Initialize()
 	self._WireToggleStates = { [self.kvs.access.wire_name] = false, [self.kvs.denied.wire_name] = false };
 	self._Password = "";
 
-	self:CreateWireOutputs({
+	local outputs = {
 		{
 			Name = self.kvs.access.wire_name;
 			Desc = "Triggered when the right code is entered";
@@ -87,7 +89,16 @@ function ENT:Initialize()
 			Name = self.kvs.denied.wire_name;
 			Desc = "Triggered when the wrong code is entered";
 		};
-	})
+	}
+
+	if (cvar_wire_cracking:GetBool()) then
+		table.insert(outputs, {
+			Name = "Being Cracked";
+			Desc = "If the keypad is being cracked";
+		});
+	end
+
+	self:CreateWireOutputs(outputs)
 end
 
 function ENT:SetPassword(pass)
@@ -236,6 +247,20 @@ function ENT:KeypadInput(input)
 		self:SetPasswordDisplay(string.rep('*', #self._Password));
 	else
 		self:SetPasswordDisplay(self._Password);
+	end
+end
+
+function ENT:StartCrack(cracker)
+	self:SetBeingCracked(true);
+	if (cvar_wire_cracking:GetBool()) then
+		self:TriggerWireOutput("Being Cracked", 1)
+	end
+end
+
+function ENT:EndCrack()
+	self:SetBeingCracked(false);
+	if (cvar_wire_cracking:GetBool()) then
+		self:TriggerWireOutput("Being Cracked", 0)
 	end
 end
 

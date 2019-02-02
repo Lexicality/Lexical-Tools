@@ -85,8 +85,8 @@ end
 function SWEP:ResetState()
 	self:SetWeaponHoldType("slam");
 	local target = self:GetCrackTarget()
-	if (IsValid(target)) then
-		target:SetBeingCracked(false);
+	if (IsValid(target) and SERVER) then
+		target:EndCrack();
 	end
 	self:SetCrackState(self.States.Idle);
 	self:SetCrackTarget(NULL);
@@ -193,7 +193,10 @@ function SWEP:Think()
 		if (self:CheckFailState()) then
 			return
 		elseif (self:GetCrackStart() <= now) then
-			self:GetCrackTarget():SetBeingCracked(true);
+			if (SERVER) then
+				self:GetCrackTarget():StartCrack(self.Owner);
+			end
+
 			self:SetCrackState(self.States.Cracking);
 		end
 	elseif (state == self.States.Cracking) then
