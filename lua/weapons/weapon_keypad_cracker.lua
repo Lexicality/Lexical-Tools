@@ -108,11 +108,13 @@ end
 
 function SWEP:Succeed()
 	local target = self:GetCrackTarget()
+
+	self:ResetState();
+	self:DoRecovery();
+
 	if (SERVER and IsValid(target)) then
 		target:TriggerKeypad(true);
 	end
-	self:ResetState();
-	self:DoRecovery();
 end
 
 function SWEP:Fail()

@@ -197,7 +197,16 @@ function ENT:IsValidKeypadPassword(password)
 	return matches and len <= 8;
 end
 
+function ENT:IsInteractive()
+	return self:GetStatus() == self.STATUSES.Normal and not self:IsBeingCracked()
+end
+
 function ENT:KeypadInput(input)
+	-- Prevent the keypad being messed with when it's doing stuff
+	if (not self:IsInteractive()) then
+		return;
+	end
+
 	if (input == "reset") then
 		self:EmitSound(self.ResetSound);
 		ResetKeypad(self);
@@ -210,9 +219,6 @@ function ENT:KeypadInput(input)
 
 	if (not tonumber(input) or #input ~= 1) then
 		-- Sanity check
-		return;
-	elseif (self:GetStatus() ~= self.STATUSES.Normal) then
-		-- You can't modify the keypad while it's doin stuff
 		return;
 	end
 
@@ -279,6 +285,11 @@ do
 	end
 
 	function ENT:TriggerKeypad(access)
+		-- Prevent the keypad being messed with when it's doing stuff
+		if (not self:IsInteractive()) then
+			return;
+		end
+
 		local kvs;
 		if (access) then
 			self:EmitSound(self.RightSound);
@@ -371,11 +382,6 @@ hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
 		return;
 	end
 
-	-- Don't allow input while being cracked
-	if (tr.Entity:IsBeingCracked()) then
-		return;
-	end
-
 	tr.Entity:KeypadInput(cmd);
 end);
 
@@ -383,11 +389,11 @@ function ENT:Use(activator, ...)
 	if (BaseClass.Use) then BaseClass.Use(self, activator, ...); end
 	if (not (IsValid(activator) and activator:IsPlayer())) then
 		return;
-	end
-	-- Don't allow input while being cracked
-	if (self:IsBeingCracked()) then
+	elseif (not self:IsInteractive()) then
+		-- Don't allow input while being cracked
 		return;
 	end
+
 	local tr = activator:GetEyeTrace();
 	local pos = self:WorldToLocal(tr.HitPos);
 	for i, btn in ipairs(self.KeyPositions) do
