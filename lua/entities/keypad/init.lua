@@ -23,10 +23,10 @@ include("shared.lua");
 resource.AddFile("materials/keypad/background.png");
 
 CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
-local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for.");
-local cvar_min_recharge = CreateConVar("keypad_min_recharge", 2, FCVAR_ARCHIVE, "How long keypads take to recharge");
+local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for");
+local cvar_min_recharge = CreateConVar("keypad_min_recharge", 2, FCVAR_ARCHIVE, "The minimum time between keypad code attempts");
 -- Potentially a user could lock out a keypad for two and a half minutes, so don't let them
-local cvar_max_recharge = CreateConVar("keypad_max_recharge", 30, FCVAR_ARCHIVE, "Prevent abuse of the access denied system");
+local cvar_max_recharge = CreateConVar("keypad_max_recharge", 30, FCVAR_ARCHIVE, "The maximum time between keypad code attempts (to avoid long timer abuse)");
 
 util.PrecacheSound("buttons/button14.wav")
 util.PrecacheSound("buttons/button9.wav")
