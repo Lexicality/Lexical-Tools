@@ -376,15 +376,6 @@ function ENT:Think()
 	self:EmitSound(self.PressSound);
 end
 
-util.AddNetworkString("gmod_keypad");
-net.Receive("gmod_keypad", function(_, ply)
-	if (not IsValid(ply)) then return; end
-	local tr = ply:GetEyeTrace();
-	if (not (IsValid(tr.Entity) and tr.Entity.IsKeypad) or tr.StartPos:Distance(tr.HitPos) > 50) then
-		return;
-	end
-	tr.Entity:KeypadInput(net.ReadString());
-end);
 local binds = {
 	[KEY_PAD_1] = "1",
 	[KEY_PAD_2] = "2",
