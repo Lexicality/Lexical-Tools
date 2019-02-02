@@ -20,18 +20,42 @@ AddCSLuaFile();
 SWEP.Category       = "Roleplay"
 SWEP.PrintName      = "Keypad Tester"
 SWEP.Author         = "Lexi"
-SWEP.Instructions   = "Left click to instantly fire a keypad";
+SWEP.Instructions   = "Left click to gain access, Right click to be denied";
 SWEP.DrawAmmo       = false
 SWEP.Primary.Ammo   = ""
+SWEP.Secondary.Ammo = ""
 SWEP.Slot           = 5
 
 SWEP.Spawnable      = true;
 SWEP.AdminOnly      = true;
 
-function SWEP:PrimaryAttack()
-	self:SetNextPrimaryFire(CurTime() + .4)
-	local tr = self.Owner:GetEyeTrace();
-	if (SERVER and self.Owner:IsAdmin() and IsValid(tr.Entity) and tr.Entity:GetClass() == "keypad") then
-		tr.Entity:TriggerKeypad(true);
+function SWEP:CanTrigger(keypad)
+	if (not IsValid(keypad) or keypad:GetClass() ~= "keypad") then
+		return false;
+	end
+
+	local ply = self.Owner;
+	local victim = keypad:GetPlayer();
+	return ply == victim or ply:IsAdmin();
+end
+
+function SWEP:Keypadify(state)
+	local keypad = self.Owner:GetEyeTrace().Entity;
+	if (self:CanTrigger(keypad)) then
+		-- TODO: Particle effects
+		if (SERVER) then
+			keypad:TriggerKeypad(state);
+		end
 	end
 end
+
+function SWEP:PrimaryAttack()
+	self:SetNextPrimaryFire(CurTime() + .4)
+	self:Keypadify(true)
+end
+
+function SWEP:SecondaryAttack()
+	self:SetNextSecondaryFire(CurTime() + .4)
+	self:Keypadify(false)
+end
+
