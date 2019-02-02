@@ -496,7 +496,7 @@ function ENT:SetData(data)
 	end
 	if (data["OutputOff"]) then
 		self:SetKeyValue("access_wire_value_off", data["OutputOff"])
-		self:SetKeyValue("denied_wire_value_on", data["OutputOn"])
+		self:SetKeyValue("denied_wire_value_off", data["OutputOff"])
 	end
 end
 
