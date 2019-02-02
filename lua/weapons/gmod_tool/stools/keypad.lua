@@ -154,7 +154,7 @@ function TOOL:RightClick(tr)
 	end
 
 	for key in pairs(kvs) do
-		ent:SetKeyValue(key, self:GetClientNumber(key));
+		ent:SetKeyValue(key, self:GetClientInfo(key));
 	end
 
 	return true;
