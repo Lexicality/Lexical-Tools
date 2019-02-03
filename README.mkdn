@@ -1,21 +1,8 @@
-Lexical Tools
-=============
+# Lexical Tools
 
-Various STools for [Garry's Mod][gmod] that have been abandoned by their creators rewritten for the modern gmod.
+Most of the things I've made or fixed for [Garry's Mod](https://gmod.facepunch.com/) in various states of functionality.
 
-Features
---------
-
-* Full [Wiremod][wire] support where applicable
-* Clean error free code
-* Written with clean integration in mind to reduce the chance of future breakage or addon clashage.
-
-Links
------
-* [Facepunch thread][fpthread]
-* [Release SVN repo][svnrepo]
-
-  [gmod]:     http://garrysmod.com/                   "Garry's Mod"
-  [wire]:     http://wiremod.com/                     "Wire Mod"
-  [fpthread]: http://facepunch.com/threads/982955     "Facepunch forums release thread"
-  [svnrepo]:  http://code.google.com/p/lexical-tools/ "'Release' SVN repository"
+## Workshop links
+* [NPC Spawn Platforms](https://steamcommunity.com/sharedfiles/filedetails/?id=107821465)
+* [Moneypot](https://steamcommunity.com/sharedfiles/filedetails/?id=109905241)
+* [Weapon Spawn Platforms](https://steamcommunity.com/sharedfiles/filedetails/?id=710793136)
