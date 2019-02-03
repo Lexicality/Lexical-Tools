@@ -17,11 +17,9 @@
 
 local PANEL = {};
 
-AccessorFunc(PANEL, "m_tCvars", "ConVars");
-PANEL.m_tCvars = {};
+Derma_Install_Better_Convar_Functions(PANEL)
 
 function PANEL:Init()
-	self.id = tostring(math.random(10000, 99999));
 	self:SetHighlight(true);
 end
 
@@ -32,33 +30,6 @@ function PANEL:DoText(value)
 	else
 		self:SetHeight(0);
 	end
-end
-
-function PANEL:OnConVarChange(...)
-	error("Abstract Method")
-end
-
-function PANEL:HandleCVarChange()
-	local values = {}
-	for _, cvar in pairs(self:GetConVars()) do
-		table.insert(values, cvars.String(cvar));
-	end
-	self:OnConVarChange(unpack(values));
-end
-
-function PANEL:NukeConVars()
-	for _, cvar in pairs(self:GetConVars()) do
-		cvars.RemoveChangeCallback(cvar, self.id);
-	end
-end
-
-function PANEL:SetConVars(convars)
-	self:NukeConVars();
-	local cb = function() self:HandleCVarChange() end;
-	for _, cvar in pairs(convars) do
-		cvars.AddChangeCallback(cvar, cb, self.id);
-	end
-	self.m_tCvars = convars;
 end
 
 function PANEL:ControlValues(data)

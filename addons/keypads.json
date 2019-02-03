@@ -14,6 +14,7 @@
 		"lua/gui/KeypadPasswordNag.lua",
 		"lua/gui/MinimumValueLabel.lua",
 		"lua/gui/NagLabel.lua",
+		"lua/gui/derma_cvars.lua",
 		"lua/weapons/gmod_tool/stools/keypad.lua",
 		"lua/weapons/weapon_keypad_cracker.lua",
 		"lua/weapons/weapon_keypad_tester.lua",

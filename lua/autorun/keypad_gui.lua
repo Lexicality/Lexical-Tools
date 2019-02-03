@@ -16,6 +16,7 @@
 --]]
 
 local files = {
+	"gui/derma_cvars.lua",
 	"gui/NagLabel.lua",
 	"gui/MinimumValueLabel.lua",
 	"gui/KeypadPasswordNag.lua",
