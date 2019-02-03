@@ -30,6 +30,17 @@ ENT.AdminSpawnable = false;
 if (CLIENT) then return end
 
 function ENT:Initialize()
+	self.fireForce       = 20000;
+	self.cannonModel     = "models/props_trainstation/trashcan_indoor001b.mdl";
+	self.fireModel       = "models/props_junk/cinderblock01a.mdl";
+	self.recoilAmount    = 1;
+	self.fireDelay       = 5;
+	self.killDelay       = 5;
+	self.explosivePower  = 10;
+	self.explosiveRadius = 200;
+	self.fireEffect      = "Explosion";
+	self.fireExplosives  = true;
+
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
 	self:SetSolid(SOLID_VPHYSICS);
@@ -60,17 +71,6 @@ function ENT:Initialize()
 		});
 	end
 end
-
-ENT.fireForce       = 20000;
-ENT.cannonModel     = "models/props_trainstation/trashcan_indoor001b.mdl";
-ENT.fireModel       = "models/props_junk/cinderblock01a.mdl";
-ENT.recoilAmount    = 1;
-ENT.fireDelay       = 5;
-ENT.killDelay       = 5;
-ENT.explosivePower  = 10;
-ENT.explosiveRadius = 200;
-ENT.fireEffect      = "Explosion";
-ENT.fireExplosives  = true;
 
 function ENT:Setup(fireForce, cannonModel, fireModel, recoilAmount, fireDelay, killDelay, explosivePower, explosiveRadius, fireEffect, fireExplosives)
 	self:SetModel(cannonModel);

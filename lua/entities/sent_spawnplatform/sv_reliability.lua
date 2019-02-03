@@ -84,8 +84,6 @@ function ENT:OnFrozenStateChange(_, _, freeze)
 	end
 end
 
-ENT._prevOnKeypad = false;
-ENT._prevOffKeypad = false;
 function ENT:RebindNumpads(ply, keyOn, keyOff)
 	numpad.Remove(self._prevOffKeypad);
 	numpad.Remove(self._prevOnKeypad);

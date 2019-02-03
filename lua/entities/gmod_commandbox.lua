@@ -68,6 +68,9 @@ umsg.PoolString("Commandbox Command")
 umsg.PoolString("Commandbox Command Request")
 
 function ENT:Initialize()
+	self.Command = "";
+	self.Key     = 0;
+
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid   (SOLID_VPHYSICS)
@@ -76,9 +79,6 @@ function ENT:Initialize()
 		WireLib.CreateSpecialOutputs(self, {"Command"},{"STRING"});
 	end
 end
-
-ENT.Command = "";
-ENT.Key     = 0;
 
 local function prest(ply, ent)
 	if (not IsValid(ent)) then

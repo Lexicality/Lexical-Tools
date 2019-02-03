@@ -25,12 +25,6 @@ include("sv_wire.lua")
 
 DEFINE_BASECLASS(ENT.Base);
 
-ENT.NPCs         = {};
-ENT.Spawned      = 0;
-ENT.LastSpawn    = 0;
-ENT.LastChange   = 0;
-ENT.TotalSpawned = 0;
-
 local colour_on = Color(0, 255, 0)
 local colour_off = Color(255, 0, 0)
 local colour_flipped = Color(0, 255, 255)
@@ -54,6 +48,15 @@ numpad.Register("NPCSpawnerOff", function(ply, ent)
 end);
 
 function ENT:Initialize()
+	-- Default values
+	self.NPCs           = {};
+	self.Spawned        = 0;
+	self.LastSpawn      = 0;
+	self.LastChange     = 0;
+	self.TotalSpawned   = 0;
+	self._prevOnKeypad  = false;
+	self._prevOffKeypad = false;
+
 	npcspawner.debug2(self, "now exists!");
 	-- Ensure the right model etc is set
 	self:OnActiveChange(nil, nil, self:IsActive());
@@ -70,8 +73,6 @@ function ENT:Initialize()
 	end
 
 	self:ResetLastSpawn();
-	self.Spawned = 0;
-	self.NPCs    = {};
 	self:UpdateLabel();
 
 	self:SetupWire();

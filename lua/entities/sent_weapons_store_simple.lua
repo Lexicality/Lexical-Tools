@@ -79,6 +79,9 @@ end
 function ENT:Initialize()
 	if (BaseClass.Initialize) then BaseClass.Initialize(self); end
 
+	self.NextSpawn = 0;
+	self.CurrentWeapon = NULL;
+
 	self:SetModel("models/props_c17/streetsign004e.mdl");
 	self:PhysicsInit(SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject();
@@ -154,8 +157,6 @@ function ENT:RegisterListeners()
 	end
 end
 
-ENT.NextSpawn = 0;
-ENT.CurrentWeapon = NULL;
 function ENT:Think()
 	if (BaseClass.Think) then BaseClass.Think(self); end
 
