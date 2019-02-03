@@ -18,9 +18,9 @@
 DEFINE_BASECLASS(ENT.Base);
 
 local weaponsets = {
-	weapon_rebel	= {"weapon_pistol", "weapon_smg1", "weapon_ar2", "weapon_shotgun"},
-	weapon_combine	= {"weapon_smg1", "weapon_ar2", "weapon_shotgun"},
-	weapon_citizen	= {"weapon_citizenpackage", "weapon_citizensuitcase", "weapon_none"}
+	weapon_rebel   = {"weapon_pistol", "weapon_smg1", "weapon_ar2", "weapon_shotgun"},
+	weapon_combine = {"weapon_smg1", "weapon_ar2", "weapon_shotgun"},
+	weapon_citizen = {"weapon_citizenpackage", "weapon_citizensuitcase", "weapon_none"}
 };
 
 --

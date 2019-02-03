@@ -46,12 +46,12 @@ end
 
 duplicator.RegisterEntityClass("gmod_commandbox", MakeCommandBox, "Pos", "Ang", "Model", "key", "command", "Data");
 
-ENT.PrintName = "Commandbox"
-ENT.Author = "Lexi"
-ENT.Contact	= "lexi@lexi.org.uk"
-ENT.Purpose	= ""
-ENT.Instructions = ""
-ENT.Spawnable = false;
+ENT.PrintName      = "Commandbox"
+ENT.Author         = "Lexi"
+ENT.Contact        = "lexi@lexi.org.uk"
+ENT.Purpose        = ""
+ENT.Instructions   = ""
+ENT.Spawnable      = false;
 ENT.AdminSpawnable = false;
 
 if (CLIENT) then
@@ -78,7 +78,7 @@ function ENT:Initialize()
 end
 
 ENT.Command = "";
-ENT.Key		= 0;
+ENT.Key     = 0;
 
 local function prest(ply, ent)
 	if (not IsValid(ent)) then

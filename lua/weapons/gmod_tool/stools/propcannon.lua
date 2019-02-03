@@ -15,20 +15,20 @@
 	limitations under the License.
 --]]
 
-TOOL.Category		= "Lexical Tools"
-TOOL.Name			= "#Prop Cannon v2"
+TOOL.Category = "Lexical Tools"
+TOOL.Name     = "#Prop Cannon v2"
 
-TOOL.ClientConVar["key"]				= 1
-TOOL.ClientConVar["force"]				= 20000
-TOOL.ClientConVar["delay"]				= 5
-TOOL.ClientConVar["recoil"]				= 1
-TOOL.ClientConVar["explosive"]			= 1
-TOOL.ClientConVar["kill_delay"]			= 5
-TOOL.ClientConVar["ammo_model"]			= "models/props_junk/cinderblock01a.mdl"
-TOOL.ClientConVar["fire_effect"]		= "Explosion"
-TOOL.ClientConVar["cannon_model"]		= "models/props_trainstation/trashcan_indoor001b.mdl"
-TOOL.ClientConVar["explosive_power"]	= 10
-TOOL.ClientConVar["explosive_radius"]	= 200
+TOOL.ClientConVar["key"]              = 1
+TOOL.ClientConVar["force"]            = 20000
+TOOL.ClientConVar["delay"]            = 5
+TOOL.ClientConVar["recoil"]           = 1
+TOOL.ClientConVar["explosive"]        = 1
+TOOL.ClientConVar["kill_delay"]       = 5
+TOOL.ClientConVar["ammo_model"]       = "models/props_junk/cinderblock01a.mdl"
+TOOL.ClientConVar["fire_effect"]      = "Explosion"
+TOOL.ClientConVar["cannon_model"]     = "models/props_trainstation/trashcan_indoor001b.mdl"
+TOOL.ClientConVar["explosive_power"]  = 10
+TOOL.ClientConVar["explosive_radius"] = 200
 
 cleanup.Register( "propcannons" )
 
@@ -63,14 +63,14 @@ if (SERVER) then
 	end
 	duplicator.RegisterEntityClass( "gmod_propcannon", MakeCannon, "Pos", "Ang", "numpadKey", "fireForce", "Model", "fireModel", "recoilAmount", "fireDelay", "killDelay", "explosivePower", "explosiveRadius", "fireEffect", "fireExplosives");
 else
-	language.Add("Tool_propcannon_name",	"Prop Cannons v2");
-	language.Add("Tool_propcannon_desc",	"A movable cannon that can fire props");
-	language.Add("Tool_propcannon_0",		"Click to spawn a cannon. Click on an existing cannon to change it. Right click on a prop to use the model as ammo.");
+	language.Add("Tool_propcannon_name",  "Prop Cannons v2");
+	language.Add("Tool_propcannon_desc",  "A movable cannon that can fire props");
+	language.Add("Tool_propcannon_0",     "Click to spawn a cannon. Click on an existing cannon to change it. Right click on a prop to use the model as ammo.");
 
 	language.Add("SBoxLimit_propcannons", "You've hit the Prop Cannonslimit!")
-	language.Add("Undone_propcannon",		"Undone Prop Cannon");
-	language.Add("Cleanup_propcannons",		"Prop Cannons");
-	language.Add("Cleaned_propcannons",		"Cleaned up all Prop Cannons");
+	language.Add("Undone_propcannon",     "Undone Prop Cannon");
+	language.Add("Cleanup_propcannons",   "Prop Cannons");
+	language.Add("Cleaned_propcannons",   "Cleaned up all Prop Cannons");
 end
 
 
@@ -86,18 +86,18 @@ function TOOL:LeftClick(tr)
 
 	local ply = self:GetOwner();
 	local key, force, model, ammo, recoil, delay, kill, power, radius, effect, explosive;
-	key 			= self:GetClientNumber("key");
-	force			= self:GetClientNumber("force");
-	delay			= self:GetClientNumber("delay");
-	recoil  		= self:GetClientNumber("recoil");
-	explosive		= self:GetClientNumber("explosive");
-	kill			= self:GetClientNumber("kill_delay");
-	ammo			= self:GetClientInfo  ("ammo_model");
-	effect			= self:GetClientInfo  ("fire_effect");
-	model			= self:GetClientInfo  ("cannon_model");
-	power			= self:GetClientNumber("explosive_power");
-	radius			= self:GetClientNumber("explosive_radius");
-	explosive 		= tobool(explosive);
+	key       = self:GetClientNumber("key");
+	force     = self:GetClientNumber("force");
+	delay     = self:GetClientNumber("delay");
+	recoil    = self:GetClientNumber("recoil");
+	explosive = self:GetClientNumber("explosive");
+	kill      = self:GetClientNumber("kill_delay");
+	ammo      = self:GetClientInfo  ("ammo_model");
+	effect    = self:GetClientInfo  ("fire_effect");
+	model     = self:GetClientInfo  ("cannon_model");
+	power     = self:GetClientNumber("explosive_power");
+	radius    = self:GetClientNumber("explosive_radius");
+	explosive = tobool(explosive);
 
 	if (not (util.IsValidModel(model) and util.IsValidProp(model) and util.IsValidModel(ammo) and util.IsValidProp(ammo))) then
 		return false;
@@ -197,17 +197,17 @@ function TOOL.BuildCPanel(cp)
 	Combo["Folder"] = "propcannon";
 	Combo["Options"] = {};
 	Combo["Options"]["Default"] = {};
-	Combo["Options"]["Default"]["propcannon_key"]				= "1";
-	Combo["Options"]["Default"]["propcannon_force"]				= "20000";
-	Combo["Options"]["Default"]["propcannon_delay"]				= "5";
-	Combo["Options"]["Default"]["propcannon_recoil"]			= "1";
-	Combo["Options"]["Default"]["propcannon_explosive"]			= "1";
-	Combo["Options"]["Default"]["propcannon_kill_delay"]		= "5";
-	Combo["Options"]["Default"]["propcannon_ammo_model"]		= "models/props_junk/cinderblock01a.mdl";
-	Combo["Options"]["Default"]["propcannon_fire_effect"]		= "Explosion";
-	Combo["Options"]["Default"]["propcannon_cannon_model"]		= "models/props_trainstation/trashcan_indoor001b.mdl";
-	Combo["Options"]["Default"]["propcannon_explosive_power"]	= "10";
-	Combo["Options"]["Default"]["propcannon_explosive_radius"]	= "100";
+	Combo["Options"]["Default"]["propcannon_key"]              = "1";
+	Combo["Options"]["Default"]["propcannon_force"]            = "20000";
+	Combo["Options"]["Default"]["propcannon_delay"]            = "5";
+	Combo["Options"]["Default"]["propcannon_recoil"]           = "1";
+	Combo["Options"]["Default"]["propcannon_explosive"]        = "1";
+	Combo["Options"]["Default"]["propcannon_kill_delay"]       = "5";
+	Combo["Options"]["Default"]["propcannon_ammo_model"]       = "models/props_junk/cinderblock01a.mdl";
+	Combo["Options"]["Default"]["propcannon_fire_effect"]      = "Explosion";
+	Combo["Options"]["Default"]["propcannon_cannon_model"]     = "models/props_trainstation/trashcan_indoor001b.mdl";
+	Combo["Options"]["Default"]["propcannon_explosive_power"]  = "10";
+	Combo["Options"]["Default"]["propcannon_explosive_radius"] = "100";
 	Combo["CVars"] = {}
 	Combo["CVars"]["0"]  = "propcannon_key";
 	Combo["CVars"]["1"]  = "propcannon_force";
@@ -308,9 +308,9 @@ list.Set("CannonAmmoModels","models/props_junk/cinderblock01a.mdl",{})
 list.Set("CannonAmmoModels","models/props_debris/concrete_cynderblock001.mdl",{})
 list.Set("CannonAmmoModels","models/props_junk/popcan01a.mdl",{})
 
-list.Set("CannonEffects", "Explosion",	{propcannon_fire_effect = "Explosion"});
-list.Set("CannonEffects", "Sparks",		{propcannon_fire_effect = "cball_explode"});
-list.Set("CannonEffects", "Bomb drop",	{propcannon_fire_effect = "RPGShotDown"});
-list.Set("CannonEffects", "Flash",		{propcannon_fire_effect = "HelicopterMegaBomb"});
-list.Set("CannonEffects", "Machine Gun",{propcannon_fire_effect = "HelicopterImpact"});
-list.Set("CannonEffects", "None",		{propcannon_fire_effect = "none"});
+list.Set("CannonEffects", "Explosion",   {propcannon_fire_effect = "Explosion"});
+list.Set("CannonEffects", "Sparks",      {propcannon_fire_effect = "cball_explode"});
+list.Set("CannonEffects", "Bomb drop",   {propcannon_fire_effect = "RPGShotDown"});
+list.Set("CannonEffects", "Flash",       {propcannon_fire_effect = "HelicopterMegaBomb"});
+list.Set("CannonEffects", "Machine Gun", {propcannon_fire_effect = "HelicopterImpact"});
+list.Set("CannonEffects", "None",        {propcannon_fire_effect = "none"});

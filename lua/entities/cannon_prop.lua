@@ -15,13 +15,14 @@
 	limitations under the License.
 --]]
 AddCSLuaFile();
-ENT.Type 			= "anim";
-ENT.Base 			= "base_anim";
-ENT.PrintName		= "Prop Cannon Shot";
-ENT.Author			= "Lexi";
-ENT.Contact			= "lexi@lexi.org.uk";
-ENT.Spawnable		= false;
-ENT.AdminSpawnable	= false;
+ENT.Type           = "anim";
+ENT.Base           = "base_anim";
+ENT.PrintName      = "Prop Cannon Shot";
+ENT.Author         = "Lexi";
+ENT.Contact        = "lexi@lexi.org.uk";
+ENT.Spawnable      = false;
+ENT.AdminSpawnable = false;
+
 if (CLIENT) then
 	language.Add("cannon_prop", ENT.PrintName);
 	return;
@@ -30,7 +31,7 @@ end
 function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
-	self:SetSolid	(SOLID_VPHYSICS);
+	self:SetSolid(SOLID_VPHYSICS);
 
 	if (not IsValid(self.Owner)) then
 		self.Owner = self;

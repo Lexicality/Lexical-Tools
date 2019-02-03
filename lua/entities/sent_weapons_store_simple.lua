@@ -284,10 +284,10 @@ function ENT:SpawnFunction(ply,  tr)
 	ent:Spawn();
 	ent:Activate();
 	-- Attempt to move the object so it sits flush
-	local vFlushPoint = tr.HitPos - ( tr.HitNormal * 512 )	-- Find a point that is definitely out of the object in the direction of the floor
-	vFlushPoint = ent:NearestPoint( vFlushPoint )	-- Find the nearest point inside the object to that point
-	vFlushPoint = ent:GetPos() - vFlushPoint	-- Get the difference
-	vFlushPoint = tr.HitPos + vFlushPoint	-- Add it to our target pos
+	local vFlushPoint = tr.HitPos - ( tr.HitNormal * 512 ) -- Find a point that is definitely out of the object in the direction of the floor
+	vFlushPoint = ent:NearestPoint( vFlushPoint )          -- Find the nearest point inside the object to that point
+	vFlushPoint = ent:GetPos() - vFlushPoint               -- Get the difference
+	vFlushPoint = tr.HitPos + vFlushPoint                  -- Add it to our target pos
 	ent:SetPos(vFlushPoint);
 	return ent;
 end

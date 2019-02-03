@@ -15,24 +15,24 @@
 	limitations under the License.
 --]]
 AddCSLuaFile();
-ENT.Type 			= "anim";
+ENT.Type           = "anim";
 if (WireLib) then
-	ENT.Base		= "base_wire_entity"
+	ENT.Base       = "base_wire_entity"
 else
-	ENT.Base		= "base_gmodentity"
+	ENT.Base       = "base_gmodentity"
 end
-ENT.PrintName		= "Prop Cannonv2";
-ENT.Author			= "Lexi"; --Duncan Stead
-ENT.Contact			= "lexi@lexi.org.uk"; --whohooo@yahoo.co.uk
-ENT.Spawnable		= false;
-ENT.AdminSpawnable	= false;
+ENT.PrintName      = "Prop Cannonv2";
+ENT.Author         = "Lexi"; --Duncan Stead
+ENT.Contact        = "lexi@lexi.org.uk"; --whohooo@yahoo.co.uk
+ENT.Spawnable      = false;
+ENT.AdminSpawnable = false;
 
 if (CLIENT) then return end
 
 function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
-	self:SetSolid	(SOLID_VPHYSICS);
+	self:SetSolid(SOLID_VPHYSICS);
 	self.nextFire = CurTime();
 
 	local phys = self:GetPhysicsObject();
@@ -61,29 +61,29 @@ function ENT:Initialize()
 	end
 end
 
-ENT.fireForce		= 20000;
-ENT.cannonModel		= "models/props_trainstation/trashcan_indoor001b.mdl";
-ENT.fireModel		= "models/props_junk/cinderblock01a.mdl";
-ENT.recoilAmount	= 1;
-ENT.fireDelay		= 5;
-ENT.killDelay		= 5;
-ENT.explosivePower	= 10;
+ENT.fireForce       = 20000;
+ENT.cannonModel     = "models/props_trainstation/trashcan_indoor001b.mdl";
+ENT.fireModel       = "models/props_junk/cinderblock01a.mdl";
+ENT.recoilAmount    = 1;
+ENT.fireDelay       = 5;
+ENT.killDelay       = 5;
+ENT.explosivePower  = 10;
 ENT.explosiveRadius = 200;
-ENT.fireEffect		= "Explosion";
-ENT.fireExplosives	= true;
+ENT.fireEffect      = "Explosion";
+ENT.fireExplosives  = true;
 
 function ENT:Setup(fireForce, cannonModel, fireModel, recoilAmount, fireDelay, killDelay, explosivePower, explosiveRadius, fireEffect, fireExplosives)
 	self:SetModel(cannonModel);
-	self.fireForce		= fireForce;
-	self.cannonModel	= cannonModel;
-	self.fireModel		= fireModel;
-	self.recoilAmount	= recoilAmount;
-	self.fireDelay		= fireDelay;
-	self.killDelay		= killDelay;
-	self.explosivePower	= explosivePower;
-	self.explosiveRadius= explosiveRadius;
-	self.fireEffect		= fireEffect;
-	self.fireExplosives	= fireExplosives;
+	self.fireForce       = fireForce;
+	self.cannonModel     = cannonModel;
+	self.fireModel       = fireModel;
+	self.recoilAmount    = recoilAmount;
+	self.fireDelay       = fireDelay;
+	self.killDelay       = killDelay;
+	self.explosivePower  = explosivePower;
+	self.explosiveRadius = explosiveRadius;
+	self.fireEffect      = fireEffect;
+	self.fireExplosives  = fireExplosives;
 
 	self:SetOverlayText("- Prop Cannon -\nFiring Force: " .. math.floor(fireForce) .. ", Fire Delay: " .. math.floor(fireDelay) ..
 						(fireExplosives and ("\nExplosive Power:"..math.floor(explosivePower)..", Explosive Radius:" .. math.floor(explosiveRadius)) or "") ..
@@ -198,5 +198,5 @@ local function Off( pl, ent )
 	ent:FireDisable();
 end
 
-numpad.Register( "propcannon_On", 	On )
-numpad.Register( "propcannon_Off", Off )
+numpad.Register("propcannon_On", On)
+numpad.Register("propcannon_Off", Off)

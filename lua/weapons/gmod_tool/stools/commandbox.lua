@@ -144,8 +144,8 @@ function TOOL:LeftClick(tr)
 
 	local ply = self:GetOwner();
 	local model, command, key;
-	key		= self:GetClientNumber("key");
-	model	= self:GetClientInfo("model");
+	key     = self:GetClientNumber("key");
+	model   = self:GetClientInfo("model");
 	command = self:GetClientInfo("command");
 
 	local search = string.lower(command);

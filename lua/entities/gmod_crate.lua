@@ -15,13 +15,13 @@
 	limitations under the License.
 --]]
 AddCSLuaFile();
-ENT.Type 			= "anim";
-ENT.Base 			= "base_lexentity";
-ENT.PrintName		= "Resizable Crate";
-ENT.Author			= "Lexi";
-ENT.Contact			= "lexi@lexi.org.uk";
-ENT.Spawnable		= true;
-ENT.Editable        = true;
+ENT.Type      = "anim";
+ENT.Base      = "base_lexentity";
+ENT.PrintName = "Resizable Crate";
+ENT.Author    = "Lexi";
+ENT.Contact   = "lexi@lexi.org.uk";
+ENT.Spawnable = true;
+ENT.Editable  = true;
 
 ENT._NWVars = {
 	{
