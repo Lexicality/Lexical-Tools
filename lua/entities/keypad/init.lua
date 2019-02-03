@@ -105,7 +105,7 @@ function ENT:SetPassword(pass)
 	self:SetKeyValue("password", pass);
 end
 
-function ENT:CheckPassword(pass)
+function ENT:CheckPassword(ply, pass)
 	if (pass == "") then
 		return false;
 	end
@@ -212,7 +212,7 @@ function ENT:IsInteractive()
 	return self:GetStatus() == self.STATUSES.Normal and not self:IsBeingCracked()
 end
 
-function ENT:KeypadInput(input)
+function ENT:KeypadInput(ply, input)
 	-- Prevent the keypad being messed with when it's doing stuff
 	if (not self:IsInteractive()) then
 		return;
@@ -223,7 +223,7 @@ function ENT:KeypadInput(input)
 		ResetKeypad(self);
 		return;
 	elseif (input == "accept") then
-		local valid = self:CheckPassword(self._Password)
+		local valid = self:CheckPassword(ply, self._Password)
 		self:TriggerKeypad(valid);
 		return;
 	end
@@ -398,7 +398,7 @@ hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
 		return;
 	end
 
-	tr.Entity:KeypadInput(cmd);
+	tr.Entity:KeypadInput(ply, cmd);
 end);
 
 function ENT:Use(activator, ...)
@@ -423,7 +423,7 @@ function ENT:Use(activator, ...)
 			else
 				cmd = tostring(i);
 			end
-			self:KeypadInput(cmd);
+			self:KeypadInput(activator, cmd);
 			return;
 		end
 	end
