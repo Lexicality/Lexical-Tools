@@ -309,7 +309,7 @@ end
 
 function ENT:SpawnOne()
 	local class, npcdata = self:GetSpawnClass();
-	local weapon = self:GetSpawnWeapon();
+	local weapon = self:GetSpawnWeapon(npcdata);
 
 	local ply = self:GetPlayer();
 	if (npcspawner.config.callhooks == 1 and IsValid(ply)) then

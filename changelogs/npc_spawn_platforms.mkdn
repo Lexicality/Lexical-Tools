@@ -1,3 +1,5 @@
+* __3.1.1__
+  - Fix weapon_default not working
 * __3.1.0__
 	- Make the legacy spawn option easier to understand
   - Add a config variable for configuring DarkRP money / xp granted on NPC kill
