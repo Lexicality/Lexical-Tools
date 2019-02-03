@@ -29,6 +29,14 @@ local cvar_min_recharge = CreateConVar("keypad_min_recharge", 2, FCVAR_ARCHIVE, 
 local cvar_max_recharge = CreateConVar("keypad_max_recharge", 30, FCVAR_ARCHIVE, "The maximum time between keypad code attempts (to avoid long timer abuse)");
 -- This is a highly abusable mechanic, so disable it by default but let servers enable it if they trust their players
 local cvar_wire_cracking = CreateConVar("keypad_cracking_wire_output", 0, FCVAR_ARCHIVE, "Add a wire output that shows if a keypad is being cracked")
+local cvar_fastentry = CreateConVar("keypad_fast_entry", 1, FCVAR_REPLICATED + FCVAR_ARCHIVE, "If the keypad's owner should be able to open it without a password");
+
+ENT.FILTER_STATUS = {
+	Allow = true,
+	Deny = false,
+	-- If this is an asynchronous check that'll be triggered in a later tick
+	Defer = "FileNotFound",
+};
 
 util.PrecacheSound("buttons/button14.wav")
 util.PrecacheSound("buttons/button9.wav")
@@ -105,9 +113,18 @@ function ENT:SetPassword(pass)
 	self:SetKeyValue("password", pass);
 end
 
+function ENT:CheckFastEntry(ply)
+	if (not cvar_fastentry:GetBool()) then
+		return self.FILTER_STATUS.Deny;
+	end
+
+	-- Simple check
+	return ply == self:GetPlayer();
+end
+
 function ENT:CheckPassword(ply, pass)
 	if (pass == "") then
-		return false;
+		return self:CheckFastEntry(ply);
 	end
 
 	return self.kvs.password == pass;
@@ -223,7 +240,13 @@ function ENT:KeypadInput(ply, input)
 		ResetKeypad(self);
 		return;
 	elseif (input == "accept") then
-		local valid = self:CheckPassword(ply, self._Password)
+		local valid = self:CheckPassword(ply, self._Password);
+
+		if (valid == self.FILTER_STATUS.Defer) then
+			-- Something else will call TriggerKeypad later
+			return;
+		end
+
 		self:TriggerKeypad(valid);
 		return;
 	end
