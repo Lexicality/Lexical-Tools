@@ -168,6 +168,8 @@ local function legacySpawn(player, position, normal, class, weapon, angles, offs
 	if (weapon ~= "none") then
 		npc:SetKeyValue("additionalequipment", weapon);
 	end
+	npc:Spawn();
+	npc:Activate();
 	return npc;
 end
 
