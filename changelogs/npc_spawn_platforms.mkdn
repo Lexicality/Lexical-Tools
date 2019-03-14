@@ -1,3 +1,5 @@
+* __3.1.2__
+  - Fix the sanity config var not doing anything
 * __3.1.1__
   - Fix weapon_default not working
 	- Fix lua reload spawning stray NPCs
