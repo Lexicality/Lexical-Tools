@@ -319,7 +319,7 @@ function ENT:SpawnOne()
 			self.LastSpawn = CurTime() + 5; -- Disable spawning for 5 seconds so the user isn't spammed
 			npcspawner.debug(ply, "has failed the PlayerSpawnNPC hook.");
 			return false;
-		elseif (npcdata.AdminOnly and not ply:IsAdmin()) then
+		elseif (npcdata and npcdata.AdminOnly and not ply:IsAdmin()) then
 			ply:ChatPrint("You may not spawn this NPC!");
 			self:TurnOff();
 			return false;
