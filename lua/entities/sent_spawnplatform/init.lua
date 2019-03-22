@@ -78,9 +78,18 @@ function ENT:Initialize()
 	self:SetupWire();
 end
 
+function ENT:IsOwnerAllowed()
+	if (npcspawner.config.adminonly ~= 1) then
+		return true
+	end
+	local ply = self:GetPlayer();
+	return not IsValid(ply) or ply:IsAdmin()
+end
+
 function ENT:CanSpawnNPC()
 	return (
 		self:IsActive()
+		and self:IsOwnerAllowed()
 		and self.Spawned < self:GetMaxNPCs()
 		and (self.LastSpawn + self:GetSpawnDelay()) <= CurTime()
 	)
