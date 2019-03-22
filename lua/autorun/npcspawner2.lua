@@ -30,15 +30,19 @@ local function svorcl()
     return SERVER and "SV" or "CL";
 end
 
+local function ts()
+	return "(" .. CurTime() .. ")"
+end
+
 npcspawner = {
     debug = function(...)
         if (npcspawner.config.debug == 1) then
-            printd("PLFM (" .. svorcl() .. "):", ...);
+            printd(ts(), "PLFM (" .. svorcl() .. "):", ...);
         end
     end;
     debug2 = function(...)
         if (npcspawner.config.debug == 1) then
-            printd2("PLFM L2 (" .. svorcl() .. "):", ...);
+            printd2(ts(), "PLFM L2 (" .. svorcl() .. "):", ...);
         end
     end;
     send = function(name, tab, who)
