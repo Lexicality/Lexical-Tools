@@ -1,6 +1,7 @@
 * __3.1.4__
   - Fix an error with legacy spawn mode when `callhooks` is `1`
   - Prevent NPCs spawning if `adminsonly` is `1` and the platform's owner isn't an admin
+  - Prevent wiremod being able to force invaild spawns
 * __3.1.3__
   - Fix the legacy spawn mode not actually working
 * __3.1.2__

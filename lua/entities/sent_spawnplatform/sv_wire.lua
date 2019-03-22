@@ -102,7 +102,7 @@ function ENT:TriggerInput(name, val)
 			self:RemoveNPCs();
 		end
 	elseif (name == "SpawnOne") then
-		if (val ~= 0) then
+		if (val ~= 0 and self:CanSpawnNPC()) then
 			self:SpawnOne();
 		end
 	elseif (name == "NPCClass") then
