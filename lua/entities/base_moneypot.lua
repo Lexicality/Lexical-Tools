@@ -120,7 +120,11 @@ function ENT:UpdateWireOutputs(amount)
 	Wire_TriggerOutput(self, "StoredAmount", self:GetMoney());
 	Wire_TriggerOutput(self, "LastAmount", amount);
 	Wire_TriggerOutput(self, "Updated", 1);
-	Wire_TriggerOutput(self, "Updated", 0);
+	timer.Simple(0.1, function()
+		if (IsValid(self)) then
+			Wire_TriggerOutput(self, "Updated", 0);
+		end
+	end)
 end
 
 function ENT:IsGoodMoneyEntity(ent)
