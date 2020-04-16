@@ -1,3 +1,5 @@
+* __1.2.1__:
+  - Add temporary block for the DarkRP pocket
 * __1.2.0__:
   - Add 0.1s delay to the `Updated` output so wire gates can read it.
 * __1.1.0__:

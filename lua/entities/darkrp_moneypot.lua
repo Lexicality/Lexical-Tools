@@ -114,3 +114,11 @@ end
 
 duplicator.RegisterEntityClass("darkrp_moneypot",    MakeMoneyPot, "Pos", "Angle", "Model", "Data");
 duplicator.RegisterEntityClass("gmod_wire_moneypot", MakeMoneyPot, "Pos", "Angle", "Model", "Data");
+
+-- 2020-04-16 There's a bug in DarkRP at the moment where the pocket duplicates money.
+-- While that's being fixed, prevent people pocketing moneypots
+hook.Add("canPocket", "moneypot anti-dupe protection", function(ply, ent)
+	if (IsValid(ent) and ent:GetClass() == "darkrp_moneypot") then
+		return false;
+	end
+end)
