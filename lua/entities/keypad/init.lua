@@ -1,6 +1,6 @@
 --[[
 	Keypads - lua/entities/keypad/cl_init.lua
-	Copyright 2012-2018 Lex Robinson
+	Copyright 2012-2020 Lex Robinson
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -22,14 +22,11 @@ include("shared.lua");
 
 resource.AddFile("materials/keypad/background.png");
 
-CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
-local cvar_min_length = CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "The minimum time keypads must remain on for");
-local cvar_min_recharge = CreateConVar("keypad_min_recharge", 2, FCVAR_ARCHIVE, "The minimum time between keypad code attempts");
--- Potentially a user could lock out a keypad for two and a half minutes, so don't let them
-local cvar_max_recharge = CreateConVar("keypad_max_recharge", 30, FCVAR_ARCHIVE, "The maximum time between keypad code attempts (to avoid long timer abuse)");
--- This is a highly abusable mechanic, so disable it by default but let servers enable it if they trust their players
-local cvar_wire_cracking = CreateConVar("keypad_cracking_wire_output", 0, FCVAR_ARCHIVE, "Add a wire output that shows if a keypad is being cracked")
-local cvar_fastentry = CreateConVar("keypad_fast_entry", 1, FCVAR_REPLICATED + FCVAR_ARCHIVE, "If the keypad's owner should be able to open it without a password");
+local cvar_min_length = GetConVar("keypad_min_length");
+local cvar_min_recharge = GetConVar("keypad_min_recharge");
+local cvar_max_recharge = GetConVar("keypad_max_recharge");
+local cvar_wire_cracking = GetConVar("keypad_cracking_wire_output")
+local cvar_fastentry = GetConVar("keypad_fast_entry");
 
 ENT.FILTER_STATUS = {
 	Allow = true,

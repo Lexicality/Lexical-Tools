@@ -1,6 +1,6 @@
 --[[
 	Keypads - lua/weapons/weapon_keypad_cracker.lua
-	Copyright 2012-2018 Lex Robinson
+	Copyright 2012-2020 Lex Robinson
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -55,10 +55,6 @@ SWEP.States = {
 	RecoverStage1 = 3;
 	RecoverStage2 = 4;
 }
-
-if (SERVER) then
-	CreateConVar("keypad_cracker_time", 15, FCVAR_REPLICATED + FCVAR_ARCHIVE, "How many seconds it takes to crack a keypad");
-end
 
 function SWEP:GetCrackTime(target)
 	return cvars.Number("keypad_cracker_time", 15)
