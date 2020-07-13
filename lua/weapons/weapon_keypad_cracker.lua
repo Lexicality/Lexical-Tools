@@ -55,12 +55,14 @@ SWEP.States = {
 	RecoverStage2 = 4,
 }
 
+-- Reminder - this must be defined on both the client and server or everything
+-- will go wrong
 function SWEP:GetCrackTime(target)
-	return cvars.Number("keypad_cracker_time", 15)
+	local time = cvars.Number("keypad_cracker_time", 15)
+	return hook.Run("KeypadCrackTime", time, target, self.Owner) or time
 end
 
 function SWEP:SetupDataTables()
-	self:NetworkVar("Bool", 0, "Cracking")
 	self:NetworkVar("Int", 0, "CrackState")
 	self:NetworkVar("Entity", 0, "CrackTarget")
 	self:NetworkVar("Float", 0, "CrackStart")
@@ -109,12 +111,17 @@ function SWEP:Succeed()
 	self:DoRecovery()
 
 	if (SERVER and IsValid(target)) then
-		target:TriggerKeypad(true)
+		target:TriggerKeypad(true, self.Owner)
+		hook.Run("KeypadCrackSuccess", target, self.Owner)
 	end
 end
 
 function SWEP:Fail()
 	local start = self:GetCrackStart()
+
+	if SERVER then
+		hook.Run("KeypadCrackAborted", self:GetCrackTarget(), self.Owner)
+	end
 
 	self:ResetState()
 
@@ -127,6 +134,9 @@ function SWEP:Fail()
 end
 
 function SWEP:Holster()
+	if SERVER and self:GetCrackState() == self.States.Cracking then
+		hook.Run("KeypadCrackAborted", self:GetCrackTarget(), self.Owner)
+	end
 	self:ResetState()
 	return true
 end
@@ -189,7 +199,9 @@ function SWEP:Think()
 			return
 		elseif (self:GetCrackStart() <= now) then
 			if (SERVER) then
-				self:GetCrackTarget():StartCrack(self.Owner)
+				local target = self:GetCrackTarget()
+				target:StartCrack(self.Owner)
+				hook.Run("KeypadCrackStart", target, self.Owner)
 			end
 
 			self:SetCrackState(self.States.Cracking)

@@ -250,7 +250,7 @@ function ENT:KeypadInput(ply, input)
 			return
 		end
 
-		self:TriggerKeypad(valid)
+		self:TriggerKeypad(valid, ply)
 		return
 	end
 
@@ -355,7 +355,7 @@ do
 		set_wire_state(self, kvs, state)
 	end
 
-	function ENT:TriggerKeypad(access)
+	function ENT:TriggerKeypad(access, ply)
 		-- Prevent the keypad being messed with when it's doing stuff
 		if (not self:IsInteractive()) then
 			return
@@ -366,10 +366,12 @@ do
 			self:EmitSound(self.RightSound)
 			self:SetStatus(self.STATUSES.AccessGranted)
 			kvs = self.kvs.access
+			hook.Run("KeypadAccessGranted", self, ply)
 		else
 			self:EmitSound(self.WrongSound)
 			self:SetStatus(self.STATUSES.AccessDenied)
 			kvs = self.kvs.denied
+			hook.Run("KeypadAccessDenied", self, ply)
 		end
 
 		local numpad_key = kvs.numpad_key

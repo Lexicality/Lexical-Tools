@@ -43,7 +43,7 @@ function SWEP:Keypadify(state)
 	if (self:CanTrigger(keypad)) then
 		-- TODO: Particle effects
 		if (SERVER) then
-			keypad:TriggerKeypad(state)
+			keypad:TriggerKeypad(state, self.Owner)
 		end
 	end
 end
