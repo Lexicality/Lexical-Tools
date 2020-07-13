@@ -14,8 +14,7 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
---]]
-
+]] --
 TOOL.Name     = "Cloaking";
 TOOL.Author   = "Lexi";
 TOOL.Category = "Lexical Tools";
@@ -119,7 +118,7 @@ end
 numpad.Register("Cloaking onUp", onUp);
 
 
---[[ Wire Based Shit ]]--
+--[[ Wire Based Shit ]] --
 local function doWireInputs(ent)
 	if (not WireLib.AddInputs) then
 		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");

@@ -14,9 +14,8 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
---]]
-
---[[ Tool Related Settings ]]--
+]] --
+--[[ Tool Related Settings ]] --
 TOOL.Category = "Lexical Tools";
 TOOL.Name = "#Fading Doors";
 
@@ -98,7 +97,7 @@ end
 
 --[[
 	These are to prevent multiple concurrent on/off calls from glitching the door
---]]
+]] --
 local function fadeInputOn(self)
 	if (self.fadeInputActive) then
 		return;

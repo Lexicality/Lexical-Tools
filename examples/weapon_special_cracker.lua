@@ -13,7 +13,7 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
---]]
+]] --
 DEFINE_BASECLASS "weapon_keypad_cracker";
 
 AddCSLuaFile();
@@ -39,4 +39,3 @@ function SWEP:GetCrackTime(target)
 end
 -- Instantly break open any keypad
 SWEP.CrackTime = 0;
-

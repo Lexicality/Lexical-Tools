@@ -2,7 +2,7 @@
 	Weapon Spawn Platforms
 	Copyright (c) 2016 Lex Robinson
 	This code is freely available under the MIT License
---]]
+]] --
 AddCSLuaFile();
 
 ENT.Type          = "anim";

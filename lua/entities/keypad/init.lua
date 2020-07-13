@@ -13,7 +13,7 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
---]]
+]] --
 DEFINE_BASECLASS "base_lexentity";
 
 AddCSLuaFile("cl_init.lua");
@@ -284,7 +284,7 @@ function ENT:EndCrack()
 	end
 end
 
---[[ Keypad Triggerin Locals ]]--
+--[[ Keypad Triggerin Locals ]] --
 do
 	local function set_numpad_state(ent, kvs, state)
 		if (not IsValid(ent)) then return; end

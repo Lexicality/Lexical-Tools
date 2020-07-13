@@ -13,8 +13,7 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
---]]
-
+]] --
 local cvarstr = "npcspawner_config_";
 
 local function cvar(id)
@@ -150,7 +149,7 @@ local function adminOptions(panel)
 		Command = cvar("debug"),
 		Help    = true,
 	});
-	--]]
+	]] --
 end
 
 hook.Add("PopulateToolMenu", "NPCSpawner Options", function()

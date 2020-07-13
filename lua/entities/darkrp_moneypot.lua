@@ -14,8 +14,7 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
---]]
-
+]] --
 AddCSLuaFile();
 
 ENT.Type            = "anim"
@@ -104,7 +103,7 @@ function MakeMoneyPot(ply, pos, angles, model, data)
 	if (model) then
 		box:SetModel(model);
 	end
-	--]]
+	]] --
 	if (ply) then
 		box:SetPlayer(ply);
 		ply:AddCount("moneypots", box);

@@ -13,8 +13,7 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
---]]
-
+]] --
 DEFINE_BASECLASS(ENT.Base);
 
 -- The built in duplicator function messes with the platform too much

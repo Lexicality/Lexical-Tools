@@ -13,8 +13,7 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
---]]
-
+]] --
 AddCSLuaFile("shared.lua");
 include("shared.lua");
 
@@ -211,7 +210,7 @@ function ENT:RemoveNPCs()
 	self:TriggerWireOutput("ActiveNPCs", self.Spawned);
 end
 
---[[ Hammer I/O ]]--
+--[[ Hammer I/O ]] --
 function ENT:AcceptInput(name, activator, called, value)
 	if (BaseClass.AcceptInput and BaseClass.AcceptInput(self, name, activator, called, value)) then
 		return true;
