@@ -313,12 +313,22 @@ numpad.Register(
 		InputOn(ent)
 	end
 )
-duplicator.RegisterEntityModifier("Fading Door", SetupDoor)
-duplicator.RegisterEntityModifier(
-	"FadingDoor", function(ply, ent, data)
-		-- translation from conna's one
-		return SetupDoor(
+
+local function entMod(ply, ent, data)
+	-- Ensure the duplicator hasn't copied any fields that are going to confuse us
+	ent.isFadingDoor = nil
+	ent._fade = nil
+	SetupDoor(ply, ent, data)
+end
+duplicator.RegisterEntityModifier("Fading Door", entMod)
+
+-- I wish I had a way to gather metrics, I'm pretty sure this hasn't been necessary for a decade
+local function legacyEntMod(ply, ent, data)
+	if not ent.EntityMods["Fading Door"] then
+		SetupDoor(
 			ply, ent, {key = data.Key, toggle = data.Toggle, reversed = data.Inverse}
 		)
 	end
-)
+	duplicator.ClearEntityModifier("FadingDoor")
+end
+duplicator.RegisterEntityModifier("FadingDoor", legacyEntMod)
