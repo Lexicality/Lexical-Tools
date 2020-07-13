@@ -45,9 +45,9 @@ local function wireTriggerInput(ent, name, value)
 		return false
 	end
 	if (value == 0) then
-		InputOff(ent)
+		InputOff(NULL, ent)
 	else
-		InputOn(ent)
+		InputOn(NULL, ent)
 	end
 	return true
 end
@@ -160,8 +160,7 @@ function Toggle(ent)
 	end
 end
 
-function InputOn(ent)
-	print("InputOn", ent, IsFading(ent), ent._fade and ent._fade.debounce)
+function InputOn(ply, ent)
 	if (not IsFading(ent) or ent._fade.debounce) then
 		return
 	end
@@ -169,8 +168,7 @@ function InputOn(ent)
 	Toggle(ent)
 end
 
-function InputOff(ent)
-	print("InputOff", ent, IsFading(ent), ent._fade and ent._fade.debounce)
+function InputOff(ply, ent)
 	if (not IsFading(ent) or not ent._fade.debounce) then
 		return
 	end
@@ -224,8 +222,6 @@ function CreateDoorFunctions(ent)
 	ent.fadeActivate = Fade
 	ent.fadeDeactivate = Unfade
 	ent.fadeToggleActive = Toggle
-	ent.fadeInputOn = InputOn
-	ent.fadeInputOff = InputOff
 	-- Unlegacy
 	ent._fade = {}
 	ent:CallOnRemove("Fading Doors", onRemove)
@@ -303,16 +299,8 @@ function RemoveDoor(ent)
 	return true
 end
 
-numpad.Register(
-	"Fading Doors onUp", function(_, ent)
-		InputOff(ent)
-	end
-)
-numpad.Register(
-	"Fading Doors onDown", function(_, ent)
-		InputOn(ent)
-	end
-)
+numpad.Register("Fading Doors onUp", InputOff)
+numpad.Register("Fading Doors onDown", InputOn)
 
 local function entMod(ply, ent, data)
 	-- Ensure the duplicator hasn't copied any fields that are going to confuse us
