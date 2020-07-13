@@ -139,30 +139,6 @@ local function onUp(ply, ent)
 end
 numpad.Register("Fading Doors onUp", onUp)
 
-local function doWireInputs(ent)
-	if (not WireLib.AddInputs) then
-		ErrorNoHalt(
-
-
-				"Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n"
-		)
-		return
-	end
-	WireLib.AddInputs(ent, {"Fade"})
-end
-
-local function doWireOutputs(ent)
-	if (not WireLib.AddOutputs) then
-		ErrorNoHalt(
-
-
-				"Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n"
-		)
-		return
-	end
-	WireLib.AddOutputs(ent, {"FadeActive"}, {"If this entity is currently faded."})
-end
-
 local function TriggerInput(self, name, value, ...)
 	if (name == "Fade") then
 		if (value == 0) then
@@ -223,8 +199,10 @@ local function dooEet(ply, ent, stuff)
 		ent.fadeInputOff = fadeInputOff
 		ent:CallOnRemove("Fading Doors", onRemove)
 		if (WireLib) then
-			doWireInputs(ent)
-			doWireOutputs(ent)
+			WireLib.AddInputs(ent, {"Fade"})
+			WireLib.AddOutputs(
+				ent, {"FadeActive"}, {"If this entity is currently faded."}
+			)
 			ent.fadeTriggerInput = ent.fadeTriggerInput or ent.TriggerInput
 			ent.TriggerInput = TriggerInput
 			if (not (ent.IsWire or ent.addedWireSupport)) then -- Dupe Support
@@ -263,26 +241,10 @@ local function doUndo(undoData, ent)
 		ent:fadeDeactivate() -- Ensure the doors are turned off when we remove 'em :D
 		ent.isFadingDoor = false -- We don't actually delete the fading door functions, to save time.
 		duplicator.ClearEntityModifier(ent, "Fading Door") -- Make sure we don't unexpectedly re-add removed doors when duped.
-		-- [[ 'Neatly' remove the Wire inputs/outputs without disturbing the pre-existing ones. ]] --
 		if (WireLib) then
 			ent.TriggerInput = ent.fadeTriggerInput -- Purge our input checker
-			if (ent.Inputs) then
-				Wire_Link_Clear(ent, "Fade")
-				ent.Inputs["Fade"] = nil
-				WireLib._SetInputs(ent)
-			end
-			if (ent.Outputs) then
-				local port = ent.Outputs["FadeActive"]
-				if (port) then
-					for i, inp in ipairs(port.Connected) do -- From WireLib.lua: -- fix by Syranide: unlinks wires of removed outputs
-						if (inp.Entity:IsValid()) then
-							Wire_Link_Clear(inp.Entity, inp.Name)
-						end
-					end
-				end
-				ent.Outputs["FadeActive"] = nil
-				WireLib._SetOutputs(ent)
-			end
+			WireLib.RemoveInputs(ent, {"Fade"})
+			WireLib.RemoveOutputs(ent, {"FadeActive"})
 		end
 		return true
 	end

@@ -73,6 +73,8 @@ if (CLIENT) then
 	return
 end
 
+require("wirefixes")
+
 local function cloakActivate(self)
 	if (self.cloakActive) then
 		return
@@ -118,33 +120,6 @@ local function onUp(ply, ent)
 	ent:cloakToggleActive()
 end
 numpad.Register("Cloaking onUp", onUp)
-
---[[ Wire Based Shit ]] --
-local function doWireInputs(ent)
-	if (not WireLib.AddInputs) then
-		ErrorNoHalt(
-
-
-				"Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n"
-		)
-		return
-	end
-	WireLib.AddInputs(ent, {"Cloak"})
-end
-
-local function doWireOutputs(ent)
-	if (not WireLib.AddOutputs) then
-		ErrorNoHalt(
-
-
-				"Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n"
-		)
-		return
-	end
-	WireLib.AddOutputs(
-		ent, {"CloakActive"}, {"If this entity is currently cloaked"}
-	)
-end
 
 local function TriggerInput(self, name, value, ...)
 	if (name == "Cloak") then
@@ -206,8 +181,10 @@ local function dooEet(ply, ent, stuff)
 		ent.cloakToggleActive = cloakToggleActive
 		ent:CallOnRemove("Cloaking", onRemove)
 		if (WireLib) then
-			doWireInputs(ent)
-			doWireOutputs(ent)
+			WireLib.AddInputs(ent, {"Cloak"})
+			WireLib.AddOutputs(
+				ent, {"CloakActive"}, {"If this entity is currently cloaked"}
+			)
 			ent.cloakTriggerInput = ent.cloakTriggerInput or ent.TriggerInput
 			ent.TriggerInput = TriggerInput
 			if (not (ent.IsWire or ent.addedWireSupport)) then -- Dupe Support
@@ -255,23 +232,8 @@ local function doUndo(undoData, ent)
 		ent.isCloakable = false
 		if (WireLib) then
 			ent.TriggerInput = ent.cloakTriggerInput
-			if (ent.Inputs) then
-				Wire_Link_Clear(ent, "Cloak")
-				ent.Inputs["Cloak"] = nil
-				WireLib._SetInputs(ent)
-			end
-			if (ent.Outputs) then
-				local port = ent.Outputs["CloakActive"]
-				if (port) then
-					for i, inp in ipairs(port.Connected) do -- From WireLib.lua: -- fix by Syranide: unlinks wires of removed outputs
-						if (inp.Entity:IsValid()) then
-							Wire_Link_Clear(inp.Entity, inp.Name)
-						end
-					end
-				end
-				ent.Outputs["CloakActive"] = nil
-				WireLib._SetOutputs(ent)
-			end
+			WireLib.RemoveInputs(ent, {"Cloak"})
+			WireLib.RemoveOutputs(ent, {"CloakActive"})
 		end
 		return true
 	end
