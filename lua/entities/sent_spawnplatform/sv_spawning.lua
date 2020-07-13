@@ -165,7 +165,7 @@ local function legacySpawn(player, position, normal, class, weapon, angles, offs
 	end
 	npc:SetPos(position + normal * offset);
 	npc:SetAngles(angles);
-	if (weapon ~= "none") then
+	if (weapon and weapon ~= "none") then
 		npc:SetKeyValue("additionalequipment", weapon);
 	end
 	npc:Spawn();
@@ -396,4 +396,3 @@ function ENT:SpawnOne()
 
 	return true;
 end
-
