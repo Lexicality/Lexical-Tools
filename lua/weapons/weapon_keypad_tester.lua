@@ -14,36 +14,36 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-AddCSLuaFile();
+AddCSLuaFile()
 
 SWEP.Category = "Roleplay"
 SWEP.PrintName = "Keypad Tester"
 SWEP.Author = "Lexi"
-SWEP.Instructions = "Left click to gain access, Right click to be denied";
+SWEP.Instructions = "Left click to gain access, Right click to be denied"
 SWEP.DrawAmmo = false
 SWEP.Primary.Ammo = ""
 SWEP.Secondary.Ammo = ""
 SWEP.Slot = 5
 
-SWEP.Spawnable = true;
-SWEP.AdminOnly = true;
+SWEP.Spawnable = true
+SWEP.AdminOnly = true
 
 function SWEP:CanTrigger(keypad)
 	if (not IsValid(keypad) or keypad:GetClass() ~= "keypad") then
-		return false;
+		return false
 	end
 
-	local ply = self.Owner;
-	local victim = keypad:GetPlayer();
-	return ply == victim or ply:IsAdmin();
+	local ply = self.Owner
+	local victim = keypad:GetPlayer()
+	return ply == victim or ply:IsAdmin()
 end
 
 function SWEP:Keypadify(state)
-	local keypad = self.Owner:GetEyeTrace().Entity;
+	local keypad = self.Owner:GetEyeTrace().Entity
 	if (self:CanTrigger(keypad)) then
 		-- TODO: Particle effects
 		if (SERVER) then
-			keypad:TriggerKeypad(state);
+			keypad:TriggerKeypad(state)
 		end
 	end
 end

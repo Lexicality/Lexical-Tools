@@ -14,18 +14,18 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]] --
-ENT.Type = "anim";
-ENT.PrintName = "NPC Spawn Platform";
-ENT.WireDebugName = "Spawn Platform";
-ENT.Author = "Lexi/Devenger";
-ENT.Purpose = "Spawn a constant(ish) stream of NPCs";
-ENT.Spawnable = false;
-ENT.AdminOnly = false;
-ENT.CountKey = "spawnplatforms";
+ENT.Type = "anim"
+ENT.PrintName = "NPC Spawn Platform"
+ENT.WireDebugName = "Spawn Platform"
+ENT.Author = "Lexi/Devenger"
+ENT.Purpose = "Spawn a constant(ish) stream of NPCs"
+ENT.Spawnable = false
+ENT.AdminOnly = false
+ENT.CountKey = "spawnplatforms"
 
-DEFINE_BASECLASS "base_lexentity";
+DEFINE_BASECLASS "base_lexentity"
 
-local reverseLookupCache;
+local reverseLookupCache
 local function primeLookupCache()
 	reverseLookupCache = {}
 	for _, tab in pairs(list.Get("NPCUsableWeapons")) do
@@ -45,7 +45,7 @@ local function convert(text)
 	if (not reverseLookupCache) then
 		primeLookupCache()
 	end
-	return reverseLookupCache[text] or text;
+	return reverseLookupCache[text] or text
 end
 
 local overlayText = [[
@@ -67,20 +67,20 @@ function ENT:UpdateLabel()
 			overlayText, convert(self:GetNPC()), convert(self:GetNPCWeapon()),
 			self:GetSpawnDelay(), self:GetMaxNPCs()
 		)
-	);
+	)
 end
 
 function ENT:GetNPCName()
-	return convert(self:GetNWString("npc"));
+	return convert(self:GetNWString("npc"))
 end
 
 function ENT:IsActive()
-	return self:GetActive();
+	return self:GetActive()
 end
 
 local function StartDelayCustomSet(self, value)
-	value = math.max(value, npcspawner.config.mindelay);
-	self:SetStartDelay(value);
+	value = math.max(value, npcspawner.config.mindelay)
+	self:SetStartDelay(value)
 end
 
 ENT._NWVars = {
@@ -152,24 +152,24 @@ ENT._NWVars = {
 
 function ENT:SetupDataTables()
 	if (BaseClass.SetupDataTables) then
-		BaseClass.SetupDataTables(self);
+		BaseClass.SetupDataTables(self)
 	end
 
 	-- In order not to break existing compatability, make sure all
 	--  keys are still available under their old names.
-	local legacy = {};
+	local legacy = {}
 	local function onDataChanged(ent, key, old, new)
-		local data = legacy[key];
+		local data = legacy[key]
 		if (data) then
-			ent["k_" .. data.KeyName] = tostring(new);
+			ent["k_" .. data.KeyName] = tostring(new)
 		end
 	end
 
 	for _, nwvar in pairs(self._NWVars) do
 		if (nwvar.KeyName) then
-			legacy[nwvar.Name] = nwvar;
-			self:NetworkVarNotify(nwvar.Name, onDataChanged);
-			onDataChanged(self, nwvar.Name, nil, self["Get" .. nwvar.Name](self));
+			legacy[nwvar.Name] = nwvar
+			self:NetworkVarNotify(nwvar.Name, onDataChanged)
+			onDataChanged(self, nwvar.Name, nil, self["Get" .. nwvar.Name](self))
 		end
 	end
 end

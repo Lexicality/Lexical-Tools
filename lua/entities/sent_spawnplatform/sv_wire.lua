@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]] --
-DEFINE_BASECLASS(ENT.Base);
+DEFINE_BASECLASS(ENT.Base)
 
 function ENT:SetupWire()
 	self:CreateWireInputs(
@@ -36,7 +36,7 @@ function ENT:SetupWire()
 			},
 			{Name = "RemoveNPCs", Desc = "Delete all NPCs currently spawned."},
 		}
-	);
+	)
 	self:CreateWireOutputs(
 		{
 			{Name = "IsOn", Desc = "Is the platform on?"},
@@ -52,44 +52,44 @@ function ENT:SetupWire()
 			},
 			{Name = "OnNPCSpawned", Desc = "Triggered every time a NPC is spawned."},
 		}
-	);
+	)
 end
 
 function ENT:TriggerInput(name, val)
 	if (BaseClass.TriggerInput) then
-		BaseClass.TriggerInput(self, name, val);
+		BaseClass.TriggerInput(self, name, val)
 	end
 
 	npcspawner.debug2(
 		self, "has recieved wire input with name", name, "and value", val
-	);
+	)
 	if (name == "SetActive") then
 		if (val == 0) then
-			self:TurnOff();
+			self:TurnOff()
 		else
-			self:TurnOn();
+			self:TurnOn()
 		end
 	elseif (name == "RemoveNPCs") then
 		if (val ~= 0) then
-			self:RemoveNPCs();
+			self:RemoveNPCs()
 		end
 	elseif (name == "SpawnOne") then
 		if (val ~= 0 and self:CanSpawnNPC()) then
-			self:SpawnOne();
+			self:SpawnOne()
 		end
 	elseif (name == "NPCClass") then
-		self:KeyValue("npc", val);
+		self:KeyValue("npc", val)
 	elseif (name == "MaxActiveNPCs") then
-		self:KeyValue("maximum", val);
+		self:KeyValue("maximum", val)
 	elseif (name == "SpawnDelay") then
-		self:KeyValue("delay", val);
+		self:KeyValue("delay", val)
 	elseif (name == "Weapon") then
-		self:KeyValue("weapon", val);
+		self:KeyValue("weapon", val)
 	elseif (name == "HealthMultiplier") then
-		self:KeyValue("healthmul", val);
+		self:KeyValue("healthmul", val)
 	elseif (name == "MaxSpawnedNPCs") then
-		self:KeyValue("totallimit", val);
+		self:KeyValue("totallimit", val)
 	elseif (name == "DelayDecreaseAmount") then
-		self:KeyValue("decrease", val);
+		self:KeyValue("decrease", val)
 	end
 end

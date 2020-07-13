@@ -3,22 +3,22 @@
 	Copyright (c) 2016 Lex Robinson
 	This code is freely available under the MIT License
 ]] --
-AddCSLuaFile();
+AddCSLuaFile()
 
-ENT.Type = "anim";
-ENT.PrintName = "Weapon Spawner (simple)";
-ENT.WireDebugName = "Weapon Spawner (simple)";
-ENT.Author = "Lex Robinson";
-ENT.Contact = "lexi@lexi.org.uk";
-ENT.Purpose = "Spawn weapons for survival maps";
-ENT.Category = "Fun + Games";
-ENT.Spawnable = true;
-ENT.AdminOnly = true;
-ENT.Editable = true;
+ENT.Type = "anim"
+ENT.PrintName = "Weapon Spawner (simple)"
+ENT.WireDebugName = "Weapon Spawner (simple)"
+ENT.Author = "Lex Robinson"
+ENT.Contact = "lexi@lexi.org.uk"
+ENT.Purpose = "Spawn weapons for survival maps"
+ENT.Category = "Fun + Games"
+ENT.Spawnable = true
+ENT.AdminOnly = true
+ENT.Editable = true
 
-DEFINE_BASECLASS "base_lexentity";
+DEFINE_BASECLASS "base_lexentity"
 
-duplicator.Allow("sent_weapons_store_simple");
+duplicator.Allow("sent_weapons_store_simple")
 
 ENT._NWVars = {
 	{
@@ -58,32 +58,32 @@ ENT._NWVars = {
 }
 
 if (CLIENT) then
-	return;
+	return
 end
 
 function ENT:Initialize()
 	if (BaseClass.Initialize) then
-		BaseClass.Initialize(self);
+		BaseClass.Initialize(self)
 	end
 
-	self.NextSpawn = 0;
-	self.CurrentWeapon = NULL;
+	self.NextSpawn = 0
+	self.CurrentWeapon = NULL
 
-	self:SetModel("models/props_c17/streetsign004e.mdl");
-	self:PhysicsInit(SOLID_VPHYSICS);
-	local phys = self:GetPhysicsObject();
+	self:SetModel("models/props_c17/streetsign004e.mdl")
+	self:PhysicsInit(SOLID_VPHYSICS)
+	local phys = self:GetPhysicsObject()
 	if (not IsValid(phys)) then
 		ErrorNoHalt(
 			"No physics object for ", tostring(self), " using model ", self:GetModel(),
 			"?\n"
-		);
+		)
 	else
-		phys:Wake();
-		phys:EnableMotion(self:GetUnfrozen());
+		phys:Wake()
+		phys:EnableMotion(self:GetUnfrozen())
 	end
 
 	-- Deal with stupid permaprop style libraries
-	self:SetNumSpawned(0);
+	self:SetNumSpawned(0)
 
 	self:CreateWireInputs(
 		{
@@ -96,7 +96,7 @@ function ENT:Initialize()
 			},
 			{Name = "SetDelay", Desc = "Sets the delay between spawns"},
 		}
-	);
+	)
 
 	self:CreateWireOutputs(
 		{
@@ -114,65 +114,65 @@ end
 function ENT:RegisterListeners()
 	self:NetworkVarNotify(
 		"Invisible", function(self, _, _, shouldNotDraw)
-			self:SetNoDraw(shouldNotDraw);
+			self:SetNoDraw(shouldNotDraw)
 		end
-	);
+	)
 
 	self:NetworkVarNotify(
 		"Unfrozen", function(self, _, _, shouldMove)
-			local phys = self:GetPhysicsObject();
+			local phys = self:GetPhysicsObject()
 			if (IsValid(phys)) then
-				phys:EnableMotion(shouldMove);
+				phys:EnableMotion(shouldMove)
 			end
 		end
-	);
+	)
 
 	self:NetworkVarNotify(
 		"Weapon", function(self, _, old, new)
 			if (new ~= old) then
-				self:RemoveWeapon(true);
+				self:RemoveWeapon(true)
 			end
 		end
-	);
+	)
 
 	if (WireLib) then
 		self:NetworkVarNotify(
 			"NumSpawned", function(self, _, _, num)
-				self:TriggerWireOutput("NumSpawned", num);
+				self:TriggerWireOutput("NumSpawned", num)
 			end
-		);
+		)
 	end
 end
 
 function ENT:Think()
 	if (BaseClass.Think) then
-		BaseClass.Think(self);
+		BaseClass.Think(self)
 	end
 
 	-- Crude pickup detection
 	if (IsValid(self.CurrentWeapon)) then
 		if (not IsValid(self.CurrentWeapon:GetOwner())) then
-			return;
+			return
 		end
 
-		self:RemoveWeapon(false);
+		self:RemoveWeapon(false)
 	end
 	-- one-shot platforms
 	if (self:GetSpawnOnce() and self:GetNumSpawned() > 0) then
-		return;
+		return
 	end
 	-- Delays
 	if (self.NextSpawn > CurTime()) then
-		return;
+		return
 	end
 
-	self:SpawnWeapon();
+	self:SpawnWeapon()
 end
 
-local onremovekey = "weapon platform sanity";
+local onremovekey = "weapon platform sanity"
 local function onWepRemoved(wep, platform)
 	if (IsValid(platform) and platform.CurrentWeapon == wep) then
-		platform:RemoveWeapon(false);
+		platform:RemoveWeapon(false)
 	end
 end
 
@@ -180,33 +180,33 @@ end
 -- Spawn a new weapon into the world
 function ENT:SpawnWeapon()
 	-- Validation
-	local weapon = self:GetWeapon();
+	local weapon = self:GetWeapon()
 	if (not weapon or weapon == "") then
-		return;
+		return
 	end
 
-	local ent = ents.Create(weapon);
+	local ent = ents.Create(weapon)
 	if (not IsValid(ent)) then
-		ErrorNoHalt("Attempted to create weapon of unknown class '", weapon, "'!");
-		self.NextSpawn = CurTime() + 10;
-		return;
+		ErrorNoHalt("Attempted to create weapon of unknown class '", weapon, "'!")
+		self.NextSpawn = CurTime() + 10
+		return
 	end
-	ent:SetPos(self:GetPos() + self:GetRight() * -20);
-	ent:SetAngles(self:GetAngles());
-	ent:SetParent(self);
-	self:DeleteOnRemove(ent);
-	ent:CallOnRemove(onremovekey, onWepRemoved, self);
-	ent:Spawn();
-	ent:Activate();
+	ent:SetPos(self:GetPos() + self:GetRight() * -20)
+	ent:SetAngles(self:GetAngles())
+	ent:SetParent(self)
+	self:DeleteOnRemove(ent)
+	ent:CallOnRemove(onremovekey, onWepRemoved, self)
+	ent:Spawn()
+	ent:Activate()
 
-	self.CurrentWeapon = ent;
+	self.CurrentWeapon = ent
 
-	self:SetNumSpawned(self:GetNumSpawned() + 1);
+	self:SetNumSpawned(self:GetNumSpawned() + 1)
 
-	self:TriggerOutput("spawned", self);
-	self:TriggerWireOutput("CurrentWeapon", ent);
-	self:TriggerWireOutput("OnWeaponSpawned", 1);
-	self:TriggerWireOutput("OnWeaponSpawned", 0);
+	self:TriggerOutput("spawned", self)
+	self:TriggerWireOutput("CurrentWeapon", ent)
+	self:TriggerWireOutput("OnWeaponSpawned", 1)
+	self:TriggerWireOutput("OnWeaponSpawned", 0)
 end
 
 ---
@@ -215,77 +215,77 @@ end
 function ENT:RemoveWeapon(dontUpdateDelay)
 	if (IsValid(self.CurrentWeapon)) then
 		if (not IsValid(self.CurrentWeapon:GetOwner())) then
-			self.CurrentWeapon:Remove();
+			self.CurrentWeapon:Remove()
 		else
-			self:DontDeleteOnRemove(self.CurrentWeapon);
+			self:DontDeleteOnRemove(self.CurrentWeapon)
 			self.CurrentWeapon:RemoveCallOnRemove(onremovekey)
-			self.CurrentWeapon = NULL;
+			self.CurrentWeapon = NULL
 		end
 	end
 
 	if (not dontUpdateDelay) then
-		self.NextSpawn = CurTime() + self:GetDelay();
+		self.NextSpawn = CurTime() + self:GetDelay()
 	end
 end
 
 function ENT:TriggerInput(name, val)
 	if (BaseClass.TriggerInput) then
-		BaseClass.TriggerInput(self, name, val);
+		BaseClass.TriggerInput(self, name, val)
 	end
 
 	if (name == "SpawnOne" and val ~= 0) then
-		self:RemoveWeapon();
-		self:SpawnWeapon();
+		self:RemoveWeapon()
+		self:SpawnWeapon()
 	elseif (name == "RemoveCurrentWeapon" and val ~= 0) then
-		self:RemoveWeapon();
+		self:RemoveWeapon()
 	elseif (name == "SetWeaponClass" and val ~= "") then
-		self:SetWeapon(val);
+		self:SetWeapon(val)
 	elseif (name == "SetDelay" and val >= 0) then
-		self:SetDelay(val);
+		self:SetDelay(val)
 	end
 end
 
 function ENT:AcceptInput(input, activator, called, data)
 	if (BaseClass.AcceptInput) then
-		BaseClass.AcceptInput(self, input, activator, called, data);
+		BaseClass.AcceptInput(self, input, activator, called, data)
 	end
-	input = input:lower();
+	input = input:lower()
 
 	if (input == "spawn") then
-		self:RemoveWeapon();
-		self:SpawnWeapon();
+		self:RemoveWeapon()
+		self:SpawnWeapon()
 	elseif (input == "killweapon") then
-		self:RemoveWeapon();
+		self:RemoveWeapon()
 	end
 end
 
 function ENT:OnDuplicated(entTable)
 	if (BaseClass.OnDuplicated) then
-		BaseClass.OnDuplicated(self, entTable);
+		BaseClass.OnDuplicated(self, entTable)
 	end
 	-- Reset lifetime vars
-	self:SetNumSpawned(0);
-	self.NextSpawn = 0;
-	self.CurrentWeapon = NULL;
+	self:SetNumSpawned(0)
+	self.NextSpawn = 0
+	self.CurrentWeapon = NULL
 end
 
 function ENT:SpawnFunction(ply, tr)
 	if (not tr.Hit) then
 		return
 	end
-	local ent = ents.Create(self.ClassName);
-	ent:SetPos(tr.HitPos);
-	local a = tr.HitNormal:Angle();
-	a.roll = a.roll + 90;
-	a.pitch = a.pitch + 90;
-	ent:SetAngles(a);
-	ent:Spawn();
-	ent:Activate();
+	local ent = ents.Create(self.ClassName)
+	ent:SetPos(tr.HitPos)
+	local a = tr.HitNormal:Angle()
+	a.roll = a.roll + 90
+	a.pitch = a.pitch + 90
+	ent:SetAngles(a)
+	ent:Spawn()
+	ent:Activate()
 	-- Attempt to move the object so it sits flush
 	local vFlushPoint = tr.HitPos - (tr.HitNormal * 512) -- Find a point that is definitely out of the object in the direction of the floor
 	vFlushPoint = ent:NearestPoint(vFlushPoint) -- Find the nearest point inside the object to that point
 	vFlushPoint = ent:GetPos() - vFlushPoint -- Get the difference
 	vFlushPoint = tr.HitPos + vFlushPoint -- Add it to our target pos
-	ent:SetPos(vFlushPoint);
-	return ent;
+	ent:SetPos(vFlushPoint)
+	return ent
 end

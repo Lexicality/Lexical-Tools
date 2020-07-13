@@ -14,7 +14,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]] --
-DEFINE_BASECLASS(ENT.Base);
+DEFINE_BASECLASS(ENT.Base)
 
 local weaponsets = {
 	weapon_rebel = {"weapon_pistol", "weapon_smg1", "weapon_ar2", "weapon_shotgun"},
@@ -24,7 +24,7 @@ local weaponsets = {
 		"weapon_citizensuitcase",
 		"weapon_none",
 	},
-};
+}
 
 --
 -- gmod v14.04.19
@@ -179,35 +179,35 @@ end
 local function legacySpawn(
 	player, position, normal, class, weapon, angles, offset
 )
-	local npc = ents.Create(class);
+	local npc = ents.Create(class)
 	if (not IsValid(npc)) then
-		return nil;
+		return nil
 	end
-	npc:SetPos(position + normal * offset);
-	npc:SetAngles(angles);
+	npc:SetPos(position + normal * offset)
+	npc:SetAngles(angles)
 	if (weapon and weapon ~= "none") then
-		npc:SetKeyValue("additionalequipment", weapon);
+		npc:SetKeyValue("additionalequipment", weapon)
 	end
-	npc:Spawn();
-	npc:Activate();
-	return npc;
+	npc:Spawn()
+	npc:Activate()
+	return npc
 end
 
 local function rand()
-	return math.random() * 2 - 1;
+	return math.random() * 2 - 1
 end
 
 local function onremove(npc, platform)
-	npcspawner.debug2("onremove", npc, platform);
+	npcspawner.debug2("onremove", npc, platform)
 	if (IsValid(platform)) then
-		platform:NPCKilled(npc);
+		platform:NPCKilled(npc)
 	end
 end
 
 function ENT:CheckOrientation()
-	local _, data = self:GetSpawnClass();
+	local _, data = self:GetSpawnClass()
 	if (data) then
-		local normal = self:GetSpawnNormal();
+		local normal = self:GetSpawnNormal()
 
 		if (data.OnCeiling and Vector(0, 0, -1):Dot(normal) < 0.95) then
 			return false
@@ -219,15 +219,15 @@ function ENT:CheckOrientation()
 end
 
 function ENT:GetSpawnClass()
-	local class = self:GetNPC();
+	local class = self:GetNPC()
 
 	if (npcspawner.legacy[class]) then
-		class = npcspawner.legacy[class];
+		class = npcspawner.legacy[class]
 	end
 
-	local npcdata = list.Get("NPC")[class];
+	local npcdata = list.Get("NPC")[class]
 	if (not npcdata and npcspawner.config.sanity == 1) then
-		self:TurnOff();
+		self:TurnOff()
 		error(
 			string.format(
 				"%s just tried to spawn NPC %q which is not on the NPC list!", self, class
@@ -235,183 +235,183 @@ function ENT:GetSpawnClass()
 		)
 	end
 
-	return class, npcdata;
+	return class, npcdata
 end
 
 function ENT:GetSpawnWeapon(npcdata)
-	local weapon = self:GetNPCWeapon();
+	local weapon = self:GetNPCWeapon()
 	if (weapon == "weapon_none" or weapon == "none") then
-		weapon = nil;
+		weapon = nil
 	elseif (weaponsets[weapon]) then
-		weapon = table.Random(weaponsets[weapon]);
+		weapon = table.Random(weaponsets[weapon])
 	elseif (npcdata and npcdata.Weapons and
 		(not weapon or weapon == "" or weapon == "weapon_default")) then
-		weapon = table.Random(npcdata.Weapons);
+		weapon = table.Random(npcdata.Weapons)
 	end
 
-	return weapon;
+	return weapon
 end
 
 function ENT:GetSpawnNormal()
-	return self:GetRight() * -1;
+	return self:GetRight() * -1
 end
 
 function ENT:GetSpawnLocation()
-	local x, y, z = self:GetUp(), self:GetForward(), self:GetRight();
+	local x, y, z = self:GetUp(), self:GetForward(), self:GetRight()
 
-	local position = (x * rand() + y * rand()) * self:GetSpawnRadius();
+	local position = (x * rand() + y * rand()) * self:GetSpawnRadius()
 	-- Face the NPC away from the centre of the platform
 	local angles = Angle(0, position:Angle().y, 0)
-	local offset = self:GetSpawnHeight();
+	local offset = self:GetSpawnHeight()
 
-	npcspawner.debug2("Offset:", position);
-	npcspawner.debug2("Angles:", angles);
-	npcspawner.debug2("Height:", offset);
+	npcspawner.debug2("Offset:", position)
+	npcspawner.debug2("Angles:", angles)
+	npcspawner.debug2("Height:", offset)
 
-	position = self:GetPos() + position;
+	position = self:GetPos() + position
 
-	return position, angles, offset;
+	return position, angles, offset
 end
 
 function ENT:ConfigureNPCSquad(npc)
-	local squad;
+	local squad
 	if (self:GetCustomSquad()) then
-		squad = "squad" .. self:GetSquadOverride();
+		squad = "squad" .. self:GetSquadOverride()
 	else
-		squad = tostring(self);
+		squad = tostring(self)
 	end
 
-	npcspawner.debug2("Squad:", squad);
-	npc:SetKeyValue("squadname", squad);
+	npcspawner.debug2("Squad:", squad)
+	npc:SetKeyValue("squadname", squad)
 end
 
 function ENT:ConfigureNPCHealth(npc)
-	local hp = npc:GetMaxHealth();
-	local chp = npc:Health();
+	local hp = npc:GetMaxHealth()
+	local chp = npc:Health()
 	-- Bug with nextbots
 	if (chp > hp) then
-		hp = chp;
+		hp = chp
 	end
-	hp = hp * self:GetNPCHealthMultiplier();
-	npcspawner.debug2("Health:", hp);
-	npc:SetMaxHealth(hp);
-	npc:SetHealth(hp);
+	hp = hp * self:GetNPCHealthMultiplier()
+	npcspawner.debug2("Health:", hp)
+	npc:SetMaxHealth(hp)
+	npc:SetHealth(hp)
 end
 
 function ENT:ConfigureNPCWeapons(npc)
 	if (npc.SetCurrentWeaponProficiency) then
-		npc:SetCurrentWeaponProficiency(self:GetNPCSkillLevel());
+		npc:SetCurrentWeaponProficiency(self:GetNPCSkillLevel())
 	end
 end
 
 function ENT:ConfigureNPCCollisions(npc)
 	if (self:GetNoCollideNPCs()) then
-		npcspawner.debug2("Nocollided.");
+		npcspawner.debug2("Nocollided.")
 		-- Collide with everything except interactive debris or debris
-		npc:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE_DEBRIS);
+		npc:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE_DEBRIS)
 	end
 end
 
 function ENT:ConfigureNPCOwnership(npc)
-	npc:CallOnRemove("NPCSpawnPlatform", onremove, self);
-	self.NPCs[npc] = npc;
+	npc:CallOnRemove("NPCSpawnPlatform", onremove, self)
+	self.NPCs[npc] = npc
 	duplicator.StoreEntityModifier(
 		npc, self.__MODIFIER_ID,
 		{id = self:GetCreationID(), myid = npc:GetCreationID()}
-	);
+	)
 end
 
 function ENT:ConfigureNPCValue(npc)
-	local value = self:GetRPValue();
+	local value = self:GetRPValue()
 	if (value == -1) then
-		return;
+		return
 	end
 
-	npc.KillValue = value;
+	npc.KillValue = value
 	-- Vrondakis' Leveling System
 	if (_G["LevelSystemConfiguration"]) then
-		npc.GiveXP = value;
+		npc.GiveXP = value
 	end
 end
 
 function ENT:SpawnOne()
-	local class, npcdata = self:GetSpawnClass();
-	local weapon = self:GetSpawnWeapon(npcdata);
+	local class, npcdata = self:GetSpawnClass()
+	local weapon = self:GetSpawnWeapon(npcdata)
 
-	local ply = self:GetPlayer();
+	local ply = self:GetPlayer()
 	if (npcspawner.config.callhooks == 1 and IsValid(ply)) then
 		if (not gamemode.Call("PlayerSpawnNPC", ply, class, weapon)) then
-			self.LastSpawn = CurTime() + 5; -- Disable spawning for 5 seconds so the user isn't spammed
-			npcspawner.debug(ply, "has failed the PlayerSpawnNPC hook.");
-			return false;
+			self.LastSpawn = CurTime() + 5 -- Disable spawning for 5 seconds so the user isn't spammed
+			npcspawner.debug(ply, "has failed the PlayerSpawnNPC hook.")
+			return false
 		elseif (npcdata and npcdata.AdminOnly and not ply:IsAdmin()) then
-			ply:ChatPrint("You may not spawn this NPC!");
-			self:TurnOff();
-			return false;
+			ply:ChatPrint("You may not spawn this NPC!")
+			self:TurnOff()
+			return false
 		end
 
 	end
 
-	npcspawner.debug(self, "is spawning a", class, "with a", weapon);
+	npcspawner.debug(self, "is spawning a", class, "with a", weapon)
 
-	local position, angles, offset = self:GetSpawnLocation();
-	local normal = self:GetSpawnNormal();
+	local position, angles, offset = self:GetSpawnLocation()
+	local normal = self:GetSpawnNormal()
 
-	debugoverlay.Line(self:GetPos(), position, 10, color_white, true);
-	debugoverlay.Axis(position, angles, 10, 10, true);
+	debugoverlay.Line(self:GetPos(), position, 10, color_white, true)
+	debugoverlay.Axis(position, angles, 10, 10, true)
 	debugoverlay.Line(
 		position, position + normal * offset, 10, Color(255, 255, 0), true
-	);
+	)
 
-	local npc;
+	local npc
 	if (npcdata) then
-		npc = InternalSpawnNPC(ply, position, normal, class, weapon, angles, offset);
+		npc = InternalSpawnNPC(ply, position, normal, class, weapon, angles, offset)
 	else
-		npc = legacySpawn(ply, position, normal, class, weapon, angles, offset);
+		npc = legacySpawn(ply, position, normal, class, weapon, angles, offset)
 	end
 
 	if (not IsValid(npc)) then
-		self:TurnOff();
-		error("Failed to create a NPC of type '" .. class .. "'!");
+		self:TurnOff()
+		error("Failed to create a NPC of type '" .. class .. "'!")
 	end
 
-	npcspawner.debug2("NPC Entity:", npc);
-	debugoverlay.Cross(npc:GetPos(), 10, 10, color_white, true);
-	debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(255, 0, 0), true);
+	npcspawner.debug2("NPC Entity:", npc)
+	debugoverlay.Cross(npc:GetPos(), 10, 10, color_white, true)
+	debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(255, 0, 0), true)
 	timer.Simple(
 		0.1, function()
 			if (IsValid(npc)) then
-				debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(0, 255, 0), true);
+				debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(0, 255, 0), true)
 			end
 		end
 	)
 
-	self:ConfigureNPCSquad(npc);
-	self:ConfigureNPCHealth(npc);
-	self:ConfigureNPCWeapons(npc);
-	self:ConfigureNPCCollisions(npc);
-	self:ConfigureNPCOwnership(npc);
-	self:ConfigureNPCValue(npc);
+	self:ConfigureNPCSquad(npc)
+	self:ConfigureNPCHealth(npc)
+	self:ConfigureNPCWeapons(npc)
+	self:ConfigureNPCCollisions(npc)
+	self:ConfigureNPCOwnership(npc)
+	self:ConfigureNPCValue(npc)
 
-	self.Spawned = self.Spawned + 1;
-	self:TriggerWireOutput("ActiveNPCs", self.Spawned);
+	self.Spawned = self.Spawned + 1
+	self:TriggerWireOutput("ActiveNPCs", self.Spawned)
 
-	self.TotalSpawned = self.TotalSpawned + 1;
-	self:TriggerWireOutput("TotalNPCsSpawned", self.TotalSpawned);
+	self.TotalSpawned = self.TotalSpawned + 1
+	self:TriggerWireOutput("TotalNPCsSpawned", self.TotalSpawned)
 
-	self.LastSpawn = CurTime();
+	self.LastSpawn = CurTime()
 
-	self:TriggerWireOutput("LastNPCSpawned", npc);
+	self:TriggerWireOutput("LastNPCSpawned", npc)
 
-	self:TriggerOutput("OnNPCSpawned", self);
-	self:TriggerWireOutput("OnNPCSpawned", 1);
-	self:TriggerWireOutput("OnNPCSpawned", 0);
+	self:TriggerOutput("OnNPCSpawned", self)
+	self:TriggerWireOutput("OnNPCSpawned", 1)
+	self:TriggerWireOutput("OnNPCSpawned", 0)
 
 	if (npcspawner.config.callhooks == 1) then
 		if (IsValid(ply)) then
-			gamemode.Call("PlayerSpawnedNPC", ply, npc);
+			gamemode.Call("PlayerSpawnedNPC", ply, npc)
 			if (_G["CPPI"]) then
-				npc:CPPISetOwner(ply);
+				npc:CPPISetOwner(ply)
 			end
 		end
 	end
@@ -420,21 +420,21 @@ function ENT:SpawnOne()
 		npcspawner.debug(
 			self.TotalSpawned .. " NPCs spawned, decreasing delay (" ..
 				self:GetSpawnDelay() .. ") by " .. self:GetDelayDecrease()
-		);
+		)
 		self:SetSpawnDelay(
 			math.max(
 				self:GetSpawnDelay() - self:GetDelayDecrease(), npcspawner.config.mindelay
 			)
-		);
+		)
 	end
 
 	if (self.TotalSpawned == self:GetMaxNPCsTotal()) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point, shit works.
 		npcspawner.debug(
 			"totallimit (" .. self:GetMaxNPCsTotal() .. ") hit. Turning off."
-		);
-		self:TriggerOutput("OnLimitReached", self);
-		self:TurnOff();
+		)
+		self:TriggerOutput("OnLimitReached", self)
+		self:TurnOff()
 	end
 
-	return true;
+	return true
 end

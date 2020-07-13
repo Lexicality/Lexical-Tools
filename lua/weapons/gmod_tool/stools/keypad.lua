@@ -14,8 +14,8 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-TOOL.Category = "Lexical Tools";
-TOOL.Name = "Keypad v2";
+TOOL.Category = "Lexical Tools"
+TOOL.Name = "Keypad v2"
 
 local kvs = {
 	password = "",
@@ -45,74 +45,74 @@ local kvs = {
 }
 
 for key, default in pairs(kvs) do
-	TOOL.ClientConVar[key] = default;
+	TOOL.ClientConVar[key] = default
 end
-TOOL.ClientConVar["freeze"] = 1;
-TOOL.ClientConVar["weld"] = 0;
+TOOL.ClientConVar["freeze"] = 1
+TOOL.ClientConVar["weld"] = 0
 
-cleanup.Register("keypads");
+cleanup.Register("keypads")
 
 if (CLIENT) then
-	language.Add("tool.keypad.name", "Keypad v2");
-	language.Add("tool.keypad.desc", "Secure your contraptions with a password");
+	language.Add("tool.keypad.name", "Keypad v2")
+	language.Add("tool.keypad.desc", "Secure your contraptions with a password")
 	language.Add(
 		"tool.keypad.0",
 		"Left click to spawn a Keypad. Right click to update an existing one"
-	);
+	)
 
-	language.Add("Undone_Keypad", "Undone Keypad");
-	language.Add("Cleanup_keypads", "Keypads");
-	language.Add("Cleaned_keypads", "Cleaned up all keypads");
+	language.Add("Undone_Keypad", "Undone Keypad")
+	language.Add("Cleanup_keypads", "Keypads")
+	language.Add("Cleaned_keypads", "Cleaned up all keypads")
 
-	language.Add("SBoxLimit_keypads", "You've hit the keypad limit!");
+	language.Add("SBoxLimit_keypads", "You've hit the keypad limit!")
 end
 
 function TOOL:CheckSettings()
-	local ply = self:GetOwner();
+	local ply = self:GetOwner()
 	-- Check they haven't done something silly with the password
-	local password = self:GetClientInfo("password");
-	local matches, len = string.find(password, "^[1-9]+$");
+	local password = self:GetClientInfo("password")
+	local matches, len = string.find(password, "^[1-9]+$")
 	if (password ~= "" and (not matches or len > 8)) then
-		ply:ChatPrint("Invalid keypad password!");
-		return false;
+		ply:ChatPrint("Invalid keypad password!")
+		return false
 	end
 	-- Make sure all the convars are numbers
 	for key in pairs(kvs) do
-		local num = self:GetClientNumber(key);
+		local num = self:GetClientNumber(key)
 		if (not num) then
 			ply:ChatPrint(
 				"Convar " .. key .. " value '" .. self:GetClientInfo(key) ..
 					"' isn't a number! What did you do?"
-			);
-			return false;
+			)
+			return false
 		end
 	end
 	-- Some people are silly
 	local k1, k2 = self:GetClientNumber("access_numpad_key"),
-               	self:GetClientNumber("denied_numpad_key");
+               	self:GetClientNumber("denied_numpad_key")
 	if (k1 and k2 and k1 == k2 and k1 > 0) then
-		ply:ChatPrint("Your Access key is the same as your Denied key!");
-		return false;
+		ply:ChatPrint("Your Access key is the same as your Denied key!")
+		return false
 	end
-	return true;
+	return true
 end
 
 function TOOL:LeftClick(tr)
 	if (IsValid(tr.Entity) and tr.Entity:IsPlayer()) then
-		return false;
+		return false
 	elseif (CLIENT) then
-		return true;
+		return true
 	elseif (not self:CheckSettings()) then
-		return false;
+		return false
 	end
 	local kv = {}
 	for key, def in pairs(kvs) do
-		local num = self:GetClientInfo(key);
+		local num = self:GetClientInfo(key)
 		if (num and num ~= def) then
-			kv[key] = num;
+			kv[key] = num
 		end
 	end
-	local owner = self:GetOwner();
+	local owner = self:GetOwner()
 	local ent = duplicator.CreateEntityFromTable(
 		owner, {
 			Pos = tr.HitPos + tr.HitNormal,
@@ -120,70 +120,70 @@ function TOOL:LeftClick(tr)
 			kvs = kv,
 			Class = "keypad",
 		}
-	);
+	)
 	if (not IsValid(ent)) then
-		return false;
+		return false
 	end
-	DoPropSpawnedEffect(ent);
+	DoPropSpawnedEffect(ent)
 
 	if (tobool(self:GetClientNumber("freeze"))) then
-		ent:GetPhysicsObject():EnableMotion(false);
+		ent:GetPhysicsObject():EnableMotion(false)
 	end
-	local weld;
+	local weld
 	if (tobool(self:GetClientNumber("weld")) and tr.Hit) then
-		local target = tr.Entity;
-		weld = constraint.Weld(ent, target, 0, tr.PhysicsBone);
+		local target = tr.Entity
+		weld = constraint.Weld(ent, target, 0, tr.PhysicsBone)
 		if (not tr.HitWorld) then
-			target:DeleteOnRemove(ent);
-			target:DeleteOnRemove(weld);
+			target:DeleteOnRemove(ent)
+			target:DeleteOnRemove(weld)
 		end
-		ent:DeleteOnRemove(weld);
+		ent:DeleteOnRemove(weld)
 	end
 
-	undo.Create("Keypad");
-	undo.SetPlayer(owner);
-	undo.AddEntity(ent);
-	undo.AddEntity(weld);
-	undo.Finish();
+	undo.Create("Keypad")
+	undo.SetPlayer(owner)
+	undo.AddEntity(ent)
+	undo.AddEntity(weld)
+	undo.Finish()
 
-	owner:AddCleanup("keypads", ent);
+	owner:AddCleanup("keypads", ent)
 
-	return true;
+	return true
 end
 
 function TOOL:RightClick(tr)
-	local ent = tr.Entity;
+	local ent = tr.Entity
 	if (not (IsValid(ent) and ent:GetClass() == "keypad")) then
-		return false;
+		return false
 	elseif (CLIENT) then
-		return true;
+		return true
 	elseif (not self:CheckSettings()) then
-		return false;
+		return false
 	end
 
 	for key in pairs(kvs) do
-		ent:SetKeyValue(key, self:GetClientInfo(key));
+		ent:SetKeyValue(key, self:GetClientInfo(key))
 	end
 
-	return true;
+	return true
 end
 
 if (SERVER) then
-	return;
+	return
 end
 
 local function c(name)
-	return "keypad_" .. name;
+	return "keypad_" .. name
 end
 
 local function subpanel(CPanel, kind, data)
 	local function k(name)
-		return c(kind .. "_" .. name);
+		return c(kind .. "_" .. name)
 	end
-	local CPanel = CPanel:AddControl("ControlPanel", data);
-	CPanel:AddControl("Numpad", {Label = "Key", Command = k "numpad_key"});
+	local CPanel = CPanel:AddControl("ControlPanel", data)
+	CPanel:AddControl("Numpad", {Label = "Key", Command = k "numpad_key"})
 
-	CPanel:NumSlider("Key Hold Length", k "rep_length", 0, 20, 1);
+	CPanel:NumSlider("Key Hold Length", k "rep_length", 0, 20, 1)
 
 	CPanel:AddControl(
 		"MinimumValueLabel", {
@@ -191,50 +191,50 @@ local function subpanel(CPanel, kind, data)
 			CVar = k "rep_length",
 			Minimum = "keypad_min_length",
 		}
-	);
+	)
 	-- HACK: Make this right up against the previous item
-	CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0);
+	CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0)
 
 	if (WireLib) then
-		CPanel:TextEntry("Wire Output Value", k "wire_value_on"):SetNumeric(true);
+		CPanel:TextEntry("Wire Output Value", k "wire_value_on"):SetNumeric(true)
 	end
 	do
 		local CPanel = CPanel:AddControl(
 			"ControlPanel", {Label = "Advanced", Closed = true}
-		);
+		)
 		if (WireLib) then
-			CPanel:TextEntry("Wire Default Value", k "wire_value_off"):SetNumeric(true);
-			CPanel:CheckBox("Toggle Wire Output", k "wire_toggle");
+			CPanel:TextEntry("Wire Default Value", k "wire_value_off"):SetNumeric(true)
+			CPanel:CheckBox("Toggle Wire Output", k "wire_toggle")
 		end
-		CPanel:NumSlider("Initial Delay", k "initial_delay", 0, 10, 1);
-		CPanel:NumSlider("Repititions", k "repetitions", 1, 5, 0);
-		CPanel:NumSlider("Delay between repititions", k "rep_delay", 0, 10, 1);
+		CPanel:NumSlider("Initial Delay", k "initial_delay", 0, 10, 1)
+		CPanel:NumSlider("Repititions", k "repetitions", 1, 5, 0)
+		CPanel:NumSlider("Delay between repititions", k "rep_delay", 0, 10, 1)
 	end
 end
 
 function TOOL.BuildCPanel(CPanel)
-	local p = CPanel:TextEntry("Password", c "password");
+	local p = CPanel:TextEntry("Password", c "password")
 	function p:AllowInput(value)
 		-- Only allow numbers
-		local n = tonumber(value);
+		local n = tonumber(value)
 		if (not n or n == 0) then
-			return true;
+			return true
 		end
 		-- Only allow 8 characters
 		if (string.len(self:GetText() .. value) > 8) then
-			return true;
+			return true
 		end
 
-		return nil;
+		return nil
 	end
-	CPanel:AddControl("KeypadPasswordNag", {});
+	CPanel:AddControl("KeypadPasswordNag", {})
 	-- HACK: Make this right up against the previous item
-	CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0);
+	CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0)
 
-	CPanel:CheckBox("Secure Mode", c "secure");
-	CPanel:CheckBox("Weld Keypad", c "weld");
-	CPanel:CheckBox("Freeze Keypad", c "freeze");
+	CPanel:CheckBox("Secure Mode", c "secure")
+	CPanel:CheckBox("Weld Keypad", c "weld")
+	CPanel:CheckBox("Freeze Keypad", c "freeze")
 
-	subpanel(CPanel, "access", {Label = "Access Granted"});
-	subpanel(CPanel, "denied", {Label = "Access Denied", Closed = true});
+	subpanel(CPanel, "access", {Label = "Access Granted"})
+	subpanel(CPanel, "denied", {Label = "Access Denied", Closed = true})
 end

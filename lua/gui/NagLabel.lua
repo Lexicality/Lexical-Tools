@@ -14,33 +14,33 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-local PANEL = {};
+local PANEL = {}
 
 Derma_Install_Better_Convar_Functions(PANEL)
 
 function PANEL:Init()
-	self:SetHighlight(true);
+	self:SetHighlight(true)
 end
 
 function PANEL:DoText(value)
 	if (value ~= "") then
-		self:SetHeight(20);
-		self:SetText(value);
+		self:SetHeight(20)
+		self:SetText(value)
 	else
-		self:SetHeight(0);
+		self:SetHeight(0)
 	end
 end
 
 function PANEL:ControlValues(data)
 	if (data.cvars) then
-		self:SetConVars(data.cvars);
+		self:SetConVars(data.cvars)
 	end
 end
 
 function PANEL:OnRemove()
-	self:NukeConVars();
+	self:NukeConVars()
 end
 
 derma.DefineControl(
 	"NagLabel", "A label for displaying dire news on cvar changes", PANEL, "DLabel"
-);
+)

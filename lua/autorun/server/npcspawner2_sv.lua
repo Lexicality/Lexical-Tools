@@ -14,55 +14,55 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]] --
-AddCSLuaFile("autorun/npcspawner2.lua");
-AddCSLuaFile("autorun/client/npcspawner2_cl.lua");
+AddCSLuaFile("autorun/npcspawner2.lua")
+AddCSLuaFile("autorun/client/npcspawner2_cl.lua")
 
 local datapath = "npcspawner2"
 if (file.IsDir(datapath, "DATA")) then
 	local function readfile(fname)
-		fname = datapath .. "/" .. fname .. ".txt";
+		fname = datapath .. "/" .. fname .. ".txt"
 		if (file.Exists(fname, "DATA")) then
-			local data = util.JSONToTable(file.Read(fname, "DATA"));
+			local data = util.JSONToTable(file.Read(fname, "DATA"))
 			if (data and table.Count(data) > 0) then
-				return data;
+				return data
 			end
 		end
 	end
-	local cfg = readfile("config");
+	local cfg = readfile("config")
 	if (cfg) then
 		for key, value in pairs(cfg) do
-			value = tonumber(value);
+			value = tonumber(value)
 			if (value) then
-				npcspawner.config[key] = value;
+				npcspawner.config[key] = value
 			end
 		end
 	end
 end
 local function writefile(fname, table)
 	if (not file.IsDir(datapath, "DATA")) then
-		file.CreateDir(datapath, "DATA");
+		file.CreateDir(datapath, "DATA")
 	end
-	fname = datapath .. "/" .. fname .. ".txt";
-	file.Write(fname, util.TableToJSON(table));
+	fname = datapath .. "/" .. fname .. ".txt"
+	file.Write(fname, util.TableToJSON(table))
 end
 
-util.AddNetworkString("NPCSpawner Config");
+util.AddNetworkString("NPCSpawner Config")
 
 for k, v in pairs(npcspawner.config) do
-	npcspawner.config[k] = tonumber(v);
+	npcspawner.config[k] = tonumber(v)
 end
 
 local function syncConfig(whomst)
-	npcspawner.send("NPCSpawner Config", npcspawner.config, whomst);
+	npcspawner.send("NPCSpawner Config", npcspawner.config, whomst)
 end
 
 concommand.Add(
 	"npcspawner_config", function(ply, _, args)
 		if (IsValid(ply) and not ply:IsAdmin()) then
-			return;
+			return
 		end
 
-		local name, value = args[1], tonumber(args[2]);
+		local name, value = args[1], tonumber(args[2])
 		if (not value) then
 			local msg = string.format("%q is not a valid value for %s!", args[2], name)
 			if (IsValid(ply)) then
@@ -73,15 +73,15 @@ concommand.Add(
 			return
 		end
 
-		npcspawner.config[name] = value;
-		writefile("config", npcspawner.config);
-		syncConfig();
+		npcspawner.config[name] = value
+		writefile("config", npcspawner.config)
+		syncConfig()
 	end
-);
+)
 
-hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", syncConfig);
+hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", syncConfig)
 
 if (not ConVarExists("sbox_maxspawnplatforms")) then
-	CreateConVar("sbox_maxspawnplatforms", 3);
+	CreateConVar("sbox_maxspawnplatforms", 3)
 end
-cleanup.Register("sent_spawnplatform");
+cleanup.Register("sent_spawnplatform")

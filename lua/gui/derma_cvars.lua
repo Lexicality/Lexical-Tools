@@ -15,42 +15,42 @@
 	limitations under the License.
 ]] --
 function Derma_Install_Better_Convar_Functions(PANEL)
-	AccessorFunc(PANEL, "m_tCvars", "ConVars");
-	PANEL.m_tCvars = {};
+	AccessorFunc(PANEL, "m_tCvars", "ConVars")
+	PANEL.m_tCvars = {}
 
 	function PANEL:OnConVarChange(...)
-		error("Abstract Method");
+		error("Abstract Method")
 	end
 
 	function PANEL:HandleCVarChange()
 		local values = {}
 		for _, cvar in pairs(self:GetConVars()) do
-			table.insert(values, cvars.String(cvar));
+			table.insert(values, cvars.String(cvar))
 		end
-		self:OnConVarChange(unpack(values));
+		self:OnConVarChange(unpack(values))
 	end
 
 	function PANEL:NukeConVars()
 		for _, cvar in pairs(self:GetConVars()) do
-			cvars.RemoveChangeCallback(cvar, self._cvarid);
+			cvars.RemoveChangeCallback(cvar, self._cvarid)
 		end
 	end
 
 	function PANEL:SetConVars(convars)
 		if (not self._cvarid) then
-			self._cvarid = tostring(math.random(10000, 99999));
+			self._cvarid = tostring(math.random(10000, 99999))
 		end
 
-		self:NukeConVars();
+		self:NukeConVars()
 
 		local cb = function()
 			self:HandleCVarChange()
-		end;
-
-		for _, cvar in pairs(convars) do
-			cvars.AddChangeCallback(cvar, cb, self._cvarid);
 		end
 
-		self.m_tCvars = convars;
+		for _, cvar in pairs(convars) do
+			cvars.AddChangeCallback(cvar, cb, self._cvarid)
+		end
+
+		self.m_tCvars = convars
 	end
 end

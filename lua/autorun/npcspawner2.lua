@@ -26,7 +26,7 @@ local function printd2(...)
 end
 
 local function svorcl()
-	return SERVER and "SV" or "CL";
+	return SERVER and "SV" or "CL"
 end
 
 local function ts()
@@ -36,31 +36,31 @@ end
 _G.npcspawner = {
 	debug = function(...)
 		if (npcspawner.config.debug == 1) then
-			printd(ts(), "PLFM (" .. svorcl() .. "):", ...);
+			printd(ts(), "PLFM (" .. svorcl() .. "):", ...)
 		end
 	end,
 	debug2 = function(...)
 		if (npcspawner.config.debug == 1) then
-			printd2(ts(), "PLFM L2 (" .. svorcl() .. "):", ...);
+			printd2(ts(), "PLFM L2 (" .. svorcl() .. "):", ...)
 		end
 	end,
 	send = function(name, tab, who)
-		net.Start(name);
-		net.WriteTable(tab);
+		net.Start(name)
+		net.WriteTable(tab)
 		if (CLIENT) then
-			net.SendToServer();
+			net.SendToServer()
 		elseif (who) then
-			net.Send(who);
+			net.Send(who)
 		else
-			net.Broadcast();
+			net.Broadcast()
 		end
 	end,
 	recieve = function(name, callback)
 		net.Receive(
 			name, function(len, who)
-				callback(net.ReadTable(), who);
+				callback(net.ReadTable(), who)
 			end
-		);
+		)
 	end,
 	-- Default config
 	npcs = {},
@@ -82,4 +82,4 @@ _G.npcspawner = {
 		npc_combine_e = "CombineElite",
 		npc_combine_p = "CombinePrison",
 	},
-};
+}

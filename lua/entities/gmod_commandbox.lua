@@ -14,7 +14,7 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-AddCSLuaFile();
+AddCSLuaFile()
 ENT.Type = "anim"
 if (WireLib) then
 	ENT.Base = "base_wire_entity"
@@ -25,120 +25,120 @@ end
 -- Blame conna, I do.
 function MakeCommandBox(ply, pos, angles, model, key, command, data)
 	if (not ply:CheckLimit("commandboxes")) then
-		return false;
+		return false
 	end
-	local box;
+	local box
 	if (data) then
-		box = duplicator.GenericDuplicatorFunction(ply, data); -- This is actually better than doing it manually
+		box = duplicator.GenericDuplicatorFunction(ply, data) -- This is actually better than doing it manually
 	else
-		box = ents.Create("gmod_commandbox");
+		box = ents.Create("gmod_commandbox")
 		box:SetModel(model)
-		box:SetPos(pos);
-		box:SetAngles(angles);
-		box:Spawn();
+		box:SetPos(pos)
+		box:SetAngles(angles)
+		box:Spawn()
 	end
-	box:SetPlayer(ply);
-	box:SetKey(key);
-	box:SetCommand(command);
-	ply:AddCount("commandboxes", box);
-	return box;
+	box:SetPlayer(ply)
+	box:SetKey(key)
+	box:SetCommand(command)
+	ply:AddCount("commandboxes", box)
+	return box
 end
 
 duplicator.RegisterEntityClass(
 	"gmod_commandbox", MakeCommandBox, "Pos", "Ang", "Model", "key", "command",
 	"Data"
-);
+)
 
 ENT.PrintName = "Commandbox"
 ENT.Author = "Lexi"
 ENT.Contact = "lexi@lexi.org.uk"
 ENT.Purpose = ""
 ENT.Instructions = ""
-ENT.Spawnable = false;
-ENT.AdminSpawnable = false;
+ENT.Spawnable = false
+ENT.AdminSpawnable = false
 
 if (CLIENT) then
 	usermessage.Hook(
 		"Commandbox Command Request", function(um)
-			local command = um:ReadString();
+			local command = um:ReadString()
 			Derma_Query(
 				"Run Command '" .. command .. "'?", "Command Box SENT", "Yes", function()
 					LocalPlayer():ConCommand(command)
 				end, "No", function()
 				end
-			);
+			)
 		end
-	);
+	)
 	usermessage.Hook(
 		"Commandbox Command", function(um)
 			LocalPlayer():ConCommand(um:ReadString())
 		end
-	);
-	return;
+	)
+	return
 end
 umsg.PoolString("Commandbox Command")
 umsg.PoolString("Commandbox Command Request")
 
 function ENT:Initialize()
-	self.Command = "";
-	self.Key = 0;
+	self.Command = ""
+	self.Key = 0
 
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	if (WireLib) then
-		WireLib.CreateSpecialInputs(self, {"RunCommand"});
-		WireLib.CreateSpecialOutputs(self, {"Command"}, {"STRING"});
+		WireLib.CreateSpecialInputs(self, {"RunCommand"})
+		WireLib.CreateSpecialOutputs(self, {"Command"}, {"STRING"})
 	end
 end
 
 local function prest(ply, ent)
 	if (not IsValid(ent)) then
-		return;
+		return
 	end
-	local command = ent:GetCommand();
+	local command = ent:GetCommand()
 	if (ply == ent:GetPlayer()) then
-		SendUserMessage("Commandbox Command", ply, command);
+		SendUserMessage("Commandbox Command", ply, command)
 	else
-		SendUserMessage("Commandbox Command Request", ply, command);
+		SendUserMessage("Commandbox Command Request", ply, command)
 	end
 end
-numpad.Register("CommandBox", prest);
+numpad.Register("CommandBox", prest)
 
 function ENT:SetCommand(command)
-	self.Command = command;
-	self:SetOverlayText("- Command Box -\nCommand: " .. command);
+	self.Command = command
+	self:SetOverlayText("- Command Box -\nCommand: " .. command)
 	if (WireLib) then
-		Wire_TriggerOutput(self, "Command", command);
+		Wire_TriggerOutput(self, "Command", command)
 	end
 end
 
 function ENT:GetCommand()
-	return self.Command;
+	return self.Command
 end
 
 function ENT:SetKey(key)
-	local ply = self:GetPlayer();
+	local ply = self:GetPlayer()
 	if (not IsValid(ply)) then
-		return;
+		return
 	end
 	if (self.impulse) then
-		numpad.Remove(self.impulse);
+		numpad.Remove(self.impulse)
 	end
-	self.impulse = numpad.OnUp(ply, key, "CommandBox", self);
-	self.key = key;
+	self.impulse = numpad.OnUp(ply, key, "CommandBox", self)
+	self.key = key
 end
 
 function ENT:GetKey()
-	return self.key;
+	return self.key
 end
 
 function ENT:TriggerInput(key, value)
 	if (key == "RunCommand" and value ~= 0) then
-		local ply = self:GetPlayer();
+		local ply = self:GetPlayer()
 		if (not IsValid(ply)) then
-			return;
+			return
 		end
-		SendUserMessage("Commandbox Command", ply, self:GetCommand());
+		SendUserMessage("Commandbox Command", ply, self:GetCommand())
 	end
 end

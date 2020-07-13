@@ -15,7 +15,7 @@
 	limitations under the License.
 ]] --
 if (not WireLib) then
-	return;
+	return
 end
 
 ---
@@ -28,14 +28,14 @@ end
 function WireLib.AddSpecialInputs(ent, ...)
 	-- If the ent's not wired up, wire it up.
 	if (not ent.Inputs) then
-		return WireLib.CreateSpecialInputs(ent, ...);
+		return WireLib.CreateSpecialInputs(ent, ...)
 	end
 	-- Prevent the deleter deleting anything
 	for _, data in pairs(ent.Inputs) do
-		data.Keep = true;
+		data.Keep = true
 	end
 	-- Boosh
-	return WireLib.AdjustSpecialInputs(ent, ...);
+	return WireLib.AdjustSpecialInputs(ent, ...)
 end
 
 ---
@@ -43,24 +43,24 @@ end
 function WireLib.AddSpecialOutputs(ent, ...)
 	-- If the ent's not wired up, wire it up.
 	if (not ent.Outputs) then
-		return WireLib.CreateSpecialInputs(ent, ...);
+		return WireLib.CreateSpecialInputs(ent, ...)
 	end
 	-- Prevent the deleter deleting anything
 	for _, data in pairs(ent.Outputs) do
-		data.Keep = true;
+		data.Keep = true
 	end
 	-- Boosh
-	return WireLib.AdjustSpecialInputs(ent, ...);
+	return WireLib.AdjustSpecialInputs(ent, ...)
 end
 
 -- Compat
 function Wire_AddInputs(ent, names)
-	return WireLib.AdjustSpecialInputs(ent, names);
+	return WireLib.AdjustSpecialInputs(ent, names)
 end
 
 function Wire_AddOutputs(ent, names, descs)
-	return WireLib.AdjustSpecialOutputs(ent, names, {}, descs);
+	return WireLib.AdjustSpecialOutputs(ent, names, {}, descs)
 end
 
-WireLib.AddInputs = Wire_AddInputs;
-WireLib.AddOutputs = Wire_AddOutputs;
+WireLib.AddInputs = Wire_AddInputs
+WireLib.AddOutputs = Wire_AddOutputs

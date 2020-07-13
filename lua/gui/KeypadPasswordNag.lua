@@ -14,19 +14,19 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-local PANEL = {};
+local PANEL = {}
 
 function PANEL:OnConVarChange(password)
 	if (password == "") then
-		self:DoText("You'll need a keypad cracker to use this keypad");
+		self:DoText("You'll need a keypad cracker to use this keypad")
 	else
-		self:DoText("");
+		self:DoText("")
 	end
 end
 
 function PANEL:ControlValues(data)
-	self:SetConVars({"keypad_password"});
-	self:HandleCVarChange();
+	self:SetConVars({"keypad_password"})
+	self:HandleCVarChange()
 end
 
-derma.DefineControl("KeypadPasswordNag", "", PANEL, "NagLabel");
+derma.DefineControl("KeypadPasswordNag", "", PANEL, "NagLabel")

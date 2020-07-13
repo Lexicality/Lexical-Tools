@@ -14,19 +14,19 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-DEFINE_BASECLASS "weapon_keypad_cracker";
+DEFINE_BASECLASS "weapon_keypad_cracker"
 
-AddCSLuaFile();
+AddCSLuaFile()
 
-SWEP.Category = "Roleplay";
-SWEP.PrintName = "Über Keypad Cracker";
-SWEP.Slot = 4;
-SWEP.SlotPos = 1;
-SWEP.Author = "Lexi";
-SWEP.Spawnable = true;
-SWEP.AdminOnly = true;
+SWEP.Category = "Roleplay"
+SWEP.PrintName = "Über Keypad Cracker"
+SWEP.Slot = 4
+SWEP.SlotPos = 1
+SWEP.Author = "Lexi"
+SWEP.Spawnable = true
+SWEP.AdminOnly = true
 
 function SWEP:GetCrackTime(target)
 	-- Instantly break open any keypad
-	return 0;
+	return 0
 end

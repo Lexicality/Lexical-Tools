@@ -14,58 +14,58 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]] --
-local cvarstr = "npcspawner_config_";
+local cvarstr = "npcspawner_config_"
 
 local function cvar(id)
-	return cvarstr .. id;
+	return cvarstr .. id
 end
 
 local function callback(cvar, old, new)
-	local lpl = LocalPlayer();
+	local lpl = LocalPlayer()
 	if (IsValid(lpl) and not lpl:IsAdmin()) then
 		return
 	end
 
-	local name = cvar:gsub(cvarstr, "");
+	local name = cvar:gsub(cvarstr, "")
 	local value = tonumber(new)
 
 	if (not value or value == npcspawner.config[name]) then
-		return;
+		return
 	end
 
-	RunConsoleCommand("npcspawner_config", name, value);
+	RunConsoleCommand("npcspawner_config", name, value)
 end
 
 for name, default in pairs(npcspawner.config) do
 	name = cvar(name)
-	CreateConVar(name, tostring(default));
-	cvars.AddChangeCallback(name, callback);
+	CreateConVar(name, tostring(default))
+	cvars.AddChangeCallback(name, callback)
 end
 
 npcspawner.recieve(
 	"NPCSpawner Config", function(data)
-		npcspawner.config = data;
-		npcspawner.debug("Just got new config vars.");
+		npcspawner.config = data
+		npcspawner.debug("Just got new config vars.")
 		for name, value in pairs(npcspawner.config) do
 			RunConsoleCommand(cvar(name), tostring(value))
 		end
 	end
-);
+)
 
 -----------------------------------
 -- Lexical Patented Corpse Eater --
 -----------------------------------
-CreateConVar("cleanupcorpses", 1);
+CreateConVar("cleanupcorpses", 1)
 timer.Create(
 	"Dead Body Deleter", 60, 0, function()
 		if (GetConVarNumber("cleanupcorpses") < 1) then
-			return;
+			return
 		end
 		for _, ent in pairs(ents.FindByClass("class C_ClientRagdoll")) do
 			ent:Remove()
 		end
 	end
-);
+)
 
 local function addPanelLabel(id, label, help)
 	language.Add("utilities.spawnplatform." .. id, label)
@@ -118,19 +118,19 @@ local function clientOptions(panel)
 	panel:AddControl(
 		"CheckBox",
 		{Label = lang("cleanupcorpses"), Help = true, Command = "cleanupcorpses"}
-	);
+	)
 end
 
 local function adminOptions(panel)
 	panel:AddControl(
 		"CheckBox",
 		{Label = lang("adminonly"), Command = cvar("adminonly"), Help = true}
-	);
+	)
 
 	panel:AddControl(
 		"CheckBox",
 		{Label = lang("callhooks"), Command = cvar("callhooks"), Help = true}
-	);
+	)
 
 	panel:AddControl(
 		"Slider", {
@@ -156,23 +156,23 @@ local function adminOptions(panel)
 
 	local dzpanel = panel:AddControl(
 		"ControlPanel", {Label = lang("dangerzone"), Closed = true}
-	);
+	)
 
 	dzpanel:AddControl(
 		"CheckBox", {Label = lang("sanity"), Command = cvar("sanity"), Help = true}
-	);
+	)
 
 	dzpanel:AddControl(
 		"CheckBox",
 		{Label = lang("rehydrate"), Command = cvar("rehydrate"), Help = true}
-	);
+	)
 
 	--[[
 	dzpanel:AddControl("CheckBox", {
 		Label   = lang("debug"),
 		Command = cvar("debug"),
 		Help    = true,
-	});
+	})
 	]] --
 end
 

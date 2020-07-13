@@ -14,28 +14,28 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-DEFINE_BASECLASS "weapon_keypad_cracker";
+DEFINE_BASECLASS "weapon_keypad_cracker"
 
-AddCSLuaFile();
+AddCSLuaFile()
 
-SWEP.Category = "Roleplay";
-SWEP.PrintName = "My Server's Keypad Cracker";
-SWEP.Slot = 4;
-SWEP.SlotPos = 1;
-SWEP.Author = "Lexi";
-SWEP.Spawnable = true;
-SWEP.AdminOnly = true;
+SWEP.Category = "Roleplay"
+SWEP.PrintName = "My Server's Keypad Cracker"
+SWEP.Slot = 4
+SWEP.SlotPos = 1
+SWEP.Author = "Lexi"
+SWEP.Spawnable = true
+SWEP.AdminOnly = true
 
 function SWEP:GetCrackTime(target)
 	local crackTime = cvars.Number("keypad_cracker_time", 15)
-	local victim = target:GetPlayer();
+	local victim = target:GetPlayer()
 	if (IsValid(victim)) then
 		-- The mob boss can break into gun dealers' bases really easily
 		if (self.Owner:Team() == TEAM_MOB and victim:Team() == TEAM_GUN) then
-			return crackTime * 0.5;
+			return crackTime * 0.5
 		end
 	end
-	return crackTime;
+	return crackTime
 end
 -- Instantly break open any keypad
-SWEP.CrackTime = 0;
+SWEP.CrackTime = 0

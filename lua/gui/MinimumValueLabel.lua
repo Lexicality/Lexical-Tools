@@ -14,30 +14,30 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-local PANEL = {};
+local PANEL = {}
 
-AccessorFunc(PANEL, "m_sName", "CtrlName");
-AccessorFunc(PANEL, "m_sCVarMin", "MinimumCVar");
-AccessorFunc(PANEL, "m_sCVarActual", "ActualCVar");
+AccessorFunc(PANEL, "m_sName", "CtrlName")
+AccessorFunc(PANEL, "m_sCVarMin", "MinimumCVar")
+AccessorFunc(PANEL, "m_sCVarActual", "ActualCVar")
 
 function PANEL:OnConVarChange(min, val)
-	min = tonumber(min) or 0;
-	val = tonumber(val) or 0;
+	min = tonumber(min) or 0
+	val = tonumber(val) or 0
 	if (val < min) then
 		self:DoText(
 			string.format("This server's minimum %s is %d", self:GetCtrlName(), min)
-		);
+		)
 	else
-		self:DoText("");
+		self:DoText("")
 	end
 end
 
 function PANEL:ControlValues(data)
-	self:SetCtrlName(data.name);
-	self:SetConVars({data.minimum, data.cvar});
-	self:HandleCVarChange();
+	self:SetCtrlName(data.name)
+	self:SetConVars({data.minimum, data.cvar})
+	self:HandleCVarChange()
 end
 
 derma.DefineControl(
 	"MinimumValueLabel", "Tell players about defined minima", PANEL, "NagLabel"
-);
+)

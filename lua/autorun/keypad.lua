@@ -19,41 +19,41 @@ local files = {
 	"gui/NagLabel.lua",
 	"gui/MinimumValueLabel.lua",
 	"gui/KeypadPasswordNag.lua",
-};
+}
 
 for _, file in ipairs(files) do
 	if (SERVER) then
-		AddCSLuaFile(file);
+		AddCSLuaFile(file)
 	else
-		include(file);
+		include(file)
 	end
 end
 
 CreateConVar(
 	"keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE,
 	"The minimum time keypads must remain on for"
-);
+)
 CreateConVar(
 	"keypad_cracker_time", 15, FCVAR_REPLICATED + FCVAR_ARCHIVE,
 	"How many seconds it takes to crack a keypad"
-);
+)
 if SERVER then
 	CreateConVar(
 		"keypad_fast_entry", 1, FCVAR_ARCHIVE,
 		"If the keypad's owner should be able to open it without a password"
-	);
+	)
 
-	CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE);
+	CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE)
 
 	CreateConVar(
 		"keypad_min_recharge", 2, FCVAR_ARCHIVE,
 		"The minimum time between keypad code attempts"
-	);
+	)
 	-- Potentially a user could lock out a keypad for two and a half minutes, so don't let them
 	CreateConVar(
 		"keypad_max_recharge", 30, FCVAR_ARCHIVE,
 		"The maximum time between keypad code attempts (to avoid long timer abuse)"
-	);
+	)
 
 	-- This is a highly abusable mechanic, so disable it by default but let servers enable it if they trust their players
 	CreateConVar(
