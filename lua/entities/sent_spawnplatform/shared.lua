@@ -186,7 +186,7 @@ ENT._NWVars = {
 		Type = "Bool";
 		Name = "LegacySpawnMode";
 		LegacyName = "oldspawning";
-		Default = False;
+		Default = false;
 	},
 
 	{

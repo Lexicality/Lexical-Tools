@@ -128,7 +128,7 @@ local background = Material("keypad/background.png");
 
 -- Horrendous hack to make sprites work
 local matCache = {}
-function getSaneMaterial(str)
+local function getSaneMaterial(str)
 	local mat
 	mat = matCache[str]
 	if mat then

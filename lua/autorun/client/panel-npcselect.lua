@@ -24,7 +24,7 @@ AccessorFunc( PANEL, "m_ConVar", "ConVar" );
 function PANEL:Init()
 	local npcs = list.Get('NPC');
 
-	function onNPCSelected(_, _, line)
+	local function onNPCSelected(_, _, line)
 		RunConsoleCommand( self:GetConVar(), line.nicename )
 	end
 

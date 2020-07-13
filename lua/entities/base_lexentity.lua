@@ -165,7 +165,7 @@ function ENT:TriggerWireOutput(name, value)
 end
 
 function ENT:IsWireInputConnected(name)
-	return self.Inputs and self.Inputs[name] and IsVaild(self.Inputs[name].Src);
+	return self.Inputs and self.Inputs[name] and IsValid(self.Inputs[name].Src);
 end
 
 function ENT:IsWireOutputConnected(name)

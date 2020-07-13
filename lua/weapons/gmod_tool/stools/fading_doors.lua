@@ -295,5 +295,5 @@ function TOOL:LeftClick(tr)
 end
 
 function TOOL:Reload(tr)
-	return doUndo(_,tr.Entity);
+	return doUndo(nil, tr.Entity);
 end

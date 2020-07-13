@@ -304,7 +304,7 @@ function ENT:ConfigureNPCValue(npc)
 
 	npc.KillValue = value;
 	-- Vrondakis' Leveling System
-	if (LevelSystemConfiguration) then
+	if (_G["LevelSystemConfiguration"]) then
 		npc.GiveXP = value;
 	end
 end
@@ -377,7 +377,7 @@ function ENT:SpawnOne()
 	if (npcspawner.config.callhooks == 1) then
 		if (IsValid(ply)) then
 			gamemode.Call("PlayerSpawnedNPC", ply, npc);
-			if (CPPI) then
+			if (_G["CPPI"]) then
 				npc:CPPISetOwner(ply);
 			end
 		end

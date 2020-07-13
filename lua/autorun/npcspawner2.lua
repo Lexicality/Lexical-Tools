@@ -34,7 +34,7 @@ local function ts()
 	return "(" .. CurTime() .. ")"
 end
 
-npcspawner = {
+_G.npcspawner = {
     debug = function(...)
         if (npcspawner.config.debug == 1) then
             printd(ts(), "PLFM (" .. svorcl() .. "):", ...);

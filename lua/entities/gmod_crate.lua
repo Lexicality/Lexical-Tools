@@ -79,6 +79,7 @@ function MakeCrate(ply, pos, angles, scale, data)
 	if (not ply:CheckLimit("props")) then
 		return false;
 	end
+	local ent
 	if (data) then
 		ent = duplicator.GenericDuplicatorFunction(ply, data); -- This is actually better than doing it manually
 	else

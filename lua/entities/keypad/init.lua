@@ -439,6 +439,7 @@ function ENT:Use(activator, ...)
 		local x = (pos.y - btn[1]) / btn[2];
 		local y = 1 - (pos.z + btn[3]) / btn[4];
 		if (x >= 0 and x <= 1 and y >= 0 and y <= 1) then
+			local cmd
 			if (i == 10) then
 				cmd = "reset";
 			elseif (i == 11) then
