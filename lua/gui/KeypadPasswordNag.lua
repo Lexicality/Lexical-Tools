@@ -26,11 +26,8 @@ function PANEL:OnConVarChange(password)
 end
 
 function PANEL:ControlValues(data)
-	print("banana")
 	self:SetConVars({"keypad_password"});
 	self:HandleCVarChange();
 end
 
 derma.DefineControl("KeypadPasswordNag", "", PANEL, "NagLabel");
-
-

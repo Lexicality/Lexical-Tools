@@ -26,8 +26,6 @@ ENT.CountKey       = "spawnplatforms";
 
 DEFINE_BASECLASS "base_lexentity";
 
-print("Hello from the Spawn Platform!");
-
 local reverseLookupCache;
 local function primeLookupCache()
 	reverseLookupCache = {}
