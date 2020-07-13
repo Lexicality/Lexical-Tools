@@ -1,9 +1,9 @@
 --[[
 	Lexical Tools - lua\weapons\gmod_tool\stools\fading_doors.lua
-	Copyright 2010-2011 Lex Robinson
+	Copyright 2010-2013 Lex Robinson
 	Walk through props on demand, originally written by Conna
 
-	Licensed under the Apache License, Version 2.0 (the "License");
+	Licensed under the Apache License, Version 2.0 (the "License")
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
 
@@ -35,10 +35,10 @@ if (CLIENT) then
 			surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav")
 		end
 	)
-	language.Add("Tool_fading_doors_name", "Fading Doors")
-	language.Add("Tool_fading_doors_desc", "Makes anything into a fadable door")
+	language.Add("tool.fading_doors.name", "Fading Doors")
+	language.Add("tool.fading_doors.desc", "Makes anything into a fadable door")
 	language.Add(
-		"Tool_fading_doors_0",
+		"tool.fading_doors.0",
 		"Click on something to make it a fading door. Reload to set it back to normal"
 	)
 	language.Add("Undone_fading_door", "Undone Fading Door")
@@ -56,199 +56,10 @@ if (CLIENT) then
 	return
 end
 
-local function fadeActivate(self)
-	if (self.fadeActive) then
-		return
-	end
-	self.fadeActive = true
-	self.fadeMaterial = self:GetMaterial()
-	self:SetMaterial("sprites/heatwave")
-	self:DrawShadow(false)
-	self:SetNotSolid(true)
-	-- self:SetCollisionGroup(COLLISION_GROUP_WORLD)
-	local phys = self:GetPhysicsObject()
-	if (IsValid(phys)) then
-		self.fadeMoveable = phys:IsMoveable()
-		phys:EnableMotion(false)
-	end
-	if (WireLib) then
-		Wire_TriggerOutput(self, "FadeActive", 1)
-	end
-end
-
-local function fadeDeactivate(self)
-	if (not self.fadeActive) then
-		return
-	end
-	self.fadeActive = false
-	self:SetMaterial(self.fadeMaterial or "")
-	self:DrawShadow(true)
-	self:SetNotSolid(false)
-	-- self:SetCollisionGroup(COLLISION_GROUP_NONE)
-	local phys = self:GetPhysicsObject()
-	if (IsValid(phys)) then
-		phys:EnableMotion(self.fadeMoveable or false)
-	end
-	if (WireLib) then
-		Wire_TriggerOutput(self, "FadeActive", 0)
-	end
-end
-
-local function fadeToggleActive(self)
-	if (self.fadeActive) then
-		self:fadeDeactivate()
-	else
-		self:fadeActivate()
-	end
-end
-
---[[
-	These are to prevent multiple concurrent on/off calls from glitching the door
-]] --
-local function fadeInputOn(self)
-	if (self.fadeInputActive) then
-		return
-	end
-	self.fadeInputActive = true
-	self:fadeToggleActive()
-end
-
-local function fadeInputOff(self)
-	if (not self.fadeInputActive) then
-		return
-	end
-	self.fadeInputActive = false
-	if (not self.fadeToggle) then
-		self:fadeToggleActive()
-	end
-end
-
-local function onDown(ply, ent)
-	if (not (ent:IsValid() and ent.fadeToggleActive)) then
-		return
-	end
-	ent:fadeInputOn()
-end
-numpad.Register("Fading Doors onDown", onDown)
-
-local function onUp(ply, ent)
-	if (not (ent:IsValid() and ent.fadeToggleActive)) then
-		return
-	end
-	ent:fadeInputOff()
-end
-numpad.Register("Fading Doors onUp", onUp)
-
-local function TriggerInput(self, name, value, ...)
-	if (name == "Fade") then
-		if (value == 0) then
-			if (self.fadePrevWireOn) then
-				self.fadePrevWireOn = false
-				self:fadeInputOff()
-			end
-		else
-			if (not self.fadePrevWireOn) then
-				self.fadePrevWireOn = true
-				self:fadeInputOn()
-			end
-		end
-	elseif (self.fadeTriggerInput) then
-		return self:fadeTriggerInput(name, value, ...)
-	end
-end
-
-local function PreEntityCopy(self)
-	local info = WireLib.BuildDupeInfo(self)
-	if (info) then
-		duplicator.StoreEntityModifier(self, "WireDupeInfo", info)
-	end
-	if (self.wireSupportPreEntityCopy) then
-		self:wireSupportPreEntityCopy()
-	end
-end
-
-local function PostEntityPaste(self, ply, ent, ents)
-	if (self.EntityMods and self.EntityMods.WireDupeInfo) then
-		WireLib.ApplyDupeInfo(
-			ply, self, self.EntityMods.WireDupeInfo, function(id)
-				return ents[id]
-			end
-		)
-	end
-	if (self.wireSupportPostEntityPaste) then
-		self:wireSupportPostEntityPaste(ply, ent, ents)
-	end
-end
-
-local function onRemove(self)
-	numpad.Remove(self.fadeUpNum)
-	numpad.Remove(self.fadeDownNum)
-end
-
--- Fer Duplicator
-local function dooEet(ply, ent, stuff)
-	if (ent.isFadingDoor) then
-		ent:fadeDeactivate()
-		onRemove(ent)
-	else
-		ent.isFadingDoor = true
-		ent.fadeActivate = fadeActivate
-		ent.fadeDeactivate = fadeDeactivate
-		ent.fadeToggleActive = fadeToggleActive
-		ent.fadeInputOn = fadeInputOn
-		ent.fadeInputOff = fadeInputOff
-		ent:CallOnRemove("Fading Doors", onRemove)
-		if (WireLib) then
-			WireLib.AddInputs(ent, {"Fade"})
-			WireLib.AddOutputs(
-				ent, {"FadeActive"}, {"If this entity is currently faded."}
-			)
-			ent.fadeTriggerInput = ent.fadeTriggerInput or ent.TriggerInput
-			ent.TriggerInput = TriggerInput
-			if (not (ent.IsWire or ent.addedWireSupport)) then -- Dupe Support
-				ent.wireSupportPreEntityCopy = ent.PreEntityCopy
-				ent.PreEntityCopy = PreEntityCopy
-				ent.wireSupportPostEntityPaste = ent.PostEntityPaste
-				ent.PostEntityPaste = PostEntityPaste
-				ent.addedWireSupport = true
-			end
-		end
-	end
-	ent.fadeUpNum = numpad.OnUp(ply, stuff.key, "Fading Doors onUp", ent)
-	ent.fadeDownNum = numpad.OnDown(ply, stuff.key, "Fading Doors onDown", ent)
-	ent.fadeToggle = stuff.toggle
-	if (stuff.reversed) then
-		ent:fadeActivate()
-	end
-	duplicator.StoreEntityModifier(ent, "Fading Door", stuff)
-	return true
-end
-
-duplicator.RegisterEntityModifier("Fading Door", dooEet)
-
-if (not FadingDoor) then
-	local function legacy(ply, ent, data)
-		return dooEet(
-			ply, ent, {key = data.Key, toggle = data.Toggle, reversed = data.Inverse}
-		)
-	end
-	duplicator.RegisterEntityModifier("FadingDoor", legacy)
-end
+require("fadingdoors")
 
 local function doUndo(undoData, ent)
-	if (IsValid(ent) and ent.isFadingDoor) then
-		onRemove(ent) -- Get rid of the numpad inputs.
-		ent:fadeDeactivate() -- Ensure the doors are turned off when we remove 'em :D
-		ent.isFadingDoor = false -- We don't actually delete the fading door functions, to save time.
-		duplicator.ClearEntityModifier(ent, "Fading Door") -- Make sure we don't unexpectedly re-add removed doors when duped.
-		if (WireLib) then
-			ent.TriggerInput = ent.fadeTriggerInput -- Purge our input checker
-			WireLib.RemoveInputs(ent, {"Fade"})
-			WireLib.RemoveOutputs(ent, {"FadeActive"})
-		end
-		return true
-	end
-	return false
+	fadingdoors.RemoveDoor(ent)
 end
 
 function TOOL:LeftClick(tr)
@@ -257,7 +68,7 @@ function TOOL:LeftClick(tr)
 	end
 	local ent = tr.Entity
 	local ply = self:GetOwner()
-	dooEet(
+	fadingdoors.SetupDoor(
 		ply, ent, {
 			key = self:GetClientNumber("key"),
 			toggle = self:GetClientNumber("toggle") == 1,
@@ -274,5 +85,5 @@ function TOOL:LeftClick(tr)
 end
 
 function TOOL:Reload(tr)
-	return doUndo(nil, tr.Entity)
+	return checkTrace(tr) and fadingdoors.RemoveDoor(tr.Entity)
 end
