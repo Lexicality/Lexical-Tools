@@ -41,4 +41,6 @@ function PANEL:OnRemove()
 	self:NukeConVars();
 end
 
-derma.DefineControl("NagLabel", "A label for displaying dire news on cvar changes", PANEL, "DLabel");
+derma.DefineControl(
+	"NagLabel", "A label for displaying dire news on cvar changes", PANEL, "DLabel"
+);

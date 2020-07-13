@@ -14,31 +14,31 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]] --
-
-
 local PANEL = {}
 
 DEFINE_BASECLASS "DComboBox"
 
 function PANEL:Init()
-    self:AddChoice("  Default Weapon",       "weapon_default")
-    self:AddChoice("  None",                 "weapon_none"   )
-    self:AddChoice(" Random Rebel Weapon",   "weapon_rebel"  )
-    self:AddChoice(" Random Combine Weapon", "weapon_combine")
-    self:AddChoice(" Random Citizen Weapon", "weapon_citizen")
+	self:AddChoice("  Default Weapon", "weapon_default")
+	self:AddChoice("  None", "weapon_none")
+	self:AddChoice(" Random Rebel Weapon", "weapon_rebel")
+	self:AddChoice(" Random Combine Weapon", "weapon_combine")
+	self:AddChoice(" Random Citizen Weapon", "weapon_citizen")
 
-    for _, tab in pairs(list.Get("NPCUsableWeapons")) do
-        self:AddChoice(tab.title, tab.class)
-    end
+	for _, tab in pairs(list.Get("NPCUsableWeapons")) do
+		self:AddChoice(tab.title, tab.class)
+	end
 end
 
 function PANEL:ControlValues(data)
-    self:SetConVar(data.command)
-    self:CheckConVarChanges()
+	self:SetConVar(data.command)
+	self:CheckConVarChanges()
 end
 
 function PANEL:OnSelect(i, label, value)
-    RunConsoleCommand(self.m_strConVar, value)
+	RunConsoleCommand(self.m_strConVar, value)
 end
 
-derma.DefineControl("NPCWeaponSelecter", "Selects a NPC weapon", PANEL, "DComboBox")
+derma.DefineControl(
+	"NPCWeaponSelecter", "Selects a NPC weapon", PANEL, "DComboBox"
+)

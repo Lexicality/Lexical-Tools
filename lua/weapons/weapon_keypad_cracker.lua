@@ -16,43 +16,43 @@
 ]] --
 AddCSLuaFile();
 
-SWEP.Category       = "Roleplay";
-SWEP.PrintName      = "Keypad Cracker";
-SWEP.Slot           = 4;
-SWEP.SlotPos        = 1;
-SWEP.DrawAmmo       = false;
-SWEP.DrawCrosshair  = true;
+SWEP.Category = "Roleplay";
+SWEP.PrintName = "Keypad Cracker";
+SWEP.Slot = 4;
+SWEP.SlotPos = 1;
+SWEP.DrawAmmo = false;
+SWEP.DrawCrosshair = true;
 
-SWEP.Author         = "Lexi";
-SWEP.Instructions   = "Left click to crack a keypad";
-SWEP.Contact        = "";
-SWEP.Purpose        = "";
+SWEP.Author = "Lexi";
+SWEP.Instructions = "Left click to crack a keypad";
+SWEP.Contact = "";
+SWEP.Purpose = "";
 
-SWEP.ViewModelFOV   = 62;
-SWEP.ViewModelFlip  = false;
-SWEP.ViewModel      = Model("models/weapons/v_c4.mdl");
-SWEP.WorldModel     = Model("models/weapons/w_c4.mdl");
-SWEP.RenderGroup    = RENDERGROUP_BOTH
+SWEP.ViewModelFOV = 62;
+SWEP.ViewModelFlip = false;
+SWEP.ViewModel = Model("models/weapons/v_c4.mdl");
+SWEP.WorldModel = Model("models/weapons/w_c4.mdl");
+SWEP.RenderGroup = RENDERGROUP_BOTH
 
-SWEP.Spawnable      = true;
-SWEP.AdminOnly      = true;
+SWEP.Spawnable = true;
+SWEP.AdminOnly = true;
 
-SWEP.Primary.ClipSize       = -1;
-SWEP.Primary.DefaultClip    = -1;
-SWEP.Primary.Automatic      = false;
-SWEP.Primary.Ammo           = "";
+SWEP.Primary.ClipSize = -1;
+SWEP.Primary.DefaultClip = -1;
+SWEP.Primary.Automatic = false;
+SWEP.Primary.Ammo = "";
 
-SWEP.Secondary.ClipSize     = -1;
-SWEP.Secondary.DefaultClip  = -1;
-SWEP.Secondary.Automatic    = false;
-SWEP.Secondary.Ammo         = "";
+SWEP.Secondary.ClipSize = -1;
+SWEP.Secondary.DefaultClip = -1;
+SWEP.Secondary.Automatic = false;
+SWEP.Secondary.Ammo = "";
 
 SWEP.States = {
-	Idle = 0;
-	InitialAnimation = 1;
-	Cracking = 2;
-	RecoverStage1 = 3;
-	RecoverStage2 = 4;
+	Idle = 0,
+	InitialAnimation = 1,
+	Cracking = 2,
+	RecoverStage1 = 3,
+	RecoverStage2 = 4,
 }
 
 function SWEP:GetCrackTime(target)
@@ -74,7 +74,8 @@ function SWEP:IsTargetEntity(ent)
 end
 
 function SWEP:IsValidTrace(tr)
-	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 50 and self:IsTargetEntity(tr.Entity);
+	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 50 and
+       		self:IsTargetEntity(tr.Entity);
 end
 
 function SWEP:ResetState()
@@ -144,7 +145,6 @@ function SWEP:PrimaryAttack()
 
 	self:SetWeaponHoldType("duel");
 	self:SetCrackTarget(ent);
-
 
 	-- Play the bootup animation
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK);
@@ -220,15 +220,13 @@ function SWEP:Think()
 	end
 end
 
-
-
-
-
 SWEP._Blink = false;
 SWEP._BootupSequence = 0
 
 function SWEP:FireAnimationEvent(pos, ang, event, options)
-	if (event ~= 7001) then return; end
+	if (event ~= 7001) then
+		return;
+	end
 	self._BootupSequence = string.len(options);
 	if (options == "*******") then
 		self._BootupSequence = 8;
@@ -250,15 +248,17 @@ if (CLIENT) then
 		texes[name] = surface.GetTextureID(matname);
 	end
 
-	surface.CreateFont("GarbageText", {
-		font   = "Verdana",
-		weight = 1200,
-		size   = 6,
-		blursize = 1,
-		additive=true,
-		-- scanlines=2,
-		-- shadow=true,
-	});
+	surface.CreateFont(
+		"GarbageText", {
+			font = "Verdana",
+			weight = 1200,
+			size = 6,
+			blursize = 1,
+			additive = true,
+			-- scanlines=2,
+			-- shadow=true,
+		}
+	);
 
 end
 
@@ -408,14 +408,12 @@ function SWEP:ViewModelDrawn(vm)
 
 	-- Flip the angles round to be relative to the face of the weapon
 	-- This makes forward x, right y and up z
-	ang:RotateAroundAxis(ang:Forward(),-90);
+	ang:RotateAroundAxis(ang:Forward(), -90);
 	ang:RotateAroundAxis(ang:Up(), 180);
 
 	-- Screen
-	local screenpos = pos
-		+ ang:Forward() * 1.8
-		+ ang:Right() * -1.3
-		+ ang:Up() * 2.70;
+	local screenpos = pos + ang:Forward() * 1.8 + ang:Right() * -1.3 + ang:Up() *
+                  		2.70;
 
 	cam.Start3D2D(screenpos, ang, 0.01);
 	self:DrawScreen();
@@ -428,10 +426,8 @@ function SWEP:ViewModelDrawn(vm)
 
 	-- Blinkenlite
 	if (self._Blink) then
-		local spritepos = pos
-			+ ang:Forward() * 1.59
-			+ ang:Right() * 0.26
-			+ ang:Up() * 2.86;
+		local spritepos = pos + ang:Forward() * 1.59 + ang:Right() * 0.26 + ang:Up() *
+                  			2.86;
 
 		render.SetMaterial(sprmat);
 		cam.IgnoreZ(true);
@@ -450,29 +446,28 @@ function SWEP:DrawWorldModel()
 end
 
 function SWEP:DrawWorldModelTranslucent()
-	if (
-		self:GetCrackState() ~= self.States.Cracking
-		or self:GetCrackStart() > CurTime()
-		or not IsValid(self:GetCrackTarget())
-	) then
+	if (self:GetCrackState() ~= self.States.Cracking or self:GetCrackStart() >
+		CurTime() or not IsValid(self:GetCrackTarget())) then
 		return;
 	end
 
 	local bone = self:LookupBone("ValveBiped.Bip01_R_Hand")
-	if (not bone) then return; end
+	if (not bone) then
+		return;
+	end
 	local matt = self:GetBoneMatrix(bone);
 	local pos = matt:GetTranslation();
 
-	pos = pos
-		+ matt:GetForward() * 5
-		+ matt:GetRight() * 5;
+	pos = pos + matt:GetForward() * 5 + matt:GetRight() * 5;
 
 	self:DrawMagicBeam(pos);
 end
 
 function SWEP:DrawMagicBeam(pos)
 	local target = self:GetCrackTarget();
-	if (not IsValid(target)) then return; end
+	if (not IsValid(target)) then
+		return;
+	end
 	local targetPos = target:GetZapPos()
 
 	-- Avoid the beam being stretched by the breathing animation
@@ -486,26 +481,12 @@ function SWEP:DrawMagicBeam(pos)
 	mat_end = mat_end + n;
 
 	render.SetMaterial(beammat);
-	render.DrawBeam(
-		pos,
-		targetPos,
-		6,
-		mat_start,
-		mat_end,
-		color_white
-	);
+	render.DrawBeam(pos, targetPos, 6, mat_start, mat_end, color_white);
 
 	n = n * 1.2
 
 	mat_start = mat_start + n;
 	mat_end = mat_end + n;
 
-	render.DrawBeam(
-		pos,
-		targetPos,
-		5,
-		mat_start,
-		mat_end,
-		color_white
-	);
+	render.DrawBeam(pos, targetPos, 5, mat_start, mat_end, color_white);
 end

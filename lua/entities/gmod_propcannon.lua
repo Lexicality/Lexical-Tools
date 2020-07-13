@@ -15,31 +15,33 @@
 	limitations under the License.
 ]] --
 AddCSLuaFile();
-ENT.Type           = "anim";
+ENT.Type = "anim";
 if (WireLib) then
-	ENT.Base       = "base_wire_entity"
+	ENT.Base = "base_wire_entity"
 else
-	ENT.Base       = "base_gmodentity"
+	ENT.Base = "base_gmodentity"
 end
-ENT.PrintName      = "Prop Cannonv2";
-ENT.Author         = "Lexi"; --Duncan Stead
-ENT.Contact        = "lexi@lexi.org.uk"; --whohooo@yahoo.co.uk
-ENT.Spawnable      = false;
+ENT.PrintName = "Prop Cannonv2";
+ENT.Author = "Lexi"; -- Duncan Stead
+ENT.Contact = "lexi@lexi.org.uk"; -- whohooo@yahoo.co.uk
+ENT.Spawnable = false;
 ENT.AdminSpawnable = false;
 
-if (CLIENT) then return end
+if (CLIENT) then
+	return
+end
 
 function ENT:Initialize()
-	self.fireForce       = 20000;
-	self.cannonModel     = "models/props_trainstation/trashcan_indoor001b.mdl";
-	self.fireModel       = "models/props_junk/cinderblock01a.mdl";
-	self.recoilAmount    = 1;
-	self.fireDelay       = 5;
-	self.killDelay       = 5;
-	self.explosivePower  = 10;
+	self.fireForce = 20000;
+	self.cannonModel = "models/props_trainstation/trashcan_indoor001b.mdl";
+	self.fireModel = "models/props_junk/cinderblock01a.mdl";
+	self.recoilAmount = 1;
+	self.fireDelay = 5;
+	self.killDelay = 5;
+	self.explosivePower = 10;
 	self.explosiveRadius = 200;
-	self.fireEffect      = "Explosion";
-	self.fireExplosives  = true;
+	self.fireEffect = "Explosion";
+	self.fireExplosives = true;
 
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
@@ -51,46 +53,57 @@ function ENT:Initialize()
 		phys:Wake();
 	end
 	if (WireLib) then
-		WireLib.CreateSpecialInputs(self,{
-			"FireOnce",
-			"AutoFire"
-		}, { "NORMAL", "NORMAL" }, {
-			"Fire a single prop",
-			"Fire repeatedly until released."
-		});
-		WireLib.CreateSpecialOutputs(self, {
-			"ReadyToFire",
-			"Fired",
-			"AutoFiring",
-			"LastBullet"
-		}, { "NORMAL", "NORMAL", "NORMAL", "ENTITY"} , {
-			"Is the cannon ready to fire again?",
-			"Triggered every time the cannon fires.",
-			"Is the cannon currently autofiring?",
-			"The last prop fired"
-		});
+		WireLib.CreateSpecialInputs(
+			self, {"FireOnce", "AutoFire"}, {"NORMAL", "NORMAL"},
+			{"Fire a single prop", "Fire repeatedly until released."}
+		);
+		WireLib.CreateSpecialOutputs(
+			self, {"ReadyToFire", "Fired", "AutoFiring", "LastBullet"},
+			{"NORMAL", "NORMAL", "NORMAL", "ENTITY"}, {
+				"Is the cannon ready to fire again?",
+				"Triggered every time the cannon fires.",
+				"Is the cannon currently autofiring?",
+				"The last prop fired",
+			}
+		);
 	end
 end
 
-function ENT:Setup(fireForce, cannonModel, fireModel, recoilAmount, fireDelay, killDelay, explosivePower, explosiveRadius, fireEffect, fireExplosives)
+function ENT:Setup(
+	fireForce,
+		cannonModel,
+		fireModel,
+		recoilAmount,
+		fireDelay,
+		killDelay,
+		explosivePower,
+		explosiveRadius,
+		fireEffect,
+		fireExplosives
+)
 	self:SetModel(cannonModel);
-	self.fireForce       = fireForce;
-	self.cannonModel     = cannonModel;
-	self.fireModel       = fireModel;
-	self.recoilAmount    = recoilAmount;
-	self.fireDelay       = fireDelay;
-	self.killDelay       = killDelay;
-	self.explosivePower  = explosivePower;
+	self.fireForce = fireForce;
+	self.cannonModel = cannonModel;
+	self.fireModel = fireModel;
+	self.recoilAmount = recoilAmount;
+	self.fireDelay = fireDelay;
+	self.killDelay = killDelay;
+	self.explosivePower = explosivePower;
 	self.explosiveRadius = explosiveRadius;
-	self.fireEffect      = fireEffect;
-	self.fireExplosives  = fireExplosives;
+	self.fireEffect = fireEffect;
+	self.fireExplosives = fireExplosives;
 
-	self:SetOverlayText("- Prop Cannon -\nFiring Force: " .. math.floor(fireForce) .. ", Fire Delay: " .. math.floor(fireDelay) ..
-						(fireExplosives and ("\nExplosive Power:"..math.floor(explosivePower)..", Explosive Radius:" .. math.floor(explosiveRadius)) or "") ..
-						"\nBullet Model: " .. fireModel);
+	self:SetOverlayText(
+
+		
+			"- Prop Cannon -\nFiring Force: " .. math.floor(fireForce) ..
+				", Fire Delay: " .. math.floor(fireDelay) .. (fireExplosives and
+				("\nExplosive Power:" .. math.floor(explosivePower) .. ", Explosive Radius:" ..
+					math.floor(explosiveRadius)) or "") .. "\nBullet Model: " .. fireModel
+	);
 end
 
-function ENT:OnTakeDamage( dmginfo)
+function ENT:OnTakeDamage(dmginfo)
 	self:TakePhysicsDamage(dmginfo);
 end
 
@@ -158,7 +171,7 @@ function ENT:FireOne()
 	self:DeleteOnRemove(ent);
 
 	local iPhys = self:GetPhysicsObject();
-	local uPhys =  ent:GetPhysicsObject();
+	local uPhys = ent:GetPhysicsObject();
 	local up = self:GetUp();
 	if (IsValid(iPhys)) then -- The cannon could conceivably work without a valid physics model.
 		iPhys:ApplyForceCenter(up * -self.fireForce * self.recoilAmount); -- Recoil
@@ -187,14 +200,17 @@ function ENT:TriggerInput(key, value)
 	end
 end
 
-
-local function On( ply, ent )
-	if ( not IsValid(ent) ) then return end
+local function On(ply, ent)
+	if (not IsValid(ent)) then
+		return
+	end
 	ent:FireEnable();
 end
 
-local function Off( pl, ent )
-	if ( not IsValid(ent) ) then return end
+local function Off(pl, ent)
+	if (not IsValid(ent)) then
+		return
+	end
 	ent:FireDisable();
 end
 

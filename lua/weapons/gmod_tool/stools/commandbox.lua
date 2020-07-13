@@ -14,8 +14,8 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-TOOL.Category    = "Lexical Tools"
-TOOL.Name        = "#Command Box"
+TOOL.Category = "Lexical Tools"
+TOOL.Name = "#Command Box"
 -- Bits of commands that aren't allowed to be sent
 local disallowed = {
 	"bind",
@@ -31,7 +31,7 @@ local disallowed = {
 	"g_",
 	"disconnect",
 	"alias",
-	"name"
+	"name",
 }
 TOOL.ClientConVar["model"] = "models/props_lab/reciever01a.mdl"
 TOOL.ClientConVar["command"] = ""
@@ -39,12 +39,13 @@ TOOL.ClientConVar["key"] = "5"
 
 cleanup.Register("commandboxes")
 
-function TOOL:UpdateGhost(ent, ply) --( ent, player )
+function TOOL:UpdateGhost(ent, ply) -- ( ent, player )
 	if (not IsValid(ent)) then
 		return;
 	end
 	local tr = ply:GetEyeTrace();
-	if (not tr.Hit or (IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:GetClass() == "gmod_commandbox"))) then
+	if (not tr.Hit or (IsValid(tr.Entity) and
+		(tr.Entity:IsPlayer() or tr.Entity:GetClass() == "gmod_commandbox"))) then
 		ent:SetNoDraw(true);
 		return;
 	end
@@ -56,8 +57,12 @@ function TOOL:UpdateGhost(ent, ply) --( ent, player )
 end
 
 function TOOL:Think()
-	if (SERVER and not game.SinglePlayer()) then return end
-	if (CLIENT and game.SinglePlayer()) then return end
+	if (SERVER and not game.SinglePlayer()) then
+		return
+	end
+	if (CLIENT and game.SinglePlayer()) then
+		return
+	end
 	local ent = self.GhostEntity;
 	local model = string.lower(self:GetClientInfo("model"));
 	if (not (IsValid(ent) and ent:GetModel() == model)) then
@@ -70,29 +75,34 @@ list.Set("CommandboxModels", "models/props_lab/reciever01a.mdl", {});
 list.Set("CommandboxModels", "models/props_lab/monitor02.mdl", {});
 
 local function canTool(tr)
-	return tr.Hit and tr.HitWorld or (IsValid(tr.Entity) and not tr.Entity:IsPlayer())
+	return tr.Hit and tr.HitWorld or
+       		(IsValid(tr.Entity) and not tr.Entity:IsPlayer())
 end
 
 if (CLIENT) then
 	local messages = {
 		"Commands cannot include the word '",
 		"Updated Command Box",
-		"Created Command Box"
+		"Created Command Box",
 	}
-	usermessage.Hook("CommandBoxMessage", function(um)
-		local message = um:ReadShort();
-		if (message == 1) then
-			local word = um:ReadShort();
-			message = messages[message] .. disallowed[word] .. "'!";
-		else
-			message = messages[message];
+	usermessage.Hook(
+		"CommandBoxMessage", function(um)
+			local message = um:ReadShort();
+			if (message == 1) then
+				local word = um:ReadShort();
+				message = messages[message] .. disallowed[word] .. "'!";
+			else
+				message = messages[message];
+			end
+			GAMEMODE:AddNotify(message, NOTIFY_GENERIC, 10);
+			surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav");
 		end
-		GAMEMODE:AddNotify(message, NOTIFY_GENERIC, 10);
-		surface.PlaySound ("ambient/water/drip" .. math.random(1, 4) .. ".wav");
-	end);
+	);
 
 	language.Add("Tool_commandbox_name", "Command Box Tool")
-	language.Add("Tool_commandbox_desc", "Allows you to assign concommands to numpad keys.")
+	language.Add(
+		"Tool_commandbox_desc", "Allows you to assign concommands to numpad keys."
+	)
 	language.Add("Tool_commandbox_0", "Left click to spawn a Command Box")
 
 	-- Other
@@ -103,24 +113,26 @@ if (CLIENT) then
 	language.Add("Cleaned_commandboxes", "Cleaned up all Command Boxes")
 	TOOL.LeftClick = canTool;
 	function TOOL.BuildCPanel(cp)
-		cp:AddControl("Header", {Text = "#Tool_commandbox_name", Description = "#Tool_commandbox_desc"})
+		cp:AddControl(
+			"Header",
+			{Text = "#Tool_commandbox_name", Description = "#Tool_commandbox_desc"}
+		)
 
-		cp:AddControl( "PropSelect", {
-			Label = "Model:";
-			ConVar = "commandbox_model";
-			Category = "Models";
-			Models = list.Get( "CommandboxModels" );
-		});
-		cp:AddControl("Numpad", {
-			Label = "Key:";
-			Command = "commandbox_key";
-			ButtonSize = 22;
-		});
-		cp:AddControl("TextBox", {
-			Label = "Command";
-			MaxLength = "255";
-			Command = "commandbox_command";
-		});
+		cp:AddControl(
+			"PropSelect", {
+				Label = "Model:",
+				ConVar = "commandbox_model",
+				Category = "Models",
+				Models = list.Get("CommandboxModels"),
+			}
+		);
+		cp:AddControl(
+			"Numpad", {Label = "Key:", Command = "commandbox_key", ButtonSize = 22}
+		);
+		cp:AddControl(
+			"TextBox",
+			{Label = "Command", MaxLength = "255", Command = "commandbox_command"}
+		);
 	end
 	return;
 end
@@ -143,8 +155,8 @@ function TOOL:LeftClick(tr)
 
 	local ply = self:GetOwner();
 	local model, command, key;
-	key     = self:GetClientNumber("key");
-	model   = self:GetClientInfo("model");
+	key = self:GetClientNumber("key");
+	model = self:GetClientInfo("model");
 	command = self:GetClientInfo("command");
 
 	local search = string.lower(command);
@@ -156,7 +168,8 @@ function TOOL:LeftClick(tr)
 	end
 
 	local ent = tr.Entity
-	if (IsValid(ent) and ent:GetClass() == "gmod_commandbox" and ent:GetPlayer() == ply) then
+	if (IsValid(ent) and ent:GetClass() == "gmod_commandbox" and ent:GetPlayer() ==
+		ply) then
 		ent:SetCommand(command);
 		ent:SetKey(key);
 		msg(ply, 2);
@@ -167,9 +180,10 @@ function TOOL:LeftClick(tr)
 	angles.pitch = angles.pitch + 90;
 
 	local box = MakeCommandBox(ply, tr.HitPos, angles, model, key, command);
-	if (not box) then return false; end
+	if (not box) then
+		return false;
+	end
 	box:SetPos(tr.HitPos - tr.HitNormal * box:OBBMins().z);
-
 
 	local weld;
 	if (IsValid(ent) and not ent:IsWorld()) then

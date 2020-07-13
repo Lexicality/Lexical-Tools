@@ -18,11 +18,11 @@ DEFINE_BASECLASS "weapon_keypad_cracker";
 
 AddCSLuaFile();
 
-SWEP.Category  = "Roleplay";
+SWEP.Category = "Roleplay";
 SWEP.PrintName = "Über Keypad Cracker";
-SWEP.Slot      = 4;
-SWEP.SlotPos   = 1;
-SWEP.Author    = "Lexi";
+SWEP.Slot = 4;
+SWEP.SlotPos = 1;
+SWEP.Author = "Lexi";
 SWEP.Spawnable = true;
 SWEP.AdminOnly = true;
 

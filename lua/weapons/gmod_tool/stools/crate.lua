@@ -14,26 +14,30 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-TOOL.Category    = "Lexical Tools"
-TOOL.Name        = "#Resizable Crates"
+TOOL.Category = "Lexical Tools"
+TOOL.Name = "#Resizable Crates"
 TOOL.ClientConVar["scale"] = "1"
 
 if (CLIENT) then
 	language.Add("Tool_crate_name", "Resizable Crates");
-	language.Add("Tool_crate_desc", "Creates a crate of the speicified size with full collisions");
-	language.Add("Tool_crate_0",    "Left click to spawn a Crate");
-	language.Add("Undone_crate",    "Undone Crate");
-	language.Add("gmod_crate",      "Crate");
-
+	language.Add(
+		"Tool_crate_desc",
+		"Creates a crate of the speicified size with full collisions"
+	);
+	language.Add("Tool_crate_0", "Left click to spawn a Crate");
+	language.Add("Undone_crate", "Undone Crate");
+	language.Add("gmod_crate", "Crate");
 
 	function TOOL.BuildCPanel(cp)
-		cp:AddControl("Slider", {
-			Label = "Scale",
-			Type = "Integer",
-			Min = 1,
-			Max = 10,
-			Command = "crate_Scale"
-		});
+		cp:AddControl(
+			"Slider", {
+				Label = "Scale",
+				Type = "Integer",
+				Min = 1,
+				Max = 10,
+				Command = "crate_Scale",
+			}
+		);
 	end
 	function TOOL:LeftClick(tr)
 		return tr.Hit;
@@ -56,7 +60,9 @@ function TOOL:LeftClick(tr)
 	local angles = tr.HitNormal:Angle();
 	angles.pitch = angles.pitch + 90;
 	local ent = MakeCrate(ply, tr.HitPos, angles, scale);
-	if (not ent) then return false; end
+	if (not ent) then
+		return false;
+	end
 	ent:SetPos(tr.HitPos - tr.HitNormal * ent:OBBMins().z);
 
 	undo.Create("crate");

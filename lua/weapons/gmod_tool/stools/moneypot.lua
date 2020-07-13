@@ -14,8 +14,8 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-TOOL.Category    = "Lexical Tools"
-TOOL.Name        = "#tool.moneypot.name"
+TOOL.Category = "Lexical Tools"
+TOOL.Name = "#tool.moneypot.name"
 TOOL.ClientConVar["weld"] = 1
 
 cleanup.Register("moneypots")
@@ -37,11 +37,17 @@ function TOOL:UpdateGhost(ent, ply)
 end
 
 function TOOL:Think()
-	if (SERVER and not game.SinglePlayer()) then return end
-	if (CLIENT and game.SinglePlayer()) then return end
+	if (SERVER and not game.SinglePlayer()) then
+		return
+	end
+	if (CLIENT and game.SinglePlayer()) then
+		return
+	end
 	local ent = self.GhostEntity;
 	if (not IsValid(ent)) then
-		self:MakeGhostEntity("models/props_lab/powerbox02b.mdl", vector_origin, Angle());
+		self:MakeGhostEntity(
+			"models/props_lab/powerbox02b.mdl", vector_origin, Angle()
+		);
 	end
 	self:UpdateGhost(self.GhostEntity, self:GetOwner());
 end
@@ -54,7 +60,10 @@ if (CLIENT) then
 	language.Add("tool.moneypot.name", "Money Pot")
 	language.Add("tool.moneypot.desc", "Create a DarkRP Money Pot")
 	language.Add("tool.moneypot.0", "Left click to spawn a Money Pot")
-	language.Add("tool.moneypot.header", "Allows you to store vast amounts of money in a small box.")
+	language.Add(
+		"tool.moneypot.header",
+		"Allows you to store vast amounts of money in a small box."
+	)
 	language.Add("tool.moneypot.weld", "Weld to target")
 
 	-- Other
@@ -67,14 +76,11 @@ if (CLIENT) then
 		return canTool(tr);
 	end
 	function TOOL.BuildCPanel(cp)
-		cp:AddControl("Label", {
-			Text = "#tool.moneypot.header",
-		});
+		cp:AddControl("Label", {Text = "#tool.moneypot.header"});
 
-		cp:AddControl( "Checkbox", {
-			Label = "#tool.moneypot.weld",
-			Command = "moneypot_weld",
-		});
+		cp:AddControl(
+			"Checkbox", {Label = "#tool.moneypot.weld", Command = "moneypot_weld"}
+		);
 	end
 	return;
 end
@@ -91,10 +97,13 @@ function TOOL:LeftClick(tr)
 	local angles = tr.HitNormal:Angle();
 	angles.pitch = angles.pitch + 90;
 
-	local box = MakeMoneyPot(ply, tr.HitPos, angles, "models/props_lab/powerbox02b.mdl");
-	if (not box) then return false; end
+	local box = MakeMoneyPot(
+		ply, tr.HitPos, angles, "models/props_lab/powerbox02b.mdl"
+	);
+	if (not box) then
+		return false;
+	end
 	box:SetPos(tr.HitPos - tr.HitNormal * box:OBBMins().z);
-
 
 	local weld;
 	local ent = tr.Entity

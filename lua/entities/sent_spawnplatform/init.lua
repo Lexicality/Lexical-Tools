@@ -28,32 +28,36 @@ local colour_on = Color(0, 255, 0)
 local colour_off = Color(255, 0, 0)
 local colour_flipped = Color(0, 255, 255)
 
-numpad.Register("NPCSpawnerOn", function(ply, ent)
-	npcspawner.debug("Numpad on called for", ent, "by", ply);
-	if (IsValid(ent)) then
-		ent:TurnOn();
-	else
-		npcspawner.debug("Invalid entity provided?!");
+numpad.Register(
+	"NPCSpawnerOn", function(ply, ent)
+		npcspawner.debug("Numpad on called for", ent, "by", ply);
+		if (IsValid(ent)) then
+			ent:TurnOn();
+		else
+			npcspawner.debug("Invalid entity provided?!");
+		end
 	end
-end);
+);
 
-numpad.Register("NPCSpawnerOff", function(ply, ent)
-	npcspawner.debug("Numpad off called for", ent, "by", ply);
-	if (IsValid(ent)) then
-		ent:TurnOff();
-	else
-		npcspawner.debug("Invalid entity provided?!");
+numpad.Register(
+	"NPCSpawnerOff", function(ply, ent)
+		npcspawner.debug("Numpad off called for", ent, "by", ply);
+		if (IsValid(ent)) then
+			ent:TurnOff();
+		else
+			npcspawner.debug("Invalid entity provided?!");
+		end
 	end
-end);
+);
 
 function ENT:Initialize()
 	-- Default values
-	self.NPCs           = {};
-	self.Spawned        = 0;
-	self.LastSpawn      = 0;
-	self.LastChange     = 0;
-	self.TotalSpawned   = 0;
-	self._prevOnKeypad  = false;
+	self.NPCs = {};
+	self.Spawned = 0;
+	self.LastSpawn = 0;
+	self.LastChange = 0;
+	self.TotalSpawned = 0;
+	self._prevOnKeypad = false;
 	self._prevOffKeypad = false;
 
 	npcspawner.debug2(self, "now exists!");
@@ -61,10 +65,13 @@ function ENT:Initialize()
 	self:OnActiveChange(nil, nil, self:IsActive());
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetMoveType(MOVETYPE_VPHYSICS);
-	self:SetSolid   (SOLID_VPHYSICS);
+	self:SetSolid(SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject();
 	if (not IsValid(phys)) then
-		ErrorNoHalt("No physics object for ", tostring(self), " using model ", self:GetModel(), "?\n");
+		ErrorNoHalt(
+			"No physics object for ", tostring(self), " using model ", self:GetModel(),
+			"?\n"
+		);
 	elseif (self:GetFrozen()) then
 		phys:EnableMotion(false);
 	else
@@ -86,12 +93,9 @@ function ENT:IsOwnerAllowed()
 end
 
 function ENT:CanSpawnNPC()
-	return (
-		self:IsActive()
-		and self:IsOwnerAllowed()
-		and self.Spawned < self:GetMaxNPCs()
-		and (self.LastSpawn + self:GetSpawnDelay()) <= CurTime()
-	)
+	return (self:IsActive() and self:IsOwnerAllowed() and self.Spawned <
+       		self:GetMaxNPCs() and (self.LastSpawn + self:GetSpawnDelay()) <=
+       		CurTime())
 end
 
 function ENT:OrentationThink()
@@ -115,7 +119,9 @@ function ENT:OrentationThink()
 end
 
 function ENT:Think()
-	if (BaseClass.Think) then BaseClass.Think(self); end
+	if (BaseClass.Think) then
+		BaseClass.Think(self);
+	end
 
 	if (not self:OrentationThink()) then
 		return;
@@ -212,11 +218,15 @@ end
 
 --[[ Hammer I/O ]] --
 function ENT:AcceptInput(name, activator, called, value)
-	if (BaseClass.AcceptInput and BaseClass.AcceptInput(self, name, activator, called, value)) then
+	if (BaseClass.AcceptInput and
+		BaseClass.AcceptInput(self, name, activator, called, value)) then
 		return true;
 	end
 
-	npcspawner.debug2(self, "has just had their", name, "triggered by", tostring(called), "which was caused by", tostring(activator), "and was passed", value);
+	npcspawner.debug2(
+		self, "has just had their", name, "triggered by", tostring(called),
+		"which was caused by", tostring(activator), "and was passed", value
+	);
 
 	if (name == "TurnOn") then
 		self:TurnOn();
@@ -232,5 +242,5 @@ function ENT:AcceptInput(name, activator, called, value)
 		return true;
 	end
 
-    return false;
+	return false;
 end

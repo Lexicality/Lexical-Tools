@@ -21,7 +21,11 @@ function ENT:ResetLastSpawn()
 end
 
 local function labelr(self)
-	timer.Simple(0, function() self:UpdateLabel() end);
+	timer.Simple(
+		0, function()
+			self:UpdateLabel()
+		end
+	);
 end
 
 function ENT:RegisterListeners()
@@ -30,12 +34,16 @@ function ENT:RegisterListeners()
 	self:NetworkVarNotify("PlayerID", self.OnPlayerIDChange);
 	self:NetworkVarNotify("Player", self.OnPlayerChange);
 	self:NetworkVarNotify("Frozen", self.OnFrozenStateChange);
-	self:NetworkVarNotify("OnKey", function(self, _, _, onKey)
-		self:RebindNumpads(self:GetPlayer(), onKey, self:GetOffKey());
-	end)
-	self:NetworkVarNotify("OffKey", function(self, _, _, offKey)
-		self:RebindNumpads(self:GetPlayer(), self:GetOnKey(), offKey);
-	end)
+	self:NetworkVarNotify(
+		"OnKey", function(self, _, _, onKey)
+			self:RebindNumpads(self:GetPlayer(), onKey, self:GetOffKey());
+		end
+	)
+	self:NetworkVarNotify(
+		"OffKey", function(self, _, _, offKey)
+			self:RebindNumpads(self:GetPlayer(), self:GetOnKey(), offKey);
+		end
+	)
 	self:NetworkVarNotify("NPC", labelr);
 	self:NetworkVarNotify("NPCWeapon", labelr);
 	self:NetworkVarNotify("SpawnDelay", labelr);
@@ -102,7 +110,9 @@ function ENT:RebindNumpads(ply, keyOn, keyOff)
 end
 
 function ENT:OnRemove()
-	if (BaseClass.OnRemove) then BaseClass.OnRemove(self); end
+	if (BaseClass.OnRemove) then
+		BaseClass.OnRemove(self);
+	end
 	npcspawner.debug(self, "has been removed.");
 	if (self:GetAutoRemove()) then
 		self:RemoveNPCs();

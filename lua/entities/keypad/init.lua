@@ -53,54 +53,56 @@ function ENT:Initialize()
 
 	-- Defaults
 	self.kvs = {
-		password = "";
-		secure = false;
+		password = "",
+		secure = false,
 		access = {
-			numpad_key      = nil,
-			initial_delay   = 0,
-			repetitions     = 1,
+			numpad_key = nil,
+			initial_delay = 0,
+			repetitions = 1,
 
-			rep_delay       = 0;
-			rep_length      = 0.1,
+			rep_delay = 0,
+			rep_length = 0.1,
 
 			wire_name = "Access Granted",
-			wire_value_on   = 1,
-			wire_value_off  = 0,
-			wire_toggle     = false,
+			wire_value_on = 1,
+			wire_value_off = 0,
+			wire_toggle = false,
 		},
 		denied = {
-			numpad_key      = nil,
-			initial_delay   = 0,
-			repetitions     = 1,
+			numpad_key = nil,
+			initial_delay = 0,
+			repetitions = 1,
 
-			rep_delay       = 0;
-			rep_length      = 0.1,
+			rep_delay = 0,
+			rep_length = 0.1,
 
 			wire_name = "Access Denied",
-			wire_value_on   = 1,
-			wire_value_off  = 0,
-			wire_toggle     = false,
+			wire_value_on = 1,
+			wire_value_off = 0,
+			wire_toggle = false,
 		},
 	};
-	self._WireToggleStates = { [self.kvs.access.wire_name] = false, [self.kvs.denied.wire_name] = false };
+	self._WireToggleStates = {
+		[self.kvs.access.wire_name] = false,
+		[self.kvs.denied.wire_name] = false,
+	};
 	self._Password = "";
 
 	local outputs = {
 		{
-			Name = self.kvs.access.wire_name;
-			Desc = "Triggered when the right code is entered";
-		};
+			Name = self.kvs.access.wire_name,
+			Desc = "Triggered when the right code is entered",
+		},
 		{
-			Name = self.kvs.denied.wire_name;
-			Desc = "Triggered when the wrong code is entered";
-		};
+			Name = self.kvs.denied.wire_name,
+			Desc = "Triggered when the wrong code is entered",
+		},
 	}
 
 	if (cvar_wire_cracking:GetBool()) then
-		table.insert(outputs, {
-			Name = "Being Cracked";
-			Desc = "If the keypad is being cracked";
-		});
+		table.insert(
+			outputs, {Name = "Being Cracked", Desc = "If the keypad is being cracked"}
+		);
 	end
 
 	self:CreateWireOutputs(outputs)
@@ -128,35 +130,37 @@ function ENT:CheckPassword(ply, pass)
 end
 
 local allowed_kvs = {
-	password              = true,
-	secure                = true,
-	access_numpad_key     = true,
-	access_initial_delay  = true,
-	access_repetitions    = true,
-	access_rep_delay      = true,
-	access_rep_length     = true,
-	access_wire_value_on  = true,
+	password = true,
+	secure = true,
+	access_numpad_key = true,
+	access_initial_delay = true,
+	access_repetitions = true,
+	access_rep_delay = true,
+	access_rep_length = true,
+	access_wire_value_on = true,
 	access_wire_value_off = true,
-	access_wire_toggle    = true,
-	denied_numpad_key     = true,
-	denied_initial_delay  = true,
-	denied_repetitions    = true,
-	denied_rep_delay      = true,
-	denied_rep_length     = true,
-	denied_wire_value_on  = true,
+	access_wire_toggle = true,
+	denied_numpad_key = true,
+	denied_initial_delay = true,
+	denied_repetitions = true,
+	denied_rep_delay = true,
+	denied_rep_length = true,
+	denied_wire_value_on = true,
 	denied_wire_value_off = true,
-	denied_wire_toggle    = true,
+	denied_wire_toggle = true,
 }
 local maxes = {
-	rep_length      = 20;
-	initial_delay   = 10;
-	rep_delay       = 10;
-	repetitions     = 5;
+	rep_length = 20,
+	initial_delay = 10,
+	rep_delay = 10,
+	repetitions = 5,
 };
 function ENT:KeyValue(key, value)
 	BaseClass.KeyValue(self, key, value);
 
-	if (not allowed_kvs[key]) then return; end
+	if (not allowed_kvs[key]) then
+		return;
+	end
 
 	local subcat = string.sub(key, 1, 6);
 	if (subcat == "access" or subcat == "denied") then
@@ -210,7 +214,9 @@ ENT.WrongSound = "buttons/button8.wav";
 ENT.PressSound = "buttons/button15.wav"
 
 local function ResetKeypad(self)
-	if (not IsValid(self)) then return; end
+	if (not IsValid(self)) then
+		return;
+	end
 	self._Password = "";
 	self:SetPasswordDisplay("");
 	self:SetStatus(self.STATUSES.Normal);
@@ -264,7 +270,7 @@ function ENT:KeypadInput(ply, input)
 	self._Password = newPassword;
 
 	if (self:IsSecure()) then
-		self:SetPasswordDisplay(string.rep('*', #self._Password));
+		self:SetPasswordDisplay(string.rep("*", #self._Password));
 	else
 		self:SetPasswordDisplay(self._Password);
 	end
@@ -287,15 +293,21 @@ end
 --[[ Keypad Triggerin Locals ]] --
 do
 	local function set_numpad_state(ent, kvs, state)
-		if (not IsValid(ent)) then return; end
+		if (not IsValid(ent)) then
+			return;
+		end
 		local ply = ent:GetPlayer();
-		if (not IsValid(ply)) then return; end
+		if (not IsValid(ply)) then
+			return;
+		end
 		local func = state and numpad.Activate or numpad.Deactivate;
 		func(ply, kvs.numpad_key, true);
 	end
 
 	local function set_wire_state(ent, kvs, state)
-		if (not IsValid(ent)) then return; end
+		if (not IsValid(ent)) then
+			return;
+		end
 
 		local value = state and kvs.wire_value_on or kvs.wire_value_off;
 
@@ -303,7 +315,9 @@ do
 	end
 
 	local function toggle_wire_state(ent, kvs)
-		if (not IsValid(ent)) then return; end
+		if (not IsValid(ent)) then
+			return;
+		end
 
 		local state = ent._WireToggleStates[kvs.wire_name];
 		state = not state;
@@ -313,14 +327,26 @@ do
 	end
 
 	local function on_off(ent, kvs, func, delay, length)
-		timer.Simple(delay,          function() func(ent, kvs, true);  end)
-		timer.Simple(delay + length, function() func(ent, kvs, false); end)
+		timer.Simple(
+			delay, function()
+				func(ent, kvs, true);
+			end
+		)
+		timer.Simple(
+			delay + length, function()
+				func(ent, kvs, false);
+			end
+		)
 	end
 
 	function ENT:HandleWireValueChange(kvs)
-		if (not WireLib) then return; end
+		if (not WireLib) then
+			return;
+		end
 		-- Don't do anything if we're mid-play
-		if (self:GetStatus() ~= self.STATUSES.Normal) then return; end
+		if (self:GetStatus() ~= self.STATUSES.Normal) then
+			return;
+		end
 
 		local state = false;
 		if (kvs.wire_toggle) then
@@ -350,19 +376,31 @@ do
 
 		-- If nothing is going to happen, do nothing.
 		if (not numpad_key and not self:IsWireOutputConnected(kvs.wire_name)) then
-			timer.Simple(cvar_min_recharge:GetFloat(), function() ResetKeypad(self) end)
+			timer.Simple(
+				cvar_min_recharge:GetFloat(), function()
+					ResetKeypad(self)
+				end
+			)
 			return;
 		end
 
-		local delay      = kvs.initial_delay;
-		local num_reps   = kvs.repetitions;
-		local rep_delay  = kvs.rep_delay;
+		local delay = kvs.initial_delay;
+		local num_reps = kvs.repetitions;
+		local rep_delay = kvs.rep_delay;
 		local rep_length = math.max(kvs.rep_length, cvar_min_length:GetFloat());
 
-		local total_time = delay + (num_reps * rep_length) + ((num_reps - 1) * rep_delay);
+		local total_time = delay + (num_reps * rep_length) +
+                   			((num_reps - 1) * rep_delay);
 		-- Show the "Access XXX" screen for quarter of a second after all effects finish
-		local recharge_time = math.min(math.max(total_time + 0.25, cvar_min_recharge:GetFloat()), cvar_max_recharge:GetFloat());
-		timer.Simple(recharge_time, function() ResetKeypad(self) end)
+		local recharge_time = math.min(
+			math.max(total_time + 0.25, cvar_min_recharge:GetFloat()),
+			cvar_max_recharge:GetFloat()
+		);
+		timer.Simple(
+			recharge_time, function()
+				ResetKeypad(self)
+			end
+		)
 
 		for rep = 0, num_reps - 1 do
 			if (numpad_key) then
@@ -371,7 +409,11 @@ do
 			if (WireLib) then
 				if (kvs.wire_toggle) then
 					local delay = kvs.initial_delay + rep_delay * rep;
-					timer.Simple(delay, function() toggle_wire_state(self, kvs, access) end);
+					timer.Simple(
+						delay, function()
+							toggle_wire_state(self, kvs, access)
+						end
+					);
 				else
 					on_off(self, kvs, set_wire_state, delay, rep_length)
 				end
@@ -381,10 +423,11 @@ do
 	end
 end
 
-
 ENT.NextCrackNum = 0;
 function ENT:Think()
-	if (BaseClass.Think) then BaseClass.Think(self); end
+	if (BaseClass.Think) then
+		BaseClass.Think(self);
+	end
 	if (not self:IsBeingCracked()) then
 		return;
 	end
@@ -409,20 +452,27 @@ local binds = {
 	[KEY_PAD_ENTER] = "accept",
 	[KEY_PAD_PLUS] = "reset",
 }
-hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
-	local cmd = binds[button];
-	if (not cmd) then return; end
+hook.Add(
+	"PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
+		local cmd = binds[button];
+		if (not cmd) then
+			return;
+		end
 
-	local tr = ply:GetEyeTrace();
-	if (not (IsValid(tr.Entity) and tr.Entity.IsKeypad) or tr.StartPos:Distance(tr.HitPos) > 90) then
-		return;
+		local tr = ply:GetEyeTrace();
+		if (not (IsValid(tr.Entity) and tr.Entity.IsKeypad) or
+			tr.StartPos:Distance(tr.HitPos) > 90) then
+			return;
+		end
+
+		tr.Entity:KeypadInput(ply, cmd);
 	end
-
-	tr.Entity:KeypadInput(ply, cmd);
-end);
+);
 
 function ENT:Use(activator, ...)
-	if (BaseClass.Use) then BaseClass.Use(self, activator, ...); end
+	if (BaseClass.Use) then
+		BaseClass.Use(self, activator, ...);
+	end
 	if (not (IsValid(activator) and activator:IsPlayer())) then
 		return;
 	elseif (not self:IsInteractive()) then
@@ -524,7 +574,11 @@ local w2m = {
 	LengthDenied = "denied_rep_length",
 }
 
-duplicator.RegisterEntityModifier("keypad_password_passthrough", function(ply, ent, data) ent:SetData(data) end)
+duplicator.RegisterEntityModifier(
+	"keypad_password_passthrough", function(ply, ent, data)
+		ent:SetData(data)
+	end
+)
 
 function ENT:SetData(data)
 	for key, kv in pairs(w2m) do
@@ -571,12 +625,18 @@ end
 
 -- I don't think these are strictly necessary but whatever
 function ENT:PreEntityCopy()
-	if (BaseClass.PreEntityCopy) then BaseClass.PreEntityCopy(self); end
+	if (BaseClass.PreEntityCopy) then
+		BaseClass.PreEntityCopy(self);
+	end
 	self.KeypadData = self:GetData();
-	duplicator.StoreEntityModifier(self, "keypad_password_passthrough", self.KeypadData);
+	duplicator.StoreEntityModifier(
+		self, "keypad_password_passthrough", self.KeypadData
+	);
 end
 
 function ENT:PostEntityCopy()
-	if (BaseClass.PostEntityCopy) then BaseClass.PostEntityCopy(self); end
+	if (BaseClass.PostEntityCopy) then
+		BaseClass.PostEntityCopy(self);
+	end
 	self.KeypadData = nil;
 end

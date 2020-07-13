@@ -16,17 +16,17 @@
 ]] --
 AddCSLuaFile();
 
-SWEP.Category       = "Roleplay"
-SWEP.PrintName      = "Keypad Tester"
-SWEP.Author         = "Lexi"
-SWEP.Instructions   = "Left click to gain access, Right click to be denied";
-SWEP.DrawAmmo       = false
-SWEP.Primary.Ammo   = ""
+SWEP.Category = "Roleplay"
+SWEP.PrintName = "Keypad Tester"
+SWEP.Author = "Lexi"
+SWEP.Instructions = "Left click to gain access, Right click to be denied";
+SWEP.DrawAmmo = false
+SWEP.Primary.Ammo = ""
 SWEP.Secondary.Ammo = ""
-SWEP.Slot           = 5
+SWEP.Slot = 5
 
-SWEP.Spawnable      = true;
-SWEP.AdminOnly      = true;
+SWEP.Spawnable = true;
+SWEP.AdminOnly = true;
 
 function SWEP:CanTrigger(keypad)
 	if (not IsValid(keypad) or keypad:GetClass() ~= "keypad") then

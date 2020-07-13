@@ -18,23 +18,23 @@ local PANEL = {};
 
 DEFINE_BASECLASS "DPropertySheet";
 
-AccessorFunc( PANEL, "m_ConVar", "ConVar" );
+AccessorFunc(PANEL, "m_ConVar", "ConVar");
 
 function PANEL:Init()
-	local npcs = list.Get('NPC');
+	local npcs = list.Get("NPC");
 
 	local function onNPCSelected(_, _, line)
-		RunConsoleCommand( self:GetConVar(), line.nicename )
+		RunConsoleCommand(self:GetConVar(), line.nicename)
 	end
 
 	-- All tab
-	local ctrl = vgui.Create( "DListView" );
-	ctrl:SetMultiSelect( false );
-	ctrl:AddColumn( "#npcs" );
-	ctrl:AddColumn( "#category" );
+	local ctrl = vgui.Create("DListView");
+	ctrl:SetMultiSelect(false);
+	ctrl:AddColumn("#npcs");
+	ctrl:AddColumn("#category");
 
-	for nicename, data in pairs( npcs ) do
-		local line = ctrl:AddLine( data.Name, data.Category or "Other" )
+	for nicename, data in pairs(npcs) do
+		local line = ctrl:AddLine(data.Name, data.Category or "Other")
 		line.nicename = nicename;
 	end
 
@@ -52,17 +52,17 @@ function PANEL:Init()
 
 	for category, npcs in SortedPairs(categories) do
 		-- Temp standin
-		local ctrl = vgui.Create( "DListView" );
-		ctrl:SetMultiSelect( false );
-		ctrl:AddColumn( "#npcs" );
+		local ctrl = vgui.Create("DListView");
+		ctrl:SetMultiSelect(false);
+		ctrl:AddColumn("#npcs");
 
-		for nicename, data in pairs( npcs ) do
-			local line = ctrl:AddLine( data.Name )
+		for nicename, data in pairs(npcs) do
+			local line = ctrl:AddLine(data.Name)
 			line.nicename = nicename;
 		end
 		ctrl.OnRowSelected = onNPCSelected;
 
-		ctrl:SortByColumn( 1, false )
+		ctrl:SortByColumn(1, false)
 
 		self:AddSheet(category, ctrl);
 	end
@@ -72,12 +72,14 @@ function PANEL:Init()
 
 end
 
-function PANEL:ControlValues( data )
-	if ( data.command ) then
-		self:SetConVar( data.command );
+function PANEL:ControlValues(data)
+	if (data.command) then
+		self:SetConVar(data.command);
 	end
 end
 
 -- TODO: Think hook!
 
-derma.DefineControl("NPCSpawnSelecter", "Selects a NPC fo' spawnin'", PANEL, "DPropertySheet")
+derma.DefineControl(
+	"NPCSpawnSelecter", "Selects a NPC fo' spawnin'", PANEL, "DPropertySheet"
+)

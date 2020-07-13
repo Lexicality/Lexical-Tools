@@ -17,28 +17,36 @@
 DEFINE_BASECLASS(ENT.Base);
 
 -- The built in duplicator function messes with the platform too much
-duplicator.RegisterEntityClass("sent_spawnplatform", function(ply, data)
-	if (npcspawner.config.adminonly == 1 and IsValid(ply) and not ply:IsAdmin()) then
-		npcspawner.debug(ply, "tried to duplicate a platform in admin mode but isn't an admin!");
+duplicator.RegisterEntityClass(
+	"sent_spawnplatform", function(ply, data)
+		if (npcspawner.config.adminonly == 1 and IsValid(ply) and not ply:IsAdmin()) then
+			npcspawner.debug(
+				ply, "tried to duplicate a platform in admin mode but isn't an admin!"
+			);
+			return nil;
+		end
+
+		if (BaseClass.CanDuplicate(ply, data)) then
+			return BaseClass.GenericDuplicate(ply, data);
+		end
+
 		return nil;
-	end
-
-	if (BaseClass.CanDuplicate(ply, data)) then
-		return BaseClass.GenericDuplicate(ply, data);
-	end
-
-	return nil;
-end, "Data");
+	end, "Data"
+);
 
 ENT.__MODIFIER_ID = "NPC Spawn Platforms Spawner"
 -- So we can attempt to re-attribute NPCs to their platforms on save/restore
-duplicator.RegisterEntityModifier(ENT.__MODIFIER_ID, function(ply, ent, data)
-	-- This is blank because we don't need to modify the entity at all
-end);
+duplicator.RegisterEntityModifier(
+	ENT.__MODIFIER_ID, function(ply, ent, data)
+		-- This is blank because we don't need to modify the entity at all
+	end
+);
 
 -- Deal with old save data
 function ENT:OnDuplicated(data)
-	if (BaseClass.OnDuplicated) then BaseClass.OnDuplicated(self, data) end;
+	if (BaseClass.OnDuplicated) then
+		BaseClass.OnDuplicated(self, data)
+	end
 
 	npcspawner.debug2(self, "has been duplicated!");
 
@@ -53,7 +61,9 @@ function ENT:OnDuplicated(data)
 end
 
 function ENT:PostEntityPaste(ply, _, entList)
-	if (BaseClass.PostEntityPaste) then BaseClass.PostEntityPaste(self, ply, _, entList) end;
+	if (BaseClass.PostEntityPaste) then
+		BaseClass.PostEntityPaste(self, ply, _, entList)
+	end
 
 	if (not self._saveRestore) then
 		return;
@@ -64,7 +74,9 @@ function ENT:PostEntityPaste(ply, _, entList)
 
 	local lastNPC, lastID = nil, -1;
 
-	npcspawner.debug2("expecting to find", self._saveRestore.numSpawned, "NPCs in the entlist");
+	npcspawner.debug2(
+		"expecting to find", self._saveRestore.numSpawned, "NPCs in the entlist"
+	);
 	for _, ent in pairs(entList) do
 		-- Because not all entitymods may have been applied by this point, we need to check them manually
 		local tab = ent.EntityMods and ent.EntityMods[self.__MODIFIER_ID];
@@ -89,7 +101,7 @@ function ENT:PostEntityPaste(ply, _, entList)
 			if not n then
 				-- Oops
 				npcspawner.debug("Aborting NPC rehydration!")
-				break;
+				break
 			end
 		end
 	else
@@ -102,14 +114,18 @@ function ENT:PostEntityPaste(ply, _, entList)
 	self:TriggerWireOutput("TotalNPCsSpawned", self.TotalSpawned);
 
 	-- Restore LastSpawn so saves are consistent
-	npcspawner.debug2("Setting LastSpawn to be", self._saveRestore.lastSpawn, "seconds in the past");
+	npcspawner.debug2(
+		"Setting LastSpawn to be", self._saveRestore.lastSpawn, "seconds in the past"
+	);
 	self.LastSpawn = self._saveRestore.lastSpawn + CurTime();
 
 	self._saveRestore = nil;
 end
 
 function ENT:OnEntityCopyTableFinish(tab)
-	if (BaseClass.OnEntityCopyTableFinish) then BaseClass.OnEntityCopyTableFinish(self, tab) end;
+	if (BaseClass.OnEntityCopyTableFinish) then
+		BaseClass.OnEntityCopyTableFinish(self, tab)
+	end
 	-- Purge all legacy cruft from the dupe
 	for key in pairs(tab) do
 		if (key:sub(1, 2) == "k_") then

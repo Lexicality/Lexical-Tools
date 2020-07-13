@@ -62,5 +62,5 @@ function Wire_AddOutputs(ent, names, descs)
 	return WireLib.AdjustSpecialOutputs(ent, names, {}, descs);
 end
 
-WireLib.AddInputs  = Wire_AddInputs;
+WireLib.AddInputs = Wire_AddInputs;
 WireLib.AddOutputs = Wire_AddOutputs;

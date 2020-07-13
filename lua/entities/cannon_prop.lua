@@ -15,12 +15,12 @@
 	limitations under the License.
 ]] --
 AddCSLuaFile();
-ENT.Type           = "anim";
-ENT.Base           = "base_anim";
-ENT.PrintName      = "Prop Cannon Shot";
-ENT.Author         = "Lexi";
-ENT.Contact        = "lexi@lexi.org.uk";
-ENT.Spawnable      = false;
+ENT.Type = "anim";
+ENT.Base = "base_anim";
+ENT.PrintName = "Prop Cannon Shot";
+ENT.Author = "Lexi";
+ENT.Contact = "lexi@lexi.org.uk";
+ENT.Spawnable = false;
 ENT.AdminSpawnable = false;
 
 if (CLIENT) then
@@ -46,12 +46,14 @@ function ENT:Initialize()
 	end
 end
 
-hook.Add("EntityTakeDamage", "cannon_prop kill crediting", function(ent, info)
-	local me = info:GetInflictor();
-	if (IsValid(me) and me:GetClass() == "cannon_prop") then
-		info:SetAttacker(me.Owner);
+hook.Add(
+	"EntityTakeDamage", "cannon_prop kill crediting", function(ent, info)
+		local me = info:GetInflictor();
+		if (IsValid(me) and me:GetClass() == "cannon_prop") then
+			info:SetAttacker(me.Owner);
+		end
 	end
-end);
+);
 
 function ENT:Explode()
 	if (self.exploded) then
@@ -63,11 +65,12 @@ function ENT:Explode()
 	effectData:SetOrigin(pos);
 	effectData:SetScale(1);
 	util.Effect("Explosion", effectData);
-	util.BlastDamage(self, self.Owner, pos, self.explosiveRadius, self.explosivePower);
+	util.BlastDamage(
+		self, self.Owner, pos, self.explosiveRadius, self.explosivePower
+	);
 	self.exploded = true;
 	self:Remove();
 end
-
 
 function ENT:OnTakeDamage(damageInfo)
 	if (self.explosive) then
@@ -86,9 +89,10 @@ ENT.Touch = doBoom;
 ENT.PhysicsCollide = doBoom;
 ENT.Use = doBoom;
 
-
 function ENT:Think()
-	if (not self.dietime) then return; end
+	if (not self.dietime) then
+		return;
+	end
 	if (self.die) then
 		self:Remove();
 	elseif (self.dietime <= CurTime()) then

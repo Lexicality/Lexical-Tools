@@ -14,14 +14,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]] --
-ENT.Type           = "anim";
-ENT.PrintName      = "NPC Spawn Platform";
-ENT.WireDebugName  = "Spawn Platform";
-ENT.Author         = "Lexi/Devenger";
-ENT.Purpose        = "Spawn a constant(ish) stream of NPCs";
-ENT.Spawnable      = false;
-ENT.AdminOnly      = false;
-ENT.CountKey       = "spawnplatforms";
+ENT.Type = "anim";
+ENT.PrintName = "NPC Spawn Platform";
+ENT.WireDebugName = "Spawn Platform";
+ENT.Author = "Lexi/Devenger";
+ENT.Purpose = "Spawn a constant(ish) stream of NPCs";
+ENT.Spawnable = false;
+ENT.AdminOnly = false;
+ENT.CountKey = "spawnplatforms";
 
 DEFINE_BASECLASS "base_lexentity";
 
@@ -35,13 +35,13 @@ local function primeLookupCache()
 		reverseLookupCache[className] = tab.Name
 	end
 	reverseLookupCache["weapon_default"] = "Default Weapon"
-	reverseLookupCache["weapon_none"   ] = "None"
-	reverseLookupCache["weapon_rebel"  ] = "Random Rebel Weapon"
+	reverseLookupCache["weapon_none"] = "None"
+	reverseLookupCache["weapon_rebel"] = "Random Rebel Weapon"
 	reverseLookupCache["weapon_combine"] = "Random Combine Weapon"
 	reverseLookupCache["weapon_citizen"] = "Random Citizen Weapon"
 end
 
-local function convert( text )
+local function convert(text)
 	if (not reverseLookupCache) then
 		primeLookupCache()
 	end
@@ -56,7 +56,6 @@ Maximum: %d]]
 
 local overlayTextFlipped = "Cannot spawn %ss at this angle!"
 
-
 function ENT:UpdateLabel()
 	if (self:IsActive() and self:IsFlipped()) then
 		self:SetOverlayText(string.format(overlayTextFlipped, convert(self:GetNPC())))
@@ -65,11 +64,8 @@ function ENT:UpdateLabel()
 
 	self:SetOverlayText(
 		string.format(
-			overlayText,
-			convert(self:GetNPC()      ),
-			convert(self:GetNPCWeapon()),
-					self:GetSpawnDelay(),
-					self:GetMaxNPCs()
+			overlayText, convert(self:GetNPC()), convert(self:GetNPCWeapon()),
+			self:GetSpawnDelay(), self:GetMaxNPCs()
 		)
 	);
 end
@@ -88,164 +84,76 @@ local function StartDelayCustomSet(self, value)
 end
 
 ENT._NWVars = {
+	{Type = "Bool", Name = "Active", KeyName = "active", Default = false},
+	{Type = "Bool", Name = "Flipped", Default = false},
+
+	{Type = "String", Name = "NPC", KeyName = "npc", Default = "npc_combine_s"},
 	{
-		Type = "Bool";
-		Name = "Active";
-		KeyName = "active";
-		Default = false;
+		Type = "String",
+		Name = "NPCWeapon",
+		KeyName = "weapon",
+		Default = "weapon_smg1",
 	},
 	{
-		Type = "Bool";
-		Name = "Flipped";
-		Default = false;
+		Type = "Float",
+		Name = "NPCHealthMultiplier",
+		KeyName = "healthmul",
+		Default = 1,
+	},
+	{
+		Type = "Int",
+		Name = "NPCSkillLevel",
+		KeyName = "skill",
+		Default = WEAPON_PROFICIENCY_AVERAGE,
 	},
 
-	{
-		Type = "String";
-		Name = "NPC";
-		KeyName = "npc";
-		Default = "npc_combine_s";
-	},
-	{
-		Type = "String";
-		Name = "NPCWeapon";
-		KeyName = "weapon";
-		Default = "weapon_smg1";
-	},
-	{
-		Type = "Float";
-		Name = "NPCHealthMultiplier";
-		KeyName = "healthmul";
-		Default = 1;
-	},
-	{
-		Type = "Int";
-		Name = "NPCSkillLevel";
-		KeyName = "skill";
-		Default = WEAPON_PROFICIENCY_AVERAGE;
-	},
+	{Type = "Int", Name = "MaxNPCs", KeyName = "maximum", Default = 5},
+	{Type = "Int", Name = "MaxNPCsTotal", KeyName = "totallimit", Default = 0},
+
+	{Type = "Int", Name = "OnKey", KeyName = "OnKey"},
+	{Type = "Int", Name = "OffKey", KeyName = "offkey"},
 
 	{
-		Type = "Int";
-		Name = "MaxNPCs";
-		KeyName = "maximum";
-		Default = 5;
+		Type = "Bool",
+		Name = "CustomSquad",
+		KeyName = "customsquads",
+		Default = false,
 	},
-	{
-		Type = "Int";
-		Name = "MaxNPCsTotal";
-		KeyName = "totallimit";
-		Default = 0;
-	},
+	{Type = "Int", Name = "SquadOverride", KeyName = "squadoverride", Default = 0},
 
 	{
-		Type = "Int";
-		Name = "OnKey";
-		KeyName = "OnKey";
+		Type = "Float",
+		Name = "StartDelay",
+		KeyName = "delay",
+		Special = {Set = StartDelayCustomSet},
+		Default = 5,
 	},
+	{Type = "Float", Name = "DelayDecrease", KeyName = "decrease", Default = 0},
+	{Type = "Float", Name = "SpawnDelay"},
 	{
-		Type = "Int";
-		Name = "OffKey";
-		KeyName = "offkey";
+		Type = "Bool",
+		Name = "LegacySpawnMode",
+		LegacyName = "oldspawning",
+		Default = false,
 	},
 
-	{
-		Type = "Bool";
-		Name = "CustomSquad";
-		KeyName = "customsquads";
-		Default = false;
-	},
-	{
-		Type = "Int";
-		Name = "SquadOverride";
-		KeyName = "squadoverride";
-		Default = 0;
-	},
+	{Type = "Bool", Name = "CanToggle", KeyName = "toggleable", Default = true},
+	{Type = "Bool", Name = "AutoRemove", KeyName = "autoremove", Default = true},
 
-	{
-		Type = "Float";
-		Name = "StartDelay";
-		KeyName = "delay";
-		Special = {
-			Set = StartDelayCustomSet
-		};
-		Default = 5;
-	},
-	{
-		Type = "Float";
-		Name = "DelayDecrease";
-		KeyName = "decrease";
-		Default = 0;
-	},
-	{
-		Type = "Float";
-		Name = "SpawnDelay";
-	},
-	{
-		Type = "Bool";
-		Name = "LegacySpawnMode";
-		LegacyName = "oldspawning";
-		Default = false;
-	},
+	{Type = "Int", Name = "SpawnHeight", KeyName = "spawnheight", Default = 16},
+	{Type = "Int", Name = "SpawnRadius", KeyName = "spawnradius", Default = 16},
+	{Type = "Bool", Name = "NoCollideNPCs", KeyName = "nocollide", Default = true},
+	{Type = "Bool", Name = "Frozen", KeyName = "frozen", Default = true},
+	{Type = "Int", Name = "RPValue", KeyName = "killvalue", Default = -1},
 
-	{
-		Type = "Bool";
-		Name = "CanToggle";
-		KeyName = "toggleable";
-		Default = true;
-	},
-	{
-		Type = "Bool";
-		Name = "AutoRemove";
-		KeyName = "autoremove";
-		Default = true;
-	},
-
-	{
-		Type = "Int";
-		Name = "SpawnHeight";
-		KeyName = "spawnheight";
-		Default = 16;
-	},
-	{
-		Type = "Int";
-		Name = "SpawnRadius";
-		KeyName = "spawnradius";
-		Default = 16;
-	},
-	{
-		Type = "Bool";
-		Name = "NoCollideNPCs";
-		KeyName = "nocollide";
-		Default = true;
-	},
-	{
-		Type = "Bool";
-		Name = "Frozen";
-		KeyName = "frozen";
-		Default = true;
-	},
-	{
-		Type = "Int";
-		Name = "RPValue";
-		KeyName = "killvalue";
-		Default = -1;
-	},
-
-	{
-		Type = "Entity";
-		Name = "Player";
-		Default = NULL;
-	},
-	{
-		Type = "Int";
-		Name = "PlayerID";
-		KeyName = "ply";
-	},
+	{Type = "Entity", Name = "Player", Default = NULL},
+	{Type = "Int", Name = "PlayerID", KeyName = "ply"},
 }
 
 function ENT:SetupDataTables()
-	if (BaseClass.SetupDataTables) then BaseClass.SetupDataTables(self); end
+	if (BaseClass.SetupDataTables) then
+		BaseClass.SetupDataTables(self);
+	end
 
 	-- In order not to break existing compatability, make sure all
 	--  keys are still available under their old names.

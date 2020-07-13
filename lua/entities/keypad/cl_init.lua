@@ -18,28 +18,15 @@ DEFINE_BASECLASS "base_lexentity";
 
 include("shared.lua");
 
-surface.CreateFont("Keypad Key", {
-	font   = "Trebuchet MS";
-	size   = 18;
-	weight = 700
-});
-surface.CreateFont("Keypad Secure Input", {
-	font   = "Lucida Console";
-	size   = 34;
-});
-surface.CreateFont("Keypad Input", {
-	font   = "Lucida Console";
-	size   = 34;
-});
-surface.CreateFont("Keypad Input Long", {
-	font   = "Lucida Console";
-	size   = 26;
-});
-surface.CreateFont("Keypad Message", {
-	font   = "Lucida Console";
-	size   = 19;
-	weight = 600
-});
+surface.CreateFont(
+	"Keypad Key", {font = "Trebuchet MS", size = 18, weight = 700}
+);
+surface.CreateFont("Keypad Secure Input", {font = "Lucida Console", size = 34});
+surface.CreateFont("Keypad Input", {font = "Lucida Console", size = 34});
+surface.CreateFont("Keypad Input Long", {font = "Lucida Console", size = 26});
+surface.CreateFont(
+	"Keypad Message", {font = "Lucida Console", size = 19, weight = 600}
+);
 
 local keys = {};
 do
@@ -48,15 +35,7 @@ do
 		local tw, th = surface.GetTextSize(text);
 		local tx = x + w / 2 - tw / 2;
 		local ty = y + h / 2 - th / 2;
-		return {
-			tx,
-			ty,
-			text,
-			x,
-			y,
-			w,
-			h,
-		};
+		return {tx, ty, text, x, y, w, h};
 	end
 	local key = 1;
 	local size = 25;
@@ -66,7 +45,9 @@ do
 	local y = 105;
 	for j = 2, 0, -1 do
 		for i = 0, 2 do
-			keys[key] = CreateKeyTab(x + i * offset, y + j * offset, size, size, tostring(key));
+			keys[key] = CreateKeyTab(
+				x + i * offset, y + j * offset, size, size, tostring(key)
+			);
 			key = key + 1;
 		end
 	end
@@ -151,11 +132,9 @@ end
 -- Draws a burst of light where the beam hits to hide the ugly clipping
 function ENT:DrawCrackingLight()
 	local target = self:GetZapPos()
-	local tr = util.TraceLine({
-		start = EyePos(),
-		endpos = target,
-		filter = { LocalPlayer() },
-	})
+	local tr = util.TraceLine(
+		{start = EyePos(), endpos = target, filter = {LocalPlayer()}}
+	)
 
 	if (tr.Entity == self) then
 		cam.IgnoreZ(true);
@@ -256,34 +235,35 @@ function ENT:Draw()
 		return;
 	end
 
-	local pos = self:GetPos() + (self:GetForward() * 1.02) + (self:GetRight() * 2.75) + (self:GetUp() * 5.25);
+	local pos = self:GetPos() + (self:GetForward() * 1.02) +
+            		(self:GetRight() * 2.75) + (self:GetUp() * 5.25);
 	local ang = self:GetAngles();
 
 	ang:RotateAroundAxis(ang:Right(), -90);
-	ang:RotateAroundAxis(ang:Up(),     90);
+	ang:RotateAroundAxis(ang:Up(), 90);
 
 	cam.Start3D2D(pos, ang, 0.05);
-		-- Draw the background
-		self:DrawBackground();
-		self:DrawKeys();
+	-- Draw the background
+	self:DrawBackground();
+	self:DrawKeys();
 
-		local status = self:GetStatus();
-		local input = self:GetPasswordDisplay();
-		if (self:IsBeingCracked()) then
-			self:DrawCrackingScreen();
-		elseif (status ~= self.STATUSES.Normal) then
-			if (status == self.STATUSES.AccessGranted) then
-				self:DrawAccessGranted();
-			else
-				self:DrawAccessDenied();
-			end
-		elseif (input ~= "") then
-			if (self:IsSecure()) then
-				self:DrawSecureInput(input);
-			else
-				self:DrawInsecureInput(input);
-			end
+	local status = self:GetStatus();
+	local input = self:GetPasswordDisplay();
+	if (self:IsBeingCracked()) then
+		self:DrawCrackingScreen();
+	elseif (status ~= self.STATUSES.Normal) then
+		if (status == self.STATUSES.AccessGranted) then
+			self:DrawAccessGranted();
+		else
+			self:DrawAccessDenied();
 		end
+	elseif (input ~= "") then
+		if (self:IsSecure()) then
+			self:DrawSecureInput(input);
+		else
+			self:DrawInsecureInput(input);
+		end
+	end
 	cam.End3D2D();
 
 	if (self:IsBeingCracked()) then

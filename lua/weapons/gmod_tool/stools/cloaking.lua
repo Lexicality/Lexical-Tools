@@ -15,15 +15,15 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]] --
-TOOL.Name     = "Cloaking";
-TOOL.Author   = "Lexi";
+TOOL.Name = "Cloaking";
+TOOL.Author = "Lexi";
 TOOL.Category = "Lexical Tools";
 
-TOOL.ClientConVar["key"]      = "5";
-TOOL.ClientConVar["flicker"]  = "0";
-TOOL.ClientConVar["toggle"]   = "1";
+TOOL.ClientConVar["key"] = "5";
+TOOL.ClientConVar["flicker"] = "0";
+TOOL.ClientConVar["toggle"] = "1";
 TOOL.ClientConVar["reversed"] = "0";
-TOOL.ClientConVar["all"]      = "1";
+TOOL.ClientConVar["all"] = "1";
 TOOL.ClientConVar["material"] = "sprites/heatwave";
 
 local function checkTrace(tr)
@@ -31,13 +31,21 @@ local function checkTrace(tr)
 end
 
 if (CLIENT) then
-	usermessage.Hook("CloakingHurrah!", function()
-		GAMEMODE:AddNotify("Entity is now cloakable!", NOTIFY_GENERIC, 10);
-		surface.PlaySound ("ambient/water/drip" .. math.random(1, 4) .. ".wav");
-	end);
+	usermessage.Hook(
+		"CloakingHurrah!", function()
+			GAMEMODE:AddNotify("Entity is now cloakable!", NOTIFY_GENERIC, 10);
+			surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav");
+		end
+	);
 	language.Add("Tool_cloaking_name", "Cloaking");
-	language.Add("Tool_cloaking_desc", "Allows you to turn things invisible at the touch of a button");
-	language.Add("Tool_cloaking_0", "Click on something to make it a cloakable. Reload to remove cloaking from something.");
+	language.Add(
+		"Tool_cloaking_desc",
+		"Allows you to turn things invisible at the touch of a button"
+	);
+	language.Add(
+		"Tool_cloaking_0",
+		"Click on something to make it a cloakable. Reload to remove cloaking from something."
+	);
 	language.Add("Undone_cloaking", "Undone Cloaking");
 
 	list.Set("CloakingMaterials", "Heatwave", "sprites/heatwave");
@@ -45,27 +53,18 @@ if (CLIENT) then
 
 	function TOOL.BuildCPanel(panel)
 		-- Header
-		panel:CheckBox("Inverted Controls",          "cloaking_reversed");
-		panel:CheckBox("Flicker on damage",          "cloaking_flicker" );
-		panel:CheckBox("Toggle Controls",            "cloaking_toggle"  );
-		panel:CheckBox("Cloak constrained entities", "cloaking_all"     );
+		panel:CheckBox("Inverted Controls", "cloaking_reversed");
+		panel:CheckBox("Flicker on damage", "cloaking_flicker");
+		panel:CheckBox("Toggle Controls", "cloaking_toggle");
+		panel:CheckBox("Cloak constrained entities", "cloaking_all");
 
-		panel:AddControl("Numpad",
-			{
-				Label      = "Button",
-				Command    = "cloaking_key"
-			}
-		);
+		panel:AddControl("Numpad", {Label = "Button", Command = "cloaking_key"});
 		local options = {};
-		for name, material in pairs(list.Get( "CloakingMaterials" )) do
-			options[name] = { cloaking_material = material };
+		for name, material in pairs(list.Get("CloakingMaterials")) do
+			options[name] = {cloaking_material = material};
 		end
-		panel:AddControl("Listbox",
-			{
-				Label = "Material:",
-				Height = 120,
-				Options = options
-			}
+		panel:AddControl(
+			"Listbox", {Label = "Material:", Height = 120, Options = options}
 		);
 	end
 
@@ -74,20 +73,23 @@ if (CLIENT) then
 	return;
 end
 
-
 local function cloakActivate(self)
-	if (self.cloakActive) then return; end
+	if (self.cloakActive) then
+		return;
+	end
 	self.cloakActive = true;
 	self.cloakPreviousMaterial = self:GetMaterial();
 	self:SetMaterial(self.cloakMaterial)
 	self:DrawShadow(false)
 	if (WireLib) then
-		Wire_TriggerOutput(self,  "CloakActive",  1);
+		Wire_TriggerOutput(self, "CloakActive", 1);
 	end
 end
 
 local function cloakDeactivate(self)
-	if (not self.cloakActive) then return; end
+	if (not self.cloakActive) then
+		return;
+	end
 	self.cloakActive = false;
 	self:SetMaterial(self.cloakPreviousMaterial or "");
 	self:DrawShadow(true);
@@ -117,11 +119,13 @@ local function onUp(ply, ent)
 end
 numpad.Register("Cloaking onUp", onUp);
 
-
 --[[ Wire Based Shit ]] --
 local function doWireInputs(ent)
 	if (not WireLib.AddInputs) then
-		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n");
+		ErrorNoHalt(
+			
+				"Lexical Tools Wire Compatability script not loaded! No wire inputs have been added to this entity!\n"
+		);
 		return;
 	end
 	WireLib.AddInputs(ent, {"Cloak"});
@@ -129,10 +133,15 @@ end
 
 local function doWireOutputs(ent)
 	if (not WireLib.AddOutputs) then
-		ErrorNoHalt("Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n");
+		ErrorNoHalt(
+			
+				"Lexical Tools Wire Compatability script not loaded! No wire outputs have been added to this entity!\n"
+		);
 		return;
 	end
-	WireLib.AddOutputs(ent, {"CloakActive"}, {"If this entity is currently cloaked"});
+	WireLib.AddOutputs(
+		ent, {"CloakActive"}, {"If this entity is currently cloaked"}
+	);
 end
 
 local function TriggerInput(self, name, value, ...)
@@ -167,19 +176,21 @@ end
 
 local function PostEntityPaste(self, ply, ent, ents)
 	if (self.EntityMods and self.EntityMods.WireDupeInfo) then
-		WireLib.ApplyDupeInfo(ply, self, self.EntityMods.WireDupeInfo, function(id) return ents[id]; end);
+		WireLib.ApplyDupeInfo(
+			ply, self, self.EntityMods.WireDupeInfo, function(id)
+				return ents[id];
+			end
+		);
 	end
 	if (self.wireSupportPostEntityPaste) then
 		self:wireSupportPostEntityPaste(ply, ent, ents);
 	end
 end
 
-
 local function onRemove(self)
 	numpad.Remove(self.cloakUpNum);
 	numpad.Remove(self.cloakDownNum);
 end
-
 
 -- Fer Duplicator
 local function dooEet(ply, ent, stuff)
@@ -221,16 +232,19 @@ end
 duplicator.RegisterEntityModifier("Lexical Cloaking", dooEet);
 
 -- Legacy
-duplicator.RegisterEntityModifier("Cloaking", function(ply, ent, Data)
-	return dooEet(ply, ent, {
-		key = Data.Key;
-		flicker = Data.Flicker;
-		reversed = Data.Inversed;
-		material = Data.Material;
-		toggle = true;
-	});
-end);
-
+duplicator.RegisterEntityModifier(
+	"Cloaking", function(ply, ent, Data)
+		return dooEet(
+			ply, ent, {
+				key = Data.Key,
+				flicker = Data.Flicker,
+				reversed = Data.Inversed,
+				material = Data.Material,
+				toggle = true,
+			}
+		);
+	end
+);
 
 local function doUndo(undoData, ent)
 	if (IsValid(ent) and ent.isCloakable) then
@@ -241,18 +255,19 @@ local function doUndo(undoData, ent)
 			ent.TriggerInput = ent.cloakTriggerInput;
 			if (ent.Inputs) then
 				Wire_Link_Clear(ent, "Cloak");
-				ent.Inputs['Cloak'] = nil;
+				ent.Inputs["Cloak"] = nil;
 				WireLib._SetInputs(ent);
-			end if (ent.Outputs) then
-				local port = ent.Outputs['CloakActive']
+			end
+			if (ent.Outputs) then
+				local port = ent.Outputs["CloakActive"]
 				if (port) then
-					for i,inp in ipairs(port.Connected) do -- From WireLib.lua: -- fix by Syranide: unlinks wires of removed outputs
+					for i, inp in ipairs(port.Connected) do -- From WireLib.lua: -- fix by Syranide: unlinks wires of removed outputs
 						if (inp.Entity:IsValid()) then
 							Wire_Link_Clear(inp.Entity, inp.Name)
 						end
 					end
 				end
-				ent.Outputs['CloakActive'] = nil;
+				ent.Outputs["CloakActive"] = nil;
 				WireLib._SetOutputs(ent);
 			end
 		end
@@ -261,15 +276,21 @@ local function doUndo(undoData, ent)
 	return false;
 end
 
-hook.Add("EntityTakeDamage", "Cloaking Flicker Hook", function(ent)
-	if (ent.isCloakable and ent.cloakFlicker and ent.cloakActive) then
-		ent:cloakDeactivate();
-		timer.Simple(0.05, function() ent:cloakActivate() end);
+hook.Add(
+	"EntityTakeDamage", "Cloaking Flicker Hook", function(ent)
+		if (ent.isCloakable and ent.cloakFlicker and ent.cloakActive) then
+			ent:cloakDeactivate();
+			timer.Simple(
+				0.05, function()
+					ent:cloakActivate()
+				end
+			);
+		end
 	end
-end);
+);
 
 local function massUndo(undoData)
-	for i,ent in pairs(undoData.Entities) do
+	for i, ent in pairs(undoData.Entities) do
 		doUndo(undoData, ent);
 		undoData.Entities[i] = nil;
 	end
@@ -282,11 +303,11 @@ function TOOL:LeftClick(tr)
 	local ent = tr.Entity;
 	local ply = self:GetOwner();
 	local tab = {
-		key      = self:GetClientNumber("key");
-		toggle   = self:GetClientNumber("toggle") == 1;
-		flicker  = self:GetClientNumber("flicker") == 1;
-		reversed = self:GetClientNumber("reversed") == 1;
-		material = self:GetClientInfo("material");
+		key = self:GetClientNumber("key"),
+		toggle = self:GetClientNumber("toggle") == 1,
+		flicker = self:GetClientNumber("flicker") == 1,
+		reversed = self:GetClientNumber("reversed") == 1,
+		material = self:GetClientInfo("material"),
 	};
 	undo.Create("cloaking");
 	undo.SetPlayer(ply);
@@ -297,7 +318,7 @@ function TOOL:LeftClick(tr)
 	else
 		for ent in pairs(constraint.GetAllConstrainedEntities(ent)) do
 			dooEet(ply, ent, tab);
-		undo.AddEntity(ent);
+			undo.AddEntity(ent);
 		end
 	end
 	undo.Finish();

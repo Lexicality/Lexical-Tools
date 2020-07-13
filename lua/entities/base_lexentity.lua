@@ -16,18 +16,18 @@
 ]] --
 AddCSLuaFile();
 
-ENT.Type      = "anim";
+ENT.Type = "anim";
 ENT.PrintName = "Lex's Base Entity";
-ENT.Author    = "Lex Robinson";
-ENT.Contact   = "lexi@lexi.org.uk";
-ENT.Purpose   = "Abstracting away annoying features";
+ENT.Author = "Lex Robinson";
+ENT.Contact = "lexi@lexi.org.uk";
+ENT.Purpose = "Abstracting away annoying features";
 ENT.Spawnable = false;
 
 local BaseClass;
 if (WireLib) then
-    BaseClass = "base_wire_entity"
+	BaseClass = "base_wire_entity"
 elseif (gmod.GetGamemode().IsSandboxDerived) then
-    BaseClass = "base_gmodentity"
+	BaseClass = "base_gmodentity"
 else
 	BaseClass = "base_anim";
 end
@@ -41,7 +41,9 @@ function ENT:SetOverlayText(...)
 end
 
 function ENT:SetupDataTables()
-	if (BaseClass.SetupDataTables) then BaseClass.SetupDataTables(self); end
+	if (BaseClass.SetupDataTables) then
+		BaseClass.SetupDataTables(self);
+	end
 
 	if (not self._NWVars) then
 		return;
@@ -79,7 +81,9 @@ if (CLIENT) then
 end
 
 function ENT:KeyValue(key, value)
-	if (BaseClass.KeyValue) then BaseClass.KeyValue(self, key, value); end
+	if (BaseClass.KeyValue) then
+		BaseClass.KeyValue(self, key, value);
+	end
 
 	if (self:SetNetworkKeyValue(key, value)) then
 		return;
@@ -89,7 +93,7 @@ function ENT:KeyValue(key, value)
 end
 
 function ENT:AddOutputFromKeyValue(key, value)
-	if (key:sub( 1, 2 ) == "On") then
+	if (key:sub(1, 2) == "On") then
 		self:StoreOutput(key, value);
 		return true;
 	end
@@ -98,7 +102,8 @@ function ENT:AddOutputFromKeyValue(key, value)
 end
 
 function ENT:AcceptInput(name, activator, called, value)
-	if (BaseClass.AcceptInput and BaseClass.AcceptInput(self, name, activator, called, value)) then
+	if (BaseClass.AcceptInput and
+		BaseClass.AcceptInput(self, name, activator, called, value)) then
 		return true;
 	end
 
@@ -223,9 +228,15 @@ function ENT.GenericDuplicate(ply, data)
 	duplicator.DoGenericPhysics(ent, ply, data);
 
 	if (IsValid(ply)) then
-		if (ent.SetPlayer) then ent:SetPlayer(ply) end
-		if (ply.AddCount) then ply:AddCount(ent.CountKey or data.Class, ent) end
-		if (ply.AddCleanup) then ply:AddCleanup(data.Class, ent) end
+		if (ent.SetPlayer) then
+			ent:SetPlayer(ply)
+		end
+		if (ply.AddCount) then
+			ply:AddCount(ent.CountKey or data.Class, ent)
+		end
+		if (ply.AddCleanup) then
+			ply:AddCleanup(data.Class, ent)
+		end
 	end
 	return ent;
 end
@@ -275,11 +286,14 @@ end
 
 -- All or nothing GetPhysicsObject
 function ENT:GetValidPhysicsObject()
-    local phys = self:GetPhysicsObject();
-    if (not phys:IsValid()) then
-        local mdl = self:GetModel();
-        self:Remove();
-        error("No Physics Object available for entity '" .. self.ClassName .. "'! Do you have the model '" .. mdl .. "' installed?", 2);
+	local phys = self:GetPhysicsObject();
+	if (not phys:IsValid()) then
+		local mdl = self:GetModel();
+		self:Remove();
+		error(
+			"No Physics Object available for entity '" .. self.ClassName ..
+				"'! Do you have the model '" .. mdl .. "' installed?", 2
+		);
 	end
 	return phys;
 end

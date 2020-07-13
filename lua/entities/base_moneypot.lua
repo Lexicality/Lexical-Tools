@@ -17,12 +17,12 @@
 ]] --
 AddCSLuaFile();
 
-ENT.Type            = "anim"
-ENT.PrintName       = "Money Pot"
-ENT.Author          = "Lexi"
-ENT.Spawnable       = false
-ENT.AdminSpawnable  = false
-ENT.IsMoneyPot      = true;
+ENT.Type = "anim"
+ENT.PrintName = "Money Pot"
+ENT.Author = "Lexi"
+ENT.Spawnable = false
+ENT.AdminSpawnable = false
+ENT.IsMoneyPot = true;
 
 local BaseClass;
 if (WireLib) then
@@ -36,7 +36,9 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "Money");
 end
 
-if (CLIENT) then return; end
+if (CLIENT) then
+	return;
+end
 
 --------------------------------------
 --                                  --
@@ -82,21 +84,19 @@ function ENT:Initialize()
 	self:SetUseType(SIMPLE_USE)
 	self:UpdateOverlay()
 	if (WireLib) then
-		WireLib.CreateSpecialInputs(self, {
-			"SpawnAll",
-			"SpawnAmount"
-		});
-		WireLib.CreateSpecialOutputs(self, {
-			"StoredAmount",
-			"LastAmount",
-			"Updated"
-		});
+		WireLib.CreateSpecialInputs(self, {"SpawnAll", "SpawnAmount"});
+		WireLib.CreateSpecialOutputs(self, {"StoredAmount", "LastAmount", "Updated"});
 	end
 	local phys = self:GetPhysicsObject()
 	if (not phys:IsValid()) then
 		local mdl = self:GetModel()
 		self:Remove();
-		error("Entity of type " .. self.ClassName .. " created without a physobj! (Model: " .. mdl .. ")");
+		error(
+
+			
+				"Entity of type " .. self.ClassName ..
+					" created without a physobj! (Model: " .. mdl .. ")"
+		);
 	end
 	phys:Wake()
 end
@@ -115,22 +115,25 @@ function ENT:Use(activator)
 end
 
 function ENT:UpdateWireOutputs(amount)
-	if (not Wire_TriggerOutput) then return; end
+	if (not Wire_TriggerOutput) then
+		return;
+	end
 	Wire_TriggerOutput(self, "StoredAmount", self:GetMoney());
 	Wire_TriggerOutput(self, "LastAmount", amount);
 	Wire_TriggerOutput(self, "Updated", 1);
-	timer.Simple(0.1, function()
-		if (IsValid(self)) then
-			Wire_TriggerOutput(self, "Updated", 0);
+	timer.Simple(
+		0.1, function()
+			if (IsValid(self)) then
+				Wire_TriggerOutput(self, "Updated", 0);
+			end
 		end
-	end)
+	)
 end
 
 function ENT:IsGoodMoneyEntity(ent)
-	return IsValid(ent)
-	and    self:IsMoneyEntity(ent)
-	and not self:IsMoneyEntityInvalid(ent)
-	and    (ent.MoneyPotPause or 0) < CurTime();
+	return IsValid(ent) and self:IsMoneyEntity(ent) and
+       		not self:IsMoneyEntityInvalid(ent) and (ent.MoneyPotPause or 0) <
+       		CurTime();
 end
 
 function ENT:StartTouch(ent)
@@ -153,9 +156,13 @@ end
 local spos = Vector(0, 0, 17);
 function ENT:SpawnAmount(amount)
 	amount = math.Clamp(math.floor(amount), 0, self:GetMoney());
-	if (amount == 0) then return; end
+	if (amount == 0) then
+		return;
+	end
 	-- Prevent people spawning too many
-	if (self:GetNumMoneyEntities() >= 50) then return; end
+	if (self:GetNumMoneyEntities() >= 50) then
+		return;
+	end
 
 	local cash = self:SpawnMoneyEntity(amount);
 	if (cash == NULL) then
@@ -181,10 +188,15 @@ function ENT:UpdateOverlay()
 	self:SetOverlayText("- Money Pot -\nAmount: $" .. self:GetMoney());
 end
 
-local cvar_delay = CreateConVar("moneypot_spawn_delay", 1, FCVAR_ARCHIVE, "How long in seconds to wait before spawning money")
+local cvar_delay = CreateConVar(
+	"moneypot_spawn_delay", 1, FCVAR_ARCHIVE,
+	"How long in seconds to wait before spawning money"
+)
 function ENT:DelayedSpawn(amount)
 	amount = math.Clamp(amount, 0, self:GetMoney());
-	if (amount == 0) then return; end
+	if (amount == 0) then
+		return;
+	end
 	if (self.DoSpawn) then
 		self.DoSpawn = self.DoSpawn + amount;
 	else

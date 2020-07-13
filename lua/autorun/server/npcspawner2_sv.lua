@@ -56,26 +56,28 @@ local function syncConfig(whomst)
 	npcspawner.send("NPCSpawner Config", npcspawner.config, whomst);
 end
 
-concommand.Add("npcspawner_config", function(ply, _, args)
-	if (IsValid(ply) and not ply:IsAdmin()) then
-		return;
-	end
-
-	local name, value = args[1], tonumber(args[2]);
-	if (not value) then
-		local msg = string.format("%q is not a valid value for %s!", args[2], name)
-		if (IsValid(ply)) then
-			ply:ChatPrint(msg)
-		else
-			print(msg)
+concommand.Add(
+	"npcspawner_config", function(ply, _, args)
+		if (IsValid(ply) and not ply:IsAdmin()) then
+			return;
 		end
-		return
-	end
 
-	npcspawner.config[name] = value;
-	writefile("config", npcspawner.config);
-	syncConfig();
-end);
+		local name, value = args[1], tonumber(args[2]);
+		if (not value) then
+			local msg = string.format("%q is not a valid value for %s!", args[2], name)
+			if (IsValid(ply)) then
+				ply:ChatPrint(msg)
+			else
+				print(msg)
+			end
+			return
+		end
+
+		npcspawner.config[name] = value;
+		writefile("config", npcspawner.config);
+		syncConfig();
+	end
+);
 
 hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", syncConfig);
 

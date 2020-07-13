@@ -43,7 +43,9 @@ function Derma_Install_Better_Convar_Functions(PANEL)
 
 		self:NukeConVars();
 
-		local cb = function() self:HandleCVarChange() end;
+		local cb = function()
+			self:HandleCVarChange()
+		end;
 
 		for _, cvar in pairs(convars) do
 			cvars.AddChangeCallback(cvar, cb, self._cvarid);

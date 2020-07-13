@@ -15,26 +15,22 @@
 	limitations under the License.
 ]] --
 AddCSLuaFile();
-ENT.Type      = "anim";
-ENT.Base      = "base_lexentity";
+ENT.Type = "anim";
+ENT.Base = "base_lexentity";
 ENT.PrintName = "Resizable Crate";
-ENT.Author    = "Lexi";
-ENT.Contact   = "lexi@lexi.org.uk";
+ENT.Author = "Lexi";
+ENT.Contact = "lexi@lexi.org.uk";
 ENT.Spawnable = true;
-ENT.Editable  = true;
+ENT.Editable = true;
 
 ENT._NWVars = {
 	{
-		Name = "Scale";
-		Type = "Int";
-		Default = 1;
-		KeyName = "scale";
-		Edit = {
-			type = "Int";
-			min = 1;
-			max = 10;
-		}
-	}
+		Name = "Scale",
+		Type = "Int",
+		Default = 1,
+		KeyName = "scale",
+		Edit = {type = "Int", min = 1, max = 10},
+	},
 }
 
 local radius = 32;
@@ -65,7 +61,9 @@ function ENT:Think()
 	end
 end
 
-if (CLIENT) then return; end
+if (CLIENT) then
+	return;
+end
 
 function ENT:Initialize()
 	self:PhysicsInit(SOLID_BBOX);
@@ -91,8 +89,10 @@ function MakeCrate(ply, pos, angles, scale, data)
 	ent:SetScale(scale);
 	ent:Think(); -- Update the boundries NOW
 
-	ply:AddCount("props",   ent);
+	ply:AddCount("props", ent);
 	ply:AddCleanup("props", ent);
 	return ent;
 end
-duplicator.RegisterEntityClass("gmod_crate", MakeCrate, "Pos", "Ang", "Scale", "Data")
+duplicator.RegisterEntityClass(
+	"gmod_crate", MakeCrate, "Pos", "Ang", "Scale", "Data"
+)

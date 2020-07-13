@@ -44,24 +44,36 @@ function MakeCommandBox(ply, pos, angles, model, key, command, data)
 	return box;
 end
 
-duplicator.RegisterEntityClass("gmod_commandbox", MakeCommandBox, "Pos", "Ang", "Model", "key", "command", "Data");
+duplicator.RegisterEntityClass(
+	"gmod_commandbox", MakeCommandBox, "Pos", "Ang", "Model", "key", "command",
+	"Data"
+);
 
-ENT.PrintName      = "Commandbox"
-ENT.Author         = "Lexi"
-ENT.Contact        = "lexi@lexi.org.uk"
-ENT.Purpose        = ""
-ENT.Instructions   = ""
-ENT.Spawnable      = false;
+ENT.PrintName = "Commandbox"
+ENT.Author = "Lexi"
+ENT.Contact = "lexi@lexi.org.uk"
+ENT.Purpose = ""
+ENT.Instructions = ""
+ENT.Spawnable = false;
 ENT.AdminSpawnable = false;
 
 if (CLIENT) then
-	usermessage.Hook("Commandbox Command Request", function(um)
-		local command = um:ReadString();
-		Derma_Query("Run Command '" .. command .."'?", "Command Box SENT", "Yes", function() LocalPlayer():ConCommand(command) end, "No", function() end);
-	end);
-	usermessage.Hook("Commandbox Command", function(um)
-		LocalPlayer():ConCommand(um:ReadString())
-	end);
+	usermessage.Hook(
+		"Commandbox Command Request", function(um)
+			local command = um:ReadString();
+			Derma_Query(
+				"Run Command '" .. command .. "'?", "Command Box SENT", "Yes", function()
+					LocalPlayer():ConCommand(command)
+				end, "No", function()
+				end
+			);
+		end
+	);
+	usermessage.Hook(
+		"Commandbox Command", function(um)
+			LocalPlayer():ConCommand(um:ReadString())
+		end
+	);
 	return;
 end
 umsg.PoolString("Commandbox Command")
@@ -69,14 +81,14 @@ umsg.PoolString("Commandbox Command Request")
 
 function ENT:Initialize()
 	self.Command = "";
-	self.Key     = 0;
+	self.Key = 0;
 
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
-	self:SetSolid   (SOLID_VPHYSICS)
+	self:SetSolid(SOLID_VPHYSICS)
 	if (WireLib) then
 		WireLib.CreateSpecialInputs(self, {"RunCommand"});
-		WireLib.CreateSpecialOutputs(self, {"Command"},{"STRING"});
+		WireLib.CreateSpecialOutputs(self, {"Command"}, {"STRING"});
 	end
 end
 

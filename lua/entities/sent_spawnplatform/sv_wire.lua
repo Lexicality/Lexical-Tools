@@ -17,79 +17,52 @@
 DEFINE_BASECLASS(ENT.Base);
 
 function ENT:SetupWire()
-	self:CreateWireInputs({
+	self:CreateWireInputs(
 		{
-			Name = "SetActive";
-			Desc = "Set the active state of the platform";
-		};
+			{Name = "SetActive", Desc = "Set the active state of the platform"},
+			{Name = "SpawnOne", Desc = "Force the spawning of a NPC"},
+			{Name = "NPCClass", Desc = "Set the class of NPC to spawn", Type = "STRING"},
+			{Name = "MaxActiveNPCs", Desc = "Set the max number of active NPCs"},
+			{Name = "SpawnDelay", Desc = "Set the spawn delay"},
+			{Name = "Weapon", Desc = "Set what weapon to give the NPCs", Type = "STRING"},
+			{Name = "HealthMultiplier", Desc = "Set the health multiplier for the NPCs"},
+			{
+				Name = "MaxSpawnedNPCs",
+				Desc = "Set the total number of NPCs to spawn before turning off",
+			},
+			{
+				Name = "DelayDecreaseAmount",
+				Desc = "Set how much to decrease the delay by every MaxActiveNPCs spawned",
+			},
+			{Name = "RemoveNPCs", Desc = "Delete all NPCs currently spawned."},
+		}
+	);
+	self:CreateWireOutputs(
 		{
-			Name = "SpawnOne";
-			Desc = "Force the spawning of a NPC";
-		};
-		{
-			Name = "NPCClass";
-			Desc = "Set the class of NPC to spawn";
-			Type = "STRING";
-		};
-		{
-			Name = "MaxActiveNPCs";
-			Desc = "Set the max number of active NPCs";
-		};
-		{
-			Name = "SpawnDelay";
-			Desc = "Set the spawn delay";
-		};
-		{
-			Name = "Weapon";
-			Desc = "Set what weapon to give the NPCs";
-			Type = "STRING";
-		};
-		{
-			Name = "HealthMultiplier";
-			Desc = "Set the health multiplier for the NPCs";
-		};
-		{
-			Name = "MaxSpawnedNPCs";
-			Desc = "Set the total number of NPCs to spawn before turning off";
-		};
-		{
-			Name = "DelayDecreaseAmount";
-			Desc = "Set how much to decrease the delay by every MaxActiveNPCs spawned";
-		};
-		{
-			Name = "RemoveNPCs";
-			Desc = "Delete all NPCs currently spawned.";
-		};
-	});
-	self:CreateWireOutputs({
-		{
-			Name = "IsOn";
-			Desc = "Is the platform on?";
-		};
-		{
-			Name = "ActiveNPCs";
-			Desc = "The number of currently active NPCs";
-		};
-		{
-			Name = "TotalNPCsSpawned";
-			Desc = "The total number of NPCs spawned this active session";
-		};
-		{
-			Name = "LastNPCSpawned";
-			Desc = "The last NPC the platform spawned";
-			Type = "ENTITY";
-		};
-		{
-			Name = "OnNPCSpawned";
-			Desc = "Triggered every time a NPC is spawned.";
-		};
-	});
+			{Name = "IsOn", Desc = "Is the platform on?"},
+			{Name = "ActiveNPCs", Desc = "The number of currently active NPCs"},
+			{
+				Name = "TotalNPCsSpawned",
+				Desc = "The total number of NPCs spawned this active session",
+			},
+			{
+				Name = "LastNPCSpawned",
+				Desc = "The last NPC the platform spawned",
+				Type = "ENTITY",
+			},
+			{Name = "OnNPCSpawned", Desc = "Triggered every time a NPC is spawned."},
+		}
+	);
 end
 
 function ENT:TriggerInput(name, val)
-	if (BaseClass.TriggerInput) then BaseClass.TriggerInput(self, name, val); end
+	if (BaseClass.TriggerInput) then
+		BaseClass.TriggerInput(self, name, val);
+	end
 
-	npcspawner.debug2(self, "has recieved wire input with name", name, "and value", val);
+	npcspawner.debug2(
+		self, "has recieved wire input with name", name, "and value", val
+	);
 	if (name == "SetActive") then
 		if (val == 0) then
 			self:TurnOff();

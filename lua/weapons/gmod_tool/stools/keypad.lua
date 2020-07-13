@@ -15,49 +15,52 @@
 	limitations under the License.
 ]] --
 TOOL.Category = "Lexical Tools";
-TOOL.Name    = "Keypad v2";
+TOOL.Name = "Keypad v2";
 
 local kvs = {
-	password              = "";
-	secure                = 0;
+	password = "",
+	secure = 0,
 
-	access_numpad_key     = -1;
-	access_initial_delay  = 0;
-	access_repetitions    = 1;
+	access_numpad_key = -1,
+	access_initial_delay = 0,
+	access_repetitions = 1,
 
-	access_rep_delay      = 0;
-	access_rep_length     = 0.1;
+	access_rep_delay = 0,
+	access_rep_length = 0.1,
 
-	access_wire_value_on  = 1;
-	access_wire_value_off = 0;
-	access_wire_toggle    = 0;
+	access_wire_value_on = 1,
+	access_wire_value_off = 0,
+	access_wire_toggle = 0,
 
-	denied_numpad_key     = -1;
-	denied_initial_delay  = 0;
-	denied_repetitions    = 1;
+	denied_numpad_key = -1,
+	denied_initial_delay = 0,
+	denied_repetitions = 1,
 
-	denied_rep_delay      = 0;
-	denied_rep_length     = 0.1;
+	denied_rep_delay = 0,
+	denied_rep_length = 0.1,
 
-	denied_wire_value_on  = 1;
-	denied_wire_value_off = 0;
-	denied_wire_toggle    = 0;
+	denied_wire_value_on = 1,
+	denied_wire_value_off = 0,
+	denied_wire_toggle = 0,
 }
 
 for key, default in pairs(kvs) do
 	TOOL.ClientConVar[key] = default;
 end
 TOOL.ClientConVar["freeze"] = 1;
-TOOL.ClientConVar["weld"]   = 0;
+TOOL.ClientConVar["weld"] = 0;
 
 cleanup.Register("keypads");
 
 if (CLIENT) then
 	language.Add("tool.keypad.name", "Keypad v2");
 	language.Add("tool.keypad.desc", "Secure your contraptions with a password");
-	language.Add("tool.keypad.0",    "Left click to spawn a Keypad. Right click to update an existing one");
+	language.Add(
+		"tool.keypad.0",
+		"Left click to spawn a Keypad. Right click to update an existing one"
+	);
 
-	language.Add("Undone_Keypad",   "Undone Keypad");
+	language.Add("Undone_Keypad", "Undone Keypad");
 	language.Add("Cleanup_keypads", "Keypads");
 	language.Add("Cleaned_keypads", "Cleaned up all keypads");
 
@@ -77,12 +80,16 @@ function TOOL:CheckSettings()
 	for key in pairs(kvs) do
 		local num = self:GetClientNumber(key);
 		if (not num) then
-			ply:ChatPrint("Convar " .. key .. " value '" .. self:GetClientInfo(key) .. "' isn't a number! What did you do?");
+			ply:ChatPrint(
+				"Convar " .. key .. " value '" .. self:GetClientInfo(key) ..
+					"' isn't a number! What did you do?"
+			);
 			return false;
 		end
 	end
 	-- Some people are silly
-	local k1, k2 = self:GetClientNumber("access_numpad_key"), self:GetClientNumber("denied_numpad_key");
+	local k1, k2 = self:GetClientNumber("access_numpad_key"),
+               	self:GetClientNumber("denied_numpad_key");
 	if (k1 and k2 and k1 == k2 and k1 > 0) then
 		ply:ChatPrint("Your Access key is the same as your Denied key!");
 		return false;
@@ -106,12 +113,14 @@ function TOOL:LeftClick(tr)
 		end
 	end
 	local owner = self:GetOwner();
-	local ent = duplicator.CreateEntityFromTable(owner, {
-		Pos   = tr.HitPos + tr.HitNormal;
-		Angle = tr.HitNormal: Angle();
-		kvs   = kv;
-		Class = "keypad";
-	});
+	local ent = duplicator.CreateEntityFromTable(
+		owner, {
+			Pos = tr.HitPos + tr.HitNormal,
+			Angle = tr.HitNormal:Angle(),
+			kvs = kv,
+			Class = "keypad",
+		}
+	);
 	if (not IsValid(ent)) then
 		return false;
 	end
@@ -159,7 +168,9 @@ function TOOL:RightClick(tr)
 	return true;
 end
 
-if (SERVER) then return; end
+if (SERVER) then
+	return;
+end
 
 local function c(name)
 	return "keypad_" .. name;
@@ -170,41 +181,39 @@ local function subpanel(CPanel, kind, data)
 		return c(kind .. "_" .. name);
 	end
 	local CPanel = CPanel:AddControl("ControlPanel", data);
-	CPanel:AddControl("Numpad", {
-		Label   = "Key";
-		Command = k"numpad_key";
-	});
+	CPanel:AddControl("Numpad", {Label = "Key", Command = k "numpad_key"});
 
-	CPanel:NumSlider("Key Hold Length", k"rep_length", 0, 20, 1);
+	CPanel:NumSlider("Key Hold Length", k "rep_length", 0, 20, 1);
 
-	CPanel:AddControl("MinimumValueLabel", {
-		Name    = "Key Hold Length";
-		CVar    = k"rep_length";
-		Minimum = "keypad_min_length";
-	});
+	CPanel:AddControl(
+		"MinimumValueLabel", {
+			Name = "Key Hold Length",
+			CVar = k "rep_length",
+			Minimum = "keypad_min_length",
+		}
+	);
 	-- HACK: Make this right up against the previous item
 	CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0);
 
 	if (WireLib) then
-		CPanel:TextEntry("Wire Output Value", k"wire_value_on"):SetNumeric(true);
+		CPanel:TextEntry("Wire Output Value", k "wire_value_on"):SetNumeric(true);
 	end
 	do
-		local CPanel = CPanel:AddControl("ControlPanel", {
-			Label  = "Advanced";
-			Closed = true;
-		});
+		local CPanel = CPanel:AddControl(
+			"ControlPanel", {Label = "Advanced", Closed = true}
+		);
 		if (WireLib) then
-			CPanel:TextEntry("Wire Default Value", k"wire_value_off"):SetNumeric(true);
-			CPanel:CheckBox("Toggle Wire Output", k"wire_toggle");
+			CPanel:TextEntry("Wire Default Value", k "wire_value_off"):SetNumeric(true);
+			CPanel:CheckBox("Toggle Wire Output", k "wire_toggle");
 		end
-		CPanel:NumSlider("Initial Delay", k"initial_delay", 0, 10, 1);
-		CPanel:NumSlider("Repititions", k"repetitions", 1, 5, 0);
-		CPanel:NumSlider("Delay between repititions", k"rep_delay", 0, 10, 1);
+		CPanel:NumSlider("Initial Delay", k "initial_delay", 0, 10, 1);
+		CPanel:NumSlider("Repititions", k "repetitions", 1, 5, 0);
+		CPanel:NumSlider("Delay between repititions", k "rep_delay", 0, 10, 1);
 	end
 end
 
 function TOOL.BuildCPanel(CPanel)
-	local p = CPanel:TextEntry("Password", c"password");
+	local p = CPanel:TextEntry("Password", c "password");
 	function p:AllowInput(value)
 		-- Only allow numbers
 		local n = tonumber(value);
@@ -222,15 +231,10 @@ function TOOL.BuildCPanel(CPanel)
 	-- HACK: Make this right up against the previous item
 	CPanel.Items[#CPanel.Items]:DockPadding(10, 0, 10, 0);
 
-	CPanel:CheckBox("Secure Mode", c"secure");
-	CPanel:CheckBox("Weld Keypad", c"weld");
-	CPanel:CheckBox("Freeze Keypad", c"freeze");
+	CPanel:CheckBox("Secure Mode", c "secure");
+	CPanel:CheckBox("Weld Keypad", c "weld");
+	CPanel:CheckBox("Freeze Keypad", c "freeze");
 
-	subpanel(CPanel, "access", {
-		Label  = "Access Granted";
-	});
-	subpanel(CPanel, "denied", {
-		Label  = "Access Denied";
-		Closed = true;
-	});
+	subpanel(CPanel, "access", {Label = "Access Granted"});
+	subpanel(CPanel, "denied", {Label = "Access Denied", Closed = true});
 end

@@ -17,27 +17,34 @@
 DEFINE_BASECLASS(ENT.Base);
 
 local weaponsets = {
-	weapon_rebel   = {"weapon_pistol", "weapon_smg1", "weapon_ar2", "weapon_shotgun"},
+	weapon_rebel = {"weapon_pistol", "weapon_smg1", "weapon_ar2", "weapon_shotgun"},
 	weapon_combine = {"weapon_smg1", "weapon_ar2", "weapon_shotgun"},
-	weapon_citizen = {"weapon_citizenpackage", "weapon_citizensuitcase", "weapon_none"}
+	weapon_citizen = {
+		"weapon_citizenpackage",
+		"weapon_citizensuitcase",
+		"weapon_none",
+	},
 };
 
 --
 -- gmod v14.04.19
 -- garrysmod\gamemodes\sandbox\gamemode\commands.lua:288
 --
-local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Angles, Offset )
+local function InternalSpawnNPC(
+	Player, Position, Normal, Class, Equipment, Angles, Offset
+)
 
-	local NPCList = list.Get( "NPC" )
-	local NPCData = NPCList[ Class ]
+	local NPCList = list.Get("NPC")
+	local NPCData = NPCList[Class]
 
 	-- Don't let them spawn this entity if it isn't in our NPC Spawn list.
 	-- We don't want them spawning any entity they like!
-	if ( not NPCData ) then
-		if ( IsValid( Player ) ) then
-			Player:SendLua( "Derma_Message( \"Sorry! You can't spawn that NPC!\" )" )
+	if (not NPCData) then
+		if (IsValid(Player)) then
+			Player:SendLua("Derma_Message( \"Sorry! You can't spawn that NPC!\" )")
 		end
-	return end
+		return
+	end
 
 	-- if ( NPCData.AdminOnly and not Player:IsAdmin() ) then return end
 
@@ -46,20 +53,22 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Ang
 	--
 	-- This NPC has to be spawned on a ceiling ( Barnacle )
 	--
-	if ( NPCData.OnCeiling and Vector( 0, 0, -1 ):Dot( Normal ) < 0.95 ) then
+	if (NPCData.OnCeiling and Vector(0, 0, -1):Dot(Normal) < 0.95) then
 		return nil
 	end
 
 	--
 	-- This NPC has to be spawned on a floor ( Turrets )
 	--
-	if ( NPCData.OnFloor and Vector( 0, 0, 1 ):Dot( Normal ) < 0.95 ) then
+	if (NPCData.OnFloor and Vector(0, 0, 1):Dot(Normal) < 0.95) then
 		return nil
 	else
 		bDropToFloor = true
 	end
 
-	if ( NPCData.NoDrop ) then bDropToFloor = false end
+	if (NPCData.NoDrop) then
+		bDropToFloor = false
+	end
 
 	--
 	-- Offset the position
@@ -67,18 +76,19 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Ang
 	Offset = NPCData.Offset or Offset or 32
 	Position = Position + Normal * Offset
 
-
 	-- Create NPC
-	local NPC = ents.Create( NPCData.Class )
-	if ( not IsValid( NPC ) ) then return end
+	local NPC = ents.Create(NPCData.Class)
+	if (not IsValid(NPC)) then
+		return
+	end
 
-	NPC:SetPos( Position )
+	NPC:SetPos(Position)
 
 	-- Rotate to face player (expected behaviour)
 	if (not Angles) then
-		Angles = Angle( 0, 0, 0 )
+		Angles = Angle(0, 0, 0)
 
-		if ( IsValid( Player ) ) then
+		if (IsValid(Player)) then
 			Angles = Player:GetAngles()
 		end
 
@@ -87,46 +97,52 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Ang
 		Angles.yaw = Angles.yaw + 180
 	end
 
-	if ( NPCData.Rotate ) then Angles = Angles + NPCData.Rotate end
+	if (NPCData.Rotate) then
+		Angles = Angles + NPCData.Rotate
+	end
 
-	NPC:SetAngles( Angles )
+	NPC:SetAngles(Angles)
 
 	--
 	-- This NPC has a special model we want to define
 	--
-	if ( NPCData.Model ) then
-		NPC:SetModel( NPCData.Model )
+	if (NPCData.Model) then
+		NPC:SetModel(NPCData.Model)
 	end
 
 	--
 	-- This NPC has a special texture we want to define
 	--
-	if ( NPCData.Material ) then
-		NPC:SetMaterial( NPCData.Material )
+	if (NPCData.Material) then
+		NPC:SetMaterial(NPCData.Material)
 	end
 
 	--
 	-- Spawn Flags
 	--
-	local SpawnFlags = bit.bor( SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK )
-	if ( NPCData.SpawnFlags ) then SpawnFlags = bit.bor( SpawnFlags, NPCData.SpawnFlags ) end
-	if ( NPCData.TotalSpawnFlags ) then SpawnFlags = NPCData.TotalSpawnFlags end
-	NPC:SetKeyValue( "spawnflags", SpawnFlags )
+	local SpawnFlags = bit.bor(SF_NPC_FADE_CORPSE, SF_NPC_ALWAYSTHINK)
+	if (NPCData.SpawnFlags) then
+		SpawnFlags = bit.bor(SpawnFlags, NPCData.SpawnFlags)
+	end
+	if (NPCData.TotalSpawnFlags) then
+		SpawnFlags = NPCData.TotalSpawnFlags
+	end
+	NPC:SetKeyValue("spawnflags", SpawnFlags)
 
 	--
 	-- Optional Key Values
 	--
-	if ( NPCData.KeyValues ) then
-		for k, v in pairs( NPCData.KeyValues ) do
-			NPC:SetKeyValue( k, v )
+	if (NPCData.KeyValues) then
+		for k, v in pairs(NPCData.KeyValues) do
+			NPC:SetKeyValue(k, v)
 		end
 	end
 
 	--
 	-- This NPC has a special skin we want to define
 	--
-	if ( NPCData.Skin ) then
-		NPC:SetSkin( NPCData.Skin )
+	if (NPCData.Skin) then
+		NPC:SetSkin(NPCData.Skin)
 	end
 
 	--
@@ -135,21 +151,24 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Ang
 
 	-- Check if this is a valid entity from the list, or the user is trying to fool us.
 	local valid = false
-	for _, v in pairs( list.Get( "NPCUsableWeapons" ) ) do
-		if v.class == Equipment then valid = true break end
+	for _, v in pairs(list.Get("NPCUsableWeapons")) do
+		if v.class == Equipment then
+			valid = true
+			break
+		end
 	end
 
-	if ( Equipment and Equipment ~= "none" and valid ) then
-		NPC:SetKeyValue( "additionalequipment", Equipment )
+	if (Equipment and Equipment ~= "none" and valid) then
+		NPC:SetKeyValue("additionalequipment", Equipment)
 		NPC.Equipment = Equipment
 	end
 
-	DoPropSpawnedEffect( NPC )
+	DoPropSpawnedEffect(NPC)
 
 	NPC:Spawn()
 	NPC:Activate()
 
-	if ( bDropToFloor and not NPCData.OnCeiling ) then
+	if (bDropToFloor and not NPCData.OnCeiling) then
 		NPC:DropToFloor()
 	end
 
@@ -157,7 +176,9 @@ local function InternalSpawnNPC( Player, Position, Normal, Class, Equipment, Ang
 
 end
 
-local function legacySpawn(player, position, normal, class, weapon, angles, offset)
+local function legacySpawn(
+	player, position, normal, class, weapon, angles, offset
+)
 	local npc = ents.Create(class);
 	if (not IsValid(npc)) then
 		return nil;
@@ -204,10 +225,14 @@ function ENT:GetSpawnClass()
 		class = npcspawner.legacy[class];
 	end
 
-	local npcdata = list.Get('NPC')[class];
+	local npcdata = list.Get("NPC")[class];
 	if (not npcdata and npcspawner.config.sanity == 1) then
 		self:TurnOff();
-		error(string.format("%s just tried to spawn NPC %q which is not on the NPC list!", self, class))
+		error(
+			string.format(
+				"%s just tried to spawn NPC %q which is not on the NPC list!", self, class
+			)
+		)
 	end
 
 	return class, npcdata;
@@ -215,11 +240,12 @@ end
 
 function ENT:GetSpawnWeapon(npcdata)
 	local weapon = self:GetNPCWeapon();
-	if (weapon == 'weapon_none' or weapon == 'none') then
+	if (weapon == "weapon_none" or weapon == "none") then
 		weapon = nil;
 	elseif (weaponsets[weapon]) then
 		weapon = table.Random(weaponsets[weapon]);
-	elseif (npcdata and npcdata.Weapons and (not weapon or weapon == '' or weapon == 'weapon_default')) then
+	elseif (npcdata and npcdata.Weapons and
+		(not weapon or weapon == "" or weapon == "weapon_default")) then
 		weapon = table.Random(npcdata.Weapons);
 	end
 
@@ -289,10 +315,10 @@ end
 function ENT:ConfigureNPCOwnership(npc)
 	npc:CallOnRemove("NPCSpawnPlatform", onremove, self);
 	self.NPCs[npc] = npc;
-	duplicator.StoreEntityModifier(npc, self.__MODIFIER_ID, {
-		id = self:GetCreationID(),
-		myid = npc:GetCreationID(),
-	});
+	duplicator.StoreEntityModifier(
+		npc, self.__MODIFIER_ID,
+		{id = self:GetCreationID(), myid = npc:GetCreationID()}
+	);
 end
 
 function ENT:ConfigureNPCValue(npc)
@@ -333,7 +359,9 @@ function ENT:SpawnOne()
 
 	debugoverlay.Line(self:GetPos(), position, 10, color_white, true);
 	debugoverlay.Axis(position, angles, 10, 10, true);
-	debugoverlay.Line(position, position + normal * offset, 10, Color(255, 255, 0), true);
+	debugoverlay.Line(
+		position, position + normal * offset, 10, Color(255, 255, 0), true
+	);
 
 	local npc;
 	if (npcdata) then
@@ -344,13 +372,19 @@ function ENT:SpawnOne()
 
 	if (not IsValid(npc)) then
 		self:TurnOff();
-		error("Failed to create a NPC of type '"..class.."'!");
+		error("Failed to create a NPC of type '" .. class .. "'!");
 	end
 
 	npcspawner.debug2("NPC Entity:", npc);
 	debugoverlay.Cross(npc:GetPos(), 10, 10, color_white, true);
-	debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(255,0,0), true);
-	timer.Simple(0.1, function() if (IsValid(npc)) then debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(0,255,0), true); end end)
+	debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(255, 0, 0), true);
+	timer.Simple(
+		0.1, function()
+			if (IsValid(npc)) then
+				debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(0, 255, 0), true);
+			end
+		end
+	)
 
 	self:ConfigureNPCSquad(npc);
 	self:ConfigureNPCHealth(npc);
@@ -383,12 +417,21 @@ function ENT:SpawnOne()
 	end
 
 	if (self:GetDelayDecrease() > 0 and self.TotalSpawned % self:GetMaxNPCs() == 0) then
-		npcspawner.debug(self.TotalSpawned.." NPCs spawned, decreasing delay ("..self:GetSpawnDelay()..") by "..self:GetDelayDecrease());
-		self:SetSpawnDelay(math.max(self:GetSpawnDelay() - self:GetDelayDecrease(), npcspawner.config.mindelay));
+		npcspawner.debug(
+			self.TotalSpawned .. " NPCs spawned, decreasing delay (" ..
+				self:GetSpawnDelay() .. ") by " .. self:GetDelayDecrease()
+		);
+		self:SetSpawnDelay(
+			math.max(
+				self:GetSpawnDelay() - self:GetDelayDecrease(), npcspawner.config.mindelay
+			)
+		);
 	end
 
 	if (self.TotalSpawned == self:GetMaxNPCsTotal()) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point, shit works.
-		npcspawner.debug("totallimit ("..self:GetMaxNPCsTotal()..") hit. Turning off.");
+		npcspawner.debug(
+			"totallimit (" .. self:GetMaxNPCsTotal() .. ") hit. Turning off."
+		);
 		self:TriggerOutput("OnLimitReached", self);
 		self:TurnOff();
 	end

@@ -17,17 +17,19 @@
 ]] --
 AddCSLuaFile();
 
-ENT.Type            = "anim"
-ENT.PrintName       = "DarkRP Money Pot"
-ENT.Information     = "Allows you to collect DarkRP money into a pot"
-ENT.Author          = "Lexi"
-ENT.Spawnable       = true
-ENT.AdminSpawnable  = true
-ENT.Category        = "DarkRP"
+ENT.Type = "anim"
+ENT.PrintName = "DarkRP Money Pot"
+ENT.Information = "Allows you to collect DarkRP money into a pot"
+ENT.Author = "Lexi"
+ENT.Spawnable = true
+ENT.AdminSpawnable = true
+ENT.Category = "DarkRP"
 
 DEFINE_BASECLASS("base_moneypot");
 
-if (CLIENT) then return; end
+if (CLIENT) then
+	return;
+end
 
 --------------------------------------
 --                                  --
@@ -76,26 +78,26 @@ function MakeMoneyPot(ply, pos, angles, model, data)
 	if (ply and not ply:CheckLimit("moneypots")) then
 		return false;
 	end
-	data = data or {
-		Pos   = pos,
-		Angle = angles,
-	};
+	data = data or {Pos = pos, Angle = angles};
 	data.Class = "darkrp_moneypot";
 	if (data.DT) then
 		data.DT.Money = 0;
 	end
 
-	local box  = duplicator.GenericDuplicatorFunction(ply, data);
+	local box = duplicator.GenericDuplicatorFunction(ply, data);
 	if (not box) then
 		-- uh oh
 		-- Run the various duplicator tests to see what's wrong
-		local isa = duplicator.IsAllowed(data.Class)        and "yes" or "no";
-		local isv = IsValid(ents.Create(data.Class))        and "yes" or "no";
+		local isa = duplicator.IsAllowed(data.Class) and "yes" or "no";
+		local isv = IsValid(ents.Create(data.Class)) and "yes" or "no";
 		-- uh, do we exist?
-		local drp = scripted_ents.Get('darkrp_moneypot')    and "yes" or "no";
-		local bas = scripted_ents.Get('base_moneypot')      and "yes" or "no";
-		local old = scripted_ents.Get('gmod_wire_moneypot') and "yes" or "no";
-		error("Something's gone wrong! Debug: Allowed: " .. isa .. " Valid: " .. isv .. " Exist Derived: " .. drp .. " Exist Base: " .. bas .. " Exist Old: " .. old);
+		local drp = scripted_ents.Get("darkrp_moneypot") and "yes" or "no";
+		local bas = scripted_ents.Get("base_moneypot") and "yes" or "no";
+		local old = scripted_ents.Get("gmod_wire_moneypot") and "yes" or "no";
+		error(
+			"Something's gone wrong! Debug: Allowed: " .. isa .. " Valid: " .. isv ..
+				" Exist Derived: " .. drp .. " Exist Base: " .. bas .. " Exist Old: " .. old
+		);
 	end
 
 	-- This sets it's own model by default, but if someone wants to override ..?
@@ -111,13 +113,19 @@ function MakeMoneyPot(ply, pos, angles, model, data)
 	return box;
 end
 
-duplicator.RegisterEntityClass("darkrp_moneypot",    MakeMoneyPot, "Pos", "Angle", "Model", "Data");
-duplicator.RegisterEntityClass("gmod_wire_moneypot", MakeMoneyPot, "Pos", "Angle", "Model", "Data");
+duplicator.RegisterEntityClass(
+	"darkrp_moneypot", MakeMoneyPot, "Pos", "Angle", "Model", "Data"
+);
+duplicator.RegisterEntityClass(
+	"gmod_wire_moneypot", MakeMoneyPot, "Pos", "Angle", "Model", "Data"
+);
 
 -- 2020-04-16 There's a bug in DarkRP at the moment where the pocket duplicates money.
 -- While that's being fixed, prevent people pocketing moneypots
-hook.Add("canPocket", "moneypot anti-dupe protection", function(ply, ent)
-	if (IsValid(ent) and ent:GetClass() == "darkrp_moneypot") then
-		return false;
+hook.Add(
+	"canPocket", "moneypot anti-dupe protection", function(ply, ent)
+		if (IsValid(ent) and ent:GetClass() == "darkrp_moneypot") then
+			return false;
+		end
 	end
-end)
+)
