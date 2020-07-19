@@ -315,13 +315,14 @@ end
 
 --- Configures an entity to be a fading door.
 --- If it is already a fading door, all the settings will be updated.
---- @param owner GPlayer
+--- @param ply GPlayer
 --- @param ent GEntity
 --- @param data table
-function SetupDoor(owner, ent, data)
-	if (not (IsValid(owner) and IsValid(ent))) then
+function SetupDoor(ply, ent, data)
+	if not IsValid(ent) then
 		return
 	end
+
 	if (IsFading(ent)) then
 		Unfade(ent)
 		removeNumpadBindings(ent) -- Kill the old numpad func
@@ -345,8 +346,11 @@ function SetupDoor(owner, ent, data)
 	end
 	ent._fade.canDisableMotion = data.CanDisableMotion
 
-	ent._fade.numpadUp = numpad.OnUp(owner, data.key, "Fading Doors onUp", ent)
-	ent._fade.numpadDn = numpad.OnDown(owner, data.key, "Fading Doors onDown", ent)
+	if IsValid(ply) then
+		ent._fade.numpadUp = numpad.OnUp(ply, data.key, "Fading Doors onUp", ent)
+		ent._fade.numpadDn = numpad.OnDown(ply, data.key, "Fading Doors onDown", ent)
+	end
+
 	ent._fade.toggle = data.toggle
 	if (data.reversed) then
 		Fade(ent)
