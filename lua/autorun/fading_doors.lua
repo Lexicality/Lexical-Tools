@@ -27,6 +27,10 @@ CreateConVar(
 	prefix .. "mintime", 0, FCVAR_ARCHIVE,
 	"The minimum time a fading door must remain faded for", 0
 )
+CreateConVar(
+	prefix .. "physpersist", "false", FCVAR_ARCHIVE,
+	"If unfrozen objects should be unfrozen when unfaded"
+)
 
 require("fading_doors")
 
@@ -37,7 +41,7 @@ local function onChange(name, oldVal, newVal)
 	fading_doors.SetConfig(string.sub(name, #prefix + 1), newVal)
 end
 
-local cvarNames = {"mintime"}
+local cvarNames = {"mintime", "physpersist"}
 for _, name in pairs(cvarNames) do
 	cvars.AddChangeCallback(prefix .. name, onChange, "Fading Doors Config")
 	fading_doors.SetConfig(name, cvars.String(prefix .. name))

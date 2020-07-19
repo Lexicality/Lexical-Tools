@@ -28,6 +28,7 @@ local numpad = numpad
 local pairs = pairs
 local print = print
 local timer = timer
+local tobool = tobool
 local tonumber = tonumber
 
 module("fading_doors")
@@ -44,6 +45,8 @@ local config = {
 	-- Some servers need fading doors to stay open for a certain number of
 	-- seconds due to base rules
 	mintime = false,
+	-- If props should be awoken when unfaded
+	physpersist = false,
 }
 
 ---
@@ -60,6 +63,8 @@ function SetConfig(key, value)
 		if not value or value <= 0 then
 			value = false
 		end
+	elseif key == "physpersist" then
+		value = tobool(value)
 	end
 	config[key] = value
 end
@@ -100,26 +105,31 @@ function Fade(ent)
 	if (not IsFading(ent) or ent._fade.active) then
 		return
 	end
+
+	if (WireLib) then
+		WireLib.TriggerOutput(ent, "FadeActive", 1)
+	end
+
 	ent._fade.active = true
 	ent._fade.material = ent:GetMaterial()
 	ent._fade.fadeTime = CurTime()
 
 	ent:SetMaterial(config.material)
 	ent:DrawShadow(false)
-	ent:SetNotSolid(true)
-
-	if (WireLib) then
-		WireLib.TriggerOutput(ent, "FadeActive", 1)
-	end
 
 	local phys = ent:GetPhysicsObject()
-	if (not IsValid(phys)) then
+	if not ent._fade.canDisableMotion or not IsValid(phys) then
+		ent._fade.collisionGroup = ent:GetCollisionGroup()
+		ent:SetCollisionGroup(COLLISION_GROUP_WORLD)
 		return
 	end
+
 	ent._fade.unfrozen = phys:IsMoveable()
-	ent._fade.velocity = phys:GetVelocity()
-	ent._fade.angvel = phys:GetAngleVelocity()
+	ent._fade.unfreezable = ent:GetUnFreezable()
+
+	ent:SetNotSolid(true)
 	phys:EnableMotion(false)
+	ent:SetUnFreezable(true)
 end
 
 --- @param ent GEntity
@@ -158,26 +168,32 @@ function Unfade(ent)
 		end
 	end
 
+	if (WireLib) then
+		WireLib.TriggerOutput(ent, "FadeActive", 0)
+	end
+
 	ent._fade.active = false
 	ent:SetMaterial(ent._fade.material)
 	ent:DrawShadow(true)
-	ent:SetNotSolid(false)
-
-	if (WireLib) then
-		WireLib.TriggerOutput(ent, "FadeActive", 1)
-	end
 
 	local phys = ent:GetPhysicsObject()
-	if (not IsValid(phys)) then
+	if not ent._fade.canDisableMotion or not IsValid(phys) then
+		ent:SetCollisionGroup(ent._fade.collisionGroup or COLLISION_GROUP_NONE)
 		return
 	end
+
+	ent:SetNotSolid(false)
+	ent:SetUnFreezable(ent._fade.unfreezable)
+
+	-- Check if the server has decided not to let doors unfreeze themselves
+	if not config.physpersist then
+		return
+	end
+
 	phys:EnableMotion(ent._fade.unfrozen)
-	if (not ent._fade.unfrozen) then
-		return
+	if ent._fade.unfrozen then
+		phys:Wake()
 	end
-	phys:Wake()
-	phys:SetVelocityInstantaneous(ent._fade.velocity or vector_origin)
-	phys:AddAngleVelocity(ent._fade.angvel or vector_origin)
 end
 
 --- Triggers a fading door to toggle its fade state
@@ -313,6 +329,22 @@ function SetupDoor(owner, ent, data)
 		createDoorFunctions(ent)
 		setupWire(ent)
 	end
+
+	-- I got this from Panthera Tigris' version of the tool
+	-- I'm not entirely sure when this could happen, but it looks like a bug fix
+	-- so I'm going to keep it.
+	if data.CanDisableMotion == nil then
+		data.CanDisableMotion = false
+		local phys = ent:GetPhysicsObject()
+		if phys:IsValid() then
+			local motionEnabled = phys:IsMotionEnabled()
+			phys:EnableMotion(not motionEnabled)
+			data.CanDisableMotion = motionEnabled ~= phys:IsMotionEnabled()
+			phys:EnableMotion(motionEnabled)
+		end
+	end
+	ent._fade.canDisableMotion = data.CanDisableMotion
+
 	ent._fade.numpadUp = numpad.OnUp(owner, data.key, "Fading Doors onUp", ent)
 	ent._fade.numpadDn = numpad.OnDown(owner, data.key, "Fading Doors onDown", ent)
 	ent._fade.toggle = data.toggle
