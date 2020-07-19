@@ -26,6 +26,13 @@ local WireLib, numpad, duplicator, timer = WireLib, numpad, duplicator, timer
 
 module("fadingdoors")
 
+local WIRE_ENT_FUNCTIONS = {
+	"ApplyDupeInfo",
+	"BuildDupeInfo",
+	"PostEntityPaste",
+	"PreEntityCopy",
+}
+
 local config = {material = "sprites/heatwave", mintime = false}
 
 local function IsFading(ent)
@@ -41,33 +48,15 @@ local function mintimeTimer(ent)
 end
 
 local function wireTriggerInput(ent, name, value)
-	if (not IsFading(ent) or name ~= "fade") then
+	if name ~= "fade" then
 		return false
 	end
-	if (value == 0) then
-		InputOff(NULL, ent)
-	else
+	if value ~= 0 then
 		InputOn(NULL, ent)
+	else
+		InputOff(NULL, ent)
 	end
 	return true
-end
-
-local function wirePreEntityCopy(ent)
-	local info = WireLib.BuildDupeInfo(ent)
-	if (info) then
-		duplicator.StoreEntityModifier(ent, "WireDupeInfo", info)
-	end
-end
-
--- ~wow~ so much easier than using entity modifiers properly!
-local function wirePostEntityPaste(ent, ply, _, ents)
-	if (ent.EntityMods and ent.EntityMods["WireDupeInfo"]) then
-		WireLib.ApplyDupeInfo(
-			ply, ent, ent.EntityMods["WireDupeInfo"], function(id)
-				return ents[id]
-			end
-		)
-	end
 end
 
 local function onRemove(ent)
@@ -233,12 +222,17 @@ function CreateDoorFunctions(ent)
 	WireLib.AddInputs(ent, {"Fade"})
 	WireLib.AddOutputs(ent, {"FadeActive"})
 	do
-		local TriggerInput = ent.TriggerInput
-		pfuncs.TriggerInput = TriggerInput or false -- For cleanup
-		function ent.TriggerInput(...)
-			if (not wireTriggerInput(...) and TriggerInput) then
-				TriggerInput(...)
+		local original = ent.TriggerInput
+		if original then
+			pfuncs.TriggerInput = original
+			function ent.TriggerInput(...)
+				if (not wireTriggerInput(...)) then
+					original(...)
+				end
 			end
+		else
+			pfuncs.TriggerInput = false
+			ent.TriggerInput = wireTriggerInput
 		end
 	end
 	-- Make the entity support being duped by wire
@@ -247,24 +241,19 @@ function CreateDoorFunctions(ent)
 	end
 	ent.addedWireSupport = true
 	-- Add WireLib's dupe stuff
-	do
-		local PreEntityCopy = ent.PreEntityCopy
-		pfuncs.PreEntityCopy = PreEntityCopy or false
-		function ent.PreEntityCopy(ent)
-			wirePreEntityCopy(ent)
-			if (PreEntityCopy) then
-				PreEntityCopy(ent)
+	local base_wire_entity = scripted_ents.GetStored("base_wire_entity").t
+	for _, name in pairs(WIRE_ENT_FUNCTIONS) do
+		local original = ent[name]
+		local wire = base_wire_entity[name]
+		if original then
+			pfuncs[name] = original
+			ent[name] = function(...)
+				wire(...)
+				original(...)
 			end
-		end
-	end
-	do
-		local PostEntityPaste = ent.PostEntityPaste
-		pfuncs.PostEntityPaste = PostEntityPaste or false
-		function ent.PostEntityPaste(...)
-			wirePostEntityPaste(...)
-			if (PostEntityPaste) then
-				PostEntityPaste(...)
-			end
+		else
+			pfuncs[name] = false
+			ent[name] = wire
 		end
 	end
 end
@@ -290,6 +279,7 @@ function RemoveDoor(ent)
 			ent[key] = func
 		end
 	end
+	ent.addedWireSupport = nil
 	ent._fade = nil
 	duplicator.ClearEntityModifier(ent, "Fading Door")
 	if (WireLib) then
