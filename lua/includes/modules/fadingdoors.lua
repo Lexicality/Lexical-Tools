@@ -239,7 +239,7 @@ local function createDoorFunctions(ent)
 	ent.fadeToggleActive = Toggle
 	-- Unlegacy
 	ent._fade = {}
-	ent:CallOnRemove("Fading Doors", removeNumpadBindings)
+	ent:CallOnRemove("Fading Door", removeNumpadBindings)
 end
 
 function SetupDoor(owner, ent, data)
@@ -268,6 +268,7 @@ function RemoveDoor(ent)
 		return
 	end
 	removeNumpadBindings(ent)
+	ent:RemoveCallOnRemove("Fading Door")
 	Unfade(ent)
 	ent.isFadingDoor = nil
 	ent.fadeActivate = nil
