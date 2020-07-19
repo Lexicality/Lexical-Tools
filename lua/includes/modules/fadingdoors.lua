@@ -145,10 +145,8 @@ function Toggle(ent)
 		return
 	end
 	if (ent._fade.active) then
-		print(ent, "Toggle! Setting to off")
 		Unfade(ent)
 	else
-		print(ent, "Toggle! Setting to on")
 		Fade(ent)
 	end
 end
@@ -263,7 +261,6 @@ function SetupDoor(owner, ent, data)
 end
 
 function RemoveDoor(ent)
-	print("RemoveDoor", ent, IsValid(ent), IsFading(ent))
 	if (not IsFading(ent)) then
 		return
 	end
