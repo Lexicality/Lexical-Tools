@@ -33,7 +33,12 @@ local WIRE_ENT_FUNCTIONS = {
 	"PreEntityCopy",
 }
 
-local config = {material = "sprites/heatwave", mintime = false}
+local config = {
+	material = "sprites/heatwave",
+	-- Some servers need fading doors to stay open for a certain number of
+	-- seconds due to base rules
+	mintime = false,
+}
 
 function SetConfig(key, value)
 	if (value == nil) then
@@ -53,14 +58,6 @@ end
 
 function IsFading(ent)
 	return IsValid(ent) and ent.isFadingDoor
-end
-
-local function mintimeTimer(ent)
-	if (IsFading(ent)) then
-		ent._fade.mintimeTimer = false
-		ent._fade.fadeTime = false
-		Unfade(ent)
-	end
 end
 
 local function removeNumpadBindings(ent)
@@ -100,18 +97,31 @@ function Fade(ent)
 	phys:EnableMotion(false)
 end
 
+local function unfadeTimer(ent)
+	if (not IsFading(ent)) then
+		return
+	end
+
+	ent._fade.mintimeTimer = false
+	-- Make sure we don't accidentally re-run the timer
+	ent._fade.fadeTime = false
+	Unfade(ent)
+end
+
 function Unfade(ent)
 	if (not IsFading(ent) or not ent._fade.active or ent._fade.mintimeTimer) then
 		return
 	end
+	-- Check if we need to hold the door open for a while longer
 	if (config.mintime and ent._fade.fadeTime) then
-		local t = ent._fade.fadeTime + config.mintime
-		local c = CurTime()
-		if (t > c) then
+		local fadeEnd = ent._fade.fadeTime + config.mintime
+		local curTime = CurTime()
+		if (fadeEnd > curTime) then
+			-- Prevent the timer happening multiple times
 			ent._fade.mintimeTimer = true
 			timer.Simple(
-				t - c, function()
-					mintimeTimer(ent)
+				fadeEnd - curTime, function()
+					unfadeTimer(ent)
 				end
 			)
 			return
