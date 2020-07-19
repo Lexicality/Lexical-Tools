@@ -35,7 +35,23 @@ local WIRE_ENT_FUNCTIONS = {
 
 local config = {material = "sprites/heatwave", mintime = false}
 
-local function IsFading(ent)
+function SetConfig(key, value)
+	if (value == nil) then
+		return
+	end
+	if (key == "mintime" and value <= 0) then
+		value = false
+	end
+	if (config[key] ~= nil) then
+		config[key] = value
+	end
+end
+
+function GetConfig(key)
+	return config[key]
+end
+
+function IsFading(ent)
 	return IsValid(ent) and ent.isFadingDoor
 end
 
@@ -47,19 +63,7 @@ local function mintimeTimer(ent)
 	end
 end
 
-local function wireTriggerInput(ent, name, value)
-	if name ~= "fade" then
-		return false
-	end
-	if value ~= 0 then
-		InputOn(NULL, ent)
-	else
-		InputOff(NULL, ent)
-	end
-	return true
-end
-
-local function onRemove(ent)
+local function removeNumpadBindings(ent)
 	if (not ent._fade) then
 		return
 	end
@@ -167,53 +171,19 @@ function InputOff(ply, ent)
 	end
 end
 
-function SetConfig(key, value)
-	if (value == nil) then
-		return
+local function wireTriggerInput(ent, name, value)
+	if name ~= "fade" then
+		return false
 	end
-	if (key == "mintime" and value <= 0) then
-		value = false
-	end
-	if (config[key] ~= nil) then
-		config[key] = value
-	end
-end
-
-function GetConfig(key)
-	return config[key]
-end
-
-function SetupDoor(owner, ent, data)
-	if (not (IsValid(owner) and IsValid(ent))) then
-		return
-	end
-	if (IsFading(ent)) then
-		Unfade(ent)
-		onRemove(ent) -- Kill the old numpad func
+	if value ~= 0 then
+		InputOn(NULL, ent)
 	else
-		CreateDoorFunctions(ent)
+		InputOff(NULL, ent)
 	end
-	ent._fade.numpadUp = numpad.OnUp(owner, data.key, "Fading Doors onUp", ent)
-	ent._fade.numpadDn = numpad.OnDown(owner, data.key, "Fading Doors onDown", ent)
-	ent._fade.toggle = data.toggle
-	if (data.reversed) then
-		Fade(ent)
-	end
-	duplicator.StoreEntityModifier(ent, "Fading Door", data)
+	return true
 end
 
-function CreateDoorFunctions(ent)
-	if (not IsValid(ent)) then
-		return
-	end
-	-- Legacy
-	ent.isFadingDoor = true
-	ent.fadeActivate = Fade
-	ent.fadeDeactivate = Unfade
-	ent.fadeToggleActive = Toggle
-	-- Unlegacy
-	ent._fade = {}
-	ent:CallOnRemove("Fading Doors", onRemove)
+local function setupWire(ent)
 	if (not WireLib) then
 		return
 	end
@@ -258,12 +228,46 @@ function CreateDoorFunctions(ent)
 	end
 end
 
+local function createDoorFunctions(ent)
+	if (not IsValid(ent)) then
+		return
+	end
+	-- Legacy
+	ent.isFadingDoor = true
+	ent.fadeActivate = Fade
+	ent.fadeDeactivate = Unfade
+	ent.fadeToggleActive = Toggle
+	-- Unlegacy
+	ent._fade = {}
+	ent:CallOnRemove("Fading Doors", removeNumpadBindings)
+end
+
+function SetupDoor(owner, ent, data)
+	if (not (IsValid(owner) and IsValid(ent))) then
+		return
+	end
+	if (IsFading(ent)) then
+		Unfade(ent)
+		removeNumpadBindings(ent) -- Kill the old numpad func
+	else
+		createDoorFunctions(ent)
+		setupWire(ent)
+	end
+	ent._fade.numpadUp = numpad.OnUp(owner, data.key, "Fading Doors onUp", ent)
+	ent._fade.numpadDn = numpad.OnDown(owner, data.key, "Fading Doors onDown", ent)
+	ent._fade.toggle = data.toggle
+	if (data.reversed) then
+		Fade(ent)
+	end
+	duplicator.StoreEntityModifier(ent, "Fading Door", data)
+end
+
 function RemoveDoor(ent)
 	print("RemoveDoor", ent, IsValid(ent), IsFading(ent))
 	if (not IsFading(ent)) then
 		return
 	end
-	onRemove(ent)
+	removeNumpadBindings(ent)
 	Unfade(ent)
 	ent.isFadingDoor = nil
 	ent.fadeActivate = nil
