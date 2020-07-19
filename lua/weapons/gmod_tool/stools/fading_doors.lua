@@ -55,10 +55,10 @@ if (CLIENT) then
 	return
 end
 
-require("fadingdoors")
+require("fading_doors")
 
 local function doUndo(undoData, ent)
-	fadingdoors.RemoveDoor(ent)
+	fading_doors.RemoveDoor(ent)
 end
 
 function TOOL:LeftClick(tr)
@@ -67,7 +67,7 @@ function TOOL:LeftClick(tr)
 	end
 	local ent = tr.Entity
 	local ply = self:GetOwner()
-	fadingdoors.SetupDoor(
+	fading_doors.SetupDoor(
 		ply, ent, {
 			key = self:GetClientNumber("key"),
 			toggle = self:GetClientNumber("toggle") == 1,
@@ -84,5 +84,5 @@ function TOOL:LeftClick(tr)
 end
 
 function TOOL:Reload(tr)
-	return checkTrace(tr) and fadingdoors.RemoveDoor(tr.Entity)
+	return checkTrace(tr) and fading_doors.RemoveDoor(tr.Entity)
 end

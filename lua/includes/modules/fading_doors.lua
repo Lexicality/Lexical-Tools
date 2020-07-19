@@ -1,5 +1,5 @@
 --[[
-	Fading Doors - lua\includes\modules\fadingdoors.lua
+	Fading Doors - lua\includes\modules\fading_doors.lua
     Copyright 2012-2020 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ local IsValid, pairs, CurTime, print = IsValid, pairs, CurTime, print
 
 local WireLib, numpad, duplicator, timer = WireLib, numpad, duplicator, timer
 
-module("fadingdoors")
+module("fading_doors")
 
 local WIRE_ENT_FUNCTIONS = {
 	"ApplyDupeInfo",
