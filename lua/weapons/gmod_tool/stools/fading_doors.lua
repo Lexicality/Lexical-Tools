@@ -1,7 +1,6 @@
 --[[
-	Lexical Tools - lua\weapons\gmod_tool\stools\fading_doors.lua
-	Copyright 2010-2013 Lex Robinson
-	Walk through props on demand, originally written by Conna
+	Fading Doors - lua\weapons\gmod_tool\stools\fading_doors.lua
+	Copyright 2010-2020 Lex Robinson
 
 	Licensed under the Apache License, Version 2.0 (the "License")
 	you may not use this file except in compliance with the License.

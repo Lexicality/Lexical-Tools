@@ -1,6 +1,6 @@
 --[[
-	Fading Doors
-    Copyright 2012-2013 Lex Robinson
+	Fading Doors - lua\includes\modules\fadingdoors.lua
+    Copyright 2012-2020 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
