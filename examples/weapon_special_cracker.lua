@@ -31,7 +31,7 @@ function SWEP:GetCrackTime(target)
 	local victim = target:GetPlayer()
 	if (IsValid(victim)) then
 		-- The mob boss can break into gun dealers' bases really easily
-		if (self.Owner:Team() == TEAM_MOB and victim:Team() == TEAM_GUN) then
+		if (self.Owner:Team() == _G.TEAM_MOB and victim:Team() == _G.TEAM_GUN) then
 			return crackTime * 0.5
 		end
 	end
