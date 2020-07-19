@@ -46,6 +46,11 @@ local config = {
 	mintime = false,
 }
 
+---
+--- Sets a config value to take immediate effect
+--- Does not persist, ignores unknown keys.
+--- @param key string
+--- @param value any
 function SetConfig(key, value)
 	if value == nil or config[key] == nil then
 		return
@@ -59,14 +64,23 @@ function SetConfig(key, value)
 	config[key] = value
 end
 
+---
+--- Returns a single config value
+--- @param key string
+--- @return any
 function GetConfig(key)
 	return config[key]
 end
 
+---
+--- Checks if an entity is a fading door
+--- @param ent GEntity
+--- @return boolean
 function IsFading(ent)
 	return IsValid(ent) and ent.isFadingDoor
 end
 
+--- @param ent GEntity
 local function removeNumpadBindings(ent)
 	if (not ent._fade) then
 		return
@@ -78,6 +92,10 @@ end
 ---------------
 -- INTERFACE --
 ---------------
+
+--- Triggers a fading door to fade
+--- Does nothing if the entity is not a fading door, or is already faded
+--- @param ent GEntity
 function Fade(ent)
 	if (not IsFading(ent) or ent._fade.active) then
 		return
@@ -104,6 +122,7 @@ function Fade(ent)
 	phys:EnableMotion(false)
 end
 
+--- @param ent GEntity
 local function unfadeTimer(ent)
 	if (not IsFading(ent)) then
 		return
@@ -115,6 +134,10 @@ local function unfadeTimer(ent)
 	Unfade(ent)
 end
 
+--- Triggers a fading door to ufade
+--- Does nothing if the entity is not a fading door, or is already unfaded.
+--- If the server has a minimum fade time set, this will not take action immediately.
+--- @param ent GEntity
 function Unfade(ent)
 	if (not IsFading(ent) or not ent._fade.active or ent._fade.mintimeTimer) then
 		return
@@ -157,6 +180,10 @@ function Unfade(ent)
 	phys:AddAngleVelocity(ent._fade.angvel or vector_origin)
 end
 
+--- Triggers a fading door to toggle its fade state
+--- Does nothing if the entity is not a fading door
+--- If the server has a minimum fade time set, this may not take action immediately.
+--- @param ent GEntity
 function Toggle(ent)
 	if (not IsFading(ent)) then
 		return
@@ -168,6 +195,10 @@ function Toggle(ent)
 	end
 end
 
+--- Used for button etc inputs
+--- Does nothing if the entity is not a fading door
+--- @param ply nil @unused
+--- @param ent GEntity
 function InputOn(ply, ent)
 	if (not IsFading(ent) or ent._fade.debounce) then
 		return
@@ -176,6 +207,10 @@ function InputOn(ply, ent)
 	Toggle(ent)
 end
 
+--- Used for button etc inputs
+--- Does nothing if the entity is not a fading door
+--- @param ply nil @unused
+--- @param ent GEntity
 function InputOff(ply, ent)
 	if (not IsFading(ent) or not ent._fade.debounce) then
 		return
@@ -186,6 +221,9 @@ function InputOff(ply, ent)
 	end
 end
 
+--- @param ent GEntity
+--- @param name string
+--- @param value any
 local function wireTriggerInput(ent, name, value)
 	if name ~= "fade" then
 		return false
@@ -198,6 +236,7 @@ local function wireTriggerInput(ent, name, value)
 	return true
 end
 
+--- @param ent GEntity
 local function setupWire(ent)
 	if (not WireLib) then
 		return
@@ -243,6 +282,7 @@ local function setupWire(ent)
 	end
 end
 
+--- @param ent GEntity
 local function createDoorFunctions(ent)
 	if (not IsValid(ent)) then
 		return
@@ -257,6 +297,11 @@ local function createDoorFunctions(ent)
 	ent:CallOnRemove("Fading Door", removeNumpadBindings)
 end
 
+--- Configures an entity to be a fading door.
+--- If it is already a fading door, all the settings will be updated.
+--- @param owner GPlayer
+--- @param ent GEntity
+--- @param data table
 function SetupDoor(owner, ent, data)
 	if (not (IsValid(owner) and IsValid(ent))) then
 		return
@@ -277,6 +322,9 @@ function SetupDoor(owner, ent, data)
 	duplicator.StoreEntityModifier(ent, "Fading Door", data)
 end
 
+--- Removes all fading door features from an entity
+--- Does nothing if the entity is not a fading door
+--- @param ent GEntity
 function RemoveDoor(ent)
 	if (not IsFading(ent)) then
 		return
@@ -311,6 +359,9 @@ end
 numpad.Register("Fading Doors onUp", InputOff)
 numpad.Register("Fading Doors onDown", InputOn)
 
+--- @param ply GPlayer
+--- @param ent GEntity
+--- @param data table
 local function entMod(ply, ent, data)
 	-- Ensure the duplicator hasn't copied any fields that are going to confuse us
 	ent.isFadingDoor = nil
@@ -320,6 +371,9 @@ end
 duplicator.RegisterEntityModifier("Fading Door", entMod)
 
 -- I wish I had a way to gather metrics, I'm pretty sure this hasn't been necessary for a decade
+--- @param ply GPlayer
+--- @param ent GEntity
+--- @param data table
 local function legacyEntMod(ply, ent, data)
 	if not ent.EntityMods["Fading Door"] then
 		SetupDoor(
