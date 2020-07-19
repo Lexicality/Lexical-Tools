@@ -20,9 +20,15 @@ end
 
 require("wirefixes")
 
-local IsValid, pairs, CurTime, print = IsValid, pairs, CurTime, print
-
-local WireLib, numpad, duplicator, timer = WireLib, numpad, duplicator, timer
+local CurTime = CurTime
+local IsValid = IsValid
+local WireLib = WireLib
+local duplicator = duplicator
+local numpad = numpad
+local pairs = pairs
+local print = print
+local timer = timer
+local tonumber = tonumber
 
 module("fading_doors")
 
@@ -41,15 +47,16 @@ local config = {
 }
 
 function SetConfig(key, value)
-	if (value == nil) then
+	if value == nil or config[key] == nil then
 		return
 	end
-	if (key == "mintime" and value <= 0) then
-		value = false
+	if key == "mintime" then
+		value = tonumber(value)
+		if not value or value <= 0 then
+			value = false
+		end
 	end
-	if (config[key] ~= nil) then
-		config[key] = value
-	end
+	config[key] = value
 end
 
 function GetConfig(key)
