@@ -26,10 +26,12 @@ local WireLib = WireLib
 local duplicator = duplicator
 local numpad = numpad
 local pairs = pairs
-local print = print
 local timer = timer
 local tobool = tobool
 local tonumber = tonumber
+
+local PrintTable = PrintTable
+local print = print
 
 module("fading_doors")
 
