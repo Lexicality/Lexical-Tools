@@ -216,11 +216,19 @@ end
 --- @param ply nil @unused
 --- @param ent GEntity
 function InputOn(ply, ent)
-	if (not IsFading(ent) or ent._fade.debounce) then
+	if not IsFading(ent) or ent._fade.debounce then
 		return
 	end
+
 	ent._fade.debounce = true
-	Toggle(ent)
+
+	if ent._fade.toggle then
+		Toggle(ent)
+	elseif ent._fade.reversed then
+		Unfade(ent)
+	else
+		Fade(ent)
+	end
 end
 
 --- Used for button etc inputs
@@ -228,12 +236,18 @@ end
 --- @param ply nil @unused
 --- @param ent GEntity
 function InputOff(ply, ent)
-	if (not IsFading(ent) or not ent._fade.debounce) then
+	if not IsFading(ent) or not ent._fade.debounce then
 		return
 	end
+
 	ent._fade.debounce = false
-	if (not ent._fade.toggle) then -- Toggle fires on the On event, not Off.
-		Toggle(ent)
+
+	if ent._fade.toggle then
+		-- Toggle fires on the On event, not Off.
+	elseif ent._fade.reversed then
+		Fade(ent)
+	else
+		Unfade(ent)
 	end
 end
 
@@ -331,6 +345,9 @@ function SetupDoor(ply, ent, data)
 		setupWire(ent)
 	end
 
+	ent._fade.reversed = data.reversed
+	ent._fade.toggle = data.toggle
+
 	-- I got this from Panthera Tigris' version of the tool
 	-- I'm not entirely sure when this could happen, but it looks like a bug fix
 	-- so I'm going to keep it.
@@ -351,7 +368,6 @@ function SetupDoor(ply, ent, data)
 		ent._fade.numpadDn = numpad.OnDown(ply, data.key, "Fading Doors onDown", ent)
 	end
 
-	ent._fade.toggle = data.toggle
 	if (data.reversed) then
 		Fade(ent)
 	end
