@@ -1,5 +1,5 @@
 --[[
-	Fading Doors - lua\includes\modules\fading_doors.lua
+	Fading Doors - lua\autorun\server\fading_doors.lua
     Copyright 2012-2020 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,26 +14,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]] --
-if (CLIENT) then
-	return
-end
-
 require("wirefixes")
 
-local CurTime = CurTime
-local IsValid = IsValid
-local WireLib = WireLib
-local duplicator = duplicator
-local numpad = numpad
-local pairs = pairs
-local timer = timer
-local tobool = tobool
-local tonumber = tonumber
-
-local PrintTable = PrintTable
-local print = print
-
-module("fading_doors")
+_G.fading_doors = _G.fading_doors or {}
 
 local WIRE_ENT_FUNCTIONS = {
 	"ApplyDupeInfo",
@@ -42,22 +25,24 @@ local WIRE_ENT_FUNCTIONS = {
 	"PreEntityCopy",
 }
 
-local config = {
-	material = "sprites/heatwave",
-	-- Some servers need fading doors to stay open for a certain number of
-	-- seconds due to base rules
-	mintime = false,
-	-- If props should be awoken when unfaded
-	physpersist = false,
-}
+if not fading_doors._config then
+	fading_doors._config = {
+		material = "sprites/heatwave",
+		-- Some servers need fading doors to stay open for a certain number of
+		-- seconds due to base rules
+		mintime = false,
+		-- If props should be awoken when unfaded
+		physpersist = false,
+	}
+end
 
 ---
 --- Sets a config value to take immediate effect
 --- Does not persist, ignores unknown keys.
 --- @param key string
 --- @param value any
-function SetConfig(key, value)
-	if value == nil or config[key] == nil then
+function fading_doors.SetConfig(key, value)
+	if value == nil or fading_doors._config[key] == nil then
 		return
 	end
 	if key == "mintime" then
@@ -68,22 +53,22 @@ function SetConfig(key, value)
 	elseif key == "physpersist" then
 		value = tobool(value)
 	end
-	config[key] = value
+	fading_doors._config[key] = value
 end
 
 ---
 --- Returns a single config value
 --- @param key string
 --- @return any
-function GetConfig(key)
-	return config[key]
+function fading_doors.GetConfig(key)
+	return fading_doors._config[key]
 end
 
 ---
 --- Checks if an entity is a fading door
 --- @param ent GEntity
 --- @return boolean
-function IsFading(ent)
+function fading_doors.IsFading(ent)
 	return IsValid(ent) and ent.isFadingDoor
 end
 
@@ -103,8 +88,8 @@ end
 --- Triggers a fading door to fade
 --- Does nothing if the entity is not a fading door, or is already faded
 --- @param ent GEntity
-function Fade(ent)
-	if (not IsFading(ent) or ent._fade.active) then
+function fading_doors.Fade(ent)
+	if (not fading_doors.IsFading(ent) or ent._fade.active) then
 		return
 	end
 
@@ -116,7 +101,7 @@ function Fade(ent)
 	ent._fade.material = ent:GetMaterial()
 	ent._fade.fadeTime = CurTime()
 
-	ent:SetMaterial(config.material)
+	ent:SetMaterial(fading_doors._config.material)
 	ent:DrawShadow(false)
 
 	local phys = ent:GetPhysicsObject()
@@ -136,12 +121,12 @@ end
 
 --- @param ent GEntity
 local function unfadeTimer(ent)
-	if not (IsFading(ent) and ent._fade.mintimeTimer) then
+	if not (fading_doors.IsFading(ent) and ent._fade.mintimeTimer) then
 		return
 	end
 
 	ent._fade.mintimeTimer = false
-	Unfade(ent, true)
+	fading_doors.Unfade(ent, true)
 end
 
 --- Triggers a fading door to ufade
@@ -149,8 +134,8 @@ end
 --- If the server has a minimum fade time set, this will not take action immediately.
 --- @param ent GEntity
 --- @param force boolean
-function Unfade(ent, force)
-	if not IsFading(ent) or not ent._fade.active then
+function fading_doors.Unfade(ent, force)
+	if not fading_doors.IsFading(ent) or not ent._fade.active then
 		return
 	end
 
@@ -160,8 +145,8 @@ function Unfade(ent, force)
 	end
 
 	-- Check if we need to hold the door open for a while longer
-	if not force and config.mintime and ent._fade.fadeTime then
-		local fadeEnd = ent._fade.fadeTime + config.mintime
+	if not force and fading_doors._config.mintime and ent._fade.fadeTime then
+		local fadeEnd = ent._fade.fadeTime + fading_doors._config.mintime
 		local curTime = CurTime()
 		if (fadeEnd > curTime) then
 			-- Prevent the timer happening multiple times
@@ -195,7 +180,7 @@ function Unfade(ent, force)
 	ent:SetUnFreezable(ent._fade.unfreezable)
 
 	-- Check if the server has decided not to let doors unfreeze themselves
-	if not config.physpersist then
+	if not fading_doors._config.physpersist then
 		return
 	end
 
@@ -209,14 +194,14 @@ end
 --- Does nothing if the entity is not a fading door
 --- If the server has a minimum fade time set, this may not take action immediately.
 --- @param ent GEntity
-function Toggle(ent)
-	if (not IsFading(ent)) then
+function fading_doors.Toggle(ent)
+	if (not fading_doors.IsFading(ent)) then
 		return
 	end
 	if (ent._fade.active) then
-		Unfade(ent)
+		fading_doors.Unfade(ent)
 	else
-		Fade(ent)
+		fading_doors.Fade(ent)
 	end
 end
 
@@ -224,19 +209,19 @@ end
 --- Does nothing if the entity is not a fading door
 --- @param ply nil @unused
 --- @param ent GEntity
-function InputOn(ply, ent)
-	if not IsFading(ent) or ent._fade.debounce then
+function fading_doors.InputOn(ply, ent)
+	if not fading_doors.IsFading(ent) or ent._fade.debounce then
 		return
 	end
 
 	ent._fade.debounce = true
 
 	if ent._fade.toggle then
-		Toggle(ent)
+		fading_doors.Toggle(ent)
 	elseif ent._fade.reversed then
-		Unfade(ent)
+		fading_doors.Unfade(ent)
 	else
-		Fade(ent)
+		fading_doors.Fade(ent)
 	end
 end
 
@@ -244,8 +229,8 @@ end
 --- Does nothing if the entity is not a fading door
 --- @param ply nil @unused
 --- @param ent GEntity
-function InputOff(ply, ent)
-	if not IsFading(ent) or not ent._fade.debounce then
+function fading_doors.InputOff(ply, ent)
+	if not fading_doors.IsFading(ent) or not ent._fade.debounce then
 		return
 	end
 
@@ -254,9 +239,9 @@ function InputOff(ply, ent)
 	if ent._fade.toggle then
 		-- Toggle fires on the On event, not Off.
 	elseif ent._fade.reversed then
-		Fade(ent)
+		fading_doors.Fade(ent)
 	else
-		Unfade(ent)
+		fading_doors.Unfade(ent)
 	end
 end
 
@@ -268,9 +253,9 @@ local function wireTriggerInput(ent, name, value)
 		return false
 	end
 	if value ~= 0 then
-		InputOn(NULL, ent)
+		fading_doors.InputOn(NULL, ent)
 	else
-		InputOff(NULL, ent)
+		fading_doors.InputOff(NULL, ent)
 	end
 	return true
 end
@@ -327,9 +312,9 @@ local function createDoorFunctions(ent)
 	-- or people won't update their addons, so I guess we're stuck with these
 	-- functions forever.
 	ent.isFadingDoor = true
-	ent.fadeActivate = Fade
-	ent.fadeDeactivate = Unfade
-	ent.fadeToggleActive = Toggle
+	ent.fadeActivate = fading_doors.Fade
+	ent.fadeDeactivate = fading_doors.Unfade
+	ent.fadeToggleActive = fading_doors.Toggle
 	-- I'm going to put all the data in here and hope no one was expecting it to
 	-- be on the entity directly.
 	ent._fade = {}
@@ -341,13 +326,13 @@ end
 --- @param ply GPlayer
 --- @param ent GEntity
 --- @param data table
-function SetupDoor(ply, ent, data)
+function fading_doors.SetupDoor(ply, ent, data)
 	if not IsValid(ent) then
 		return
 	end
 
-	if (IsFading(ent)) then
-		Unfade(ent, true)
+	if (fading_doors.IsFading(ent)) then
+		fading_doors.Unfade(ent, true)
 		removeNumpadBindings(ent) -- Kill the old numpad func
 	else
 		createDoorFunctions(ent)
@@ -390,12 +375,12 @@ function SetupDoor(ply, ent, data)
 	if data._fade and data._fade.active then
 		local newFade = ent._fade
 		ent._fade = data._fade
-		Unfade(ent, true)
+		fading_doors.Unfade(ent, true)
 		ent._fade = newFade
 	end
 
 	if (data.reversed) then
-		Fade(ent)
+		fading_doors.Fade(ent)
 	end
 
 	data._fade = ent._fade
@@ -405,13 +390,13 @@ end
 --- Removes all fading door features from an entity
 --- Does nothing if the entity is not a fading door
 --- @param ent GEntity
-function RemoveDoor(ent)
-	if (not IsFading(ent)) then
+function fading_doors.RemoveDoor(ent)
+	if (not fading_doors.IsFading(ent)) then
 		return
 	end
 	removeNumpadBindings(ent)
 	ent:RemoveCallOnRemove("Fading Door")
-	Unfade(ent)
+	fading_doors.Unfade(ent)
 	ent.isFadingDoor = nil
 	ent.fadeActivate = nil
 	ent.fadeDeactivate = nil
@@ -436,8 +421,8 @@ function RemoveDoor(ent)
 	return true
 end
 
-numpad.Register("Fading Doors onUp", InputOff)
-numpad.Register("Fading Doors onDown", InputOn)
+numpad.Register("Fading Doors onUp", fading_doors.InputOff)
+numpad.Register("Fading Doors onDown", fading_doors.InputOn)
 
 --- @param ply GPlayer
 --- @param ent GEntity
@@ -463,7 +448,7 @@ local function entMod(ply, ent, data)
 		)
 	end
 
-	SetupDoor(ply, ent, data)
+	fading_doors.SetupDoor(ply, ent, data)
 end
 duplicator.RegisterEntityModifier("Fading Door", entMod)
 
@@ -473,7 +458,7 @@ duplicator.RegisterEntityModifier("Fading Door", entMod)
 --- @param data table
 local function legacyEntMod(ply, ent, data)
 	if not ent.EntityMods["Fading Door"] then
-		SetupDoor(
+		fading_doors.SetupDoor(
 			ply, ent, {key = data.Key, toggle = data.Toggle, reversed = data.Inverse}
 		)
 	end

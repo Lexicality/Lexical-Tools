@@ -32,8 +32,6 @@ CreateConVar(
 	"If unfrozen objects should be unfrozen when unfaded"
 )
 
-require("fading_doors")
-
 --- @param name string
 --- @param oldVal string
 --- @param newVal string
@@ -42,7 +40,12 @@ local function onChange(name, oldVal, newVal)
 end
 
 local cvarNames = {"mintime", "physpersist"}
-for _, name in pairs(cvarNames) do
-	cvars.AddChangeCallback(prefix .. name, onChange, "Fading Doors Config")
-	fading_doors.SetConfig(name, cvars.String(prefix .. name))
+
+local function onInitialize()
+	for _, name in pairs(cvarNames) do
+		cvars.AddChangeCallback(prefix .. name, onChange, "Fading Doors Config")
+		fading_doors.SetConfig(name, cvars.String(prefix .. name))
+	end
 end
+
+hook.Add("Initialize", "Fading Doors Config", onInitialize)

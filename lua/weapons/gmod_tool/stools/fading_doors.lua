@@ -55,8 +55,6 @@ if (CLIENT) then
 	return
 end
 
-require("fading_doors")
-
 local function doUndo(undoData, ent)
 	fading_doors.RemoveDoor(ent)
 end
