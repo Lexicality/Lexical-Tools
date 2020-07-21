@@ -136,26 +136,31 @@ end
 
 --- @param ent GEntity
 local function unfadeTimer(ent)
-	if (not IsFading(ent)) then
+	if not (IsFading(ent) and ent._fade.mintimeTimer) then
 		return
 	end
 
 	ent._fade.mintimeTimer = false
-	-- Make sure we don't accidentally re-run the timer
-	ent._fade.fadeTime = false
-	Unfade(ent)
+	Unfade(ent, true)
 end
 
 --- Triggers a fading door to ufade
 --- Does nothing if the entity is not a fading door, or is already unfaded.
 --- If the server has a minimum fade time set, this will not take action immediately.
 --- @param ent GEntity
-function Unfade(ent)
-	if (not IsFading(ent) or not ent._fade.active or ent._fade.mintimeTimer) then
+--- @param force boolean
+function Unfade(ent, force)
+	if not IsFading(ent) or not ent._fade.active then
 		return
 	end
+
+	-- If we're already going to unfade soon, don't do anything
+	if not force and ent._fade.mintimeTimer then
+		return
+	end
+
 	-- Check if we need to hold the door open for a while longer
-	if (config.mintime and ent._fade.fadeTime) then
+	if not force and config.mintime and ent._fade.fadeTime then
 		local fadeEnd = ent._fade.fadeTime + config.mintime
 		local curTime = CurTime()
 		if (fadeEnd > curTime) then
@@ -169,6 +174,8 @@ function Unfade(ent)
 			return
 		end
 	end
+
+	ent._fade.mintimeTimer = false
 
 	if (WireLib) then
 		WireLib.TriggerOutput(ent, "FadeActive", 0)
@@ -340,7 +347,7 @@ function SetupDoor(ply, ent, data)
 	end
 
 	if (IsFading(ent)) then
-		Unfade(ent)
+		Unfade(ent, true)
 		removeNumpadBindings(ent) -- Kill the old numpad func
 	else
 		createDoorFunctions(ent)
