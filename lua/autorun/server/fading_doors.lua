@@ -249,7 +249,7 @@ end
 --- @param name string
 --- @param value any
 local function wireTriggerInput(ent, name, value)
-	if name ~= "fade" then
+	if string.lower(name) ~= "fade" then
 		return false
 	end
 	if value ~= 0 then
