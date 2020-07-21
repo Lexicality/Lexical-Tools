@@ -424,9 +424,26 @@ numpad.Register("Fading Doors onDown", InputOn)
 --- @param ent GEntity
 --- @param data table
 local function entMod(ply, ent, data)
-	-- Ensure the duplicator hasn't copied any fields that are going to confuse us
+	-- Depending on what we've added a fading door to, we may or may not have
+	-- our members preserved.
+	-- To enforce consistency, preserve nothing
 	ent.isFadingDoor = nil
 	ent._fade = nil
+
+	-- Exciting hack to make materials work
+	local matmod = ent.EntityMods["material"]
+	if matmod then
+		duplicator.EntityModifiers["material"](ply, ent, matmod)
+		ent.EntityMods["material"] = nil
+		timer.Simple(
+			0.1, function()
+				if IsValid(ent) then
+					ent.EntityMods["material"] = matmod
+				end
+			end
+		)
+	end
+
 	SetupDoor(ply, ent, data)
 end
 duplicator.RegisterEntityModifier("Fading Door", entMod)
