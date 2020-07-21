@@ -323,15 +323,15 @@ end
 
 --- @param ent GEntity
 local function createDoorFunctions(ent)
-	if (not IsValid(ent)) then
-		return
-	end
-	-- Legacy
+	-- I don't like it, but this is the API I published and you can't break APIs
+	-- or people won't update their addons, so I guess we're stuck with these
+	-- functions forever.
 	ent.isFadingDoor = true
 	ent.fadeActivate = Fade
 	ent.fadeDeactivate = Unfade
 	ent.fadeToggleActive = Toggle
-	-- Unlegacy
+	-- I'm going to put all the data in here and hope no one was expecting it to
+	-- be on the entity directly.
 	ent._fade = {}
 	ent:CallOnRemove("Fading Door", removeNumpadBindings)
 end
@@ -377,9 +377,28 @@ function SetupDoor(ply, ent, data)
 		ent._fade.numpadDn = numpad.OnDown(ply, data.key, "Fading Doors onDown", ent)
 	end
 
+	-- It's possible that we could spawn a dupe of an active fading door.
+	-- It could be active because
+	-- - The user was holding down a button when they duped it
+	-- - A wire signal was holding it open
+	-- - It was a toggle door
+	-- We're going to reset it to not open because
+	-- - There's no way to know if they're still holding down the button
+	-- - Wire will re-trigger the input immediately after this function returns
+	-- - I can't think of a clean way of handling toggles
+	-- I'm sure the user won't mind.
+	if data._fade and data._fade.active then
+		local newFade = ent._fade
+		ent._fade = data._fade
+		Unfade(ent, true)
+		ent._fade = newFade
+	end
+
 	if (data.reversed) then
 		Fade(ent)
 	end
+
+	data._fade = ent._fade
 	duplicator.StoreEntityModifier(ent, "Fading Door", data)
 end
 
