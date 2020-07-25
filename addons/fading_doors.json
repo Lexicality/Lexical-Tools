@@ -1,0 +1,18 @@
+{
+	"title": "Fading Doors",
+	"author": "Lex Robinson",
+	"contact": "lexi@lexi.org.uk",
+	"type": "tool",
+	"tags": [
+		"roleplay",
+		"build"
+	],
+	"include": [
+		"lua/autorun/fading_doors.lua",
+		"lua/autorun/server/fading_doors.lua",
+		"lua/weapons/gmod_tool/stools/fading_doors.lua"
+	],
+	"import": ["wirefixes"],
+	"version": "0.1.0",
+	"workshopid": 2177263390
+}

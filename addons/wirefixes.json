@@ -1,0 +1,12 @@
+{
+	"title": "Lex's Wire Fixes",
+	"type": "tool",
+	"tags": [],
+	"version": "1.0.0",
+	"include": [
+		"lua/includes/modules/wirefixes.lua"
+	],
+	"versionables": [
+		"wirefixes"
+	]
+}
