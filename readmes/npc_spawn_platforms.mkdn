@@ -1,0 +1,36 @@
+# NPC Spawn Platforms
+
+## About
+
+This is an addon for the popular [Garry's Mod][gmod].
+It allows you to create SEnts which spawn a stream of NPCs without user interaction, which is useful for NPC battles, either against yourself or rival NPCs.
+
+## Features
+
+- Full [Wiremod][wire] support
+- Integrates with the Sandbox gamemode if it's loaded
+- Easy to control Lua API for integration with other gamemodes.
+- Spawn any installed NPC or SNPC
+- Huge customisability:
+  - Choose the skill level and health at which NPCs spawn. Even the odds in battles by making combine smart and rebels stupid!
+  - Specify where and how fast NPCs spawn
+  - Choose how many NPCs are active at any one time and if the spawners should turn off after a certain number of NPCs spawned. (Waves anyone?)
+
+## Credits
+
+- Lex Robinson
+- Devenger
+
+## Links
+
+- [Steam Workshop][workshop]
+- [Legacy gmod.org release][legacy]
+- [Facepunch thread][fpthread]
+- [Original STool][original]
+
+  [gmod]: http://garrysmod.com/
+  [wire]: http://wiremod.com/
+  [workshop]: http://steamcommunity.com/sharedfiles/filedetails/?id=107821465
+  [legacy]: https://garrysmods.org/download/7345/npc-spawn-platforms-21-beta
+  [fpthread]: https://web.archive.org/web/20190407000951mp_/https://forum.facepunch.com/gmodgd/jjfz/NPC-Spawn-Platforms-2-0/1/
+  [original]: https://garrysmods.org/download/3720/stool-npc-spawn-platforms-v2
