@@ -17,7 +17,7 @@
 local ClassName = "npc_spawnplatform"
 
 local function lang(id)
-	return "#Tool." .. ClassName .. "." .. id
+	return "#tool." .. ClassName .. "." .. id
 end
 local function cvar(id)
 	return ClassName .. "_" .. id
@@ -27,6 +27,11 @@ MsgN(ClassName, " reloaded")
 
 TOOL.Category = "Lexical Tools"
 TOOL.Name = lang("name")
+TOOL.Information = {
+	-- Fancy new style infoboxes
+	{name = "left"},
+	{name = "right"},
+}
 --- Default Values
 local cvars = {
 	npc = "npc_combine_s",
@@ -136,106 +141,6 @@ if (SERVER) then
 	return
 end
 
-local function AddToolLanguage(id, lang)
-	language.Add("tool." .. ClassName .. "." .. id, lang)
-end
-AddToolLanguage("name", "NPC Spawn Platforms")
-AddToolLanguage("desc", "Create a platform that will constantly make NPCs.")
-AddToolLanguage(
-	"0", "Left-click: Spawn/Update Platform. Right-click: Copy Platform Data."
-)
-
--- Controls
-AddToolLanguage("npc", "NPC")
-AddToolLanguage("weapon", "Weapon")
-AddToolLanguage("skill", "Weapon Skill")
-AddToolLanguage("delay", "Spawning Delay")
-AddToolLanguage("decrease", "Decrease Delay Amount")
-AddToolLanguage("maximum", "Maximum In Action")
-AddToolLanguage("totallimit", "Turn Off After")
-AddToolLanguage("autoremove", "Clean up on Remove")
-AddToolLanguage("keys.on", "Turn On")
-AddToolLanguage("keys.off", "Turn Off")
-AddToolLanguage("toggleable", "Use Key Toggles")
-AddToolLanguage("active", "Start Active")
-AddToolLanguage("nocollide", "Disable NPC Collisions")
-AddToolLanguage("spawnheight", "Spawn Height")
-AddToolLanguage("spawnradius", "Spawn Radius")
-AddToolLanguage("healthmul", "Health Multiplier")
-AddToolLanguage("frozen", "Spawn the platform frozen")
-AddToolLanguage("customsquads", "Use Global Squad")
-AddToolLanguage("squadoverride", "Global Squad Number")
-AddToolLanguage("oldspawning", "Use old spawning mode")
-AddToolLanguage("killvalue", "RP Money Value")
-
--- Control Descs
-AddToolLanguage(
-	"skill.desc", string.format(
-		"Where %d is terrible and %d is perfect", WEAPON_PROFICIENCY_POOR,
-		WEAPON_PROFICIENCY_PERFECT
-	)
-)
-AddToolLanguage("delay.desc", "The delay between each NPC spawn.")
-AddToolLanguage(
-	"decrease.desc",
-	"How much to decrease the delay by every time you kill every NPC spawned."
-)
-AddToolLanguage(
-	"maximum.desc",
-	"The platform will pause spawning until you kill one of the spawned ones"
-)
-AddToolLanguage(
-	"totallimit.desc",
-	"Turn the platform off after this many NPC have been spawned"
-)
-AddToolLanguage(
-	"autoremove.desc",
-	"All NPCs spawned by a platform will be removed with the platform."
-)
-AddToolLanguage(
-	"spawnheight.desc", "Spawn NPCs higher than the platform to avoid obsticles"
-)
-AddToolLanguage(
-	"spawnradius.desc",
-	"Spawn NPCs in a circle around the platform. 0 spawns them on the platform"
-)
-AddToolLanguage(
-	"healthmul.desc", "Increase the health of spawned NPCs for more longer fights"
-)
-AddToolLanguage(
-	"oldspawning.desc",
-	"By default the spawn timer pauses when the platform is full. This makes it not pause."
-)
-AddToolLanguage(
-	"killvalue.desc",
-	"Some RP gamemodes / addons can give you money for killing NPCs. This lets you override the amount.\nSet to -1 to disable"
-)
-
--- Help!
-AddToolLanguage(
-	"positioning.help",
-	"Prevent your NPCs getting stuck in each other by disabling collisions or spacing their spawns out."
-)
-AddToolLanguage(
-	"squads.help1",
-	"NPCs in a squad talk to each other to improve tactics. By default, all NPCs spawned by a spawn platform are in the same squad."
-)
-AddToolLanguage(
-	"squads.help2",
-	"If you want a squad to cover more than one platform, use a global squad. Be careful not to let your squads get to big or your game will lag!"
-)
-
--- Panels
-AddToolLanguage("panel_npc", "NPC Selection")
-AddToolLanguage("panel_spawning", "NPC Spawn Rates")
-AddToolLanguage("panel_activation", "Platform Activation")
-AddToolLanguage("panel_positioning", "NPC Positioning")
-AddToolLanguage("panel_other", "Other")
-
--- Inferior Tech
-language.Add("Cleanup_Spawnplatforms", "NPC Spawn Platforms")
-language.Add("Cleaned_Spawnplatforms", "Cleaned up all NPC Spawn Platforms")
-
 -- Because when don't you need to define your own builtins?
 local function AddControl(CPanel, control, name, data)
 	data = data or {}
@@ -244,8 +149,8 @@ local function AddControl(CPanel, control, name, data)
 		data.Command = cvar(name)
 	end
 	local ctrl = CPanel:AddControl(control, data)
-	if (data.Description) then
-		ctrl:SetToolTip(lang(name .. ".desc"))
+	if (data.Tooltip) then
+		ctrl:SetToolTip(lang(name .. ".tooltip"))
 	end
 	return ctrl
 end
@@ -291,7 +196,7 @@ function TOOL.BuildCPanel(CPanel)
 				-- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
 				Min = WEAPON_PROFICIENCY_POOR,
 				Max = WEAPON_PROFICIENCY_PERFECT,
-				Description = true,
+				Help = true,
 			}
 		)
 
@@ -302,34 +207,25 @@ function TOOL.BuildCPanel(CPanel)
 
 		-- Timer select
 		AddControl(
-			CPanel, "Slider", "delay", {
-				Type = "Float",
-				Min = npcspawner.config.mindelay,
-				Max = 60,
-				Description = true,
-			}
-		)
-		-- Timer Reduction
-		AddControl(
-			CPanel, "Slider", "decrease",
-			{Type = "Float", Min = 0, Max = 2, Description = true}
+			CPanel, "Slider", "delay",
+			{Type = "Float", Min = npcspawner.config.mindelay, Max = 60}
 		)
 		-- Maximum select
 		AddControl(
-			CPanel, "Slider", "maximum", {
-				Type = "Integer",
-				Min = 1,
-				Max = npcspawner.config.maxinplay,
-				Description = true,
-			}
+			CPanel, "Slider", "maximum",
+			{Type = "Integer", Min = 1, Max = npcspawner.config.maxinplay}
+		)
+		-- Timer Reduction
+		AddControl(
+			CPanel, "Slider", "decrease", {Type = "Float", Min = 0, Max = 2, Help = true}
 		)
 		-- Maximum Ever
 		AddControl(
 			CPanel, "Slider", "totallimit",
-			{Type = "Integer", Min = 0, Max = 100, Description = true}
+			{Type = "Integer", Min = 0, Max = 100, Tooltip = true}
 		)
 		-- Autoremove select
-		AddControl(CPanel, "Checkbox", "autoremove", {Description = true})
+		AddControl(CPanel, "Checkbox", "autoremove", {Tooltip = true})
 	end
 
 	do
@@ -359,13 +255,11 @@ function TOOL.BuildCPanel(CPanel)
 		AddControl(CPanel, "Checkbox", "nocollide")
 		-- Spawnheight select
 		AddControl(
-			CPanel, "Slider", "spawnheight",
-			{Type = "Float", Min = 8, Max = 128, Description = true}
+			CPanel, "Slider", "spawnheight", {Type = "Float", Min = 8, Max = 128}
 		)
 		-- Spawnradius select
 		AddControl(
-			CPanel, "Slider", "spawnradius",
-			{Type = "Float", Min = 0, Max = 128, Description = true}
+			CPanel, "Slider", "spawnradius", {Type = "Float", Min = 0, Max = 128}
 		)
 
 	end
@@ -375,10 +269,7 @@ function TOOL.BuildCPanel(CPanel)
 		)
 
 		-- Healthmul select
-		AddControl(
-			CPanel, "Slider", "healthmul",
-			{Type = "Float", Min = 0.5, Max = 5, Description = true}
-		)
+		AddControl(CPanel, "Slider", "healthmul", {Type = "Float", Min = 0.5, Max = 5})
 
 		-- Global Squad On/Off
 		AddControl(CPanel, "Checkbox", "frozen")
@@ -394,12 +285,12 @@ function TOOL.BuildCPanel(CPanel)
 		)
 
 		-- Legacy spawning system
-		AddControl(CPanel, "Checkbox", "oldspawning", {Description = true})
+		AddControl(CPanel, "Checkbox", "oldspawning", {Help = true})
 
 		-- NPC Kill Value
 		AddControl(
 			CPanel, "Slider", "killvalue",
-			{Type = "Integer", Min = -1, Max = 1000, Description = true}
+			{Type = "Integer", Min = -1, Max = 1000, Help = true}
 		)
 	end
 end

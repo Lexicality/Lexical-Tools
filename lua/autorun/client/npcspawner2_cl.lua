@@ -67,52 +67,9 @@ timer.Create(
 	end
 )
 
-local function addPanelLabel(id, label, help)
-	language.Add("utilities.spawnplatform." .. id, label)
-	if (help) then
-		language.Add("utilities.spawnplatform." .. id .. ".help", help)
-	end
-end
-
 local function lang(id)
 	return "#utilities.spawnplatform." .. id
 end
-
-language.Add("spawnmenu.utilities.spawnplatform", "NPC Spawn Platforms")
-addPanelLabel(
-	"cleanupcorpses", "Clean up corpses",
-	"Automatically delete all NPC corpses every minute"
-)
-addPanelLabel(
-	"adminonly", "Admins Only", "Prevent normal users from spawning platforms"
-)
-addPanelLabel(
-	"callhooks", "Call Sandbox Hooks",
-	"Act as if the user had used the spawn menu to spawn NPCs. This will force the platform to obey entity limits etc."
-)
-addPanelLabel(
-	"maxinplay", "Max NPCs per Platform",
-	"How many NPCs a single platform may have alive at once"
-)
-addPanelLabel(
-	"mindelay", "Minimum Spawn Delay",
-	"The minimum delay a platform must wait before spawning a new NPC"
-)
-addPanelLabel(
-	"sanity", "Valid NPC Check",
-	"Only spawn NPCs on the NPC list. If you disable this option, players can potentially spawn literally any entity they want."
-)
-addPanelLabel(
-	"debug", "Enable Developer Logging",
-	"Enable or disable diagnostic messages. Requires the convar 'developer' to be 1 or 2"
-)
-addPanelLabel("dangerzone", "Danger Zone")
-addPanelLabel(
-	"rehydrate", "Missing NPCs on Dupe Fix", [[
-If you duplicate a platform but not it's NPCs, it will re-spawn all NPCs the old platform had.
-This is important for saves and persistance (which use the duplicator under the hood) but may be suprising with the duplicator tool.
-If you do not use persistance and want freshly duplicated platforms to have no NPCs, untick this.]]
-)
 
 local function clientOptions(panel)
 	panel:AddControl(

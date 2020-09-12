@@ -34,13 +34,6 @@ if (CLIENT) then
 			surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav")
 		end
 	)
-	language.Add("tool.fading_doors.name", "Fading Doors")
-	language.Add("tool.fading_doors.desc", "Makes anything into a fadable door")
-	language.Add(
-		"tool.fading_doors.0",
-		"Click on something to make it a fading door. Reload to set it back to normal"
-	)
-	language.Add("Undone_fading_door", "Undone Fading Door")
 
 	function TOOL.BuildCPanel(panel)
 		panel:CheckBox(

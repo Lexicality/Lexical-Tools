@@ -52,21 +52,6 @@ TOOL.ClientConVar["weld"] = 0
 
 cleanup.Register("keypads")
 
-if (CLIENT) then
-	language.Add("tool.keypad.name", "Keypad v2")
-	language.Add("tool.keypad.desc", "Secure your contraptions with a password")
-	language.Add(
-		"tool.keypad.0",
-		"Left click to spawn a Keypad. Right click to update an existing one"
-	)
-
-	language.Add("Undone_Keypad", "Undone Keypad")
-	language.Add("Cleanup_keypads", "Keypads")
-	language.Add("Cleaned_keypads", "Cleaned up all keypads")
-
-	language.Add("SBoxLimit_keypads", "You've hit the keypad limit!")
-end
-
 function TOOL:CheckSettings()
 	local ply = self:GetOwner()
 	-- Check they haven't done something silly with the password
