@@ -1,3 +1,8 @@
+* __1.3.0__:
+  - Added localisation support
+  - Added pirate locale support
+  - Refactored the overlay to support being localised
+  - Switched to use DarkRP's money formatting (when available)
 * __1.2.1__:
   - Add temporary block for the DarkRP pocket
 * __1.2.0__:

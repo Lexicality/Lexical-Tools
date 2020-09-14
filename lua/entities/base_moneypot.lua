@@ -37,6 +37,49 @@ function ENT:SetupDataTables()
 end
 
 if (CLIENT) then
+	if not WireLib then
+		-- Slightly improved performance for sandbox tooltips
+		function ENT:Think()
+			if (self:BeingLookedAtByLocalPlayer()) then
+				local text = self:GetOverlayText()
+
+				AddWorldTip(self:EntIndex(), text, 0.5, self:GetPos(), self)
+
+				halo.Add({self}, color_white, 1, 1, 1, true, true)
+			end
+		end
+	end
+
+	-- Sandbox
+	function ENT:GetOverlayText()
+		local txt = string.format(
+			language.GetPhrase("tool.moneypot.overlay"),
+			self:FormatMoney(self:GetMoney())
+		)
+
+		if (game.SinglePlayer()) then
+			return txt
+		end
+
+		local PlayerName = self:GetPlayerName()
+
+		return txt .. "\n(" .. PlayerName .. ")"
+	end
+
+	-- Wiremod
+	function ENT:GetOverlayData()
+		return {
+			txt = string.format(
+				language.GetPhrase("tool.moneypot.overlay"),
+				self:FormatMoney(self:GetMoney())
+			),
+		}
+	end
+
+	function ENT:FormatMoney(amount)
+		return string.format("$%d", amount)
+	end
+
 	return
 end
 
@@ -82,7 +125,6 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetUseType(SIMPLE_USE)
-	self:UpdateOverlay()
 	if (WireLib) then
 		WireLib.CreateSpecialInputs(self, {"SpawnAll", "SpawnAmount"})
 		WireLib.CreateSpecialOutputs(self, {"StoredAmount", "LastAmount", "Updated"})
@@ -180,12 +222,7 @@ end
 -- For calling from lua (ie so /givemoney can give direct to it)
 function ENT:AddMoney(amount)
 	self:SetMoney(self:GetMoney() + amount)
-	self:UpdateOverlay()
 	self:UpdateWireOutputs(amount)
-end
-
-function ENT:UpdateOverlay()
-	self:SetOverlayText("- Money Pot -\nAmount: $" .. self:GetMoney())
 end
 
 local cvar_delay = CreateConVar(
@@ -257,5 +294,4 @@ end
 
 function ENT:PostEntityPaste()
 	self:SetMoney(0)
-	self:UpdateOverlay()
 end

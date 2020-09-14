@@ -28,6 +28,12 @@ ENT.Category = "DarkRP"
 DEFINE_BASECLASS("base_moneypot")
 
 if (CLIENT) then
+	if DarkRP then
+		function ENT:FormatMoney(amount)
+			return DarkRP.formatMoney(amount)
+		end
+	end
+
 	return
 end
 
