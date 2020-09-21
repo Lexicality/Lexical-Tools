@@ -1,14 +1,53 @@
-* __1.3.0__:
-  - Added localisation support
-  - Added pirate locale support
-  - Refactored the overlay to support being localised
-  - Switched to use DarkRP's money formatting (when available)
-* __1.2.1__:
-  - Add temporary block for the DarkRP pocket
-* __1.2.0__:
-  - Add 0.1s delay to the `Updated` output so wire gates can read it.
-* __1.1.0__:
-  - Add a `moneypot_spawn_delay` cvar to control how long it takes for money to drop
-  - Fix UI having untranslated strings on it
-* __1.0.0__:
-  - Changelog starts
+# Moneypot Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [1.3.0]
+
+### Added
+
+- Added localisation support
+- Added pirate locale support
+
+### Changed
+
+- Refactored the overlay to support being localised
+- Switched to use DarkRP's money formatting (when available)
+
+## [1.2.1]
+
+### Security
+
+- Add temporary block for the DarkRP pocket
+
+## [1.2.0]
+
+### Fixed
+
+- Add 0.1s delay to the `Updated` output so wire gates can read it.
+
+## [1.1.0]
+
+### Added
+
+- Add a `moneypot_spawn_delay` cvar to control how long it takes for money to drop
+
+### Fixed
+
+- Fix UI having untranslated strings on it
+
+## [1.0.0]
+
+- Changelog starts
+
+[unreleased]: https://github.com/Lexicality/Lexical-Tools/compare/moneypot_v1.3.0...HEAD
+[1.3.0]: https://github.com/Lexicality/Lexical-Tools/compare/moneypot_v1.2.1...moneypot_v1.3.0
+[1.2.1]: https://github.com/Lexicality/Lexical-Tools/compare/moneypot_v1.2.0...moneypot_v1.2.1
+[1.2.0]: https://github.com/Lexicality/Lexical-Tools/compare/moneypot_v1.1.0...moneypot_v1.2.0
+[1.1.0]: https://github.com/Lexicality/Lexical-Tools/compare/moneypot_v1.0.0...moneypot_v1.1.0
+[1.0.0]: https://github.com/Lexicality/Lexical-Tools/releases/tag/moneypot_v1.0.0
