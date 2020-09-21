@@ -8,6 +8,7 @@
 		"build"
 	],
 	"include": [
+		"resource/localization/*/moneypot.properties",
 		"lua/autorun/client/npcspawner2_cl.lua",
 		"lua/autorun/client/panel-npcselect.lua",
 		"lua/autorun/client/panel-weaponselect.lua",

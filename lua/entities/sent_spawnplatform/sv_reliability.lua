@@ -1,6 +1,6 @@
 --[[
 	NPC Spawn Platforms - lua/entities/sent_spawnplatform/sv_wire.lua
-    Copyright 2009-2017 Lex Robinson
+    Copyright 2009-2020 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -20,14 +20,6 @@ function ENT:ResetLastSpawn()
 	self.LastSpawn = CurTime()
 end
 
-local function labelr(self)
-	timer.Simple(
-		0, function()
-			self:UpdateLabel()
-		end
-	)
-end
-
 function ENT:RegisterListeners()
 	self:NetworkVarNotify("Active", self.OnActiveChange)
 	self:NetworkVarNotify("StartDelay", self.OnStartDelayChange)
@@ -44,12 +36,6 @@ function ENT:RegisterListeners()
 			self:RebindNumpads(self:GetPlayer(), self:GetOnKey(), offKey)
 		end
 	)
-	self:NetworkVarNotify("NPC", labelr)
-	self:NetworkVarNotify("NPCWeapon", labelr)
-	self:NetworkVarNotify("SpawnDelay", labelr)
-	self:NetworkVarNotify("MaxNPCs", labelr)
-	self:NetworkVarNotify("Flipped", labelr)
-	self:NetworkVarNotify("Active", labelr)
 end
 
 function ENT:OnStartDelayChange(_, _, delay)

@@ -1,6 +1,6 @@
 --[[
 	NPC Spawn Platforms - lua/entities/sent_spawnplatform/shared.lua
-    Copyright 2009-2017 Lex Robinson
+    Copyright 2009-2020 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,59 +24,6 @@ ENT.AdminOnly = false
 ENT.CountKey = "spawnplatforms"
 
 DEFINE_BASECLASS "base_lexentity"
-
-local reverseLookupCache
-local function primeLookupCache()
-	reverseLookupCache = {}
-	for _, tab in pairs(list.Get("NPCUsableWeapons")) do
-		reverseLookupCache[tab.class] = tab.title
-	end
-	for className, tab in pairs(list.Get("NPC")) do
-		reverseLookupCache[className] = tab.Name
-	end
-	reverseLookupCache["weapon_default"] = "Default Weapon"
-	reverseLookupCache["weapon_none"] = "None"
-	reverseLookupCache["weapon_rebel"] = "Random Rebel Weapon"
-	reverseLookupCache["weapon_combine"] = "Random Combine Weapon"
-	reverseLookupCache["weapon_citizen"] = "Random Citizen Weapon"
-end
-
-local function convert(text)
-	if (not reverseLookupCache) then
-		primeLookupCache()
-	end
-	return reverseLookupCache[text] or text
-end
-
-local overlayText = [[
-NPC: %s
-Weapon: %s
-Delay: %0.2f
-Maximum: %d]]
-
-local overlayTextFlipped = "Cannot spawn %ss at this angle!"
-
-function ENT:UpdateLabel()
-	if (self:IsActive() and self:IsFlipped()) then
-		self:SetOverlayText(string.format(overlayTextFlipped, convert(self:GetNPC())))
-		return
-	end
-
-	self:SetOverlayText(
-		string.format(
-			overlayText, convert(self:GetNPC()), convert(self:GetNPCWeapon()),
-			self:GetSpawnDelay(), self:GetMaxNPCs()
-		)
-	)
-end
-
-function ENT:GetNPCName()
-	return convert(self:GetNWString("npc"))
-end
-
-function ENT:IsActive()
-	return self:GetActive()
-end
 
 local function StartDelayCustomSet(self, value)
 	value = math.max(value, npcspawner.config.mindelay)

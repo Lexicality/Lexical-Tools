@@ -19,11 +19,25 @@ local PANEL = {}
 DEFINE_BASECLASS "DComboBox"
 
 function PANEL:Init()
-	self:AddChoice("  Default Weapon", "weapon_default")
-	self:AddChoice("  None", "weapon_none")
-	self:AddChoice(" Random Rebel Weapon", "weapon_rebel")
-	self:AddChoice(" Random Combine Weapon", "weapon_combine")
-	self:AddChoice(" Random Citizen Weapon", "weapon_citizen")
+	-- Big brained sorting hack
+	self:AddChoice(
+		"  " .. language.GetPhrase("menubar.npcs.defaultweapon"), "weapon_default"
+	)
+	self:AddChoice(
+		"  " .. language.GetPhrase("menubar.npcs.noweapon"), "weapon_none"
+	)
+	self:AddChoice(
+		" " .. language.GetPhrase("tool.npc_spawnplatform.weapon_rebel"),
+		"weapon_rebel"
+	)
+	self:AddChoice(
+		" " .. language.GetPhrase("tool.npc_spawnplatform.weapon_combine"),
+		"weapon_combine"
+	)
+	self:AddChoice(
+		" " .. language.GetPhrase("tool.npc_spawnplatform.weapon_citizen"),
+		"weapon_citizen"
+	)
 
 	for _, tab in pairs(list.Get("NPCUsableWeapons")) do
 		self:AddChoice(tab.title, tab.class)

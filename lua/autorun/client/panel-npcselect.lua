@@ -34,18 +34,18 @@ function PANEL:Init()
 	ctrl:AddColumn("#category")
 
 	for nicename, data in pairs(npcs) do
-		local line = ctrl:AddLine(data.Name, data.Category or "Other")
+		local line = ctrl:AddLine(data.Name, data.Category or "#other")
 		line.nicename = nicename
 	end
 
 	ctrl.OnRowSelected = onNPCSelected
 	ctrl:SortByColumn(2, false)
-	self:AddSheet("#All", ctrl)
+	self:AddSheet("#tool.npc_spawnplatform.all_npcs", ctrl)
 
 	local categories = {}
 
 	for nicename, data in pairs(npcs) do
-		local cat = data.Category or "Other"
+		local cat = data.Category or "#other"
 		categories[cat] = categories[cat] or {}
 		categories[cat][nicename] = data
 	end

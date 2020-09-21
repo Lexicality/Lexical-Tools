@@ -1,6 +1,6 @@
 --[[
 	NPC Spawn Platforms - lua/entities/sent_spawnplatform/init.lua
-    Copyright 2009-2017 Lex Robinson
+    Copyright 2009-2020 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
     limitations under the License.
 ]] --
 AddCSLuaFile("shared.lua")
+AddCSLuaFile("cl_init.lua")
+
 include("shared.lua")
 
 include("sv_duplication.lua")
@@ -79,7 +81,6 @@ function ENT:Initialize()
 	end
 
 	self:ResetLastSpawn()
-	self:UpdateLabel()
 
 	self:SetupWire()
 end

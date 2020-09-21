@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added localisation support
+- Added pirate locale
+
 ### Changed
 
 - Reformatted all the code
+- Refactored the overlay to support being localised
+- Tweaked all the English translations to be tighter
+- Tweaked how help is shown in the spawn menu
 
 ### Fixed
 
