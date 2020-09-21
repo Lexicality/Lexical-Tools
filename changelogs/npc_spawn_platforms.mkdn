@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Reformatted all the code
+
+### Fixed
+
+- Fixed debug `print` calls
+- Fix errors if the weapon is set to nil
+- Fixed `base_lexentity` clobbering DTVars on the client
+
 ## [3.1.4]
 
 ### Fixed
