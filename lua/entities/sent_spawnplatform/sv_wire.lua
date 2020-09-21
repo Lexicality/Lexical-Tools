@@ -1,5 +1,5 @@
 --[[
-	NPC Spawn Platforms V2 - lua/entities/sent_spawnplatform/sv_wire.lua
+	NPC Spawn Platforms - lua/entities/sent_spawnplatform/sv_wire.lua
     Copyright 2009-2017 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");

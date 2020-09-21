@@ -1,5 +1,5 @@
 --[[
-	NPC Spawn Platforms V2 - lua/autorun/client/panel-weaponselect_.lua
+	NPC Spawn Platforms - lua/autorun/client/panel-weaponselect_.lua
     Copyright 2009-2018 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");

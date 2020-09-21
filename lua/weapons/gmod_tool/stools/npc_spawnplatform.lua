@@ -1,5 +1,5 @@
 --[[
-	NPC Spawn Platforms V2 - lua/weapons/gmod_tool/stools/npc_spawnplatform.lua
+	NPC Spawn Platforms - lua/weapons/gmod_tool/stools/npc_spawnplatform.lua
     Copyright 2009-2017 Lex Robinson
 
     Licensed under the Apache License, Version 2.0 (the "License");
