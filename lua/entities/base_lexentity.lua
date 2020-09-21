@@ -60,12 +60,10 @@ function ENT:SetupDataTables()
 
 		if (nwvar.Type == "Bool") then
 			-- Booleans look better when you can call IsSecure rather than GetSecure etc.
-			self["Is" .. nwvar.Name] = function(self)
-				return self.dt[nwvar.Name]
-			end
+			self["Is" .. nwvar.Name] = self["Get" .. nwvar.Name]
 		end
 
-		if (nwvar.Default ~= nil) then
+		if (SERVER and nwvar.Default ~= nil) then
 			self["Set" .. nwvar.Name](self, nwvar.Default)
 		end
 		NWCounts[nwvar.Type] = id + 1
