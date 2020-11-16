@@ -29,6 +29,10 @@ local function StartDelayCustomSet(self, value)
 	value = math.max(value, npcspawner.config.mindelay)
 	self:SetStartDelay(value)
 end
+local function MaxNPCsCustomSet(self, value)
+	value = math.min(value, npcspawner.config.maxinplay)
+	self:SetMaxNPCs(value)
+end
 
 ENT._NWVars = {
 	{Type = "Bool", Name = "Active", KeyName = "active", Default = false},
@@ -54,7 +58,13 @@ ENT._NWVars = {
 		Default = WEAPON_PROFICIENCY_AVERAGE,
 	},
 
-	{Type = "Int", Name = "MaxNPCs", KeyName = "maximum", Default = 5},
+	{
+		Type = "Int",
+		Name = "MaxNPCs",
+		KeyName = "maximum",
+		Special = {Set = MaxNPCsCustomSet},
+		Default = 5,
+	},
 	{Type = "Int", Name = "MaxNPCsTotal", KeyName = "totallimit", Default = 0},
 
 	{Type = "Int", Name = "OnKey", KeyName = "OnKey"},

@@ -94,7 +94,7 @@ local function adminOptions(panel)
 			Label = lang("maxinplay"),
 			Command = cvar("maxinplay"),
 			Help = true,
-			Type = "Float",
+			Type = "Int",
 			Min = "1",
 			Max = "50",
 		}
