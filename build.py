@@ -276,13 +276,13 @@ def main():
         addon.bump_version(args.release, args.pretag)
         addon.write_data()
     elif args.action == "release":
-        changes = args.changes
-        if not changes:
-            changes = get_changes()
-
         if args.bump:
             addon.bump_version(args.bump)
             addon.write_data()
+
+        changes = args.changes
+        if not changes:
+            changes = get_changes()
 
         changes = f"[h1][b]v{addon.version}[/b][/h1]\n{changes}"
 
