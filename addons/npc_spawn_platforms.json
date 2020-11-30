@@ -18,7 +18,8 @@
 		"lua/weapons/gmod_tool/stools/npc_spawnplatform.lua"
 	],
 	"import": [
-		"base_lexentity"
+		"base_lexentity",
+		"cami"
 	],
 	"version": "3.2.0",
 	"workshopid": 107821465

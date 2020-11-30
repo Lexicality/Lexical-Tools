@@ -21,11 +21,6 @@ local function cvar(id)
 end
 
 local function callback(cvar, old, new)
-	local lpl = LocalPlayer()
-	if (IsValid(lpl) and not lpl:IsAdmin()) then
-		return
-	end
-
 	local name = cvar:gsub(cvarstr, "")
 	local value = tonumber(new)
 
@@ -109,6 +104,10 @@ local function adminOptions(panel)
 			Min = "0.1",
 			Max = "10",
 		}
+	)
+
+	panel:AddControl(
+		"CheckBox", {Label = lang("cami"), Command = cvar("cami"), Help = true}
 	)
 
 	local dzpanel = panel:AddControl(

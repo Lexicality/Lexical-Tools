@@ -73,6 +73,7 @@ _G.npcspawner = {
 		debug = 1,
 		sanity = 1,
 		rehydrate = 1,
+		cami = 1,
 	},
 	legacy = {
 		npc_citizen_medic = "Medic",
@@ -83,3 +84,19 @@ _G.npcspawner = {
 		npc_combine_p = "CombinePrison",
 	},
 }
+
+CAMI.RegisterPrivilege(
+	{
+		Name = "NPC Spawn Platforms",
+		Description = "spawn/duplicate the platforms",
+		MinAccess = "admin",
+	}
+)
+
+CAMI.RegisterPrivilege(
+	{
+		Name = "NPC Spawn Platforms Config",
+		Description = "change global config settings",
+		MinAccess = "admin",
+	}
+)

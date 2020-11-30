@@ -90,7 +90,13 @@ function ENT:IsOwnerAllowed()
 		return true
 	end
 	local ply = self:GetPlayer()
-	return not IsValid(ply) or ply:IsAdmin()
+	if (not IsValid(ply)) then
+		return true
+	elseif (npcspawner.config.cami == 1) then
+		return CAMI.PlayerHasAccess(ply, "NPC Spawn Platforms")
+	else
+		return ply:IsAdmin()
+	end
 end
 
 function ENT:CanSpawnNPC()

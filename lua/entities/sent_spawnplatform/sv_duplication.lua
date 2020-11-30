@@ -16,17 +16,26 @@
 ]] --
 DEFINE_BASECLASS(ENT.Base)
 
+local function CanDuplicate(ply, data)
+	if not BaseClass.CanDuplicate(ply, data) then
+		return false
+	end
+
+	if (npcspawner.config.adminonly ~= 1) then
+		return true
+	elseif (not IsValid(ply)) then
+		return true
+	elseif (npcspawner.config.cami == 1) then
+		return CAMI.PlayerHasAccess(ply, "NPC Spawn Platforms")
+	else
+		return ply:IsAdmin()
+	end
+end
+
 -- The built in duplicator function messes with the platform too much
 duplicator.RegisterEntityClass(
 	"sent_spawnplatform", function(ply, data)
-		if (npcspawner.config.adminonly == 1 and IsValid(ply) and not ply:IsAdmin()) then
-			npcspawner.debug(
-				ply, "tried to duplicate a platform in admin mode but isn't an admin!"
-			)
-			return nil
-		end
-
-		if (BaseClass.CanDuplicate(ply, data)) then
+		if (CanDuplicate(ply, data)) then
 			return BaseClass.GenericDuplicate(ply, data)
 		end
 

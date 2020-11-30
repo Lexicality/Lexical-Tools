@@ -58,8 +58,16 @@ end
 
 concommand.Add(
 	"npcspawner_config", function(ply, _, args)
-		if (IsValid(ply) and not ply:IsAdmin()) then
-			return
+		if (IsValid(ply)) then
+			if (npcspawner.config.cami == 1) then
+				if (not CAMI.PlayerHasAccess(ply, "NPC Spawn Platforms Config")) then
+					return
+				end
+			else
+				if (not ply:IsAdmin()) then
+					return
+				end
+			end
 		end
 
 		local name, value = args[1], tonumber(args[2])
