@@ -1,0 +1,12 @@
+{
+	"title": "CAMI",
+	"type": "tool",
+	"tags": [],
+	"version": "20190102",
+	"include": [
+		"lua/autorun/sh_cami.lua"
+	],
+	"versionables": [
+		"sh_cami"
+	]
+}
