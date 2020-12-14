@@ -8,7 +8,7 @@
 		"build"
 	],
 	"include": [
-		"resource/localization/*/moneypot.properties",
+		"resource/localization/*/npc_spawn_platforms.properties",
 		"lua/autorun/client/npcspawner2_cl.lua",
 		"lua/autorun/client/panel-npcselect.lua",
 		"lua/autorun/client/panel-weaponselect.lua",
@@ -20,6 +20,6 @@
 	"import": [
 		"base_lexentity"
 	],
-	"version": "3.2.0",
+	"version": "3.2.1",
 	"workshopid": 107821465
 }
