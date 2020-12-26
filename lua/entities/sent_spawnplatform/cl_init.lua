@@ -21,7 +21,7 @@ DEFINE_BASECLASS(ENT.Base)
 if not WireLib then
 	-- Slightly improved performance for sandbox tooltips
 	function ENT:Think()
-		if (self:BeingLookedAtByLocalPlayer()) then
+		if (self.BeingLookedAtByLocalPlayer and self:BeingLookedAtByLocalPlayer()) then
 			local text = self:GetOverlayText()
 
 			AddWorldTip(self:EntIndex(), text, 0.5, self:GetPos(), self)
