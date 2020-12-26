@@ -222,13 +222,11 @@ function ENT.GenericDuplicate(ply, data)
 
 	ent:Spawn()
 	ent:Activate()
+	ent:SetPlayer(ply)
 
 	duplicator.DoGenericPhysics(ent, ply, data)
 
 	if (IsValid(ply)) then
-		if (ent.SetPlayer) then
-			ent:SetPlayer(ply)
-		end
 		if (ply.AddCount) then
 			ply:AddCount(ent.CountKey or data.Class, ent)
 		end
@@ -255,7 +253,7 @@ function ENT:SetPlayer(ply)
 end
 
 function ENT:GetPlayer()
-	if (self.Founder == nil) then
+	if (self.Founder == nil or self.FounderSID == "") then
 		-- SetPlayer has not been called
 		return NULL
 	elseif (IsValid(self.Founder)) then
@@ -279,7 +277,7 @@ function ENT:GetPlayerName()
 		return ply:Nick()
 	end
 
-	return self:GetNWString("FounderName")
+	return self:GetNWString("FounderName", "")
 end
 
 -- All or nothing GetPhysicsObject

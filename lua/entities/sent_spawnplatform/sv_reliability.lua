@@ -23,8 +23,6 @@ end
 function ENT:RegisterListeners()
 	self:NetworkVarNotify("Active", self.OnActiveChange)
 	self:NetworkVarNotify("StartDelay", self.OnStartDelayChange)
-	self:NetworkVarNotify("PlayerID", self.OnPlayerIDChange)
-	self:NetworkVarNotify("Player", self.OnPlayerChange)
 	self:NetworkVarNotify("Frozen", self.OnFrozenStateChange)
 	self:NetworkVarNotify(
 		"OnKey", function(self, _, _, onKey)
@@ -43,27 +41,43 @@ function ENT:OnStartDelayChange(_, _, delay)
 	self:ResetLastSpawn()
 end
 
--- Recursive functions are fun
-local _isInPlayerSet = false
-
-function ENT:OnPlayerIDChange(_, _, plyID)
-	local ply = player.GetByID(plyID)
-	_isInPlayerSet = true
-	self:SetPlayer(ply)
-	_isInPlayerSet = false
+function ENT:SetPlayerID(plyID)
+	-- NOTE: This function used to be shared, even though calling it on the
+	--  client was incorrect and would break things. Also you should never have
+	--  been calling it in the first place
+	-- If you rely on this feature, please either stop relying on it or add an
+	--  issue on Github
+	self:SetKeyValue("ply", plyID)
 end
 
-function ENT:OnPlayerChange(_, oldPly, ply)
-	if (not _isInPlayerSet) then
-		-- Keep this dumb shit synchronised
-		local plyIndex = 0
-		if (IsValid(ply)) then
-			plyIndex = ply:EntIndex()
-		end
-		self:SetPlayerID(plyIndex)
+function ENT:SetPlayer(ply)
+	local oldPly = self:GetPlayer()
+
+	BaseClass.SetPlayer(self, ply)
+
+	if (IsValid(ply)) then
+		-- NOTE: This is not actually the correct ID
+		-- If you rely on this feature, please either stop relying on it or
+		--  add an issue on Github
+		self.k_ply = ply:EntIndex()
 	end
+
 	if (ply ~= oldPly) then
 		self:RebindNumpads(ply, self:GetOnKey(), self:GetOffKey())
+	end
+end
+
+function ENT:KeyValue(key, value)
+	if (BaseClass.KeyValue) then
+		BaseClass.KeyValue(self, key, value)
+	end
+
+	if (key == "ply") then
+		-- NOTE: This function doesn't actually use a useful or easy to obtain ID.
+		-- If you rely on this feature, please either stop relying on it or
+		--  add an issue on Github
+		local ply = player.GetByID(value)
+		self:SetPlayer(ply)
 	end
 end
 

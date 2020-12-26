@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Incorrect owner being assigned after persistant duplication
+
+### Removed
+
+- GetPlayer & GetPlayerID being networked.
+  This is technically a breaking change, but I'm pretty sure no one was using
+  it on the client. If you were, add an issue and I'll figure out how to sync
+  it for you
+
 ## [3.2.1]
 
 ### Fixed

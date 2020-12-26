@@ -96,9 +96,12 @@ function ENT:GetOverlayText()
 		return txt
 	end
 
-	local PlayerName = self:GetPlayerName()
+	local ownerName = self:GetPlayerName()
+	if (ownerName ~= "") then
+		txt = txt .. "\n(" .. ownerName .. ")"
+	end
 
-	return txt .. "\n(" .. PlayerName .. ")"
+	return txt
 end
 
 -- Wiremod

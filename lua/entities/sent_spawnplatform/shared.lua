@@ -102,9 +102,6 @@ ENT._NWVars = {
 	{Type = "Bool", Name = "NoCollideNPCs", KeyName = "nocollide", Default = true},
 	{Type = "Bool", Name = "Frozen", KeyName = "frozen", Default = true},
 	{Type = "Int", Name = "RPValue", KeyName = "killvalue", Default = -1},
-
-	{Type = "Entity", Name = "Player", Default = NULL},
-	{Type = "Int", Name = "PlayerID", KeyName = "ply"},
 }
 
 function ENT:SetupDataTables()
@@ -129,4 +126,11 @@ function ENT:SetupDataTables()
 			onDataChanged(self, nwvar.Name, nil, self["Get" .. nwvar.Name](self))
 		end
 	end
+end
+
+function ENT:GetPlayerID()
+	-- NOTE: This function used to work on the client, but now doesn't.
+	-- If you rely on this feature, please either stop relying on it or add an
+	--  issue on Github
+	return self.k_ply
 end
