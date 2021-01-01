@@ -57,7 +57,8 @@ local cvars = {
 	killvalue = "-1",
 }
 
-cleanup.Register("Spawnplatforms")
+local CLEANUP_KEY = "Spawnplatforms"
+cleanup.Register(CLEANUP_KEY)
 table.Merge(TOOL.ClientConVar, cvars)
 
 function TOOL:LeftClick(trace)
@@ -76,7 +77,7 @@ function TOOL:LeftClick(trace)
 	npcspawner.debug2(owner, "has left clicked the STool.")
 	if (CLIENT) then
 		return true
-	elseif (not owner:CheckLimit("spawnplatforms")) then
+	elseif (not owner:CheckLimit(CLEANUP_KEY)) then
 		return false
 	elseif (trace.Entity:GetClass() == "sent_spawnplatform") then
 		self:SetKVs(trace.Entity)
@@ -99,7 +100,7 @@ function TOOL:LeftClick(trace)
 	local min = ent:OBBMins()
 	ent:SetPos(trace.HitPos - trace.HitNormal * min.y)
 
-	owner:AddCount("sent_spawnplatform", ent)
+	owner:AddCount(CLEANUP_KEY, ent)
 	local name = "#sent_spawnplatform"
 	if (tonumber(self:GetClientInfo("autoremove")) > 0) then
 		name = "#sent_spawnplatform_and_npcs"
@@ -109,7 +110,7 @@ function TOOL:LeftClick(trace)
 	undo.AddEntity(ent)
 	undo.Finish()
 
-	cleanup.Add(self:GetOwner(), "Spawnplatforms", ent)
+	cleanup.Add(self:GetOwner(), CLEANUP_KEY, ent)
 	return true
 end
 

@@ -84,4 +84,3 @@ hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", syncConfig)
 if (not ConVarExists("sbox_maxspawnplatforms")) then
 	CreateConVar("sbox_maxspawnplatforms", 3)
 end
-cleanup.Register("sent_spawnplatform")

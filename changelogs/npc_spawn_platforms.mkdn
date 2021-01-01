@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Translation fixes & improvements for English
 
+### Fixed
+
+- Duplicate cleanup menu entries
+- Sandbox limit not applying
+
 ## [3.2.2]
 
 ### Fixed

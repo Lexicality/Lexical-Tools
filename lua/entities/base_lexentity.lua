@@ -231,7 +231,7 @@ function ENT.GenericDuplicate(ply, data)
 			ply:AddCount(ent.CountKey or data.Class, ent)
 		end
 		if (ply.AddCleanup) then
-			ply:AddCleanup(data.Class, ent)
+			ply:AddCleanup(ent.CountKey or data.Class, ent)
 		end
 	end
 	return ent
