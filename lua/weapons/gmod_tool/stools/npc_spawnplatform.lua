@@ -98,16 +98,17 @@ function TOOL:LeftClick(trace)
 	ent:SetPlayer(owner)
 	local min = ent:OBBMins()
 	ent:SetPos(trace.HitPos - trace.HitNormal * min.y)
+
 	owner:AddCount("sent_spawnplatform", ent)
-	undo.Create("NPC Spawn Platform")
+	local name = "#sent_spawnplatform"
+	if (tonumber(self:GetClientInfo("autoremove")) > 0) then
+		name = "#sent_spawnplatform_and_npcs"
+	end
+	undo.Create(name)
 	undo.SetPlayer(self:GetOwner())
 	undo.AddEntity(ent)
-	undo.SetCustomUndoText(
-		"Undone a " .. self:GetClientInfo("npc") .. " spawn platform" ..
-			(tonumber(self:GetClientInfo("autoremove")) > 0 and " and all its NPCs." or
-				".")
-	)
 	undo.Finish()
+
 	cleanup.Add(self:GetOwner(), "Spawnplatforms", ent)
 	return true
 end
