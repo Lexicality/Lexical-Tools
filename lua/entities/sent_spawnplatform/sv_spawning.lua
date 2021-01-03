@@ -33,11 +33,20 @@ local function DoPropSpawnedEffect(...)
 end
 
 --
--- gmod v14.04.19
--- garrysmod\gamemodes\sandbox\gamemode\commands.lua:288
+-- GMod version 2020.12.18, branch: dev
+-- garrysmod\gamemodes\sandbox\gamemode\commands.lua:365
+-- Modified slightly for compatability reasons
 --
 local function InternalSpawnNPC(
-	Player, Position, Normal, Class, Equipment, Angles, Offset
+	ply,
+	Position,
+	Normal,
+	Class,
+	Equipment,
+	Angles,
+	Offset,
+	SpawnFlagsSaved,
+	NoDropToFloor
 )
 
 	local NPCList = list.Get("NPC")
@@ -46,33 +55,34 @@ local function InternalSpawnNPC(
 	-- Don't let them spawn this entity if it isn't in our NPC Spawn list.
 	-- We don't want them spawning any entity they like!
 	if (not NPCData) then
-		if (IsValid(Player)) then
-			Player:SendLua("Derma_Message( \"Sorry! You can't spawn that NPC!\" )")
+		if (IsValid(ply)) then
+			ply:SendLua("Derma_Message( \"Sorry! You can't spawn that NPC!\" )")
 		end
 		return
 	end
 
-	-- if ( NPCData.AdminOnly and not Player:IsAdmin() ) then return end
+	-- if ( NPCData.AdminOnly and not ply:IsAdmin() ) then return end
 
 	local bDropToFloor = false
 
 	--
 	-- This NPC has to be spawned on a ceiling ( Barnacle )
 	--
-	if (NPCData.OnCeiling and Vector(0, 0, -1):Dot(Normal) < 0.95) then
-		return nil
-	end
+	if (NPCData.OnCeiling) then
+		if (Vector(0, 0, -1):Dot(Normal) < 0.95) then
+			return nil
+		end
 
-	--
-	-- This NPC has to be spawned on a floor ( Turrets )
-	--
-	if (NPCData.OnFloor and Vector(0, 0, 1):Dot(Normal) < 0.95) then
+		--
+		-- This NPC has to be spawned on a floor ( Turrets )
+		--
+	elseif (NPCData.OnFloor and Vector(0, 0, 1):Dot(Normal) < 0.95) then
 		return nil
 	else
 		bDropToFloor = true
 	end
 
-	if (NPCData.NoDrop) then
+	if (NPCData.NoDrop or NoDropToFloor) then
 		bDropToFloor = false
 	end
 
@@ -94,8 +104,8 @@ local function InternalSpawnNPC(
 	if (not Angles) then
 		Angles = Angle(0, 0, 0)
 
-		if (IsValid(Player)) then
-			Angles = Player:GetAngles()
+		if (IsValid(ply)) then
+			Angles = ply:GetAngles()
 		end
 
 		Angles.pitch = 0
@@ -133,7 +143,11 @@ local function InternalSpawnNPC(
 	if (NPCData.TotalSpawnFlags) then
 		SpawnFlags = NPCData.TotalSpawnFlags
 	end
+	if (SpawnFlagsSaved) then
+		SpawnFlags = SpawnFlagsSaved
+	end
 	NPC:SetKeyValue("spawnflags", SpawnFlags)
+	NPC.SpawnFlags = SpawnFlags
 
 	--
 	-- Optional Key Values
@@ -163,6 +177,12 @@ local function InternalSpawnNPC(
 			break
 		end
 	end
+	for _, v in pairs(NPCData.Weapons or {}) do
+		if v == Equipment then
+			valid = true
+			break
+		end
+	end
 
 	if (Equipment and Equipment ~= "none" and valid) then
 		NPC:SetKeyValue("additionalequipment", Equipment)
@@ -174,8 +194,25 @@ local function InternalSpawnNPC(
 	NPC:Spawn()
 	NPC:Activate()
 
-	if (bDropToFloor and not NPCData.OnCeiling) then
+	-- For those NPCs that set their model in Spawn function
+	-- We have to keep the call above for NPCs that want a model set by Spawn() time
+	if (NPCData.Model and NPC:GetModel() ~= NPCData.Model) then
+		NPC:SetModel(NPCData.Model)
+	end
+
+	if (bDropToFloor) then
 		NPC:DropToFloor()
+	end
+
+	if (NPCData.Health) then
+		NPC:SetHealth(NPCData.Health)
+	end
+
+	-- Body groups
+	if (NPCData.BodyGroups) then
+		for k, v in pairs(NPCData.BodyGroups) do
+			NPC:SetBodygroup(k, v)
+		end
 	end
 
 	return NPC
