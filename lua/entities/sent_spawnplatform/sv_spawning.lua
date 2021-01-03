@@ -26,6 +26,12 @@ local weaponsets = {
 	},
 }
 
+local function DoPropSpawnedEffect(...)
+	if _G.DoPropSpawnedEffect then
+		_G.DoPropSpawnedEffect(...)
+	end
+end
+
 --
 -- gmod v14.04.19
 -- garrysmod\gamemodes\sandbox\gamemode\commands.lua:288
