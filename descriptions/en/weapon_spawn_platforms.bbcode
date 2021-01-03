@@ -1,0 +1,43 @@
+This is a very rough first pass for weapon spawn platforms.
+It has wire, permaprop and map embedding support.
+Spawn it via the Q menu ([i]Fun + Games[/i]) and then right-click edit.
+
+------------------
+[url=https://github.com/Lexicality/weapon-spawn-platforms]Github Repo[/url]
+------------------
+
+[h1]Wire[/h1]
+[b]Inputs[/b]:
+[i]SpawnOne[/i] ([b]NORMAL[/b])
+[i]RemoveCurrentWeapon[/i] ([b]NORMAL[/b])
+[i]SetWeaponClass[/i] ([b]STRING[/b])
+[i]SetDelay[/i] ([b]NORMAL[/b])
+[b]Outputs[/b]:
+[i]CurrentWeapon[/i] ([b]ENTITY[/b])
+[i]NumSpawned[/i] ([b]NORMAL[/b])
+[i]OnWeaponSpawned[/i] ([b]NORMAL[/b])
+
+[h1]Lua[/h1]
+[b]Functions[/b]:
+[i]SpawnWeapon()[/i]
+[i]RemoveWeapon(dontUpdateDelay)[/i]
+[b]NWVars[/b]:
+[i]SpawnOnce[/i]
+[i]Invisible[/i]
+[i]Unfrozen[/i]
+[i]Weapon[/i]
+[i]Delay[/i]
+[i]NumSpawned[/i]
+
+[h1]Hammer[/h1]
+[b]keyvalues[/b]:
+[i]once[/i] - Only spawn one weapon automatically [b]1/0[/b]
+[i]hidden[/i] - Set NoDraw on the platform  [b]1/0[/b]
+[i]movable[/i] - Enable physics on the platform.  [b]1/0[/b]
+[i]weapon[/i] - The weapon classname to spawn [b]string eg [i]weapon_crowbar[/i][/b]
+[i]spawndelay[/i] - How many seconds to wait after a weapon is picked up [b]>0[/b]
+[b]inputs[/b]:
+[i]spawn[/i] - Create a weapon immedaitely, deleting the existing one if necessary
+[i]killweapon[/i] - Delete the existing weapon if it exists. (Note, a new one will spawn in [i]spawndelay[/i] seconds.)
+[b]outputs[/b]:
+[b]Coming soon![/b]

@@ -1,0 +1,15 @@
+This is the (moderately) popular multi-use Money Pot addon I made for DarkRP. (Compatible with 2.4 and 2.5)
+It is an entity that will store any money that touches it, with the ability to eject it all as one single money entity when 'use'd.
+------------------
+[url=https://github.com/Lexicality/Lexical-Tools]Github Repo[/url]
+------------------
+On it's own, this provides a handy one-way transfer method for money in shops: Most of the moneypot it placed on the public side and the ejection end is placed on the shop owner's side. The customer places their money in the pot and the shop owner confirms it is the right amount and then ejects it.
+However, with Wire, this becomes a particularly useful entity.
+It has outputs that
+A) Show how much money is inside it
+b) Show how much money was just put inside it (or removed) and
+c) Trigger every time money is put in or taken out.
+It also has inputs that allow you to either empty the entire thing or more importantly output a portion of the total money stored inside.
+This means it is very useful for automatic gun shops, both in knowing how much money the customer has put in and being able to make exact change if the customer puts too much money in (which is impossible otherwise!)
+
+There is a full Lua interface in case you want to integrate it with your custom DarkRP server (maybe make money printers print directly into the nearest moneypot?) and even supports customising the money entity supported in case you use a different system to Public DarkRP (or even a different gamemode!)
