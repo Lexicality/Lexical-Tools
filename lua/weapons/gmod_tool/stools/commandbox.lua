@@ -85,24 +85,21 @@ if (CLIENT) then
 		"Updated Command Box",
 		"Created Command Box",
 	}
-	usermessage.Hook(
-		"CommandBoxMessage", function(um)
-			local message = um:ReadShort()
-			if (message == 1) then
-				local word = um:ReadShort()
-				message = messages[message] .. disallowed[word] .. "'!"
-			else
-				message = messages[message]
-			end
-			GAMEMODE:AddNotify(message, NOTIFY_GENERIC, 10)
-			surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav")
+	usermessage.Hook("CommandBoxMessage", function(um)
+		local message = um:ReadShort()
+		if (message == 1) then
+			local word = um:ReadShort()
+			message = messages[message] .. disallowed[word] .. "'!"
+		else
+			message = messages[message]
 		end
-	)
+		GAMEMODE:AddNotify(message, NOTIFY_GENERIC, 10)
+		surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav")
+	end)
 
 	language.Add("Tool_commandbox_name", "Command Box Tool")
-	language.Add(
-		"Tool_commandbox_desc", "Allows you to assign concommands to numpad keys."
-	)
+	language.Add("Tool_commandbox_desc",
+             	"Allows you to assign concommands to numpad keys.")
 	language.Add("Tool_commandbox_0", "Left click to spawn a Command Box")
 
 	-- Other
@@ -113,26 +110,24 @@ if (CLIENT) then
 	language.Add("Cleaned_commandboxes", "Cleaned up all Command Boxes")
 	TOOL.LeftClick = canTool
 	function TOOL.BuildCPanel(cp)
-		cp:AddControl(
-			"Header",
-			{Text = "#Tool_commandbox_name", Description = "#Tool_commandbox_desc"}
-		)
+		cp:AddControl("Header", {
+			Text = "#Tool_commandbox_name",
+			Description = "#Tool_commandbox_desc",
+		})
 
-		cp:AddControl(
-			"PropSelect", {
-				Label = "Model:",
-				ConVar = "commandbox_model",
-				Category = "Models",
-				Models = list.Get("CommandboxModels"),
-			}
-		)
-		cp:AddControl(
-			"Numpad", {Label = "Key:", Command = "commandbox_key", ButtonSize = 22}
-		)
-		cp:AddControl(
-			"TextBox",
-			{Label = "Command", MaxLength = "255", Command = "commandbox_command"}
-		)
+		cp:AddControl("PropSelect", {
+			Label = "Model:",
+			ConVar = "commandbox_model",
+			Category = "Models",
+			Models = list.Get("CommandboxModels"),
+		})
+		cp:AddControl("Numpad",
+              		{Label = "Key:", Command = "commandbox_key", ButtonSize = 22})
+		cp:AddControl("TextBox", {
+			Label = "Command",
+			MaxLength = "255",
+			Command = "commandbox_command",
+		})
 	end
 	return
 end

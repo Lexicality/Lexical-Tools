@@ -52,10 +52,8 @@ if (CLIENT) then
 
 	-- Sandbox
 	function ENT:GetOverlayText()
-		local txt = string.format(
-			language.GetPhrase("tool.moneypot.overlay"),
-			self:FormatMoney(self:GetMoney())
-		)
+		local txt = string.format(language.GetPhrase("tool.moneypot.overlay"),
+                          		self:FormatMoney(self:GetMoney()))
 
 		if (game.SinglePlayer()) then
 			return txt
@@ -69,10 +67,8 @@ if (CLIENT) then
 	-- Wiremod
 	function ENT:GetOverlayData()
 		return {
-			txt = string.format(
-				language.GetPhrase("tool.moneypot.overlay"),
-				self:FormatMoney(self:GetMoney())
-			),
+			txt = string.format(language.GetPhrase("tool.moneypot.overlay"),
+                    			self:FormatMoney(self:GetMoney())),
 		}
 	end
 
@@ -133,12 +129,8 @@ function ENT:Initialize()
 	if (not phys:IsValid()) then
 		local mdl = self:GetModel()
 		self:Remove()
-		error(
-
-
-				"Entity of type " .. self.ClassName ..
-					" created without a physobj! (Model: " .. mdl .. ")"
-		)
+		error("Entity of type " .. self.ClassName ..
+      			" created without a physobj! (Model: " .. mdl .. ")")
 	end
 	phys:Wake()
 end
@@ -163,13 +155,11 @@ function ENT:UpdateWireOutputs(amount)
 	Wire_TriggerOutput(self, "StoredAmount", self:GetMoney())
 	Wire_TriggerOutput(self, "LastAmount", amount)
 	Wire_TriggerOutput(self, "Updated", 1)
-	timer.Simple(
-		0.1, function()
-			if (IsValid(self)) then
-				Wire_TriggerOutput(self, "Updated", 0)
-			end
+	timer.Simple(0.1, function()
+		if (IsValid(self)) then
+			Wire_TriggerOutput(self, "Updated", 0)
 		end
-	)
+	end)
 end
 
 function ENT:IsGoodMoneyEntity(ent)
@@ -225,10 +215,8 @@ function ENT:AddMoney(amount)
 	self:UpdateWireOutputs(amount)
 end
 
-local cvar_delay = CreateConVar(
-	"moneypot_spawn_delay", 1, FCVAR_ARCHIVE,
-	"How long in seconds to wait before spawning money"
-)
+local cvar_delay = CreateConVar("moneypot_spawn_delay", 1, FCVAR_ARCHIVE,
+                                "How long in seconds to wait before spawning money")
 function ENT:DelayedSpawn(amount)
 	amount = math.Clamp(amount, 0, self:GetMoney())
 	if (amount == 0) then

@@ -33,29 +33,27 @@ TOOL.ClientConVar["explosive_radius"] = 200
 cleanup.Register("propcannons")
 
 if (SERVER) then
-	CreateConVar(
-		"sbox_maxpropcannons", 10,
-		"The maximum number of prop cannons you can have out at one time."
-	)
+	CreateConVar("sbox_maxpropcannons", 10,
+             	"The maximum number of prop cannons you can have out at one time.")
 	local function onRemove(self, down, up)
 		numpad.Remove(down)
 		numpad.Remove(up)
 	end
 	function MakeCannon(
 		ply,
-			pos,
-			angles,
-			key,
-			force,
-			model,
-			ammo,
-			recoil,
-			delay,
-			kill,
-			power,
-			radius,
-			effect,
-			explosive
+		pos,
+		angles,
+		key,
+		force,
+		model,
+		ammo,
+		recoil,
+		delay,
+		kill,
+		power,
+		radius,
+		effect,
+		explosive
 	)
 		if (not ply:CheckLimit("propcannons")) then
 			return false
@@ -63,36 +61,32 @@ if (SERVER) then
 		local cannon = ents.Create("gmod_propcannon")
 		cannon:SetPos(pos)
 		cannon:SetAngles(angles)
-		cannon:Setup(
-			force, model, ammo, recoil, delay, kill, power, radius, effect, explosive
-		)
+		cannon:Setup(force, model, ammo, recoil, delay, kill, power, radius, effect,
+             		explosive)
 		cannon:Spawn()
 		cannon:SetPlayer(ply)
 		-- Make it shiny and black
 		cannon:SetMaterial("models/shiny")
 		cannon:SetColor(0, 0, 0, 255)
 		cannon.numpadKey = key
-		cannon:CallOnRemove(
-			"NumpadCleanup", onRemove, numpad.OnDown(ply, key, "propcannon_On", cannon),
-			numpad.OnUp(ply, key, "propcannon_Off", cannon)
-		)
+		cannon:CallOnRemove("NumpadCleanup", onRemove,
+                    		numpad.OnDown(ply, key, "propcannon_On", cannon),
+                    		numpad.OnUp(ply, key, "propcannon_Off", cannon))
 		cannon:SetCollisionGroup(COLLISION_GROUP_WORLD)
 
 		ply:AddCount("propcannons", cannon)
 		return cannon
 	end
-	duplicator.RegisterEntityClass(
-		"gmod_propcannon", MakeCannon, "Pos", "Ang", "numpadKey", "fireForce",
-		"Model", "fireModel", "recoilAmount", "fireDelay", "killDelay",
-		"explosivePower", "explosiveRadius", "fireEffect", "fireExplosives"
-	)
+	duplicator.RegisterEntityClass("gmod_propcannon", MakeCannon, "Pos", "Ang",
+                               	"numpadKey", "fireForce", "Model", "fireModel",
+                               	"recoilAmount", "fireDelay", "killDelay",
+                               	"explosivePower", "explosiveRadius",
+                               	"fireEffect", "fireExplosives")
 else
 	language.Add("Tool_propcannon_name", "Prop Cannons v2")
 	language.Add("Tool_propcannon_desc", "A movable cannon that can fire props")
-	language.Add(
-		"Tool_propcannon_0",
-		"Click to spawn a cannon. Click on an existing cannon to change it. Right click on a prop to use the model as ammo."
-	)
+	language.Add("Tool_propcannon_0",
+             	"Click to spawn a cannon. Click on an existing cannon to change it. Right click on a prop to use the model as ammo.")
 
 	language.Add("SBoxLimit_propcannons", "You've hit the Prop Cannonslimit!")
 	language.Add("Undone_propcannon", "Undone Prop Cannon")
@@ -111,7 +105,7 @@ function TOOL:LeftClick(tr)
 
 	local ply = self:GetOwner()
 	local key, force, model, ammo, recoil, delay, kill, power, radius, effect,
-		explosive
+							explosive
 	key = self:GetClientNumber("key")
 	force = self:GetClientNumber("force")
 	delay = self:GetClientNumber("delay")
@@ -132,19 +126,16 @@ function TOOL:LeftClick(tr)
 	local ent = tr.Entity
 	if (IsValid(ent) and ent:GetClass() == "gmod_propcannon" and ent:GetPlayer() ==
 		ply) then
-		ent:Setup(
-			force, model, ammo, recoil, delay, kill, power, radius, effect, explosive
-		)
+		ent:Setup(force, model, ammo, recoil, delay, kill, power, radius, effect,
+          		explosive)
 		return true
 	end
 
 	local angles = tr.HitNormal:Angle()
 	angles.pitch = angles.pitch + 90
 
-	local cannon = MakeCannon(
-		ply, tr.HitPos, angles, key, force, model, ammo, recoil, delay, kill, power,
-		radius, effect, explosive
-	)
+	local cannon = MakeCannon(ply, tr.HitPos, angles, key, force, model, ammo,
+                          	recoil, delay, kill, power, radius, effect, explosive)
 	if (not cannon) then
 		return false
 	end
@@ -264,87 +255,72 @@ function TOOL.BuildCPanel(cp)
 	Combo["CVars"]["10"] = "propcannon_explosive_radius"
 	cp:AddControl("ComboBox", Combo)
 
-	cp:AddControl(
-		"PropSelect", {
-			Label = "Cannon Model:",
-			ConVar = "propcannon_cannon_model",
-			Category = "Cannons",
-			Models = list.Get("CannonModels"),
-		}
-	)
+	cp:AddControl("PropSelect", {
+		Label = "Cannon Model:",
+		ConVar = "propcannon_cannon_model",
+		Category = "Cannons",
+		Models = list.Get("CannonModels"),
+	})
 
-	cp:AddControl(
-		"Numpad",
-		{Label = "Keypad button:", Command = "propcannon_key", Buttonsize = "22"}
-	)
-	cp:AddControl(
-		"Slider", {
-			Label = "Force:",
-			Type = "float",
-			Min = "0",
-			Max = "100000",
-			Command = "propcannon_force",
-		}
-	)
-	cp:AddControl(
-		"Slider", {
-			Label = "Reload Delay:",
-			Type = "float",
-			Min = "0",
-			Max = "50",
-			Command = "propcannon_delay",
-		}
-	)
-	cp:AddControl(
-		"Slider", {
-			Label = "Recoil:",
-			Type = "float",
-			Min = "0",
-			Max = "10",
-			Command = "propcannon_recoil",
-		}
-	)
-	cp:AddControl(
-		"Slider", {
-			Label = "Prop Lifetime:",
-			Type = "float",
-			Min = "0",
-			Max = "30",
-			Command = "propcannon_kill_delay",
-		}
-	)
-	cp:AddControl(
-		"Slider", {
-			Label = "Explosive Power:",
-			Type = "float",
-			Min = "0",
-			Max = "200",
-			Command = "propcannon_explosive_power",
-		}
-	)
-	cp:AddControl(
-		"Slider", {
-			Label = "Explosive Radius:",
-			Type = "float",
-			Min = "0",
-			Max = "500",
-			Command = "propcannon_explosive_radius",
-		}
-	)
-	cp:AddControl(
-		"Checkbox", {Label = "Explode on contact:", Command = "propcannon_explosive"}
-	)
-	cp:AddControl(
-		"PropSelect", {
-			Label = "Cannon Ammo:",
-			ConVar = "propcannon_ammo_model",
-			Category = "Ammo",
-			Models = list.Get("CannonAmmoModels"),
-		}
-	)
-	cp:AddControl(
-		"ListBox", {Label = "Firing Effect:", Options = list.Get("CannonEffects")}
-	)
+	cp:AddControl("Numpad", {
+		Label = "Keypad button:",
+		Command = "propcannon_key",
+		Buttonsize = "22",
+	})
+	cp:AddControl("Slider", {
+		Label = "Force:",
+		Type = "float",
+		Min = "0",
+		Max = "100000",
+		Command = "propcannon_force",
+	})
+	cp:AddControl("Slider", {
+		Label = "Reload Delay:",
+		Type = "float",
+		Min = "0",
+		Max = "50",
+		Command = "propcannon_delay",
+	})
+	cp:AddControl("Slider", {
+		Label = "Recoil:",
+		Type = "float",
+		Min = "0",
+		Max = "10",
+		Command = "propcannon_recoil",
+	})
+	cp:AddControl("Slider", {
+		Label = "Prop Lifetime:",
+		Type = "float",
+		Min = "0",
+		Max = "30",
+		Command = "propcannon_kill_delay",
+	})
+	cp:AddControl("Slider", {
+		Label = "Explosive Power:",
+		Type = "float",
+		Min = "0",
+		Max = "200",
+		Command = "propcannon_explosive_power",
+	})
+	cp:AddControl("Slider", {
+		Label = "Explosive Radius:",
+		Type = "float",
+		Min = "0",
+		Max = "500",
+		Command = "propcannon_explosive_radius",
+	})
+	cp:AddControl("Checkbox", {
+		Label = "Explode on contact:",
+		Command = "propcannon_explosive",
+	})
+	cp:AddControl("PropSelect", {
+		Label = "Cannon Ammo:",
+		ConVar = "propcannon_ammo_model",
+		Category = "Ammo",
+		Models = list.Get("CannonAmmoModels"),
+	})
+	cp:AddControl("ListBox",
+              	{Label = "Firing Effect:", Options = list.Get("CannonEffects")})
 end
 
 list.Set("CannonModels", "models/dav0r/thruster.mdl", {})
@@ -360,18 +336,15 @@ list.Set("CannonAmmoModels", "models/props_junk/propane_tank001a.mdl", {})
 list.Set("CannonAmmoModels", "models/props_c17/canister_propane01a.mdl", {})
 list.Set("CannonAmmoModels", "models/props_junk/watermelon01.mdl", {})
 list.Set("CannonAmmoModels", "models/props_junk/cinderblock01a.mdl", {})
-list.Set(
-	"CannonAmmoModels", "models/props_debris/concrete_cynderblock001.mdl", {}
-)
+list.Set("CannonAmmoModels", "models/props_debris/concrete_cynderblock001.mdl",
+         {})
 list.Set("CannonAmmoModels", "models/props_junk/popcan01a.mdl", {})
 
 list.Set("CannonEffects", "Explosion", {propcannon_fire_effect = "Explosion"})
 list.Set("CannonEffects", "Sparks", {propcannon_fire_effect = "cball_explode"})
 list.Set("CannonEffects", "Bomb drop", {propcannon_fire_effect = "RPGShotDown"})
-list.Set(
-	"CannonEffects", "Flash", {propcannon_fire_effect = "HelicopterMegaBomb"}
-)
-list.Set(
-	"CannonEffects", "Machine Gun", {propcannon_fire_effect = "HelicopterImpact"}
-)
+list.Set("CannonEffects", "Flash",
+         {propcannon_fire_effect = "HelicopterMegaBomb"})
+list.Set("CannonEffects", "Machine Gun",
+         {propcannon_fire_effect = "HelicopterImpact"})
 list.Set("CannonEffects", "None", {propcannon_fire_effect = "none"})

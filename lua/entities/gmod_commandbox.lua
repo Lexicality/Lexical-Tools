@@ -44,10 +44,8 @@ function MakeCommandBox(ply, pos, angles, model, key, command, data)
 	return box
 end
 
-duplicator.RegisterEntityClass(
-	"gmod_commandbox", MakeCommandBox, "Pos", "Ang", "Model", "key", "command",
-	"Data"
-)
+duplicator.RegisterEntityClass("gmod_commandbox", MakeCommandBox, "Pos", "Ang",
+                               "Model", "key", "command", "Data")
 
 ENT.PrintName = "Commandbox"
 ENT.Author = "Lexi"
@@ -58,22 +56,17 @@ ENT.Spawnable = false
 ENT.AdminSpawnable = false
 
 if (CLIENT) then
-	usermessage.Hook(
-		"Commandbox Command Request", function(um)
-			local command = um:ReadString()
-			Derma_Query(
-				"Run Command '" .. command .. "'?", "Command Box SENT", "Yes", function()
-					LocalPlayer():ConCommand(command)
-				end, "No", function()
-				end
-			)
-		end
-	)
-	usermessage.Hook(
-		"Commandbox Command", function(um)
-			LocalPlayer():ConCommand(um:ReadString())
-		end
-	)
+	usermessage.Hook("Commandbox Command Request", function(um)
+		local command = um:ReadString()
+		Derma_Query("Run Command '" .. command .. "'?", "Command Box SENT", "Yes",
+            		function()
+			LocalPlayer():ConCommand(command)
+		end, "No", function()
+		end)
+	end)
+	usermessage.Hook("Commandbox Command", function(um)
+		LocalPlayer():ConCommand(um:ReadString())
+	end)
 	return
 end
 umsg.PoolString("Commandbox Command")

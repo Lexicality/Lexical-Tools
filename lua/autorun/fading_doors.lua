@@ -23,14 +23,10 @@ if CLIENT then
 end
 
 -- Server only convars go here
-CreateConVar(
-	prefix .. "mintime", 0, FCVAR_ARCHIVE,
-	"The minimum time a fading door must remain faded for", 0
-)
-CreateConVar(
-	prefix .. "physpersist", "false", FCVAR_ARCHIVE,
-	"If unfrozen objects should be unfrozen when unfaded"
-)
+CreateConVar(prefix .. "mintime", 0, FCVAR_ARCHIVE,
+             "The minimum time a fading door must remain faded for", 0)
+CreateConVar(prefix .. "physpersist", "false", FCVAR_ARCHIVE,
+             "If unfrozen objects should be unfrozen when unfaded")
 
 --- @param name string
 --- @param oldVal string

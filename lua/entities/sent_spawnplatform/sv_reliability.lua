@@ -24,16 +24,12 @@ function ENT:RegisterListeners()
 	self:NetworkVarNotify("Active", self.OnActiveChange)
 	self:NetworkVarNotify("StartDelay", self.OnStartDelayChange)
 	self:NetworkVarNotify("Frozen", self.OnFrozenStateChange)
-	self:NetworkVarNotify(
-		"OnKey", function(self, _, _, onKey)
-			self:RebindNumpads(self:GetPlayer(), onKey, self:GetOffKey())
-		end
-	)
-	self:NetworkVarNotify(
-		"OffKey", function(self, _, _, offKey)
-			self:RebindNumpads(self:GetPlayer(), self:GetOnKey(), offKey)
-		end
-	)
+	self:NetworkVarNotify("OnKey", function(self, _, _, onKey)
+		self:RebindNumpads(self:GetPlayer(), onKey, self:GetOffKey())
+	end)
+	self:NetworkVarNotify("OffKey", function(self, _, _, offKey)
+		self:RebindNumpads(self:GetPlayer(), self:GetOnKey(), offKey)
+	end)
 end
 
 function ENT:OnStartDelayChange(_, _, delay)

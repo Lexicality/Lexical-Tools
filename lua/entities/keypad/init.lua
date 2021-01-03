@@ -100,9 +100,10 @@ function ENT:Initialize()
 	}
 
 	if (cvar_wire_cracking:GetBool()) then
-		table.insert(
-			outputs, {Name = "Being Cracked", Desc = "If the keypad is being cracked"}
-		)
+		table.insert(outputs, {
+			Name = "Being Cracked",
+			Desc = "If the keypad is being cracked",
+		})
 	end
 
 	self:CreateWireOutputs(outputs)
@@ -327,16 +328,12 @@ do
 	end
 
 	local function on_off(ent, kvs, func, delay, length)
-		timer.Simple(
-			delay, function()
-				func(ent, kvs, true)
-			end
-		)
-		timer.Simple(
-			delay + length, function()
-				func(ent, kvs, false)
-			end
-		)
+		timer.Simple(delay, function()
+			func(ent, kvs, true)
+		end)
+		timer.Simple(delay + length, function()
+			func(ent, kvs, false)
+		end)
 	end
 
 	function ENT:HandleWireValueChange(kvs)
@@ -378,11 +375,9 @@ do
 
 		-- If nothing is going to happen, do nothing.
 		if (not numpad_key and not self:IsWireOutputConnected(kvs.wire_name)) then
-			timer.Simple(
-				cvar_min_recharge:GetFloat(), function()
-					ResetKeypad(self)
-				end
-			)
+			timer.Simple(cvar_min_recharge:GetFloat(), function()
+				ResetKeypad(self)
+			end)
 			return
 		end
 
@@ -394,15 +389,12 @@ do
 		local total_time = delay + (num_reps * rep_length) +
                    			((num_reps - 1) * rep_delay)
 		-- Show the "Access XXX" screen for quarter of a second after all effects finish
-		local recharge_time = math.min(
-			math.max(total_time + 0.25, cvar_min_recharge:GetFloat()),
-			cvar_max_recharge:GetFloat()
-		)
-		timer.Simple(
-			recharge_time, function()
-				ResetKeypad(self)
-			end
-		)
+		local recharge_time = math.min(math.max(total_time + 0.25,
+                                        		cvar_min_recharge:GetFloat()),
+                               		cvar_max_recharge:GetFloat())
+		timer.Simple(recharge_time, function()
+			ResetKeypad(self)
+		end)
 
 		for rep = 0, num_reps - 1 do
 			if (numpad_key) then
@@ -411,11 +403,9 @@ do
 			if (WireLib) then
 				if (kvs.wire_toggle) then
 					local delay = kvs.initial_delay + rep_delay * rep
-					timer.Simple(
-						delay, function()
-							toggle_wire_state(self, kvs, access)
-						end
-					)
+					timer.Simple(delay, function()
+						toggle_wire_state(self, kvs, access)
+					end)
 				else
 					on_off(self, kvs, set_wire_state, delay, rep_length)
 				end
@@ -454,22 +444,20 @@ local binds = {
 	[KEY_PAD_ENTER] = "accept",
 	[KEY_PAD_PLUS] = "reset",
 }
-hook.Add(
-	"PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
-		local cmd = binds[button]
-		if (not cmd) then
-			return
-		end
-
-		local tr = ply:GetEyeTrace()
-		if (not (IsValid(tr.Entity) and tr.Entity.IsKeypad) or
-			tr.StartPos:Distance(tr.HitPos) > 90) then
-			return
-		end
-
-		tr.Entity:KeypadInput(ply, cmd)
+hook.Add("PlayerButtonDown", "Keypad Numpad Magic", function(ply, button)
+	local cmd = binds[button]
+	if (not cmd) then
+		return
 	end
-)
+
+	local tr = ply:GetEyeTrace()
+	if (not (IsValid(tr.Entity) and tr.Entity.IsKeypad) or
+		tr.StartPos:Distance(tr.HitPos) > 90) then
+		return
+	end
+
+	tr.Entity:KeypadInput(ply, cmd)
+end)
 
 function ENT:Use(activator, ...)
 	if (BaseClass.Use) then
@@ -576,11 +564,10 @@ local w2m = {
 	LengthDenied = "denied_rep_length",
 }
 
-duplicator.RegisterEntityModifier(
-	"keypad_password_passthrough", function(ply, ent, data)
-		ent:SetData(data)
-	end
-)
+duplicator.RegisterEntityModifier("keypad_password_passthrough",
+                                  function(ply, ent, data)
+	ent:SetData(data)
+end)
 
 function ENT:SetData(data)
 	for key, kv in pairs(w2m) do
@@ -631,9 +618,8 @@ function ENT:PreEntityCopy()
 		BaseClass.PreEntityCopy(self)
 	end
 	self.KeypadData = self:GetData()
-	duplicator.StoreEntityModifier(
-		self, "keypad_password_passthrough", self.KeypadData
-	)
+	duplicator.StoreEntityModifier(self, "keypad_password_passthrough",
+                               	self.KeypadData)
 end
 
 function ENT:PostEntityCopy()

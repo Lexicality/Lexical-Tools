@@ -228,11 +228,9 @@ function ENT:GetSpawnClass()
 	local npcdata = list.Get("NPC")[class]
 	if (not npcdata and npcspawner.config.sanity == 1) then
 		self:TurnOff()
-		error(
-			string.format(
-				"%s just tried to spawn NPC %q which is not on the NPC list!", self, class
-			)
-		)
+		error(string.format(
+      			"%s just tried to spawn NPC %q which is not on the NPC list!", self,
+      			class))
 	end
 
 	return class, npcdata
@@ -315,10 +313,10 @@ end
 function ENT:ConfigureNPCOwnership(npc)
 	npc:CallOnRemove("NPCSpawnPlatform", onremove, self)
 	self.NPCs[npc] = npc
-	duplicator.StoreEntityModifier(
-		npc, self.__MODIFIER_ID,
-		{id = self:GetCreationID(), myid = npc:GetCreationID()}
-	)
+	duplicator.StoreEntityModifier(npc, self.__MODIFIER_ID, {
+		id = self:GetCreationID(),
+		myid = npc:GetCreationID(),
+	})
 end
 
 function ENT:ConfigureNPCValue(npc)
@@ -359,9 +357,8 @@ function ENT:SpawnOne()
 
 	debugoverlay.Line(self:GetPos(), position, 10, color_white, true)
 	debugoverlay.Axis(position, angles, 10, 10, true)
-	debugoverlay.Line(
-		position, position + normal * offset, 10, Color(255, 255, 0), true
-	)
+	debugoverlay.Line(position, position + normal * offset, 10, Color(255, 255, 0),
+                  	true)
 
 	local npc
 	if (npcdata) then
@@ -378,13 +375,11 @@ function ENT:SpawnOne()
 	npcspawner.debug2("NPC Entity:", npc)
 	debugoverlay.Cross(npc:GetPos(), 10, 10, color_white, true)
 	debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(255, 0, 0), true)
-	timer.Simple(
-		0.1, function()
-			if (IsValid(npc)) then
-				debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(0, 255, 0), true)
-			end
+	timer.Simple(0.1, function()
+		if (IsValid(npc)) then
+			debugoverlay.Line(self:GetPos(), npc:GetPos(), 10, Color(0, 255, 0), true)
 		end
-	)
+	end)
 
 	self:ConfigureNPCSquad(npc)
 	self:ConfigureNPCHealth(npc)
@@ -417,21 +412,15 @@ function ENT:SpawnOne()
 	end
 
 	if (self:GetDelayDecrease() > 0 and self.TotalSpawned % self:GetMaxNPCs() == 0) then
-		npcspawner.debug(
-			self.TotalSpawned .. " NPCs spawned, decreasing delay (" ..
-				self:GetSpawnDelay() .. ") by " .. self:GetDelayDecrease()
-		)
-		self:SetSpawnDelay(
-			math.max(
-				self:GetSpawnDelay() - self:GetDelayDecrease(), npcspawner.config.mindelay
-			)
-		)
+		npcspawner.debug(self.TotalSpawned .. " NPCs spawned, decreasing delay (" ..
+                 			self:GetSpawnDelay() .. ") by " .. self:GetDelayDecrease())
+		self:SetSpawnDelay(math.max(self:GetSpawnDelay() - self:GetDelayDecrease(),
+                            		npcspawner.config.mindelay))
 	end
 
 	if (self.TotalSpawned == self:GetMaxNPCsTotal()) then -- Since totallimit is 0 for off and totalspawned will always be > 0 at this point, shit works.
-		npcspawner.debug(
-			"totallimit (" .. self:GetMaxNPCsTotal() .. ") hit. Turning off."
-		)
+		npcspawner.debug("totallimit (" .. self:GetMaxNPCsTotal() ..
+                 			") hit. Turning off.")
 		self:TriggerOutput("OnLimitReached", self)
 		self:TurnOff()
 	end

@@ -260,17 +260,15 @@ if (CLIENT) then
 		texes[name] = surface.GetTextureID(matname)
 	end
 
-	surface.CreateFont(
-		"GarbageText", {
-			font = "Verdana",
-			weight = 1200,
-			size = 6,
-			blursize = 1,
-			additive = true,
-			-- scanlines=2,
-			-- shadow=true,
-		}
-	)
+	surface.CreateFont("GarbageText", {
+		font = "Verdana",
+		weight = 1200,
+		size = 6,
+		blursize = 1,
+		additive = true,
+		-- scanlines=2,
+		-- shadow=true,
+	})
 
 end
 

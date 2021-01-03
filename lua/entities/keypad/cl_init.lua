@@ -18,15 +18,13 @@ DEFINE_BASECLASS "base_lexentity"
 
 include("shared.lua")
 
-surface.CreateFont(
-	"Keypad Key", {font = "Trebuchet MS", size = 18, weight = 700}
-)
+surface.CreateFont("Keypad Key",
+                   {font = "Trebuchet MS", size = 18, weight = 700})
 surface.CreateFont("Keypad Secure Input", {font = "Lucida Console", size = 34})
 surface.CreateFont("Keypad Input", {font = "Lucida Console", size = 34})
 surface.CreateFont("Keypad Input Long", {font = "Lucida Console", size = 26})
-surface.CreateFont(
-	"Keypad Message", {font = "Lucida Console", size = 19, weight = 600}
-)
+surface.CreateFont("Keypad Message",
+                   {font = "Lucida Console", size = 19, weight = 600})
 
 local keys = {}
 do
@@ -45,9 +43,8 @@ do
 	local y = 105
 	for j = 2, 0, -1 do
 		for i = 0, 2 do
-			keys[key] = CreateKeyTab(
-				x + i * offset, y + j * offset, size, size, tostring(key)
-			)
+			keys[key] = CreateKeyTab(x + i * offset, y + j * offset, size, size,
+                         			tostring(key))
 			key = key + 1
 		end
 	end
@@ -132,9 +129,11 @@ end
 -- Draws a burst of light where the beam hits to hide the ugly clipping
 function ENT:DrawCrackingLight()
 	local target = self:GetZapPos()
-	local tr = util.TraceLine(
-		{start = EyePos(), endpos = target, filter = {LocalPlayer()}}
-	)
+	local tr = util.TraceLine({
+		start = EyePos(),
+		endpos = target,
+		filter = {LocalPlayer()},
+	})
 
 	if (tr.Entity == self) then
 		cam.IgnoreZ(true)

@@ -41,18 +41,14 @@ local function primeLookupCache()
 		reverseLookupCache[className] = language.GetPhrase(tab.Name)
 	end
 	reverseLookupCache["weapon_default"] = language.GetPhrase(
-		"menubar.npcs.defaultweapon"
-	)
+                                       		"menubar.npcs.defaultweapon")
 	reverseLookupCache["weapon_none"] = language.GetPhrase("menubar.npcs.noweapon")
 	reverseLookupCache["weapon_rebel"] = language.GetPhrase(
-		"tool.npc_spawnplatform.weapon_rebel"
-	)
+                                     		"tool.npc_spawnplatform.weapon_rebel")
 	reverseLookupCache["weapon_combine"] = language.GetPhrase(
-		"tool.npc_spawnplatform.weapon_combine"
-	)
+                                       		"tool.npc_spawnplatform.weapon_combine")
 	reverseLookupCache["weapon_citizen"] = language.GetPhrase(
-		"tool.npc_spawnplatform.weapon_citizen"
-	)
+                                       		"tool.npc_spawnplatform.weapon_citizen")
 end
 hook.Add("Initialize", "NPC Spawn Platforms overlay cache", primeLookupCache)
 

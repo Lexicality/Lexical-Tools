@@ -46,14 +46,12 @@ function ENT:Initialize()
 	end
 end
 
-hook.Add(
-	"EntityTakeDamage", "cannon_prop kill crediting", function(ent, info)
-		local me = info:GetInflictor()
-		if (IsValid(me) and me:GetClass() == "cannon_prop") then
-			info:SetAttacker(me.Owner)
-		end
+hook.Add("EntityTakeDamage", "cannon_prop kill crediting", function(ent, info)
+	local me = info:GetInflictor()
+	if (IsValid(me) and me:GetClass() == "cannon_prop") then
+		info:SetAttacker(me.Owner)
 	end
-)
+end)
 
 function ENT:Explode()
 	if (self.exploded) then
@@ -65,9 +63,8 @@ function ENT:Explode()
 	effectData:SetOrigin(pos)
 	effectData:SetScale(1)
 	util.Effect("Explosion", effectData)
-	util.BlastDamage(
-		self, self.Owner, pos, self.explosiveRadius, self.explosivePower
-	)
+	util.BlastDamage(self, self.Owner, pos, self.explosiveRadius,
+                 	self.explosivePower)
 	self.exploded = true
 	self:Remove()
 end

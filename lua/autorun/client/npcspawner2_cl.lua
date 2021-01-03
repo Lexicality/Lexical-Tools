@@ -42,87 +42,84 @@ for name, default in pairs(npcspawner.config) do
 	cvars.AddChangeCallback(name, callback)
 end
 
-npcspawner.recieve(
-	"NPCSpawner Config", function(data)
-		npcspawner.config = data
-		npcspawner.debug("Just got new config vars.")
-		for name, value in pairs(npcspawner.config) do
-			RunConsoleCommand(cvar(name), tostring(value))
-		end
+npcspawner.recieve("NPCSpawner Config", function(data)
+	npcspawner.config = data
+	npcspawner.debug("Just got new config vars.")
+	for name, value in pairs(npcspawner.config) do
+		RunConsoleCommand(cvar(name), tostring(value))
 	end
-)
+end)
 
 -----------------------------------
 -- Lexical Patented Corpse Eater --
 -----------------------------------
 CreateConVar("cleanupcorpses", 1)
-timer.Create(
-	"Dead Body Deleter", 60, 0, function()
-		if (GetConVarNumber("cleanupcorpses") < 1) then
-			return
-		end
-		for _, ent in pairs(ents.FindByClass("class C_ClientRagdoll")) do
-			ent:Remove()
-		end
+timer.Create("Dead Body Deleter", 60, 0, function()
+	if (GetConVarNumber("cleanupcorpses") < 1) then
+		return
 	end
-)
+	for _, ent in pairs(ents.FindByClass("class C_ClientRagdoll")) do
+		ent:Remove()
+	end
+end)
 
 local function lang(id)
 	return "#utilities.spawnplatform." .. id
 end
 
 local function clientOptions(panel)
-	panel:AddControl(
-		"CheckBox",
-		{Label = lang("cleanupcorpses"), Help = true, Command = "cleanupcorpses"}
-	)
+	panel:AddControl("CheckBox", {
+		Label = lang("cleanupcorpses"),
+		Help = true,
+		Command = "cleanupcorpses",
+	})
 end
 
 local function adminOptions(panel)
-	panel:AddControl(
-		"CheckBox",
-		{Label = lang("adminonly"), Command = cvar("adminonly"), Help = true}
-	)
+	panel:AddControl("CheckBox", {
+		Label = lang("adminonly"),
+		Command = cvar("adminonly"),
+		Help = true,
+	})
 
-	panel:AddControl(
-		"CheckBox",
-		{Label = lang("callhooks"), Command = cvar("callhooks"), Help = true}
-	)
+	panel:AddControl("CheckBox", {
+		Label = lang("callhooks"),
+		Command = cvar("callhooks"),
+		Help = true,
+	})
 
-	panel:AddControl(
-		"Slider", {
-			Label = lang("maxinplay"),
-			Command = cvar("maxinplay"),
-			Help = true,
-			Type = "Int",
-			Min = "1",
-			Max = "50",
-		}
-	)
+	panel:AddControl("Slider", {
+		Label = lang("maxinplay"),
+		Command = cvar("maxinplay"),
+		Help = true,
+		Type = "Int",
+		Min = "1",
+		Max = "50",
+	})
 
-	panel:AddControl(
-		"Slider", {
-			Label = lang("mindelay"),
-			Command = cvar("mindelay"),
-			Help = true,
-			Type = "Float",
-			Min = "0.1",
-			Max = "10",
-		}
-	)
+	panel:AddControl("Slider", {
+		Label = lang("mindelay"),
+		Command = cvar("mindelay"),
+		Help = true,
+		Type = "Float",
+		Min = "0.1",
+		Max = "10",
+	})
 
-	local dzpanel = panel:AddControl(
-		"ControlPanel", {Label = lang("dangerzone"), Closed = true}
-	)
+	local dzpanel = panel:AddControl("ControlPanel",
+                                 	{Label = lang("dangerzone"), Closed = true})
 
-	dzpanel:AddControl(
-		"CheckBox", {Label = lang("sanity"), Command = cvar("sanity"), Help = true}
-	)
+	dzpanel:AddControl("CheckBox", {
+		Label = lang("sanity"),
+		Command = cvar("sanity"),
+		Help = true,
+	})
 
-	dzpanel:AddControl(
-		"CheckBox",
-		{Label = lang("rehydrate"), Command = cvar("rehydrate"), Help = true}
-	)
+	dzpanel:AddControl("CheckBox", {
+		Label = lang("rehydrate"),
+		Command = cvar("rehydrate"),
+		Help = true,
+	})
 
 	--[[
 	dzpanel:AddControl("CheckBox", {
@@ -133,15 +130,11 @@ local function adminOptions(panel)
 	]] --
 end
 
-hook.Add(
-	"PopulateToolMenu", "NPCSpawner Options", function()
-		spawnmenu.AddToolMenuOption(
-			"Utilities", "User", "NPC Spawn Platforms User",
-			"#spawnmenu.utilities.spawnplatform", "", "", clientOptions
-		)
-		spawnmenu.AddToolMenuOption(
-			"Utilities", "Admin", "NPC Spawn Platforms Admin",
-			"#spawnmenu.utilities.spawnplatform", "", "", adminOptions
-		)
-	end
-)
+hook.Add("PopulateToolMenu", "NPCSpawner Options", function()
+	spawnmenu.AddToolMenuOption("Utilities", "User", "NPC Spawn Platforms User",
+                            	"#spawnmenu.utilities.spawnplatform", "", "",
+                            	clientOptions)
+	spawnmenu.AddToolMenuOption("Utilities", "Admin", "NPC Spawn Platforms Admin",
+                            	"#spawnmenu.utilities.spawnplatform", "", "",
+                            	adminOptions)
+end)

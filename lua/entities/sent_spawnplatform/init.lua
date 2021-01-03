@@ -30,27 +30,23 @@ local colour_on = Color(0, 255, 0)
 local colour_off = Color(255, 0, 0)
 local colour_flipped = Color(0, 255, 255)
 
-numpad.Register(
-	"NPCSpawnerOn", function(ply, ent)
-		npcspawner.debug("Numpad on called for", ent, "by", ply)
-		if (IsValid(ent)) then
-			ent:TurnOn()
-		else
-			npcspawner.debug("Invalid entity provided?!")
-		end
+numpad.Register("NPCSpawnerOn", function(ply, ent)
+	npcspawner.debug("Numpad on called for", ent, "by", ply)
+	if (IsValid(ent)) then
+		ent:TurnOn()
+	else
+		npcspawner.debug("Invalid entity provided?!")
 	end
-)
+end)
 
-numpad.Register(
-	"NPCSpawnerOff", function(ply, ent)
-		npcspawner.debug("Numpad off called for", ent, "by", ply)
-		if (IsValid(ent)) then
-			ent:TurnOff()
-		else
-			npcspawner.debug("Invalid entity provided?!")
-		end
+numpad.Register("NPCSpawnerOff", function(ply, ent)
+	npcspawner.debug("Numpad off called for", ent, "by", ply)
+	if (IsValid(ent)) then
+		ent:TurnOff()
+	else
+		npcspawner.debug("Invalid entity provided?!")
 	end
-)
+end)
 
 function ENT:Initialize()
 	-- Default values
@@ -70,10 +66,8 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_VPHYSICS)
 	local phys = self:GetPhysicsObject()
 	if (not IsValid(phys)) then
-		ErrorNoHalt(
-			"No physics object for ", tostring(self), " using model ", self:GetModel(),
-			"?\n"
-		)
+		ErrorNoHalt("No physics object for ", tostring(self), " using model ",
+            		self:GetModel(), "?\n")
 	elseif (self:GetFrozen()) then
 		phys:EnableMotion(false)
 	else
@@ -224,10 +218,9 @@ function ENT:AcceptInput(name, activator, called, value)
 		return true
 	end
 
-	npcspawner.debug2(
-		self, "has just had their", name, "triggered by", tostring(called),
-		"which was caused by", tostring(activator), "and was passed", value
-	)
+	npcspawner.debug2(self, "has just had their", name, "triggered by",
+                  	tostring(called), "which was caused by", tostring(activator),
+                  	"and was passed", value)
 
 	if (name == "TurnOn") then
 		self:TurnOn()

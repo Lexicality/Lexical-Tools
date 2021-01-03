@@ -66,12 +66,10 @@ function TOOL:LeftClick(trace)
 	if (npcspawner.config.adminonly == 1 and not owner:IsAdmin()) then
 		if (CLIENT) then
 			GAMEMODE:AddNotify(
-				"The server admin has disabled this STool for non-admins!", NOTIFY_ERROR, 5
-			)
+				"The server admin has disabled this STool for non-admins!", NOTIFY_ERROR, 5)
 		end
-		npcspawner.debug2(
-			owner, "has tried to use the STool in admin mode and isn't an admin!"
-		)
+		npcspawner.debug2(owner,
+                  		"has tried to use the STool in admin mode and isn't an admin!")
 		return false
 	end
 	npcspawner.debug2(owner, "has left clicked the STool.")
@@ -81,9 +79,8 @@ function TOOL:LeftClick(trace)
 		return false
 	elseif (trace.Entity:GetClass() == "sent_spawnplatform") then
 		self:SetKVs(trace.Entity)
-		npcspawner.debug(
-			owner, "has applied his settings to an existing platform:", trace.Entity
-		)
+		npcspawner.debug(owner, "has applied his settings to an existing platform:",
+                 		trace.Entity)
 		return true
 	end
 	local ent = ents.Create("sent_spawnplatform")
@@ -169,18 +166,16 @@ function TOOL.BuildCPanel(CPanel)
 		defaults[key] = default
 	end
 
-	CPanel:AddControl(
-		"ComboBox", {
-			Label = "#Presets",
-			Folder = "spawnplatform",
-			CVars = CVars,
-			Options = {
-				default = defaults,
-				-- TODO: Maybe some other nice defaults?
-			},
-			MenuButton = 1,
-		}
-	)
+	CPanel:AddControl("ComboBox", {
+		Label = "#Presets",
+		Folder = "spawnplatform",
+		CVars = CVars,
+		Options = {
+			default = defaults,
+			-- TODO: Maybe some other nice defaults?
+		},
+		MenuButton = 1,
+	})
 
 	do -- NPC Selector
 
@@ -193,14 +188,12 @@ function TOOL.BuildCPanel(CPanel)
 		AddControl(CPanel, "NPCWeaponSelecter", "weapon")
 
 		-- Skill select
-		AddControl(
-			CPanel, "Slider", "skill", {
-				-- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
-				Min = WEAPON_PROFICIENCY_POOR,
-				Max = WEAPON_PROFICIENCY_PERFECT,
-				Help = true,
-			}
-		)
+		AddControl(CPanel, "Slider", "skill", {
+			-- Rely on the fact that the WEAPON_PROFICIENCY enums are from 0 to 5
+			Min = WEAPON_PROFICIENCY_POOR,
+			Max = WEAPON_PROFICIENCY_PERFECT,
+			Help = true,
+		})
 
 	end
 
@@ -208,24 +201,17 @@ function TOOL.BuildCPanel(CPanel)
 		local CPanel = AddControl(CPanel, "ControlPanel", "panel_spawning")
 
 		-- Timer select
-		AddControl(
-			CPanel, "Slider", "delay",
-			{Type = "Float", Min = npcspawner.config.mindelay, Max = 60}
-		)
+		AddControl(CPanel, "Slider", "delay",
+           		{Type = "Float", Min = npcspawner.config.mindelay, Max = 60})
 		-- Maximum select
-		AddControl(
-			CPanel, "Slider", "maximum",
-			{Type = "Integer", Min = 1, Max = npcspawner.config.maxinplay}
-		)
+		AddControl(CPanel, "Slider", "maximum",
+           		{Type = "Integer", Min = 1, Max = npcspawner.config.maxinplay})
 		-- Timer Reduction
-		AddControl(
-			CPanel, "Slider", "decrease", {Type = "Float", Min = 0, Max = 2, Help = true}
-		)
+		AddControl(CPanel, "Slider", "decrease",
+           		{Type = "Float", Min = 0, Max = 2, Help = true})
 		-- Maximum Ever
-		AddControl(
-			CPanel, "Slider", "totallimit",
-			{Type = "Integer", Min = 0, Max = 100, Tooltip = true}
-		)
+		AddControl(CPanel, "Slider", "totallimit",
+           		{Type = "Integer", Min = 0, Max = 100, Tooltip = true})
 		-- Autoremove select
 		AddControl(CPanel, "Checkbox", "autoremove", {Tooltip = true})
 	end
@@ -233,14 +219,12 @@ function TOOL.BuildCPanel(CPanel)
 	do
 		local CPanel = AddControl(CPanel, "ControlPanel", "panel_activation")
 		-- Numpad on/off select
-		CPanel:AddControl(
-			"Numpad", { -- Someone always has to be special
-				Label = lang "keys.on",
-				Label2 = lang "keys.off",
-				Command = cvar "onkey",
-				Command2 = cvar "offkey",
-			}
-		)
+		CPanel:AddControl("Numpad", { -- Someone always has to be special
+			Label = lang "keys.on",
+			Label2 = lang "keys.off",
+			Command = cvar "onkey",
+			Command2 = cvar "offkey",
+		})
 		-- Toggleable select
 		AddControl(CPanel, "Checkbox", "toggleable", {})
 		-- Active select
@@ -249,26 +233,22 @@ function TOOL.BuildCPanel(CPanel)
 
 	do -- Positions
 
-		local CPanel = AddControl(
-			CPanel, "ControlPanel", "panel_positioning", {Closed = true}
-		)
+		local CPanel = AddControl(CPanel, "ControlPanel", "panel_positioning",
+                          		{Closed = true})
 		CPanel:Help(lang "positioning.help")
 		-- Nocollide
 		AddControl(CPanel, "Checkbox", "nocollide")
 		-- Spawnheight select
-		AddControl(
-			CPanel, "Slider", "spawnheight", {Type = "Float", Min = 8, Max = 128}
-		)
+		AddControl(CPanel, "Slider", "spawnheight",
+           		{Type = "Float", Min = 8, Max = 128})
 		-- Spawnradius select
-		AddControl(
-			CPanel, "Slider", "spawnradius", {Type = "Float", Min = 0, Max = 128}
-		)
+		AddControl(CPanel, "Slider", "spawnradius",
+           		{Type = "Float", Min = 0, Max = 128})
 
 	end
 	do -- Other
-		local CPanel = AddControl(
-			CPanel, "ControlPanel", "panel_other", {Closed = true}
-		)
+		local CPanel = AddControl(CPanel, "ControlPanel", "panel_other",
+                          		{Closed = true})
 
 		-- Healthmul select
 		AddControl(CPanel, "Slider", "healthmul", {Type = "Float", Min = 0.5, Max = 5})
@@ -282,17 +262,14 @@ function TOOL.BuildCPanel(CPanel)
 		-- Global Squad On/Off
 		AddControl(CPanel, "Checkbox", "customsquads")
 		-- Custom Squad Picker
-		AddControl(
-			CPanel, "Slider", "squadoverride", {Type = "Integer", Min = 1, Max = 50}
-		)
+		AddControl(CPanel, "Slider", "squadoverride",
+           		{Type = "Integer", Min = 1, Max = 50})
 
 		-- Legacy spawning system
 		AddControl(CPanel, "Checkbox", "oldspawning", {Help = true})
 
 		-- NPC Kill Value
-		AddControl(
-			CPanel, "Slider", "killvalue",
-			{Type = "Integer", Min = -1, Max = 1000, Help = true}
-		)
+		AddControl(CPanel, "Slider", "killvalue",
+           		{Type = "Integer", Min = -1, Max = 1000, Help = true})
 	end
 end

@@ -93,6 +93,5 @@ function MakeCrate(ply, pos, angles, scale, data)
 	ply:AddCleanup("props", ent)
 	return ent
 end
-duplicator.RegisterEntityClass(
-	"gmod_crate", MakeCrate, "Pos", "Ang", "Scale", "Data"
-)
+duplicator.RegisterEntityClass("gmod_crate", MakeCrate, "Pos", "Ang", "Scale",
+                               "Data")

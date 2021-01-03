@@ -53,33 +53,36 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 	if (WireLib) then
-		WireLib.CreateSpecialInputs(
-			self, {"FireOnce", "AutoFire"}, {"NORMAL", "NORMAL"},
-			{"Fire a single prop", "Fire repeatedly until released."}
-		)
-		WireLib.CreateSpecialOutputs(
-			self, {"ReadyToFire", "Fired", "AutoFiring", "LastBullet"},
-			{"NORMAL", "NORMAL", "NORMAL", "ENTITY"}, {
-				"Is the cannon ready to fire again?",
-				"Triggered every time the cannon fires.",
-				"Is the cannon currently autofiring?",
-				"The last prop fired",
-			}
-		)
+		WireLib.CreateSpecialInputs(self, {"FireOnce", "AutoFire"},
+                            		{"NORMAL", "NORMAL"}, {
+			"Fire a single prop",
+			"Fire repeatedly until released.",
+		})
+		WireLib.CreateSpecialOutputs(self, {
+			"ReadyToFire",
+			"Fired",
+			"AutoFiring",
+			"LastBullet",
+		}, {"NORMAL", "NORMAL", "NORMAL", "ENTITY"}, {
+			"Is the cannon ready to fire again?",
+			"Triggered every time the cannon fires.",
+			"Is the cannon currently autofiring?",
+			"The last prop fired",
+		})
 	end
 end
 
 function ENT:Setup(
 	fireForce,
-		cannonModel,
-		fireModel,
-		recoilAmount,
-		fireDelay,
-		killDelay,
-		explosivePower,
-		explosiveRadius,
-		fireEffect,
-		fireExplosives
+	cannonModel,
+	fireModel,
+	recoilAmount,
+	fireDelay,
+	killDelay,
+	explosivePower,
+	explosiveRadius,
+	fireEffect,
+	fireExplosives
 )
 	self:SetModel(cannonModel)
 	self.fireForce = fireForce
@@ -94,13 +97,10 @@ function ENT:Setup(
 	self.fireExplosives = fireExplosives
 
 	self:SetOverlayText(
-
-
-			"- Prop Cannon -\nFiring Force: " .. math.floor(fireForce) ..
-				", Fire Delay: " .. math.floor(fireDelay) .. (fireExplosives and
-				("\nExplosive Power:" .. math.floor(explosivePower) .. ", Explosive Radius:" ..
-					math.floor(explosiveRadius)) or "") .. "\nBullet Model: " .. fireModel
-	)
+		"- Prop Cannon -\nFiring Force: " .. math.floor(fireForce) .. ", Fire Delay: " ..
+			math.floor(fireDelay) .. (fireExplosives and
+			("\nExplosive Power:" .. math.floor(explosivePower) .. ", Explosive Radius:" ..
+				math.floor(explosiveRadius)) or "") .. "\nBullet Model: " .. fireModel)
 end
 
 function ENT:OnTakeDamage(dmginfo)

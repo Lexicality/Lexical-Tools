@@ -28,24 +28,19 @@ local function checkTrace(tr)
 end
 
 if (CLIENT) then
-	usermessage.Hook(
-		"FadingDoorHurrah!", function()
-			GAMEMODE:AddNotify("Fading door has been created!", NOTIFY_GENERIC, 10)
-			surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav")
-		end
-	)
+	usermessage.Hook("FadingDoorHurrah!", function()
+		GAMEMODE:AddNotify("Fading door has been created!", NOTIFY_GENERIC, 10)
+		surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav")
+	end)
 	language.Add("tool.fading_doors.name", "Fading Doors")
 	language.Add("tool.fading_doors.desc", "Makes anything into a fadable door")
-	language.Add(
-		"tool.fading_doors.0",
-		"Click on something to make it a fading door. Reload to set it back to normal"
-	)
+	language.Add("tool.fading_doors.0",
+             	"Click on something to make it a fading door. Reload to set it back to normal")
 	language.Add("Undone_fading_door", "Undone Fading Door")
 
 	function TOOL.BuildCPanel(panel)
-		panel:CheckBox(
-			"Reversed (Starts invisible, becomes solid)", "fading_doors_reversed"
-		)
+		panel:CheckBox("Reversed (Starts invisible, becomes solid)",
+               		"fading_doors_reversed")
 		panel:CheckBox("Toggle Active", "fading_doors_toggle")
 		panel:AddControl("Numpad", {Label = "Button", Command = "fading_doors_key"})
 	end
@@ -65,13 +60,11 @@ function TOOL:LeftClick(tr)
 	end
 	local ent = tr.Entity
 	local ply = self:GetOwner()
-	fading_doors.SetupDoor(
-		ply, ent, {
-			key = self:GetClientNumber("key"),
-			toggle = self:GetClientNumber("toggle") == 1,
-			reversed = self:GetClientNumber("reversed") == 1,
-		}
-	)
+	fading_doors.SetupDoor(ply, ent, {
+		key = self:GetClientNumber("key"),
+		toggle = self:GetClientNumber("toggle") == 1,
+		reversed = self:GetClientNumber("reversed") == 1,
+	})
 	undo.Create("fading_door")
 	undo.AddFunction(doUndo, ent)
 	undo.SetPlayer(ply)

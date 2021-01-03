@@ -56,11 +56,9 @@ _G.npcspawner = {
 		end
 	end,
 	recieve = function(name, callback)
-		net.Receive(
-			name, function(len, who)
-				callback(net.ReadTable(), who)
-			end
-		)
+		net.Receive(name, function(len, who)
+			callback(net.ReadTable(), who)
+		end)
 	end,
 	-- Default config
 	npcs = {},

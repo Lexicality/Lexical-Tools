@@ -102,8 +102,7 @@ function MakeMoneyPot(ply, pos, angles, model, data)
 		local old = scripted_ents.Get("gmod_wire_moneypot") and "yes" or "no"
 		error(
 			"Something's gone wrong! Debug: Allowed: " .. isa .. " Valid: " .. isv ..
-				" Exist Derived: " .. drp .. " Exist Base: " .. bas .. " Exist Old: " .. old
-		)
+				" Exist Derived: " .. drp .. " Exist Base: " .. bas .. " Exist Old: " .. old)
 	end
 
 	-- This sets it's own model by default, but if someone wants to override ..?
@@ -119,19 +118,15 @@ function MakeMoneyPot(ply, pos, angles, model, data)
 	return box
 end
 
-duplicator.RegisterEntityClass(
-	"darkrp_moneypot", MakeMoneyPot, "Pos", "Angle", "Model", "Data"
-)
-duplicator.RegisterEntityClass(
-	"gmod_wire_moneypot", MakeMoneyPot, "Pos", "Angle", "Model", "Data"
-)
+duplicator.RegisterEntityClass("darkrp_moneypot", MakeMoneyPot, "Pos", "Angle",
+                               "Model", "Data")
+duplicator.RegisterEntityClass("gmod_wire_moneypot", MakeMoneyPot, "Pos",
+                               "Angle", "Model", "Data")
 
 -- 2020-04-16 There's a bug in DarkRP at the moment where the pocket duplicates money.
 -- While that's being fixed, prevent people pocketing moneypots
-hook.Add(
-	"canPocket", "moneypot anti-dupe protection", function(ply, ent)
-		if (IsValid(ent) and ent:GetClass() == "darkrp_moneypot") then
-			return false
-		end
+hook.Add("canPocket", "moneypot anti-dupe protection", function(ply, ent)
+	if (IsValid(ent) and ent:GetClass() == "darkrp_moneypot") then
+		return false
 	end
-)
+end)

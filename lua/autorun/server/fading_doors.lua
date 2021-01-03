@@ -151,11 +151,9 @@ function fading_doors.Unfade(ent, force)
 		if (fadeEnd > curTime) then
 			-- Prevent the timer happening multiple times
 			ent._fade.mintimeTimer = true
-			timer.Simple(
-				fadeEnd - curTime, function()
-					unfadeTimer(ent)
-				end
-			)
+			timer.Simple(fadeEnd - curTime, function()
+				unfadeTimer(ent)
+			end)
 			return
 		end
 	end
@@ -439,13 +437,11 @@ local function entMod(ply, ent, data)
 	if matmod then
 		duplicator.EntityModifiers["material"](ply, ent, matmod)
 		ent.EntityMods["material"] = nil
-		timer.Simple(
-			0.1, function()
-				if IsValid(ent) then
-					ent.EntityMods["material"] = matmod
-				end
+		timer.Simple(0.1, function()
+			if IsValid(ent) then
+				ent.EntityMods["material"] = matmod
 			end
-		)
+		end)
 	end
 
 	fading_doors.SetupDoor(ply, ent, data)
@@ -458,9 +454,11 @@ duplicator.RegisterEntityModifier("Fading Door", entMod)
 --- @param data table
 local function legacyEntMod(ply, ent, data)
 	if not ent.EntityMods["Fading Door"] then
-		fading_doors.SetupDoor(
-			ply, ent, {key = data.Key, toggle = data.Toggle, reversed = data.Inverse}
-		)
+		fading_doors.SetupDoor(ply, ent, {
+			key = data.Key,
+			toggle = data.Toggle,
+			reversed = data.Inverse,
+		})
 	end
 	duplicator.ClearEntityModifier("FadingDoor")
 end

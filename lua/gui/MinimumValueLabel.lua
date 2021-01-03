@@ -24,9 +24,8 @@ function PANEL:OnConVarChange(min, val)
 	min = tonumber(min) or 0
 	val = tonumber(val) or 0
 	if (val < min) then
-		self:DoText(
-			string.format("This server's minimum %s is %d", self:GetCtrlName(), min)
-		)
+		self:DoText(string.format("This server's minimum %s is %d",
+                          		self:GetCtrlName(), min))
 	else
 		self:DoText("")
 	end
@@ -38,6 +37,5 @@ function PANEL:ControlValues(data)
 	self:HandleCVarChange()
 end
 
-derma.DefineControl(
-	"MinimumValueLabel", "Tell players about defined minima", PANEL, "NagLabel"
-)
+derma.DefineControl("MinimumValueLabel", "Tell players about defined minima",
+                    PANEL, "NagLabel")

@@ -73,10 +73,8 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	local phys = self:GetPhysicsObject()
 	if (not IsValid(phys)) then
-		ErrorNoHalt(
-			"No physics object for ", tostring(self), " using model ", self:GetModel(),
-			"?\n"
-		)
+		ErrorNoHalt("No physics object for ", tostring(self), " using model ",
+            		self:GetModel(), "?\n")
 	else
 		phys:Wake()
 		phys:EnableMotion(self:GetUnfrozen())
@@ -85,62 +83,50 @@ function ENT:Initialize()
 	-- Deal with stupid permaprop style libraries
 	self:SetNumSpawned(0)
 
-	self:CreateWireInputs(
+	self:CreateWireInputs({
+		{Name = "SpawnOne", Desc = "Spawn a weapon immediately"},
+		{Name = "RemoveCurrentWeapon", Desc = "Deletes the currently spawned weapon"},
 		{
-			{Name = "SpawnOne", Desc = "Spawn a weapon immediately"},
-			{Name = "RemoveCurrentWeapon", Desc = "Deletes the currently spawned weapon"},
-			{
-				Name = "SetWeaponClass",
-				Desc = "Picks the class of weapon to spawn",
-				Type = "String",
-			},
-			{Name = "SetDelay", Desc = "Sets the delay between spawns"},
-		}
-	)
+			Name = "SetWeaponClass",
+			Desc = "Picks the class of weapon to spawn",
+			Type = "String",
+		},
+		{Name = "SetDelay", Desc = "Sets the delay between spawns"},
+	})
 
-	self:CreateWireOutputs(
+	self:CreateWireOutputs({
 		{
-			{
-				Name = "CurrentWeapon",
-				Type = "Entity",
-				Desc = "The currently spawned weapon",
-			},
-			{Name = "NumSpawned", Desc = "Lifetime number of weapons spawned"},
-			{Name = "OnWeaponSpawned", Desc = "Triggered when a new weapon is spawned"},
-		}
-	)
+			Name = "CurrentWeapon",
+			Type = "Entity",
+			Desc = "The currently spawned weapon",
+		},
+		{Name = "NumSpawned", Desc = "Lifetime number of weapons spawned"},
+		{Name = "OnWeaponSpawned", Desc = "Triggered when a new weapon is spawned"},
+	})
 end
 
 function ENT:RegisterListeners()
-	self:NetworkVarNotify(
-		"Invisible", function(self, _, _, shouldNotDraw)
-			self:SetNoDraw(shouldNotDraw)
-		end
-	)
+	self:NetworkVarNotify("Invisible", function(self, _, _, shouldNotDraw)
+		self:SetNoDraw(shouldNotDraw)
+	end)
 
-	self:NetworkVarNotify(
-		"Unfrozen", function(self, _, _, shouldMove)
-			local phys = self:GetPhysicsObject()
-			if (IsValid(phys)) then
-				phys:EnableMotion(shouldMove)
-			end
+	self:NetworkVarNotify("Unfrozen", function(self, _, _, shouldMove)
+		local phys = self:GetPhysicsObject()
+		if (IsValid(phys)) then
+			phys:EnableMotion(shouldMove)
 		end
-	)
+	end)
 
-	self:NetworkVarNotify(
-		"Weapon", function(self, _, old, new)
-			if (new ~= old) then
-				self:RemoveWeapon(true)
-			end
+	self:NetworkVarNotify("Weapon", function(self, _, old, new)
+		if (new ~= old) then
+			self:RemoveWeapon(true)
 		end
-	)
+	end)
 
 	if (WireLib) then
-		self:NetworkVarNotify(
-			"NumSpawned", function(self, _, _, num)
-				self:TriggerWireOutput("NumSpawned", num)
-			end
-		)
+		self:NetworkVarNotify("NumSpawned", function(self, _, _, num)
+			self:TriggerWireOutput("NumSpawned", num)
+		end)
 	end
 end
 
