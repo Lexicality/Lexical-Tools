@@ -1,0 +1,13 @@
+{
+	"title": "Lexical Tools",
+	"type": "tool",
+	"tags": [],
+	"version": "1.0.0",
+	"include": [
+		"lua/autorun/client/lexical-tools.lua",
+		"resource/localization/*/lexical_tools.properties"
+	],
+	"versionables": [
+		"lexical-tools"
+	]
+}

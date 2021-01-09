@@ -9,6 +9,9 @@
 	],
 	"workshopid": 109905241,
 	"version": "1.3.0",
+	"import": [
+		"lexical_tools"
+	],
 	"include": [
 		"lua/entities/*_moneypot.lua",
 		"resource/localization/*/moneypot.properties",

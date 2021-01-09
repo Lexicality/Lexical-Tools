@@ -18,6 +18,7 @@
 		"lua/weapons/gmod_tool/stools/npc_spawnplatform.lua"
 	],
 	"import": [
+		"lexical_tools",
 		"base_lexentity"
 	],
 	"version": "3.2.2",
