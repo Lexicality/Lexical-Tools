@@ -30,7 +30,7 @@ function PANEL:Init()
 	-- All tab
 	local ctrl = vgui.Create("DListView")
 	ctrl:SetMultiSelect(false)
-	ctrl:AddColumn("#npcs")
+	ctrl:AddColumn("#npc")
 	ctrl:AddColumn("#category")
 
 	for nicename, data in pairs(npcs) do
@@ -54,7 +54,7 @@ function PANEL:Init()
 		-- Temp standin
 		local ctrl = vgui.Create("DListView")
 		ctrl:SetMultiSelect(false)
-		ctrl:AddColumn("#npcs")
+		ctrl:AddColumn("#npc")
 
 		for nicename, data in pairs(npcs) do
 			local line = ctrl:AddLine(data.Name)
