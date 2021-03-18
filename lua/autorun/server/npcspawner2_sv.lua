@@ -80,7 +80,7 @@ end)
 hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", syncConfig)
 
 if (not ConVarExists("sbox_maxspawnplatforms")) then
-	CreateConVar("sbox_maxspawnplatforms", 3)
+	CreateConVar("sbox_maxspawnplatforms", 10)
 end
 
 hook.Add("Initialize", "NPC Spawn Platforms L10n", function()
