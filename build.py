@@ -58,7 +58,7 @@ VALID_BUMPS = [
     "prerelease",
 ]
 
-TEXT_EXTENSIONS = [".lua"]
+TEXT_EXTENSIONS = [".lua", ".properties"]
 
 T = TypeVar("T")
 
