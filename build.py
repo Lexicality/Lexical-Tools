@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import argparse
 import itertools
 import json
@@ -7,13 +6,11 @@ import os
 import os.path
 import shutil
 import subprocess
+from collections.abc import Callable, Iterable, Iterator
 from glob import iglob
-from typing import Callable, Iterable, Iterator, List, Optional, Tuple, TypeVar, cast
+from typing import TypeVar, cast
 
 import semver
-
-# from typing import Any, Dict, List, Optional, cast
-# from mypy_extensions import TypedDict
 
 log = logging.getLogger(__name__)
 
@@ -68,7 +65,7 @@ class Addon:
     datafile: str
     data: AddonData
     version: semver.SemVer
-    sub_addons: List["Addon"]
+    sub_addons: list[Addon]
 
     def __init__(self, name: str) -> None:
         self.name = name
@@ -83,13 +80,13 @@ class Addon:
         # Throw an error if the file doesn't exist
         os.stat(self.datafile)
 
-        with open(self.datafile, mode="rt") as f:
+        with open(self.datafile) as f:
             self.data = cast(AddonData, json.load(f))
 
     def _load_subaddons(self) -> None:
         self.sub_addons = [Addon(name) for name in self.data.get("import", [])]
 
-    def _listiculate(self, action: Callable[["Addon"], Iterable[T]]) -> Iterator[T]:
+    def _listiculate(self, action: Callable[[Addon], Iterable[T]]) -> Iterator[T]:
         return itertools.chain(
             action(self),
             itertools.chain.from_iterable(
@@ -97,12 +94,12 @@ class Addon:
             ),
         )
 
-    def _get_versionables(self) -> Iterator[Tuple[str, str]]:
+    def _get_versionables(self) -> Iterator[tuple[str, str]]:
         return self._listiculate(
             lambda addon: (
                 (name, f"{name}_v{addon.version.format().replace('.', '_')}")
                 for name in addon.data.get("versionables", [])
-            )
+            ),
         )
         pass
 
@@ -138,7 +135,7 @@ class Addon:
             if versionables and ext in TEXT_EXTENSIONS:
                 log.debug("Copying %s to %s via sed", source, dest)
 
-                with open(source, "r") as f:
+                with open(source) as f:
                     filedata = f.read()
 
                 for old, new in versionables:
@@ -182,10 +179,10 @@ class Addon:
             res.check_returncode()
 
     def write_data(self) -> None:
-        with open(self.datafile, mode="wt") as f:
+        with open(self.datafile, mode="w") as f:
             json.dump(self.data, f, indent="\t")
 
-    def bump_version(self, release: str, identifier: Optional[str] = None) -> None:
+    def bump_version(self, release: str, identifier: str | None = None) -> None:
         log.info("%s: Building version by %s", self.name, release)
         self.version.inc(release, identifier)
         self.data["version"] = self.version.format()
@@ -246,7 +243,7 @@ def get_args() -> argparse.Namespace:
 def get_changes() -> str:
     lines = []
 
-    print("Enter changes, . to stop")
+    print("Enter changes, . to stop")  # noqa: T201
     while True:
         try:
             line = input().strip()
@@ -265,7 +262,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
 
     args = get_args()
-    logging.debug("Doing a %s", args.action)
+    log.debug("Doing a %s", args.action)
 
     addon = Addon(args.addon)
 

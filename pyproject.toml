@@ -4,3 +4,24 @@ version = "1.0.0"
 description = "Add your description here"
 requires-python = "==3.14.*"
 dependencies = ["node-semver==0.4.2"]
+
+[dependency-groups]
+lint = ["ruff==0.15.0"]
+
+[tool.ruff.lint]
+extend-select = [
+    "COM", # flake8-commas
+    "DTZ", # flake8-datetimez
+    "FA",  # flake8-future-annotations
+    "G",   # flake8-logging-format
+    "I",   # isort
+    "ICN", # flake8-import-conventions
+    "ISC", # flake8-implicit-str-concat
+    "LOG", # flake8-logging
+    "T10", # flake8-debugger
+    "T20", # flake8-print
+    "UP",  # pyupgrade
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
