@@ -1,0 +1,23 @@
+version = 1
+revision = 3
+requires-python = "==3.14.*"
+
+[[package]]
+name = "lexical-tools"
+version = "1.0.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "node-semver" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "node-semver", specifier = "==0.4.2" }]
+
+[[package]]
+name = "node-semver"
+version = "0.4.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/05/aa1383004064d81a3d3a84b29f8cbd0fc7103487cd75821a052b5a145fd2/node-semver-0.4.2.tar.gz", hash = "sha256:e94f69c0da4d2d695627ba0a035755d97a0b821dc7f64394cfbf68c029b2315c", size = 10718, upload-time = "2018-09-28T18:11:31.314Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3b/24/8989022cbea8792931c21482f0caa2afba5f155921ebaf134bbfb121b11c/node_semver-0.4.2-py3-none-any.whl", hash = "sha256:02e8324bdaa8b1cf64a2b20949e8b47a874b68f9022b6dc3fdaf694ee6a4f92b", size = 10658, upload-time = "2018-09-28T18:11:29.784Z" },
+]
