@@ -35,10 +35,10 @@ local reverseLookupCache
 local function primeLookupCache()
 	reverseLookupCache = {}
 	for _, tab in pairs(list.Get("NPCUsableWeapons")) do
-		reverseLookupCache[tab.class] = language.GetPhrase(tab.title)
+		reverseLookupCache[tab.class] = language.GetPhrase(tab.title or tab.class)
 	end
 	for className, tab in pairs(list.Get("NPC")) do
-		reverseLookupCache[className] = language.GetPhrase(tab.Name)
+		reverseLookupCache[className] = language.GetPhrase(tab.Name or className)
 	end
 	reverseLookupCache["weapon_default"] = language.GetPhrase(
                                        		"menubar.npcs.defaultweapon")
