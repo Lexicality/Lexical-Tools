@@ -15,7 +15,7 @@
     limitations under the License.
 ]]
 if not WireLib or WireLib.AddInputs then
-	return;
+	return
 end
 
 --[[
