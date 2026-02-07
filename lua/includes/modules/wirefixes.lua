@@ -13,7 +13,7 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-]] --
+]]
 if not WireLib or WireLib.AddInputs then
 	return;
 end
@@ -23,7 +23,7 @@ end
 	Adds functions to non-destructively add or remove
 	 Wire inputs and outputs to and from an entity.
 
-]] --
+]]
 local HasPorts = WireLib.HasPorts
 
 local function CreateKeys(table)

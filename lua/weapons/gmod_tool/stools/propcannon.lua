@@ -13,7 +13,7 @@
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
-]] --
+]]
 TOOL.Category = "Lexical Tools"
 TOOL.Name = "#Prop Cannon v2"
 
@@ -213,7 +213,7 @@ function TOOL:Think()
 		else
 			MsgN(" coz it's invalid.")
 		end
-		]] --
+		]]
 		self:MakeGhostEntity(model, vector_origin, Angle())
 	end
 	self:UpdateGhost(self.GhostEntity, self:GetOwner())
