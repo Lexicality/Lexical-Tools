@@ -16,7 +16,7 @@
 ]]
 local PANEL = {}
 
-DEFINE_BASECLASS "DComboBox"
+DEFINE_BASECLASS("DComboBox")
 
 function PANEL:Init()
 	-- Big brained sorting hack

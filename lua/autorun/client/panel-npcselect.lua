@@ -16,7 +16,7 @@
 ]]
 local PANEL = {}
 
-DEFINE_BASECLASS "DPropertySheet"
+DEFINE_BASECLASS("DPropertySheet")
 
 AccessorFunc(PANEL, "m_ConVar", "ConVar")
 

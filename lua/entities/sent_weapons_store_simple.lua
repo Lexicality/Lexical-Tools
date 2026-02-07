@@ -16,7 +16,7 @@ ENT.Spawnable = true
 ENT.AdminOnly = true
 ENT.Editable = true
 
-DEFINE_BASECLASS "base_lexentity"
+DEFINE_BASECLASS("base_lexentity")
 
 duplicator.Allow("sent_weapons_store_simple")
 

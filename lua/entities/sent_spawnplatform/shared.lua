@@ -23,7 +23,7 @@ ENT.Spawnable = false
 ENT.AdminOnly = false
 ENT.CountKey = "Spawnplatforms"
 
-DEFINE_BASECLASS "base_lexentity"
+DEFINE_BASECLASS("base_lexentity")
 
 local function StartDelayCustomSet(self, value)
 	value = math.max(value, npcspawner.config.mindelay)
