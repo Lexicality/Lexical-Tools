@@ -37,9 +37,9 @@ if (CLIENT) then
 	end)
 	language.Add("Tool_cloaking_name", "Cloaking")
 	language.Add("Tool_cloaking_desc",
-             	"Allows you to turn things invisible at the touch of a button")
+		"Allows you to turn things invisible at the touch of a button")
 	language.Add("Tool_cloaking_0",
-             	"Click on something to make it a cloakable. Reload to remove cloaking from something.")
+		"Click on something to make it a cloakable. Reload to remove cloaking from something.")
 	language.Add("Undone_cloaking", "Undone Cloaking")
 
 	list.Set("CloakingMaterials", "Heatwave", "sprites/heatwave")
@@ -58,7 +58,7 @@ if (CLIENT) then
 			options[name] = {cloaking_material = material}
 		end
 		panel:AddControl("Listbox",
-                 		{Label = "Material:", Height = 120, Options = options})
+			{Label = "Material:", Height = 120, Options = options})
 	end
 
 	TOOL.LeftClick = checkTrace
@@ -174,7 +174,7 @@ local function dooEet(ply, ent, stuff)
 		if (WireLib) then
 			WireLib.AddInputs(ent, {"Cloak"})
 			WireLib.AddOutputs(ent, {"CloakActive"},
-                   			{"If this entity is currently cloaked"})
+				{"If this entity is currently cloaked"})
 			ent.cloakTriggerInput = ent.cloakTriggerInput or ent.TriggerInput
 			ent.TriggerInput = TriggerInput
 			if (not (ent.IsWire or ent.addedWireSupport)) then -- Dupe Support

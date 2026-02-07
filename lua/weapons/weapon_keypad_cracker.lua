@@ -77,7 +77,7 @@ end
 
 function SWEP:IsValidTrace(tr)
 	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 50 and
-       		self:IsTargetEntity(tr.Entity)
+		       self:IsTargetEntity(tr.Entity)
 end
 
 function SWEP:ResetState()
@@ -423,7 +423,7 @@ function SWEP:ViewModelDrawn(vm)
 
 	-- Screen
 	local screenpos = pos + ang:Forward() * 1.8 + ang:Right() * -1.3 + ang:Up() *
-                  		2.70
+		                  2.70
 
 	cam.Start3D2D(screenpos, ang, 0.01)
 	self:DrawScreen()
@@ -437,7 +437,7 @@ function SWEP:ViewModelDrawn(vm)
 	-- Blinkenlite
 	if (self._Blink) then
 		local spritepos = pos + ang:Forward() * 1.59 + ang:Right() * 0.26 + ang:Up() *
-                  			2.86
+			                  2.86
 
 		render.SetMaterial(sprmat)
 		cam.IgnoreZ(true)

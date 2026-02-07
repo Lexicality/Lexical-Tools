@@ -57,7 +57,7 @@ function ENT:TriggerInput(name, val)
 	end
 
 	npcspawner.debug2(self, "has recieved wire input with name", name, "and value",
-                  	val)
+		val)
 	if (name == "SetActive") then
 		if (val == 0) then
 			self:TurnOff()

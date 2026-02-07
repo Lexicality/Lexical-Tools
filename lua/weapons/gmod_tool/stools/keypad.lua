@@ -56,7 +56,7 @@ if (CLIENT) then
 	language.Add("tool.keypad.name", "Keypad v2")
 	language.Add("tool.keypad.desc", "Secure your contraptions with a password")
 	language.Add("tool.keypad.0",
-             	"Left click to spawn a Keypad. Right click to update an existing one")
+		"Left click to spawn a Keypad. Right click to update an existing one")
 
 	language.Add("Undone_Keypad", "Undone Keypad")
 	language.Add("Cleanup_keypads", "Keypads")
@@ -79,13 +79,13 @@ function TOOL:CheckSettings()
 		local num = self:GetClientNumber(key)
 		if (not num) then
 			ply:ChatPrint("Convar " .. key .. " value '" .. self:GetClientInfo(key) ..
-              				"' isn't a number! What did you do?")
+				              "' isn't a number! What did you do?")
 			return false
 		end
 	end
 	-- Some people are silly
 	local k1, k2 = self:GetClientNumber("access_numpad_key"),
-               	self:GetClientNumber("denied_numpad_key")
+		self:GetClientNumber("denied_numpad_key")
 	if (k1 and k2 and k1 == k2 and k1 > 0) then
 		ply:ChatPrint("Your Access key is the same as your Denied key!")
 		return false
@@ -192,7 +192,7 @@ local function subpanel(CPanel, kind, data)
 	end
 	do
 		local CPanel = CPanel:AddControl("ControlPanel",
-                                 		{Label = "Advanced", Closed = true})
+			{Label = "Advanced", Closed = true})
 		if (WireLib) then
 			CPanel:TextEntry("Wire Default Value", k "wire_value_off"):SetNumeric(true)
 			CPanel:CheckBox("Toggle Wire Output", k "wire_toggle")

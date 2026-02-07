@@ -24,7 +24,7 @@ TOOL.ClientConVar["reversed"] = "0"
 
 local function checkTrace(tr)
 	return IsValid(tr.Entity) and
-       		not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle())
+		       not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle())
 end
 
 if (CLIENT) then
@@ -35,12 +35,12 @@ if (CLIENT) then
 	language.Add("tool.fading_doors.name", "Fading Doors")
 	language.Add("tool.fading_doors.desc", "Makes anything into a fadable door")
 	language.Add("tool.fading_doors.0",
-             	"Click on something to make it a fading door. Reload to set it back to normal")
+		"Click on something to make it a fading door. Reload to set it back to normal")
 	language.Add("Undone_fading_door", "Undone Fading Door")
 
 	function TOOL.BuildCPanel(panel)
 		panel:CheckBox("Reversed (Starts invisible, becomes solid)",
-               		"fading_doors_reversed")
+			"fading_doors_reversed")
 		panel:CheckBox("Toggle Active", "fading_doors_toggle")
 		panel:AddControl("Numpad", {Label = "Button", Command = "fading_doors_key"})
 	end

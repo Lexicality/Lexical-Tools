@@ -20,7 +20,7 @@ DEFINE_BASECLASS(ENT.Base)
 duplicator.RegisterEntityClass("sent_spawnplatform", function(ply, data)
 	if (npcspawner.config.adminonly == 1 and IsValid(ply) and not ply:IsAdmin()) then
 		npcspawner.debug(ply,
-                 		"tried to duplicate a platform in admin mode but isn't an admin!")
+			"tried to duplicate a platform in admin mode but isn't an admin!")
 		return nil
 	end
 
@@ -70,7 +70,7 @@ function ENT:PostEntityPaste(ply, _, entList)
 	local lastNPC, lastID = nil, -1
 
 	npcspawner.debug2("expecting to find", self._saveRestore.numSpawned,
-                  	"NPCs in the entlist")
+		"NPCs in the entlist")
 	for _, ent in pairs(entList) do
 		-- Because not all entitymods may have been applied by this point, we need to check them manually
 		local tab = ent.EntityMods and ent.EntityMods[self.__MODIFIER_ID]
@@ -109,7 +109,7 @@ function ENT:PostEntityPaste(ply, _, entList)
 
 	-- Restore LastSpawn so saves are consistent
 	npcspawner.debug2("Setting LastSpawn to be", self._saveRestore.lastSpawn,
-                  	"seconds in the past")
+		"seconds in the past")
 	self.LastSpawn = self._saveRestore.lastSpawn + CurTime()
 
 	self._saveRestore = nil

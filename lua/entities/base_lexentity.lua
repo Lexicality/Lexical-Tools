@@ -287,7 +287,7 @@ function ENT:GetValidPhysicsObject()
 		local mdl = self:GetModel()
 		self:Remove()
 		error("No Physics Object available for entity '" .. self.ClassName ..
-      			"'! Do you have the model '" .. mdl .. "' installed?", 2)
+			      "'! Do you have the model '" .. mdl .. "' installed?", 2)
 	end
 	return phys
 end

@@ -81,4 +81,4 @@ end
 -- TODO: Think hook!
 
 derma.DefineControl("NPCSpawnSelecter", "Selects a NPC fo' spawnin'", PANEL,
-                    "DPropertySheet")
+	"DPropertySheet")

@@ -387,11 +387,10 @@ do
 		local rep_length = math.max(kvs.rep_length, cvar_min_length:GetFloat())
 
 		local total_time = delay + (num_reps * rep_length) +
-                   			((num_reps - 1) * rep_delay)
+			                   ((num_reps - 1) * rep_delay)
 		-- Show the "Access XXX" screen for quarter of a second after all effects finish
 		local recharge_time = math.min(math.max(total_time + 0.25,
-                                        		cvar_min_recharge:GetFloat()),
-                               		cvar_max_recharge:GetFloat())
+			cvar_min_recharge:GetFloat()), cvar_max_recharge:GetFloat())
 		timer.Simple(recharge_time, function()
 			ResetKeypad(self)
 		end)
@@ -565,9 +564,9 @@ local w2m = {
 }
 
 duplicator.RegisterEntityModifier("keypad_password_passthrough",
-                                  function(ply, ent, data)
-	ent:SetData(data)
-end)
+	function(ply, ent, data)
+		ent:SetData(data)
+	end)
 
 function ENT:SetData(data)
 	for key, kv in pairs(w2m) do
@@ -619,7 +618,7 @@ function ENT:PreEntityCopy()
 	end
 	self.KeypadData = self:GetData()
 	duplicator.StoreEntityModifier(self, "keypad_password_passthrough",
-                               	self.KeypadData)
+		self.KeypadData)
 end
 
 function ENT:PostEntityCopy()

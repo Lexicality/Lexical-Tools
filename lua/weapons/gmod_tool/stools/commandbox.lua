@@ -76,7 +76,7 @@ list.Set("CommandboxModels", "models/props_lab/monitor02.mdl", {})
 
 local function canTool(tr)
 	return tr.Hit and tr.HitWorld or
-       		(IsValid(tr.Entity) and not tr.Entity:IsPlayer())
+		       (IsValid(tr.Entity) and not tr.Entity:IsPlayer())
 end
 
 if (CLIENT) then
@@ -99,7 +99,7 @@ if (CLIENT) then
 
 	language.Add("Tool_commandbox_name", "Command Box Tool")
 	language.Add("Tool_commandbox_desc",
-             	"Allows you to assign concommands to numpad keys.")
+		"Allows you to assign concommands to numpad keys.")
 	language.Add("Tool_commandbox_0", "Left click to spawn a Command Box")
 
 	-- Other
@@ -122,7 +122,7 @@ if (CLIENT) then
 			Models = list.Get("CommandboxModels"),
 		})
 		cp:AddControl("Numpad",
-              		{Label = "Key:", Command = "commandbox_key", ButtonSize = 22})
+			{Label = "Key:", Command = "commandbox_key", ButtonSize = 22})
 		cp:AddControl("TextBox", {
 			Label = "Command",
 			MaxLength = "255",

@@ -16,5 +16,5 @@
 ]] --
 hook.Add("AddToolMenuCategories", "Lexical Tools", function()
 	spawnmenu.AddToolCategory("Main", "Lexical Tools",
-                          	"#spawnmenu.tools.lexical_tools")
+		"#spawnmenu.tools.lexical_tools")
 end)

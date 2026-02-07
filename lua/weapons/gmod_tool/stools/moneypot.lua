@@ -50,7 +50,7 @@ function TOOL:Think()
 	local ent = self.GhostEntity
 	if (not IsValid(ent)) then
 		self:MakeGhostEntity("models/props_lab/powerbox02b.mdl", vector_origin,
-                     		Angle())
+			Angle())
 	end
 	self:UpdateGhost(self.GhostEntity, self:GetOwner())
 end
@@ -67,7 +67,7 @@ if (CLIENT) then
 		cp:AddControl("Header", {Description = "#tool.moneypot.help"})
 
 		cp:AddControl("Checkbox",
-              		{Label = "#tool.moneypot.weld", Command = "moneypot_weld"})
+			{Label = "#tool.moneypot.weld", Command = "moneypot_weld"})
 	end
 	return
 end
@@ -85,7 +85,7 @@ function TOOL:LeftClick(tr)
 	angles.pitch = angles.pitch + 90
 
 	local box = MakeMoneyPot(ply, tr.HitPos, angles,
-                         	"models/props_lab/powerbox02b.mdl")
+		"models/props_lab/powerbox02b.mdl")
 	if (not box) then
 		return false
 	end

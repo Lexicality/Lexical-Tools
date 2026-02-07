@@ -21,7 +21,7 @@ TOOL.ClientConVar["scale"] = "1"
 if (CLIENT) then
 	language.Add("Tool_crate_name", "Resizable Crates")
 	language.Add("Tool_crate_desc",
-             	"Creates a crate of the speicified size with full collisions")
+		"Creates a crate of the speicified size with full collisions")
 	language.Add("Tool_crate_0", "Left click to spawn a Crate")
 	language.Add("Undone_crate", "Undone Crate")
 	language.Add("gmod_crate", "Crate")

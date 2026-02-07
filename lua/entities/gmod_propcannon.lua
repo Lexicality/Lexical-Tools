@@ -54,10 +54,10 @@ function ENT:Initialize()
 	end
 	if (WireLib) then
 		WireLib.CreateSpecialInputs(self, {"FireOnce", "AutoFire"},
-                            		{"NORMAL", "NORMAL"}, {
-			"Fire a single prop",
-			"Fire repeatedly until released.",
-		})
+			{"NORMAL", "NORMAL"}, {
+				"Fire a single prop",
+				"Fire repeatedly until released.",
+			})
 		WireLib.CreateSpecialOutputs(self, {
 			"ReadyToFire",
 			"Fired",

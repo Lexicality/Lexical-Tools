@@ -74,7 +74,7 @@ function ENT:Initialize()
 	local phys = self:GetPhysicsObject()
 	if (not IsValid(phys)) then
 		ErrorNoHalt("No physics object for ", tostring(self), " using model ",
-            		self:GetModel(), "?\n")
+			self:GetModel(), "?\n")
 	else
 		phys:Wake()
 		phys:EnableMotion(self:GetUnfrozen())

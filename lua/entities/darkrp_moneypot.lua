@@ -119,9 +119,9 @@ function MakeMoneyPot(ply, pos, angles, model, data)
 end
 
 duplicator.RegisterEntityClass("darkrp_moneypot", MakeMoneyPot, "Pos", "Angle",
-                               "Model", "Data")
+	"Model", "Data")
 duplicator.RegisterEntityClass("gmod_wire_moneypot", MakeMoneyPot, "Pos",
-                               "Angle", "Model", "Data")
+	"Angle", "Model", "Data")
 
 -- 2020-04-16 There's a bug in DarkRP at the moment where the pocket duplicates money.
 -- While that's being fixed, prevent people pocketing moneypots

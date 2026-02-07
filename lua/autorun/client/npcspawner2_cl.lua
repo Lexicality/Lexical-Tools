@@ -107,7 +107,7 @@ local function adminOptions(panel)
 	})
 
 	local dzpanel = panel:AddControl("ControlPanel",
-                                 	{Label = lang("dangerzone"), Closed = true})
+		{Label = lang("dangerzone"), Closed = true})
 
 	dzpanel:AddControl("CheckBox", {
 		Label = lang("sanity"),
@@ -132,9 +132,7 @@ end
 
 hook.Add("PopulateToolMenu", "NPCSpawner Options", function()
 	spawnmenu.AddToolMenuOption("Utilities", "User", "NPC Spawn Platforms User",
-                            	"#spawnmenu.utilities.spawnplatform", "", "",
-                            	clientOptions)
+		"#spawnmenu.utilities.spawnplatform", "", "", clientOptions)
 	spawnmenu.AddToolMenuOption("Utilities", "Admin", "NPC Spawn Platforms Admin",
-                            	"#spawnmenu.utilities.spawnplatform", "", "",
-                            	adminOptions)
+		"#spawnmenu.utilities.spawnplatform", "", "", adminOptions)
 end)

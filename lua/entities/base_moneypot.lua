@@ -53,7 +53,7 @@ if (CLIENT) then
 	-- Sandbox
 	function ENT:GetOverlayText()
 		local txt = string.format(language.GetPhrase("tool.moneypot.overlay"),
-                          		self:FormatMoney(self:GetMoney()))
+			self:FormatMoney(self:GetMoney()))
 
 		if (game.SinglePlayer()) then
 			return txt
@@ -68,7 +68,7 @@ if (CLIENT) then
 	function ENT:GetOverlayData()
 		return {
 			txt = string.format(language.GetPhrase("tool.moneypot.overlay"),
-                    			self:FormatMoney(self:GetMoney())),
+				self:FormatMoney(self:GetMoney())),
 		}
 	end
 
@@ -130,7 +130,7 @@ function ENT:Initialize()
 		local mdl = self:GetModel()
 		self:Remove()
 		error("Entity of type " .. self.ClassName ..
-      			" created without a physobj! (Model: " .. mdl .. ")")
+			      " created without a physobj! (Model: " .. mdl .. ")")
 	end
 	phys:Wake()
 end
@@ -164,8 +164,8 @@ end
 
 function ENT:IsGoodMoneyEntity(ent)
 	return IsValid(ent) and self:IsMoneyEntity(ent) and
-       		not self:IsMoneyEntityInvalid(ent) and (ent.MoneyPotPause or 0) <
-       		CurTime()
+		       not self:IsMoneyEntityInvalid(ent) and (ent.MoneyPotPause or 0) <
+		       CurTime()
 end
 
 function ENT:StartTouch(ent)
@@ -216,7 +216,7 @@ function ENT:AddMoney(amount)
 end
 
 local cvar_delay = CreateConVar("moneypot_spawn_delay", 1, FCVAR_ARCHIVE,
-                                "How long in seconds to wait before spawning money")
+	"How long in seconds to wait before spawning money")
 function ENT:DelayedSpawn(amount)
 	amount = math.Clamp(amount, 0, self:GetMoney())
 	if (amount == 0) then

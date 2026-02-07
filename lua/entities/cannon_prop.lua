@@ -64,7 +64,7 @@ function ENT:Explode()
 	effectData:SetScale(1)
 	util.Effect("Explosion", effectData)
 	util.BlastDamage(self, self.Owner, pos, self.explosiveRadius,
-                 	self.explosivePower)
+		self.explosivePower)
 	self.exploded = true
 	self:Remove()
 end

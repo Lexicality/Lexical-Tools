@@ -42,5 +42,4 @@ function PANEL:OnRemove()
 end
 
 derma.DefineControl("NagLabel",
-                    "A label for displaying dire news on cvar changes", PANEL,
-                    "DLabel")
+	"A label for displaying dire news on cvar changes", PANEL, "DLabel")

@@ -67,7 +67,7 @@ function ENT:Initialize()
 	local phys = self:GetPhysicsObject()
 	if (not IsValid(phys)) then
 		ErrorNoHalt("No physics object for ", tostring(self), " using model ",
-            		self:GetModel(), "?\n")
+			self:GetModel(), "?\n")
 	elseif (self:GetFrozen()) then
 		phys:EnableMotion(false)
 	else
@@ -89,8 +89,8 @@ end
 
 function ENT:CanSpawnNPC()
 	return (self:IsActive() and self:IsOwnerAllowed() and self.Spawned <
-       		self:GetMaxNPCs() and (self.LastSpawn + self:GetSpawnDelay()) <=
-       		CurTime())
+		       self:GetMaxNPCs() and (self.LastSpawn + self:GetSpawnDelay()) <=
+		       CurTime())
 end
 
 function ENT:OrentationThink()
@@ -219,8 +219,8 @@ function ENT:AcceptInput(name, activator, called, value)
 	end
 
 	npcspawner.debug2(self, "has just had their", name, "triggered by",
-                  	tostring(called), "which was caused by", tostring(activator),
-                  	"and was passed", value)
+		tostring(called), "which was caused by", tostring(activator),
+		"and was passed", value)
 
 	if (name == "TurnOn") then
 		self:TurnOn()

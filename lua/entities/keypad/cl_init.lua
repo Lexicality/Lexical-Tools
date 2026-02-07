@@ -19,12 +19,12 @@ DEFINE_BASECLASS "base_lexentity"
 include("shared.lua")
 
 surface.CreateFont("Keypad Key",
-                   {font = "Trebuchet MS", size = 18, weight = 700})
+	{font = "Trebuchet MS", size = 18, weight = 700})
 surface.CreateFont("Keypad Secure Input", {font = "Lucida Console", size = 34})
 surface.CreateFont("Keypad Input", {font = "Lucida Console", size = 34})
 surface.CreateFont("Keypad Input Long", {font = "Lucida Console", size = 26})
 surface.CreateFont("Keypad Message",
-                   {font = "Lucida Console", size = 19, weight = 600})
+	{font = "Lucida Console", size = 19, weight = 600})
 
 local keys = {}
 do
@@ -44,7 +44,7 @@ do
 	for j = 2, 0, -1 do
 		for i = 0, 2 do
 			keys[key] = CreateKeyTab(x + i * offset, y + j * offset, size, size,
-                         			tostring(key))
+				tostring(key))
 			key = key + 1
 		end
 	end
@@ -235,7 +235,7 @@ function ENT:Draw()
 	end
 
 	local pos = self:GetPos() + (self:GetForward() * 1.02) +
-            		(self:GetRight() * 2.75) + (self:GetUp() * 5.25)
+		            (self:GetRight() * 2.75) + (self:GetUp() * 5.25)
 	local ang = self:GetAngles()
 
 	ang:RotateAroundAxis(ang:Right(), -90)

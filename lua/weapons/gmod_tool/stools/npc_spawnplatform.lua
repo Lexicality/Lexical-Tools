@@ -69,7 +69,7 @@ function TOOL:LeftClick(trace)
 				"The server admin has disabled this STool for non-admins!", NOTIFY_ERROR, 5)
 		end
 		npcspawner.debug2(owner,
-                  		"has tried to use the STool in admin mode and isn't an admin!")
+			"has tried to use the STool in admin mode and isn't an admin!")
 		return false
 	end
 	npcspawner.debug2(owner, "has left clicked the STool.")
@@ -80,7 +80,7 @@ function TOOL:LeftClick(trace)
 	elseif (trace.Entity:GetClass() == "sent_spawnplatform") then
 		self:SetKVs(trace.Entity)
 		npcspawner.debug(owner, "has applied his settings to an existing platform:",
-                 		trace.Entity)
+			trace.Entity)
 		return true
 	end
 	local ent = ents.Create("sent_spawnplatform")
@@ -202,16 +202,16 @@ function TOOL.BuildCPanel(CPanel)
 
 		-- Timer select
 		AddControl(CPanel, "Slider", "delay",
-           		{Type = "Float", Min = npcspawner.config.mindelay, Max = 60})
+			{Type = "Float", Min = npcspawner.config.mindelay, Max = 60})
 		-- Maximum select
 		AddControl(CPanel, "Slider", "maximum",
-           		{Type = "Integer", Min = 1, Max = npcspawner.config.maxinplay})
+			{Type = "Integer", Min = 1, Max = npcspawner.config.maxinplay})
 		-- Timer Reduction
 		AddControl(CPanel, "Slider", "decrease",
-           		{Type = "Float", Min = 0, Max = 2, Help = true})
+			{Type = "Float", Min = 0, Max = 2, Help = true})
 		-- Maximum Ever
 		AddControl(CPanel, "Slider", "totallimit",
-           		{Type = "Integer", Min = 0, Max = 100, Tooltip = true})
+			{Type = "Integer", Min = 0, Max = 100, Tooltip = true})
 		-- Autoremove select
 		AddControl(CPanel, "Checkbox", "autoremove", {Tooltip = true})
 	end
@@ -234,21 +234,21 @@ function TOOL.BuildCPanel(CPanel)
 	do -- Positions
 
 		local CPanel = AddControl(CPanel, "ControlPanel", "panel_positioning",
-                          		{Closed = true})
+			{Closed = true})
 		CPanel:Help(lang "positioning.help")
 		-- Nocollide
 		AddControl(CPanel, "Checkbox", "nocollide")
 		-- Spawnheight select
 		AddControl(CPanel, "Slider", "spawnheight",
-           		{Type = "Float", Min = 8, Max = 128})
+			{Type = "Float", Min = 8, Max = 128})
 		-- Spawnradius select
 		AddControl(CPanel, "Slider", "spawnradius",
-           		{Type = "Float", Min = 0, Max = 128})
+			{Type = "Float", Min = 0, Max = 128})
 
 	end
 	do -- Other
 		local CPanel = AddControl(CPanel, "ControlPanel", "panel_other",
-                          		{Closed = true})
+			{Closed = true})
 
 		-- Healthmul select
 		AddControl(CPanel, "Slider", "healthmul", {Type = "Float", Min = 0.5, Max = 5})
@@ -263,13 +263,13 @@ function TOOL.BuildCPanel(CPanel)
 		AddControl(CPanel, "Checkbox", "customsquads")
 		-- Custom Squad Picker
 		AddControl(CPanel, "Slider", "squadoverride",
-           		{Type = "Integer", Min = 1, Max = 50})
+			{Type = "Integer", Min = 1, Max = 50})
 
 		-- Legacy spawning system
 		AddControl(CPanel, "Checkbox", "oldspawning", {Help = true})
 
 		-- NPC Kill Value
 		AddControl(CPanel, "Slider", "killvalue",
-           		{Type = "Integer", Min = -1, Max = 1000, Help = true})
+			{Type = "Integer", Min = -1, Max = 1000, Help = true})
 	end
 end
