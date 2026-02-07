@@ -18,13 +18,14 @@ DEFINE_BASECLASS("base_lexentity")
 
 include("shared.lua")
 
-surface.CreateFont("Keypad Key",
-	{font = "Trebuchet MS", size = 18, weight = 700})
-surface.CreateFont("Keypad Secure Input", {font = "Lucida Console", size = 34})
-surface.CreateFont("Keypad Input", {font = "Lucida Console", size = 34})
-surface.CreateFont("Keypad Input Long", {font = "Lucida Console", size = 26})
-surface.CreateFont("Keypad Message",
-	{font = "Lucida Console", size = 19, weight = 600})
+surface.CreateFont("Keypad Key", { font = "Trebuchet MS", size = 18, weight = 700 })
+surface.CreateFont("Keypad Secure Input", { font = "Lucida Console", size = 34 })
+surface.CreateFont("Keypad Input", { font = "Lucida Console", size = 34 })
+surface.CreateFont("Keypad Input Long", { font = "Lucida Console", size = 26 })
+surface.CreateFont(
+	"Keypad Message",
+	{ font = "Lucida Console", size = 19, weight = 600 }
+)
 
 local keys = {}
 do
@@ -33,7 +34,7 @@ do
 		local tw, th = surface.GetTextSize(text)
 		local tx = x + w / 2 - tw / 2
 		local ty = y + h / 2 - th / 2
-		return {tx, ty, text, x, y, w, h}
+		return { tx, ty, text, x, y, w, h }
 	end
 	local key = 1
 	local size = 25
@@ -43,8 +44,8 @@ do
 	local y = 105
 	for j = 2, 0, -1 do
 		for i = 0, 2 do
-			keys[key] = CreateKeyTab(x + i * offset, y + j * offset, size, size,
-				tostring(key))
+			keys[key] =
+				CreateKeyTab(x + i * offset, y + j * offset, size, size, tostring(key))
 			key = key + 1
 		end
 	end
@@ -66,9 +67,9 @@ ENT.CurrentKey = 11
 ENT.NextCrackNum = 0
 
 function ENT:Think()
-	if (self:IsBeingCracked()) then
+	if self:IsBeingCracked() then
 		local cn = CurTime()
-		if (cn < self.NextCrackNum) then
+		if cn < self.NextCrackNum then
 			return
 		end
 		self.NextCrackNum = cn + 0.05
@@ -84,14 +85,14 @@ function ENT:Think()
 	end
 	self.CurrentKey = nil
 	local tr = LocalPlayer():GetEyeTrace()
-	if (tr.Entity ~= self or tr.StartPos:DistToSqr(tr.HitPos) > button_cutoff) then
+	if tr.Entity ~= self or tr.StartPos:DistToSqr(tr.HitPos) > button_cutoff then
 		return
 	end
 	local pos = self:WorldToLocal(tr.HitPos)
 	for i, btn in ipairs(self.KeyPositions) do
 		local x = (pos.y - btn[1]) / btn[2]
 		local y = 1 - (pos.z + btn[3]) / btn[4]
-		if (x >= 0 and x <= 1 and y >= 0 and y <= 1) then
+		if x >= 0 and x <= 1 and y >= 0 and y <= 1 then
 			self.CurrentKey = i
 			return
 		end
@@ -132,10 +133,10 @@ function ENT:DrawCrackingLight()
 	local tr = util.TraceLine({
 		start = EyePos(),
 		endpos = target,
-		filter = {LocalPlayer()},
+		filter = { LocalPlayer() },
 	})
 
-	if (tr.Entity == self) then
+	if tr.Entity == self then
 		cam.IgnoreZ(true)
 		render.SetMaterial(getSaneMaterial("sprites/glow04"))
 		render.DrawSprite(target + self:GetForward() * 0.1, 10, 10, color_white)
@@ -153,10 +154,10 @@ function ENT:DrawKeys()
 	surface.SetFont("Keypad Key")
 	surface.SetTextColor(color_black)
 	for i, data in pairs(keys) do
-		if (self.CurrentKey == i) then
-			if (i == 10) then
+		if self.CurrentKey == i then
+			if i == 10 then
 				surface.SetDrawColor(255, 0, 0)
-			elseif (i == 11) then
+			elseif i == 11 then
 				surface.SetDrawColor(0, 255, 0)
 			else
 				surface.SetDrawColor(255, 255, 255)
@@ -199,7 +200,7 @@ function ENT:DrawSecureInput(input)
 	surface.SetFont("Keypad Secure Input")
 	surface.SetTextColor(color_white)
 	local inputLen = string.len(input)
-	if (inputLen <= 4) then
+	if inputLen <= 4 then
 		surface.SetTextPos(15, 24)
 		surface.DrawText(string.rep("*", inputLen))
 	else
@@ -214,7 +215,7 @@ end
 function ENT:DrawInsecureInput(input)
 	surface.SetTextColor(color_white)
 	local inputLen = string.len(input)
-	if (inputLen <= 4) then
+	if inputLen <= 4 then
 		surface.SetFont("Keypad Input")
 		surface.SetTextPos(15, 20)
 		surface.DrawText(input)
@@ -230,12 +231,14 @@ end
 function ENT:Draw()
 	self:DrawModel()
 
-	if (LocalPlayer():GetShootPos():DistToSqr(self:GetPos()) > visual_cutoff) then
+	if LocalPlayer():GetShootPos():DistToSqr(self:GetPos()) > visual_cutoff then
 		return
 	end
 
-	local pos = self:GetPos() + (self:GetForward() * 1.02) +
-		            (self:GetRight() * 2.75) + (self:GetUp() * 5.25)
+	local pos = self:GetPos()
+		+ (self:GetForward() * 1.02)
+		+ (self:GetRight() * 2.75)
+		+ (self:GetUp() * 5.25)
 	local ang = self:GetAngles()
 
 	ang:RotateAroundAxis(ang:Right(), -90)
@@ -248,16 +251,16 @@ function ENT:Draw()
 
 	local status = self:GetStatus()
 	local input = self:GetPasswordDisplay()
-	if (self:IsBeingCracked()) then
+	if self:IsBeingCracked() then
 		self:DrawCrackingScreen()
-	elseif (status ~= self.STATUSES.Normal) then
-		if (status == self.STATUSES.AccessGranted) then
+	elseif status ~= self.STATUSES.Normal then
+		if status == self.STATUSES.AccessGranted then
 			self:DrawAccessGranted()
 		else
 			self:DrawAccessDenied()
 		end
-	elseif (input ~= "") then
-		if (self:IsSecure()) then
+	elseif input ~= "" then
+		if self:IsSecure() then
 			self:DrawSecureInput(input)
 		else
 			self:DrawInsecureInput(input)
@@ -265,7 +268,7 @@ function ENT:Draw()
 	end
 	cam.End3D2D()
 
-	if (self:IsBeingCracked()) then
+	if self:IsBeingCracked() then
 		self:DrawCrackingLight()
 	end
 end

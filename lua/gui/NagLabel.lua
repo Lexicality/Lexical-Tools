@@ -23,7 +23,7 @@ function PANEL:Init()
 end
 
 function PANEL:DoText(value)
-	if (value ~= "") then
+	if value ~= "" then
 		self:SetHeight(20)
 		self:SetText(value)
 	else
@@ -32,7 +32,7 @@ function PANEL:DoText(value)
 end
 
 function PANEL:ControlValues(data)
-	if (data.cvars) then
+	if data.cvars then
 		self:SetConVars(data.cvars)
 	end
 end
@@ -41,5 +41,9 @@ function PANEL:OnRemove()
 	self:NukeConVars()
 end
 
-derma.DefineControl("NagLabel",
-	"A label for displaying dire news on cvar changes", PANEL, "DLabel")
+derma.DefineControl(
+	"NagLabel",
+	"A label for displaying dire news on cvar changes",
+	PANEL,
+	"DLabel"
+)

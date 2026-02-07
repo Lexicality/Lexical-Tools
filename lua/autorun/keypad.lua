@@ -22,30 +22,54 @@ local files = {
 }
 
 for _, file in ipairs(files) do
-	if (SERVER) then
+	if SERVER then
 		AddCSLuaFile(file)
 	else
 		include(file)
 	end
 end
 
-CreateConVar("keypad_min_length", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE,
-	"The minimum time keypads must remain on for")
-CreateConVar("keypad_cracker_time", 15, FCVAR_REPLICATED + FCVAR_ARCHIVE,
-	"How many seconds it takes to crack a keypad")
+CreateConVar(
+	"keypad_min_length",
+	0,
+	FCVAR_REPLICATED + FCVAR_ARCHIVE,
+	"The minimum time keypads must remain on for"
+)
+CreateConVar(
+	"keypad_cracker_time",
+	15,
+	FCVAR_REPLICATED + FCVAR_ARCHIVE,
+	"How many seconds it takes to crack a keypad"
+)
 if SERVER then
-	CreateConVar("keypad_fast_entry", 1, FCVAR_ARCHIVE,
-		"If the keypad's owner should be able to open it without a password")
+	CreateConVar(
+		"keypad_fast_entry",
+		1,
+		FCVAR_ARCHIVE,
+		"If the keypad's owner should be able to open it without a password"
+	)
 
 	CreateConVar("sbox_maxkeypads", 10, FCVAR_ARCHIVE)
 
-	CreateConVar("keypad_min_recharge", 2, FCVAR_ARCHIVE,
-		"The minimum time between keypad code attempts")
+	CreateConVar(
+		"keypad_min_recharge",
+		2,
+		FCVAR_ARCHIVE,
+		"The minimum time between keypad code attempts"
+	)
 	-- Potentially a user could lock out a keypad for two and a half minutes, so don't let them
-	CreateConVar("keypad_max_recharge", 30, FCVAR_ARCHIVE,
-		"The maximum time between keypad code attempts (to avoid long timer abuse)")
+	CreateConVar(
+		"keypad_max_recharge",
+		30,
+		FCVAR_ARCHIVE,
+		"The maximum time between keypad code attempts (to avoid long timer abuse)"
+	)
 
 	-- This is a highly abusable mechanic, so disable it by default but let servers enable it if they trust their players
-	CreateConVar("keypad_cracking_wire_output", 0, FCVAR_ARCHIVE,
-		"Add a wire output that shows if a keypad is being cracked")
+	CreateConVar(
+		"keypad_cracking_wire_output",
+		0,
+		FCVAR_ARCHIVE,
+		"Add a wire output that shows if a keypad is being cracked"
+	)
 end

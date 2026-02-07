@@ -23,26 +23,30 @@ TOOL.ClientConVar["toggle"] = "0"
 TOOL.ClientConVar["reversed"] = "0"
 
 local function checkTrace(tr)
-	return IsValid(tr.Entity) and
-		       not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle())
+	return IsValid(tr.Entity)
+		and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsVehicle())
 end
 
-if (CLIENT) then
+if CLIENT then
 	usermessage.Hook("FadingDoorHurrah!", function()
 		GAMEMODE:AddNotify("Fading door has been created!", NOTIFY_GENERIC, 10)
 		surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav")
 	end)
 	language.Add("tool.fading_doors.name", "Fading Doors")
 	language.Add("tool.fading_doors.desc", "Makes anything into a fadable door")
-	language.Add("tool.fading_doors.0",
-		"Click on something to make it a fading door. Reload to set it back to normal")
+	language.Add(
+		"tool.fading_doors.0",
+		"Click on something to make it a fading door. Reload to set it back to normal"
+	)
 	language.Add("Undone_fading_door", "Undone Fading Door")
 
 	function TOOL.BuildCPanel(panel)
-		panel:CheckBox("Reversed (Starts invisible, becomes solid)",
-			"fading_doors_reversed")
+		panel:CheckBox(
+			"Reversed (Starts invisible, becomes solid)",
+			"fading_doors_reversed"
+		)
 		panel:CheckBox("Toggle Active", "fading_doors_toggle")
-		panel:AddControl("Numpad", {Label = "Button", Command = "fading_doors_key"})
+		panel:AddControl("Numpad", { Label = "Button", Command = "fading_doors_key" })
 	end
 
 	TOOL.LeftClick = checkTrace
@@ -55,7 +59,7 @@ local function doUndo(undoData, ent)
 end
 
 function TOOL:LeftClick(tr)
-	if (not checkTrace(tr)) then
+	if not checkTrace(tr) then
 		return false
 	end
 	local ent = tr.Entity

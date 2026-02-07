@@ -25,7 +25,7 @@ ENT._NWVars = {
 		Name = "SpawnOnce",
 		Type = "Bool",
 		KeyName = "once",
-		Edit = {title = "Only Spawn One", type = "Boolean", order = 2},
+		Edit = { title = "Only Spawn One", type = "Boolean", order = 2 },
 	},
 	{
 		Name = "Weapon",
@@ -51,18 +51,18 @@ ENT._NWVars = {
 		},
 	},
 	-- Helpers for maps
-	{Name = "Invisible", Type = "Bool", KeyName = "hidden"},
-	{Name = "Unfrozen", Type = "Bool", KeyName = "movable"},
+	{ Name = "Invisible", Type = "Bool", KeyName = "hidden" },
+	{ Name = "Unfrozen", Type = "Bool", KeyName = "movable" },
 	-- Self help
-	{Name = "NumSpawned", Type = "Int"},
+	{ Name = "NumSpawned", Type = "Int" },
 }
 
-if (CLIENT) then
+if CLIENT then
 	return
 end
 
 function ENT:Initialize()
-	if (BaseClass.Initialize) then
+	if BaseClass.Initialize then
 		BaseClass.Initialize(self)
 	end
 
@@ -72,9 +72,14 @@ function ENT:Initialize()
 	self:SetModel("models/props_c17/streetsign004e.mdl")
 	self:PhysicsInit(SOLID_VPHYSICS)
 	local phys = self:GetPhysicsObject()
-	if (not IsValid(phys)) then
-		ErrorNoHalt("No physics object for ", tostring(self), " using model ",
-			self:GetModel(), "?\n")
+	if not IsValid(phys) then
+		ErrorNoHalt(
+			"No physics object for ",
+			tostring(self),
+			" using model ",
+			self:GetModel(),
+			"?\n"
+		)
 	else
 		phys:Wake()
 		phys:EnableMotion(self:GetUnfrozen())
@@ -84,14 +89,14 @@ function ENT:Initialize()
 	self:SetNumSpawned(0)
 
 	self:CreateWireInputs({
-		{Name = "SpawnOne", Desc = "Spawn a weapon immediately"},
-		{Name = "RemoveCurrentWeapon", Desc = "Deletes the currently spawned weapon"},
+		{ Name = "SpawnOne", Desc = "Spawn a weapon immediately" },
+		{ Name = "RemoveCurrentWeapon", Desc = "Deletes the currently spawned weapon" },
 		{
 			Name = "SetWeaponClass",
 			Desc = "Picks the class of weapon to spawn",
 			Type = "String",
 		},
-		{Name = "SetDelay", Desc = "Sets the delay between spawns"},
+		{ Name = "SetDelay", Desc = "Sets the delay between spawns" },
 	})
 
 	self:CreateWireOutputs({
@@ -100,8 +105,8 @@ function ENT:Initialize()
 			Type = "Entity",
 			Desc = "The currently spawned weapon",
 		},
-		{Name = "NumSpawned", Desc = "Lifetime number of weapons spawned"},
-		{Name = "OnWeaponSpawned", Desc = "Triggered when a new weapon is spawned"},
+		{ Name = "NumSpawned", Desc = "Lifetime number of weapons spawned" },
+		{ Name = "OnWeaponSpawned", Desc = "Triggered when a new weapon is spawned" },
 	})
 end
 
@@ -112,18 +117,18 @@ function ENT:RegisterListeners()
 
 	self:NetworkVarNotify("Unfrozen", function(self, _, _, shouldMove)
 		local phys = self:GetPhysicsObject()
-		if (IsValid(phys)) then
+		if IsValid(phys) then
 			phys:EnableMotion(shouldMove)
 		end
 	end)
 
 	self:NetworkVarNotify("Weapon", function(self, _, old, new)
-		if (new ~= old) then
+		if new ~= old then
 			self:RemoveWeapon(true)
 		end
 	end)
 
-	if (WireLib) then
+	if WireLib then
 		self:NetworkVarNotify("NumSpawned", function(self, _, _, num)
 			self:TriggerWireOutput("NumSpawned", num)
 		end)
@@ -131,24 +136,24 @@ function ENT:RegisterListeners()
 end
 
 function ENT:Think()
-	if (BaseClass.Think) then
+	if BaseClass.Think then
 		BaseClass.Think(self)
 	end
 
 	-- Crude pickup detection
-	if (IsValid(self.CurrentWeapon)) then
-		if (not IsValid(self.CurrentWeapon:GetOwner())) then
+	if IsValid(self.CurrentWeapon) then
+		if not IsValid(self.CurrentWeapon:GetOwner()) then
 			return
 		end
 
 		self:RemoveWeapon(false)
 	end
 	-- one-shot platforms
-	if (self:GetSpawnOnce() and self:GetNumSpawned() > 0) then
+	if self:GetSpawnOnce() and self:GetNumSpawned() > 0 then
 		return
 	end
 	-- Delays
-	if (self.NextSpawn > CurTime()) then
+	if self.NextSpawn > CurTime() then
 		return
 	end
 
@@ -157,7 +162,7 @@ end
 
 local onremovekey = "weapon platform sanity"
 local function onWepRemoved(wep, platform)
-	if (IsValid(platform) and platform.CurrentWeapon == wep) then
+	if IsValid(platform) and platform.CurrentWeapon == wep then
 		platform:RemoveWeapon(false)
 	end
 end
@@ -167,12 +172,12 @@ end
 function ENT:SpawnWeapon()
 	-- Validation
 	local weapon = self:GetWeapon()
-	if (not weapon or weapon == "") then
+	if not weapon or weapon == "" then
 		return
 	end
 
 	local ent = ents.Create(weapon)
-	if (not IsValid(ent)) then
+	if not IsValid(ent) then
 		ErrorNoHalt("Attempted to create weapon of unknown class '", weapon, "'!")
 		self.NextSpawn = CurTime() + 10
 		return
@@ -199,8 +204,8 @@ end
 -- Kills the current spawned weapon and delays the spawn of the netxt one
 -- @param {bool} dontUpdateDelay Don't delay the spawn. This will probably spawn a new weapon immediately, unless there's already a delay.=
 function ENT:RemoveWeapon(dontUpdateDelay)
-	if (IsValid(self.CurrentWeapon)) then
-		if (not IsValid(self.CurrentWeapon:GetOwner())) then
+	if IsValid(self.CurrentWeapon) then
+		if not IsValid(self.CurrentWeapon:GetOwner()) then
 			self.CurrentWeapon:Remove()
 		else
 			self:DontDeleteOnRemove(self.CurrentWeapon)
@@ -209,44 +214,44 @@ function ENT:RemoveWeapon(dontUpdateDelay)
 		end
 	end
 
-	if (not dontUpdateDelay) then
+	if not dontUpdateDelay then
 		self.NextSpawn = CurTime() + self:GetDelay()
 	end
 end
 
 function ENT:TriggerInput(name, val)
-	if (BaseClass.TriggerInput) then
+	if BaseClass.TriggerInput then
 		BaseClass.TriggerInput(self, name, val)
 	end
 
-	if (name == "SpawnOne" and val ~= 0) then
+	if name == "SpawnOne" and val ~= 0 then
 		self:RemoveWeapon()
 		self:SpawnWeapon()
-	elseif (name == "RemoveCurrentWeapon" and val ~= 0) then
+	elseif name == "RemoveCurrentWeapon" and val ~= 0 then
 		self:RemoveWeapon()
-	elseif (name == "SetWeaponClass" and val ~= "") then
+	elseif name == "SetWeaponClass" and val ~= "" then
 		self:SetWeapon(val)
-	elseif (name == "SetDelay" and val >= 0) then
+	elseif name == "SetDelay" and val >= 0 then
 		self:SetDelay(val)
 	end
 end
 
 function ENT:AcceptInput(input, activator, called, data)
-	if (BaseClass.AcceptInput) then
+	if BaseClass.AcceptInput then
 		BaseClass.AcceptInput(self, input, activator, called, data)
 	end
 	input = input:lower()
 
-	if (input == "spawn") then
+	if input == "spawn" then
 		self:RemoveWeapon()
 		self:SpawnWeapon()
-	elseif (input == "killweapon") then
+	elseif input == "killweapon" then
 		self:RemoveWeapon()
 	end
 end
 
 function ENT:OnDuplicated(entTable)
-	if (BaseClass.OnDuplicated) then
+	if BaseClass.OnDuplicated then
 		BaseClass.OnDuplicated(self, entTable)
 	end
 	-- Reset lifetime vars
@@ -256,7 +261,7 @@ function ENT:OnDuplicated(entTable)
 end
 
 function ENT:SpawnFunction(ply, tr)
-	if (not tr.Hit) then
+	if not tr.Hit then
 		return
 	end
 	local ent = ents.Create(self.ClassName)

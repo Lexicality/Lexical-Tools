@@ -15,12 +15,12 @@
     limitations under the License.
 ]]
 local function printd(...)
-	if (GetConVarNumber("developer") > 0) then
+	if GetConVarNumber("developer") > 0 then
 		print(...)
 	end
 end
 local function printd2(...)
-	if (GetConVarNumber("developer") > 1) then
+	if GetConVarNumber("developer") > 1 then
 		print(...)
 	end
 end
@@ -35,21 +35,21 @@ end
 
 _G.npcspawner = {
 	debug = function(...)
-		if (npcspawner.config.debug == 1) then
+		if npcspawner.config.debug == 1 then
 			printd(ts(), "PLFM (" .. svorcl() .. "):", ...)
 		end
 	end,
 	debug2 = function(...)
-		if (npcspawner.config.debug == 1) then
+		if npcspawner.config.debug == 1 then
 			printd2(ts(), "PLFM L2 (" .. svorcl() .. "):", ...)
 		end
 	end,
 	send = function(name, tab, who)
 		net.Start(name)
 		net.WriteTable(tab)
-		if (CLIENT) then
+		if CLIENT then
 			net.SendToServer()
-		elseif (who) then
+		elseif who then
 			net.Send(who)
 		else
 			net.Broadcast()

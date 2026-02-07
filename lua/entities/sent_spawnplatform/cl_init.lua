@@ -21,12 +21,12 @@ DEFINE_BASECLASS(ENT.Base)
 if not WireLib then
 	-- Slightly improved performance for sandbox tooltips
 	function ENT:Think()
-		if (self.BeingLookedAtByLocalPlayer and self:BeingLookedAtByLocalPlayer()) then
+		if self.BeingLookedAtByLocalPlayer and self:BeingLookedAtByLocalPlayer() then
 			local text = self:GetOverlayText()
 
 			AddWorldTip(self:EntIndex(), text, 0.5, self:GetPos(), self)
 
-			halo.Add({self}, color_white, 1, 1, 1, true, true)
+			halo.Add({ self }, color_white, 1, 1, 1, true, true)
 		end
 	end
 end
@@ -40,20 +40,20 @@ local function primeLookupCache()
 	for className, tab in pairs(list.Get("NPC")) do
 		reverseLookupCache[className] = language.GetPhrase(tab.Name or className)
 	end
-	reverseLookupCache["weapon_default"] = language.GetPhrase(
-		"menubar.npcs.defaultweapon")
+	reverseLookupCache["weapon_default"] =
+		language.GetPhrase("menubar.npcs.defaultweapon")
 	reverseLookupCache["weapon_none"] = language.GetPhrase("menubar.npcs.noweapon")
-	reverseLookupCache["weapon_rebel"] = language.GetPhrase(
-		"tool.npc_spawnplatform.weapon_rebel")
-	reverseLookupCache["weapon_combine"] = language.GetPhrase(
-		"tool.npc_spawnplatform.weapon_combine")
-	reverseLookupCache["weapon_citizen"] = language.GetPhrase(
-		"tool.npc_spawnplatform.weapon_citizen")
+	reverseLookupCache["weapon_rebel"] =
+		language.GetPhrase("tool.npc_spawnplatform.weapon_rebel")
+	reverseLookupCache["weapon_combine"] =
+		language.GetPhrase("tool.npc_spawnplatform.weapon_combine")
+	reverseLookupCache["weapon_citizen"] =
+		language.GetPhrase("tool.npc_spawnplatform.weapon_citizen")
 end
 hook.Add("Initialize", "NPC Spawn Platforms overlay cache", primeLookupCache)
 
 local function langLookup(text)
-	if (not reverseLookupCache) then
+	if not reverseLookupCache then
 		primeLookupCache()
 	end
 	return reverseLookupCache[text] or text
@@ -63,7 +63,7 @@ _G.flong = reverseLookupCache
 _G.flang = langLookup
 
 function ENT:GetActualOverlayText()
-	if (self:IsActive() and self:IsFlipped()) then
+	if self:IsActive() and self:IsFlipped() then
 		local str = language.GetPhrase("tool.npc_spawnplatform.overlay_flipped")
 		local npc = langLookup(self:GetNPC())
 
@@ -88,12 +88,12 @@ end
 function ENT:GetOverlayText()
 	local txt = self:GetActualOverlayText()
 
-	if (game.SinglePlayer()) then
+	if game.SinglePlayer() then
 		return txt
 	end
 
 	local ownerName = self:GetPlayerName()
-	if (ownerName ~= "") then
+	if ownerName ~= "" then
 		txt = txt .. "\n(" .. ownerName .. ")"
 	end
 
@@ -102,5 +102,5 @@ end
 
 -- Wiremod
 function ENT:GetOverlayData()
-	return {txt = self:GetActualOverlayText()}
+	return { txt = self:GetActualOverlayText() }
 end

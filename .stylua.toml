@@ -1,0 +1,6 @@
+syntax = "Lua51"
+# Because I've got a bunch of helpers that rely on this that I don't really
+# want to change, even though it's inconsistent
+call_parentheses = "Input"
+# To match Ruff
+column_width = 88

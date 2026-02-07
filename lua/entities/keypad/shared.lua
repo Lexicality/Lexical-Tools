@@ -27,30 +27,30 @@ ENT.AdminOnly = false
 
 ENT.IsKeypad = true
 
-ENT.STATUSES = {Normal = 0, AccessGranted = 1, AccessDenied = 2}
+ENT.STATUSES = { Normal = 0, AccessGranted = 1, AccessDenied = 2 }
 
 ENT._NWVars = {
-	{Type = "String", Name = "PasswordDisplay"},
-	{Type = "Bool", Name = "Secure", KeyName = "secure"},
-	{Type = "Int", Name = "Status", Default = ENT.STATUSES.Normal},
-	{Type = "Bool", Name = "BeingCracked"},
+	{ Type = "String", Name = "PasswordDisplay" },
+	{ Type = "Bool", Name = "Secure", KeyName = "secure" },
+	{ Type = "Int", Name = "Status", Default = ENT.STATUSES.Normal },
+	{ Type = "Bool", Name = "BeingCracked" },
 }
 
 ENT.KeyPositions = {
-	{-2.2, 1.25, 4.55, 1.3},
-	{-0.6, 1.25, 4.55, 1.3},
-	{1.0, 1.25, 4.55, 1.3},
+	{ -2.2, 1.25, 4.55, 1.3 },
+	{ -0.6, 1.25, 4.55, 1.3 },
+	{ 1.0, 1.25, 4.55, 1.3 },
 
-	{-2.2, 1.25, 2.90, 1.3},
-	{-0.6, 1.25, 2.90, 1.3},
-	{1.0, 1.25, 2.90, 1.3},
+	{ -2.2, 1.25, 2.90, 1.3 },
+	{ -0.6, 1.25, 2.90, 1.3 },
+	{ 1.0, 1.25, 2.90, 1.3 },
 
-	{-2.2, 1.25, 1.30, 1.3},
-	{-0.6, 1.25, 1.30, 1.3},
-	{1.0, 1.25, 1.30, 1.3},
+	{ -2.2, 1.25, 1.30, 1.3 },
+	{ -0.6, 1.25, 1.30, 1.3 },
+	{ 1.0, 1.25, 1.30, 1.3 },
 
-	{-2.2, 2, -0.30, 1.6},
-	{0.3, 2, -0.30, 1.6},
+	{ -2.2, 2, -0.30, 1.6 },
+	{ 0.3, 2, -0.30, 1.6 },
 }
 
 -- The spot on the keypad where special effects should hit the keypad

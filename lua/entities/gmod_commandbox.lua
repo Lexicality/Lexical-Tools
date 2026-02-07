@@ -16,7 +16,7 @@
 ]]
 AddCSLuaFile()
 ENT.Type = "anim"
-if (WireLib) then
+if WireLib then
 	ENT.Base = "base_wire_entity"
 else
 	ENT.Base = "base_gmodentity"
@@ -24,11 +24,11 @@ end
 
 -- Blame conna, I do.
 function MakeCommandBox(ply, pos, angles, model, key, command, data)
-	if (not ply:CheckLimit("commandboxes")) then
+	if not ply:CheckLimit("commandboxes") then
 		return false
 	end
 	local box
-	if (data) then
+	if data then
 		box = duplicator.GenericDuplicatorFunction(ply, data) -- This is actually better than doing it manually
 	else
 		box = ents.Create("gmod_commandbox")
@@ -44,8 +44,16 @@ function MakeCommandBox(ply, pos, angles, model, key, command, data)
 	return box
 end
 
-duplicator.RegisterEntityClass("gmod_commandbox", MakeCommandBox, "Pos", "Ang",
-	"Model", "key", "command", "Data")
+duplicator.RegisterEntityClass(
+	"gmod_commandbox",
+	MakeCommandBox,
+	"Pos",
+	"Ang",
+	"Model",
+	"key",
+	"command",
+	"Data"
+)
 
 ENT.PrintName = "Commandbox"
 ENT.Author = "Lexi"
@@ -55,14 +63,19 @@ ENT.Instructions = ""
 ENT.Spawnable = false
 ENT.AdminSpawnable = false
 
-if (CLIENT) then
+if CLIENT then
 	usermessage.Hook("Commandbox Command Request", function(um)
 		local command = um:ReadString()
-		Derma_Query("Run Command '" .. command .. "'?", "Command Box SENT", "Yes",
+		Derma_Query(
+			"Run Command '" .. command .. "'?",
+			"Command Box SENT",
+			"Yes",
 			function()
 				LocalPlayer():ConCommand(command)
-			end, "No", function()
-			end)
+			end,
+			"No",
+			function() end
+		)
 	end)
 	usermessage.Hook("Commandbox Command", function(um)
 		LocalPlayer():ConCommand(um:ReadString())
@@ -79,18 +92,18 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
-	if (WireLib) then
-		WireLib.CreateSpecialInputs(self, {"RunCommand"})
-		WireLib.CreateSpecialOutputs(self, {"Command"}, {"STRING"})
+	if WireLib then
+		WireLib.CreateSpecialInputs(self, { "RunCommand" })
+		WireLib.CreateSpecialOutputs(self, { "Command" }, { "STRING" })
 	end
 end
 
 local function prest(ply, ent)
-	if (not IsValid(ent)) then
+	if not IsValid(ent) then
 		return
 	end
 	local command = ent:GetCommand()
-	if (ply == ent:GetPlayer()) then
+	if ply == ent:GetPlayer() then
 		SendUserMessage("Commandbox Command", ply, command)
 	else
 		SendUserMessage("Commandbox Command Request", ply, command)
@@ -101,7 +114,7 @@ numpad.Register("CommandBox", prest)
 function ENT:SetCommand(command)
 	self.Command = command
 	self:SetOverlayText("- Command Box -\nCommand: " .. command)
-	if (WireLib) then
+	if WireLib then
 		Wire_TriggerOutput(self, "Command", command)
 	end
 end
@@ -112,10 +125,10 @@ end
 
 function ENT:SetKey(key)
 	local ply = self:GetPlayer()
-	if (not IsValid(ply)) then
+	if not IsValid(ply) then
 		return
 	end
-	if (self.impulse) then
+	if self.impulse then
 		numpad.Remove(self.impulse)
 	end
 	self.impulse = numpad.OnUp(ply, key, "CommandBox", self)
@@ -127,9 +140,9 @@ function ENT:GetKey()
 end
 
 function ENT:TriggerInput(key, value)
-	if (key == "RunCommand" and value ~= 0) then
+	if key == "RunCommand" and value ~= 0 then
 		local ply = self:GetPlayer()
-		if (not IsValid(ply)) then
+		if not IsValid(ply) then
 			return
 		end
 		SendUserMessage("Commandbox Command", ply, self:GetCommand())

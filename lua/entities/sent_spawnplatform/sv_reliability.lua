@@ -51,24 +51,24 @@ function ENT:SetPlayer(ply)
 
 	BaseClass.SetPlayer(self, ply)
 
-	if (IsValid(ply)) then
+	if IsValid(ply) then
 		-- NOTE: This is not actually the correct ID
 		-- If you rely on this feature, please either stop relying on it or
 		--  add an issue on Github
 		self.k_ply = ply:EntIndex()
 	end
 
-	if (ply ~= oldPly) then
+	if ply ~= oldPly then
 		self:RebindNumpads(ply, self:GetOnKey(), self:GetOffKey())
 	end
 end
 
 function ENT:KeyValue(key, value)
-	if (BaseClass.KeyValue) then
+	if BaseClass.KeyValue then
 		BaseClass.KeyValue(self, key, value)
 	end
 
-	if (key == "ply") then
+	if key == "ply" then
 		-- NOTE: This function doesn't actually use a useful or easy to obtain ID.
 		-- If you rely on this feature, please either stop relying on it or
 		--  add an issue on Github
@@ -79,9 +79,9 @@ end
 
 function ENT:OnFrozenStateChange(_, _, freeze)
 	local phys = self:GetPhysicsObject()
-	if (IsValid(phys)) then
+	if IsValid(phys) then
 		phys:EnableMotion(not freeze)
-		if (not freeze) then
+		if not freeze then
 			phys:Wake()
 		end
 	end
@@ -93,24 +93,24 @@ function ENT:RebindNumpads(ply, keyOn, keyOff)
 	self._prevOnKeypad = false
 	self._prevOffKeypad = false
 
-	if (not IsValid(ply)) then
+	if not IsValid(ply) then
 		return
 	end
 
-	if (keyOn) then
+	if keyOn then
 		self._prevOnKeypad = numpad.OnDown(ply, keyOn, "NPCSpawnerOn", self)
 	end
-	if (keyOff) then
+	if keyOff then
 		self._prevOffKeypad = numpad.OnDown(ply, keyOff, "NPCSpawnerOff", self)
 	end
 end
 
 function ENT:OnRemove()
-	if (BaseClass.OnRemove) then
+	if BaseClass.OnRemove then
 		BaseClass.OnRemove(self)
 	end
 	npcspawner.debug(self, "has been removed.")
-	if (self:GetAutoRemove()) then
+	if self:GetAutoRemove() then
 		self:RemoveNPCs()
 	end
 	self:RebindNumpads(NULL, false, false)

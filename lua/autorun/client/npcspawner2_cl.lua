@@ -22,14 +22,14 @@ end
 
 local function callback(cvar, old, new)
 	local lpl = LocalPlayer()
-	if (IsValid(lpl) and not lpl:IsAdmin()) then
+	if IsValid(lpl) and not lpl:IsAdmin() then
 		return
 	end
 
 	local name = cvar:gsub(cvarstr, "")
 	local value = tonumber(new)
 
-	if (not value or value == npcspawner.config[name]) then
+	if not value or value == npcspawner.config[name] then
 		return
 	end
 
@@ -55,7 +55,7 @@ end)
 -----------------------------------
 CreateConVar("cleanupcorpses", 1)
 timer.Create("Dead Body Deleter", 60, 0, function()
-	if (GetConVarNumber("cleanupcorpses") < 1) then
+	if GetConVarNumber("cleanupcorpses") < 1 then
 		return
 	end
 	for _, ent in pairs(ents.FindByClass("class C_ClientRagdoll")) do
@@ -106,8 +106,8 @@ local function adminOptions(panel)
 		Max = "10",
 	})
 
-	local dzpanel = panel:AddControl("ControlPanel",
-		{Label = lang("dangerzone"), Closed = true})
+	local dzpanel =
+		panel:AddControl("ControlPanel", { Label = lang("dangerzone"), Closed = true })
 
 	dzpanel:AddControl("CheckBox", {
 		Label = lang("sanity"),
@@ -131,8 +131,22 @@ local function adminOptions(panel)
 end
 
 hook.Add("PopulateToolMenu", "NPCSpawner Options", function()
-	spawnmenu.AddToolMenuOption("Utilities", "User", "NPC Spawn Platforms User",
-		"#spawnmenu.utilities.spawnplatform", "", "", clientOptions)
-	spawnmenu.AddToolMenuOption("Utilities", "Admin", "NPC Spawn Platforms Admin",
-		"#spawnmenu.utilities.spawnplatform", "", "", adminOptions)
+	spawnmenu.AddToolMenuOption(
+		"Utilities",
+		"User",
+		"NPC Spawn Platforms User",
+		"#spawnmenu.utilities.spawnplatform",
+		"",
+		"",
+		clientOptions
+	)
+	spawnmenu.AddToolMenuOption(
+		"Utilities",
+		"Admin",
+		"NPC Spawn Platforms Admin",
+		"#spawnmenu.utilities.spawnplatform",
+		"",
+		"",
+		adminOptions
+	)
 end)

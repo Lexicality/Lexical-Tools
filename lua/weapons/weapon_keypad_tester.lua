@@ -29,7 +29,7 @@ SWEP.Spawnable = true
 SWEP.AdminOnly = true
 
 function SWEP:CanTrigger(keypad)
-	if (not IsValid(keypad) or keypad:GetClass() ~= "keypad") then
+	if not IsValid(keypad) or keypad:GetClass() ~= "keypad" then
 		return false
 	end
 
@@ -40,20 +40,20 @@ end
 
 function SWEP:Keypadify(state)
 	local keypad = self.Owner:GetEyeTrace().Entity
-	if (self:CanTrigger(keypad)) then
+	if self:CanTrigger(keypad) then
 		-- TODO: Particle effects
-		if (SERVER) then
+		if SERVER then
 			keypad:TriggerKeypad(state, self.Owner)
 		end
 	end
 end
 
 function SWEP:PrimaryAttack()
-	self:SetNextPrimaryFire(CurTime() + .4)
+	self:SetNextPrimaryFire(CurTime() + 0.4)
 	self:Keypadify(true)
 end
 
 function SWEP:SecondaryAttack()
-	self:SetNextSecondaryFire(CurTime() + .4)
+	self:SetNextSecondaryFire(CurTime() + 0.4)
 	self:Keypadify(false)
 end

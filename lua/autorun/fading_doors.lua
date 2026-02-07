@@ -23,10 +23,19 @@ if CLIENT then
 end
 
 -- Server only convars go here
-CreateConVar(prefix .. "mintime", 0, FCVAR_ARCHIVE,
-	"The minimum time a fading door must remain faded for", 0)
-CreateConVar(prefix .. "physpersist", "false", FCVAR_ARCHIVE,
-	"If unfrozen objects should be unfrozen when unfaded")
+CreateConVar(
+	prefix .. "mintime",
+	0,
+	FCVAR_ARCHIVE,
+	"The minimum time a fading door must remain faded for",
+	0
+)
+CreateConVar(
+	prefix .. "physpersist",
+	"false",
+	FCVAR_ARCHIVE,
+	"If unfrozen objects should be unfrozen when unfaded"
+)
 
 --- @param name string
 --- @param oldVal string
@@ -35,7 +44,7 @@ local function onChange(name, oldVal, newVal)
 	fading_doors.SetConfig(string.sub(name, #prefix + 1), newVal)
 end
 
-local cvarNames = {"mintime", "physpersist"}
+local cvarNames = { "mintime", "physpersist" }
 
 local function onInitialize()
 	for _, name in pairs(cvarNames) do

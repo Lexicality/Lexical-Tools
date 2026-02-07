@@ -40,12 +40,17 @@ TOOL.ClientConVar["key"] = "5"
 cleanup.Register("commandboxes")
 
 function TOOL:UpdateGhost(ent, ply) -- ( ent, player )
-	if (not IsValid(ent)) then
+	if not IsValid(ent) then
 		return
 	end
 	local tr = ply:GetEyeTrace()
-	if (not tr.Hit or (IsValid(tr.Entity) and
-		(tr.Entity:IsPlayer() or tr.Entity:GetClass() == "gmod_commandbox"))) then
+	if
+		not tr.Hit
+		or (
+			IsValid(tr.Entity)
+			and (tr.Entity:IsPlayer() or tr.Entity:GetClass() == "gmod_commandbox")
+		)
+	then
 		ent:SetNoDraw(true)
 		return
 	end
@@ -57,15 +62,15 @@ function TOOL:UpdateGhost(ent, ply) -- ( ent, player )
 end
 
 function TOOL:Think()
-	if (SERVER and not game.SinglePlayer()) then
+	if SERVER and not game.SinglePlayer() then
 		return
 	end
-	if (CLIENT and game.SinglePlayer()) then
+	if CLIENT and game.SinglePlayer() then
 		return
 	end
 	local ent = self.GhostEntity
 	local model = string.lower(self:GetClientInfo("model"))
-	if (not (IsValid(ent) and ent:GetModel() == model)) then
+	if not (IsValid(ent) and ent:GetModel() == model) then
 		self:MakeGhostEntity(model, vector_origin, Angle())
 	end
 	self:UpdateGhost(self.GhostEntity, self:GetOwner())
@@ -75,11 +80,10 @@ list.Set("CommandboxModels", "models/props_lab/reciever01a.mdl", {})
 list.Set("CommandboxModels", "models/props_lab/monitor02.mdl", {})
 
 local function canTool(tr)
-	return tr.Hit and tr.HitWorld or
-		       (IsValid(tr.Entity) and not tr.Entity:IsPlayer())
+	return tr.Hit and tr.HitWorld or (IsValid(tr.Entity) and not tr.Entity:IsPlayer())
 end
 
-if (CLIENT) then
+if CLIENT then
 	local messages = {
 		"Commands cannot include the word '",
 		"Updated Command Box",
@@ -87,7 +91,7 @@ if (CLIENT) then
 	}
 	usermessage.Hook("CommandBoxMessage", function(um)
 		local message = um:ReadShort()
-		if (message == 1) then
+		if message == 1 then
 			local word = um:ReadShort()
 			message = messages[message] .. disallowed[word] .. "'!"
 		else
@@ -98,8 +102,10 @@ if (CLIENT) then
 	end)
 
 	language.Add("Tool_commandbox_name", "Command Box Tool")
-	language.Add("Tool_commandbox_desc",
-		"Allows you to assign concommands to numpad keys.")
+	language.Add(
+		"Tool_commandbox_desc",
+		"Allows you to assign concommands to numpad keys."
+	)
 	language.Add("Tool_commandbox_0", "Left click to spawn a Command Box")
 
 	-- Other
@@ -121,8 +127,10 @@ if (CLIENT) then
 			Category = "Models",
 			Models = list.Get("CommandboxModels"),
 		})
-		cp:AddControl("Numpad",
-			{Label = "Key:", Command = "commandbox_key", ButtonSize = 22})
+		cp:AddControl(
+			"Numpad",
+			{ Label = "Key:", Command = "commandbox_key", ButtonSize = 22 }
+		)
 		cp:AddControl("TextBox", {
 			Label = "Command",
 			MaxLength = "255",
@@ -138,13 +146,13 @@ CreateConVar("sbox_maxcommandboxes", 10, FCVAR_NOTIFY)
 local function msg(ply, num, num2)
 	umsg.Start("CommandBoxMessage", ply)
 	umsg.Short(num)
-	if (num2) then
+	if num2 then
 		umsg.Short(num2)
 	end
 	umsg.End()
 end
 function TOOL:LeftClick(tr)
-	if (not canTool(tr)) then
+	if not canTool(tr) then
 		return false
 	end
 
@@ -156,15 +164,18 @@ function TOOL:LeftClick(tr)
 
 	local search = string.lower(command)
 	for i, words in pairs(disallowed) do
-		if (string.find(search, words)) then
+		if string.find(search, words) then
 			msg(ply, 1, i)
 			return false
 		end
 	end
 
 	local ent = tr.Entity
-	if (IsValid(ent) and ent:GetClass() == "gmod_commandbox" and ent:GetPlayer() ==
-		ply) then
+	if
+		IsValid(ent)
+		and ent:GetClass() == "gmod_commandbox"
+		and ent:GetPlayer() == ply
+	then
 		ent:SetCommand(command)
 		ent:SetKey(key)
 		msg(ply, 2)
@@ -175,18 +186,18 @@ function TOOL:LeftClick(tr)
 	angles.pitch = angles.pitch + 90
 
 	local box = MakeCommandBox(ply, tr.HitPos, angles, model, key, command)
-	if (not box) then
+	if not box then
 		return false
 	end
 	box:SetPos(tr.HitPos - tr.HitNormal * box:OBBMins().z)
 
 	local weld
-	if (IsValid(ent) and not ent:IsWorld()) then
+	if IsValid(ent) and not ent:IsWorld() then
 		weld = constraint.Weld(box, ent, 0, tr.PhysicsBone, 0)
 		ent:DeleteOnRemove(box)
 	else
 		local phys = box:GetPhysicsObject()
-		if (IsValid(phys)) then
+		if IsValid(phys) then
 			phys:EnableMotion(false)
 		end
 	end

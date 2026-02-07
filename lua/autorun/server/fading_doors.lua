@@ -74,7 +74,7 @@ end
 
 --- @param ent GEntity
 local function removeNumpadBindings(ent)
-	if (not ent._fade) then
+	if not ent._fade then
 		return
 	end
 	numpad.Remove(ent._fade.numpadUp)
@@ -89,11 +89,11 @@ end
 --- Does nothing if the entity is not a fading door, or is already faded
 --- @param ent GEntity
 function fading_doors.Fade(ent)
-	if (not fading_doors.IsFading(ent) or ent._fade.active) then
+	if not fading_doors.IsFading(ent) or ent._fade.active then
 		return
 	end
 
-	if (WireLib) then
+	if WireLib then
 		WireLib.TriggerOutput(ent, "FadeActive", 1)
 	end
 
@@ -148,7 +148,7 @@ function fading_doors.Unfade(ent, force)
 	if not force and fading_doors._config.mintime and ent._fade.fadeTime then
 		local fadeEnd = ent._fade.fadeTime + fading_doors._config.mintime
 		local curTime = CurTime()
-		if (fadeEnd > curTime) then
+		if fadeEnd > curTime then
 			-- Prevent the timer happening multiple times
 			ent._fade.mintimeTimer = true
 			timer.Simple(fadeEnd - curTime, function()
@@ -160,7 +160,7 @@ function fading_doors.Unfade(ent, force)
 
 	ent._fade.mintimeTimer = false
 
-	if (WireLib) then
+	if WireLib then
 		WireLib.TriggerOutput(ent, "FadeActive", 0)
 	end
 
@@ -193,10 +193,10 @@ end
 --- If the server has a minimum fade time set, this may not take action immediately.
 --- @param ent GEntity
 function fading_doors.Toggle(ent)
-	if (not fading_doors.IsFading(ent)) then
+	if not fading_doors.IsFading(ent) then
 		return
 	end
-	if (ent._fade.active) then
+	if ent._fade.active then
 		fading_doors.Unfade(ent)
 	else
 		fading_doors.Fade(ent)
@@ -260,19 +260,19 @@ end
 
 --- @param ent GEntity
 local function setupWire(ent)
-	if (not WireLib) then
+	if not WireLib then
 		return
 	end
 	local pfuncs = {}
 	ent._fade.pfuncs = pfuncs
-	WireLib.AddInputs(ent, {"Fade"})
-	WireLib.AddOutputs(ent, {"FadeActive"})
+	WireLib.AddInputs(ent, { "Fade" })
+	WireLib.AddOutputs(ent, { "FadeActive" })
 	do
 		local original = ent.TriggerInput
 		if original then
 			pfuncs.TriggerInput = original
 			function ent.TriggerInput(...)
-				if (not wireTriggerInput(...)) then
+				if not wireTriggerInput(...) then
 					original(...)
 				end
 			end
@@ -282,7 +282,7 @@ local function setupWire(ent)
 		end
 	end
 	-- Make the entity support being duped by wire
-	if (ent.IsWire or ent.addedWireSupport) then
+	if ent.IsWire or ent.addedWireSupport then
 		return
 	end
 	ent.addedWireSupport = true
@@ -329,7 +329,7 @@ function fading_doors.SetupDoor(ply, ent, data)
 		return
 	end
 
-	if (fading_doors.IsFading(ent)) then
+	if fading_doors.IsFading(ent) then
 		fading_doors.Unfade(ent, true)
 		removeNumpadBindings(ent) -- Kill the old numpad func
 	else
@@ -377,7 +377,7 @@ function fading_doors.SetupDoor(ply, ent, data)
 		ent._fade = newFade
 	end
 
-	if (data.reversed) then
+	if data.reversed then
 		fading_doors.Fade(ent)
 	end
 
@@ -389,7 +389,7 @@ end
 --- Does nothing if the entity is not a fading door
 --- @param ent GEntity
 function fading_doors.RemoveDoor(ent)
-	if (not fading_doors.IsFading(ent)) then
+	if not fading_doors.IsFading(ent) then
 		return
 	end
 	removeNumpadBindings(ent)
@@ -401,9 +401,9 @@ function fading_doors.RemoveDoor(ent)
 	ent.fadeToggleActive = nil
 	ent.fadeInputOn = nil
 	ent.fadeInputOff = nil
-	if (ent._fade.pfuncs) then
+	if ent._fade.pfuncs then
 		for key, func in pairs(ent._fade.pfuncs) do
-			if (not func) then
+			if not func then
 				func = nil
 			end
 			ent[key] = func
@@ -412,9 +412,9 @@ function fading_doors.RemoveDoor(ent)
 	ent.addedWireSupport = nil
 	ent._fade = nil
 	duplicator.ClearEntityModifier(ent, "Fading Door")
-	if (WireLib) then
-		WireLib.RemoveInputs(ent, {"Fade"})
-		WireLib.RemoveOutputs(ent, {"FadeActive"})
+	if WireLib then
+		WireLib.RemoveInputs(ent, { "Fade" })
+		WireLib.RemoveOutputs(ent, { "FadeActive" })
 	end
 	return true
 end

@@ -25,16 +25,18 @@ TOOL.ClientConVar["explosive"] = 1
 TOOL.ClientConVar["kill_delay"] = 5
 TOOL.ClientConVar["ammo_model"] = "models/props_junk/cinderblock01a.mdl"
 TOOL.ClientConVar["fire_effect"] = "Explosion"
-TOOL.ClientConVar["cannon_model"] =
-	"models/props_trainstation/trashcan_indoor001b.mdl"
+TOOL.ClientConVar["cannon_model"] = "models/props_trainstation/trashcan_indoor001b.mdl"
 TOOL.ClientConVar["explosive_power"] = 10
 TOOL.ClientConVar["explosive_radius"] = 200
 
 cleanup.Register("propcannons")
 
-if (SERVER) then
-	CreateConVar("sbox_maxpropcannons", 10,
-		"The maximum number of prop cannons you can have out at one time.")
+if SERVER then
+	CreateConVar(
+		"sbox_maxpropcannons",
+		10,
+		"The maximum number of prop cannons you can have out at one time."
+	)
 	local function onRemove(self, down, up)
 		numpad.Remove(down)
 		numpad.Remove(up)
@@ -55,37 +57,65 @@ if (SERVER) then
 		effect,
 		explosive
 	)
-		if (not ply:CheckLimit("propcannons")) then
+		if not ply:CheckLimit("propcannons") then
 			return false
 		end
 		local cannon = ents.Create("gmod_propcannon")
 		cannon:SetPos(pos)
 		cannon:SetAngles(angles)
-		cannon:Setup(force, model, ammo, recoil, delay, kill, power, radius, effect,
-			explosive)
+		cannon:Setup(
+			force,
+			model,
+			ammo,
+			recoil,
+			delay,
+			kill,
+			power,
+			radius,
+			effect,
+			explosive
+		)
 		cannon:Spawn()
 		cannon:SetPlayer(ply)
 		-- Make it shiny and black
 		cannon:SetMaterial("models/shiny")
 		cannon:SetColor(0, 0, 0, 255)
 		cannon.numpadKey = key
-		cannon:CallOnRemove("NumpadCleanup", onRemove,
+		cannon:CallOnRemove(
+			"NumpadCleanup",
+			onRemove,
 			numpad.OnDown(ply, key, "propcannon_On", cannon),
-			numpad.OnUp(ply, key, "propcannon_Off", cannon))
+			numpad.OnUp(ply, key, "propcannon_Off", cannon)
+		)
 		cannon:SetCollisionGroup(COLLISION_GROUP_WORLD)
 
 		ply:AddCount("propcannons", cannon)
 		return cannon
 	end
-	duplicator.RegisterEntityClass("gmod_propcannon", MakeCannon, "Pos", "Ang",
-		"numpadKey", "fireForce", "Model", "fireModel", "recoilAmount", "fireDelay",
-		"killDelay", "explosivePower", "explosiveRadius", "fireEffect",
-		"fireExplosives")
+	duplicator.RegisterEntityClass(
+		"gmod_propcannon",
+		MakeCannon,
+		"Pos",
+		"Ang",
+		"numpadKey",
+		"fireForce",
+		"Model",
+		"fireModel",
+		"recoilAmount",
+		"fireDelay",
+		"killDelay",
+		"explosivePower",
+		"explosiveRadius",
+		"fireEffect",
+		"fireExplosives"
+	)
 else
 	language.Add("Tool_propcannon_name", "Prop Cannons v2")
 	language.Add("Tool_propcannon_desc", "A movable cannon that can fire props")
-	language.Add("Tool_propcannon_0",
-		"Click to spawn a cannon. Click on an existing cannon to change it. Right click on a prop to use the model as ammo.")
+	language.Add(
+		"Tool_propcannon_0",
+		"Click to spawn a cannon. Click on an existing cannon to change it. Right click on a prop to use the model as ammo."
+	)
 
 	language.Add("SBoxLimit_propcannons", "You've hit the Prop Cannonslimit!")
 	language.Add("Undone_propcannon", "Undone Prop Cannon")
@@ -94,17 +124,16 @@ else
 end
 
 function TOOL:LeftClick(tr)
-	if (not tr.Hit or tr.Entity:IsPlayer()) then
+	if not tr.Hit or tr.Entity:IsPlayer() then
 		return false
-	elseif (CLIENT) then
+	elseif CLIENT then
 		return true
-	elseif (not util.IsValidPhysicsObject(tr.Entity, tr.PhysicsBone)) then
+	elseif not util.IsValidPhysicsObject(tr.Entity, tr.PhysicsBone) then
 		return false
 	end
 
 	local ply = self:GetOwner()
-	local key, force, model, ammo, recoil, delay, kill, power, radius, effect,
-		explosive
+	local key, force, model, ammo, recoil, delay, kill, power, radius, effect, explosive
 	key = self:GetClientNumber("key")
 	force = self:GetClientNumber("force")
 	delay = self:GetClientNumber("delay")
@@ -118,35 +147,68 @@ function TOOL:LeftClick(tr)
 	radius = self:GetClientNumber("explosive_radius")
 	explosive = tobool(explosive)
 
-	if (not (util.IsValidModel(model) and util.IsValidProp(model) and
-		util.IsValidModel(ammo) and util.IsValidProp(ammo))) then
+	if
+		not (
+			util.IsValidModel(model)
+			and util.IsValidProp(model)
+			and util.IsValidModel(ammo)
+			and util.IsValidProp(ammo)
+		)
+	then
 		return false
 	end
 	local ent = tr.Entity
-	if (IsValid(ent) and ent:GetClass() == "gmod_propcannon" and ent:GetPlayer() ==
-		ply) then
-		ent:Setup(force, model, ammo, recoil, delay, kill, power, radius, effect,
-			explosive)
+	if
+		IsValid(ent)
+		and ent:GetClass() == "gmod_propcannon"
+		and ent:GetPlayer() == ply
+	then
+		ent:Setup(
+			force,
+			model,
+			ammo,
+			recoil,
+			delay,
+			kill,
+			power,
+			radius,
+			effect,
+			explosive
+		)
 		return true
 	end
 
 	local angles = tr.HitNormal:Angle()
 	angles.pitch = angles.pitch + 90
 
-	local cannon = MakeCannon(ply, tr.HitPos, angles, key, force, model, ammo,
-		recoil, delay, kill, power, radius, effect, explosive)
-	if (not cannon) then
+	local cannon = MakeCannon(
+		ply,
+		tr.HitPos,
+		angles,
+		key,
+		force,
+		model,
+		ammo,
+		recoil,
+		delay,
+		kill,
+		power,
+		radius,
+		effect,
+		explosive
+	)
+	if not cannon then
 		return false
 	end
 	cannon:SetPos(tr.HitPos - tr.HitNormal * cannon:OBBMins().z)
 
 	local weld
-	if (IsValid(ent)) then
+	if IsValid(ent) then
 		weld = constraint.Weld(cannon, ent, 0, tr.PhysicsBone, 0)
 		ent:DeleteOnRemove(cannon)
 	else
 		local phys = cannon:GetPhysicsObject()
-		if (IsValid(phys)) then
+		if IsValid(phys) then
 			phys:EnableMotion(false)
 		end
 	end
@@ -159,19 +221,19 @@ function TOOL:LeftClick(tr)
 	ply:AddCleanup("propcannons", cannon)
 	ply:AddCleanup("propcannons", weld)
 	return true
-
 end
 
 function TOOL:RightClick(tr)
-	if (not (tr.Hit and tr.Entity:IsValid() and tr.Entity:GetClass() ==
-		"prop_physics")) then
+	if
+		not (tr.Hit and tr.Entity:IsValid() and tr.Entity:GetClass() == "prop_physics")
+	then
 		return false
 	end
-	if (CLIENT) then
+	if CLIENT then
 		return true
 	end
 	local model = tr.Entity:Model()
-	if (not util.IsValidModel(model)) then -- you never know
+	if not util.IsValidModel(model) then -- you never know
 		return false
 	end
 	local ply = self:GetOwner()
@@ -180,12 +242,17 @@ function TOOL:RightClick(tr)
 end
 
 function TOOL:UpdateGhost(ent, ply) -- ( ent, player )
-	if (not IsValid(ent)) then
+	if not IsValid(ent) then
 		return
 	end
 	local tr = ply:GetEyeTrace()
-	if (not tr.Hit or (IsValid(tr.Entity) and
-		(tr.Entity:IsPlayer() or tr.Entity:GetClass() == "gmod_propcannon"))) then
+	if
+		not tr.Hit
+		or (
+			IsValid(tr.Entity)
+			and (tr.Entity:IsPlayer() or tr.Entity:GetClass() == "gmod_propcannon")
+		)
+	then
 		ent:SetNoDraw(true)
 		return
 	end
@@ -197,15 +264,15 @@ function TOOL:UpdateGhost(ent, ply) -- ( ent, player )
 end
 
 function TOOL:Think()
-	if (SERVER and not game.SinglePlayer()) then
+	if SERVER and not game.SinglePlayer() then
 		return
 	end
-	if (CLIENT and game.SinglePlayer()) then
+	if CLIENT and game.SinglePlayer() then
 		return
 	end
 	local ent = self.GhostEntity
 	local model = string.lower(self:GetClientInfo("cannon_model"))
-	if (not (IsValid(ent) and ent:GetModel() == model)) then
+	if not (IsValid(ent) and ent:GetModel() == model) then
 		--[[
 		Msg("Remaking ghost! Ent: ", ent)
 		if (IsValid(ent)) then
@@ -220,7 +287,6 @@ function TOOL:Think()
 end
 
 function TOOL.BuildCPanel(cp)
-
 	local Combo = {}
 	Combo["Label"] = "#Presets"
 	Combo["MenuButton"] = "1"
@@ -318,8 +384,10 @@ function TOOL.BuildCPanel(cp)
 		Category = "Ammo",
 		Models = list.Get("CannonAmmoModels"),
 	})
-	cp:AddControl("ListBox",
-		{Label = "Firing Effect:", Options = list.Get("CannonEffects")})
+	cp:AddControl(
+		"ListBox",
+		{ Label = "Firing Effect:", Options = list.Get("CannonEffects") }
+	)
 end
 
 list.Set("CannonModels", "models/dav0r/thruster.mdl", {})
@@ -335,15 +403,16 @@ list.Set("CannonAmmoModels", "models/props_junk/propane_tank001a.mdl", {})
 list.Set("CannonAmmoModels", "models/props_c17/canister_propane01a.mdl", {})
 list.Set("CannonAmmoModels", "models/props_junk/watermelon01.mdl", {})
 list.Set("CannonAmmoModels", "models/props_junk/cinderblock01a.mdl", {})
-list.Set("CannonAmmoModels", "models/props_debris/concrete_cynderblock001.mdl",
-	{})
+list.Set("CannonAmmoModels", "models/props_debris/concrete_cynderblock001.mdl", {})
 list.Set("CannonAmmoModels", "models/props_junk/popcan01a.mdl", {})
 
-list.Set("CannonEffects", "Explosion", {propcannon_fire_effect = "Explosion"})
-list.Set("CannonEffects", "Sparks", {propcannon_fire_effect = "cball_explode"})
-list.Set("CannonEffects", "Bomb drop", {propcannon_fire_effect = "RPGShotDown"})
-list.Set("CannonEffects", "Flash",
-	{propcannon_fire_effect = "HelicopterMegaBomb"})
-list.Set("CannonEffects", "Machine Gun",
-	{propcannon_fire_effect = "HelicopterImpact"})
-list.Set("CannonEffects", "None", {propcannon_fire_effect = "none"})
+list.Set("CannonEffects", "Explosion", { propcannon_fire_effect = "Explosion" })
+list.Set("CannonEffects", "Sparks", { propcannon_fire_effect = "cball_explode" })
+list.Set("CannonEffects", "Bomb drop", { propcannon_fire_effect = "RPGShotDown" })
+list.Set("CannonEffects", "Flash", { propcannon_fire_effect = "HelicopterMegaBomb" })
+list.Set(
+	"CannonEffects",
+	"Machine Gun",
+	{ propcannon_fire_effect = "HelicopterImpact" }
+)
+list.Set("CannonEffects", "None", { propcannon_fire_effect = "none" })

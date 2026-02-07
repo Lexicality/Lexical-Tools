@@ -37,7 +37,7 @@ function Derma_Install_Better_Convar_Functions(PANEL)
 	end
 
 	function PANEL:SetConVars(convars)
-		if (not self._cvarid) then
+		if not self._cvarid then
 			self._cvarid = tostring(math.random(10000, 99999))
 		end
 

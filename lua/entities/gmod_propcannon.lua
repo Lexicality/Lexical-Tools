@@ -16,7 +16,7 @@
 ]]
 AddCSLuaFile()
 ENT.Type = "anim"
-if (WireLib) then
+if WireLib then
 	ENT.Base = "base_wire_entity"
 else
 	ENT.Base = "base_gmodentity"
@@ -27,7 +27,7 @@ ENT.Contact = "lexi@lexi.org.uk" -- whohooo@yahoo.co.uk
 ENT.Spawnable = false
 ENT.AdminSpawnable = false
 
-if (CLIENT) then
+if CLIENT then
 	return
 end
 
@@ -49,21 +49,25 @@ function ENT:Initialize()
 	self.nextFire = CurTime()
 
 	local phys = self:GetPhysicsObject()
-	if (IsValid(phys)) then
+	if IsValid(phys) then
 		phys:Wake()
 	end
-	if (WireLib) then
-		WireLib.CreateSpecialInputs(self, {"FireOnce", "AutoFire"},
-			{"NORMAL", "NORMAL"}, {
+	if WireLib then
+		WireLib.CreateSpecialInputs(
+			self,
+			{ "FireOnce", "AutoFire" },
+			{ "NORMAL", "NORMAL" },
+			{
 				"Fire a single prop",
 				"Fire repeatedly until released.",
-			})
+			}
+		)
 		WireLib.CreateSpecialOutputs(self, {
 			"ReadyToFire",
 			"Fired",
 			"AutoFiring",
 			"LastBullet",
-		}, {"NORMAL", "NORMAL", "NORMAL", "ENTITY"}, {
+		}, { "NORMAL", "NORMAL", "NORMAL", "ENTITY" }, {
 			"Is the cannon ready to fire again?",
 			"Triggered every time the cannon fires.",
 			"Is the cannon currently autofiring?",
@@ -97,10 +101,16 @@ function ENT:Setup(
 	self.fireExplosives = fireExplosives
 
 	self:SetOverlayText(
-		"- Prop Cannon -\nFiring Force: " .. math.floor(fireForce) .. ", Fire Delay: " ..
-			math.floor(fireDelay) .. (fireExplosives and
-			("\nExplosive Power:" .. math.floor(explosivePower) .. ", Explosive Radius:" ..
-				math.floor(explosiveRadius)) or "") .. "\nBullet Model: " .. fireModel)
+		"- Prop Cannon -\nFiring Force: "
+			.. math.floor(fireForce)
+			.. ", Fire Delay: "
+			.. math.floor(fireDelay)
+			.. (fireExplosives and ("\nExplosive Power:" .. math.floor(explosivePower) .. ", Explosive Radius:" .. math.floor(
+				explosiveRadius
+			)) or "")
+			.. "\nBullet Model: "
+			.. fireModel
+	)
 end
 
 function ENT:OnTakeDamage(dmginfo)
@@ -110,14 +120,14 @@ end
 function ENT:FireEnable()
 	self.enabled = true
 	self.nextFire = CurTime()
-	if (WireLib) then
+	if WireLib then
 		Wire_TriggerOutput(self, "AutoFiring", 1)
 	end
 end
 
 function ENT:FireDisable()
 	self.enabled = false
-	if (WireLib) then
+	if WireLib then
 		Wire_TriggerOutput(self, "AutoFiring", 0)
 	end
 end
@@ -127,14 +137,14 @@ function ENT:CanFire()
 end
 
 function ENT:Think()
-	if (self:CanFire()) then
-		if (WireLib) then
+	if self:CanFire() then
+		if WireLib then
 			Wire_TriggerOutput(self, "ReadyToFire", 1)
 		end
-		if (self.enabled) then
+		if self.enabled then
 			self:FireOne()
 		end
-	elseif (WireLib) then
+	elseif WireLib then
 		Wire_TriggerOutput(self, "ReadyToFire", 0)
 	end
 end
@@ -143,7 +153,7 @@ function ENT:FireOne()
 	self.nextFire = CurTime() + self.fireDelay
 
 	local pos = self:GetPos()
-	if (self.fireEffect ~= "" and self.fireEffect ~= "none") then
+	if self.fireEffect ~= "" and self.fireEffect ~= "none" then
 		local effectData = EffectData()
 		effectData:SetOrigin(pos)
 		effectData:SetStart(pos)
@@ -151,7 +161,7 @@ function ENT:FireOne()
 		util.Effect(self.fireEffect, effectData)
 	end
 	local ent = ents.Create("cannon_prop")
-	if (not IsValid(ent)) then
+	if not IsValid(ent) then
 		error("Could not create cannon_prop for firing!")
 	end
 	ent:SetPos(pos)
@@ -159,12 +169,12 @@ function ENT:FireOne()
 	ent:SetAngles(self:GetAngles())
 	ent:SetOwner(self) -- For collision and such.
 	ent.Owner = self:GetPlayer() -- For kill crediting
-	if (self.fireExplosives) then
+	if self.fireExplosives then
 		ent.explosive = true
 		ent.explosiveRadius = self.explosiveRadius
 		ent.explosivePower = self.explosivePower
 	end
-	if (self.killDelay > 0) then
+	if self.killDelay > 0 then
 		ent.dietime = CurTime() + self.killDelay
 	end
 	ent:Spawn()
@@ -173,15 +183,15 @@ function ENT:FireOne()
 	local iPhys = self:GetPhysicsObject()
 	local uPhys = ent:GetPhysicsObject()
 	local up = self:GetUp()
-	if (IsValid(iPhys)) then -- The cannon could conceivably work without a valid physics model.
+	if IsValid(iPhys) then -- The cannon could conceivably work without a valid physics model.
 		iPhys:ApplyForceCenter(up * -self.fireForce * self.recoilAmount) -- Recoil
 	end
-	if (not IsValid(uPhys)) then -- The bullets can't though
+	if not IsValid(uPhys) then -- The bullets can't though
 		error("Invalid physics for model '" .. self.fireModel .. "' !!")
 	end
 	uPhys:SetVelocityInstantaneous(self:GetVelocity()) -- Start the bullet off going like we be.
 	uPhys:ApplyForceCenter(up * self.fireForce) -- Fire it off infront of us
-	if (WireLib) then
+	if WireLib then
 		Wire_TriggerOutput(self, "Fired", 1)
 		Wire_TriggerOutput(self, "LastBullet", ent)
 		Wire_TriggerOutput(self, "Fired", 0)
@@ -189,10 +199,10 @@ function ENT:FireOne()
 end
 
 function ENT:TriggerInput(key, value)
-	if (key == "FireOnce" and value ~= 0) then
+	if key == "FireOnce" and value ~= 0 then
 		self:FireOne()
-	elseif (key == "AutoFire") then
-		if (value == 0) then
+	elseif key == "AutoFire" then
+		if value == 0 then
 			self:FireDisable()
 		else
 			self:FireEnable()
@@ -201,14 +211,14 @@ function ENT:TriggerInput(key, value)
 end
 
 local function On(ply, ent)
-	if (not IsValid(ent)) then
+	if not IsValid(ent) then
 		return
 	end
 	ent:FireEnable()
 end
 
 local function Off(pl, ent)
-	if (not IsValid(ent)) then
+	if not IsValid(ent) then
 		return
 	end
 	ent:FireDisable()

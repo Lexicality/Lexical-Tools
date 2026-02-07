@@ -86,16 +86,14 @@ function Wire_RemoveInputs(ent, names)
 	if not (HasPorts(ent) and ent.Inputs) then
 		return
 	end
-	WireLib.AdjustSpecialInputs(ent,
-		GetExistingPorts(ent.Inputs, CreateKeys(names)))
+	WireLib.AdjustSpecialInputs(ent, GetExistingPorts(ent.Inputs, CreateKeys(names)))
 end
 
 function Wire_RemoveOutputs(ent, names)
 	if not (HasPorts(ent) and ent.Outputs) then
 		return
 	end
-	WireLib.AdjustSpecialOutputs(ent,
-		GetExistingPorts(ent.Outputs, CreateKeys(names)))
+	WireLib.AdjustSpecialOutputs(ent, GetExistingPorts(ent.Outputs, CreateKeys(names)))
 end
 
 function Wire_AddInputs(ent, names, descs)

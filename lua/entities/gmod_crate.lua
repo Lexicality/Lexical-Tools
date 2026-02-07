@@ -29,14 +29,14 @@ ENT._NWVars = {
 		Type = "Int",
 		Default = 1,
 		KeyName = "scale",
-		Edit = {type = "Int", min = 1, max = 10},
+		Edit = { type = "Int", min = 1, max = 10 },
 	},
 }
 
 local radius = 32
 function ENT:Think()
 	local scale = self:GetScale()
-	if (scale == self.prevScale) then
+	if scale == self.prevScale then
 		return
 	end
 	self.prevScale = scale
@@ -45,9 +45,9 @@ function ENT:Think()
 	local vec = Vector(num, num, num)
 	self:PhysicsInitBox(-vec, vec)
 	self:SetCollisionBounds(-vec, vec)
-	if (SERVER) then
+	if SERVER then
 		local phys = self:GetPhysicsObject()
-		if (IsValid(phys)) then
+		if IsValid(phys) then
 			phys:SetMass(phys:GetMass() * scale)
 		end
 	else
@@ -61,7 +61,7 @@ function ENT:Think()
 	end
 end
 
-if (CLIENT) then
+if CLIENT then
 	return
 end
 
@@ -74,11 +74,11 @@ function ENT:Initialize()
 end
 
 function MakeCrate(ply, pos, angles, scale, data)
-	if (not ply:CheckLimit("props")) then
+	if not ply:CheckLimit("props") then
 		return false
 	end
 	local ent
-	if (data) then
+	if data then
 		ent = duplicator.GenericDuplicatorFunction(ply, data) -- This is actually better than doing it manually
 	else
 		ent = ents.Create("gmod_crate")
@@ -93,5 +93,4 @@ function MakeCrate(ply, pos, angles, scale, data)
 	ply:AddCleanup("props", ent)
 	return ent
 end
-duplicator.RegisterEntityClass("gmod_crate", MakeCrate, "Pos", "Ang", "Scale",
-	"Data")
+duplicator.RegisterEntityClass("gmod_crate", MakeCrate, "Pos", "Ang", "Scale", "Data")

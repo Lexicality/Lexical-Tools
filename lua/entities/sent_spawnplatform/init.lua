@@ -32,7 +32,7 @@ local colour_flipped = Color(0, 255, 255)
 
 numpad.Register("NPCSpawnerOn", function(ply, ent)
 	npcspawner.debug("Numpad on called for", ent, "by", ply)
-	if (IsValid(ent)) then
+	if IsValid(ent) then
 		ent:TurnOn()
 	else
 		npcspawner.debug("Invalid entity provided?!")
@@ -41,7 +41,7 @@ end)
 
 numpad.Register("NPCSpawnerOff", function(ply, ent)
 	npcspawner.debug("Numpad off called for", ent, "by", ply)
-	if (IsValid(ent)) then
+	if IsValid(ent) then
 		ent:TurnOff()
 	else
 		npcspawner.debug("Invalid entity provided?!")
@@ -65,10 +65,15 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	local phys = self:GetPhysicsObject()
-	if (not IsValid(phys)) then
-		ErrorNoHalt("No physics object for ", tostring(self), " using model ",
-			self:GetModel(), "?\n")
-	elseif (self:GetFrozen()) then
+	if not IsValid(phys) then
+		ErrorNoHalt(
+			"No physics object for ",
+			tostring(self),
+			" using model ",
+			self:GetModel(),
+			"?\n"
+		)
+	elseif self:GetFrozen() then
 		phys:EnableMotion(false)
 	else
 		phys:Wake()
@@ -80,7 +85,7 @@ function ENT:Initialize()
 end
 
 function ENT:IsOwnerAllowed()
-	if (npcspawner.config.adminonly ~= 1) then
+	if npcspawner.config.adminonly ~= 1 then
 		return true
 	end
 	local ply = self:GetPlayer()
@@ -88,24 +93,27 @@ function ENT:IsOwnerAllowed()
 end
 
 function ENT:CanSpawnNPC()
-	return (self:IsActive() and self:IsOwnerAllowed() and self.Spawned <
-		       self:GetMaxNPCs() and (self.LastSpawn + self:GetSpawnDelay()) <=
-		       CurTime())
+	return (
+		self:IsActive()
+		and self:IsOwnerAllowed()
+		and self.Spawned < self:GetMaxNPCs()
+		and (self.LastSpawn + self:GetSpawnDelay()) <= CurTime()
+	)
 end
 
 function ENT:OrentationThink()
-	if (not self:IsActive()) then
+	if not self:IsActive() then
 		return true
 	end
 
-	if (not self:CheckOrientation()) then
-		if (not self:IsFlipped()) then
+	if not self:CheckOrientation() then
+		if not self:IsFlipped() then
 			self:SetFlipped(true)
 			self:DoColour(colour_flipped)
 		end
 
 		return false
-	elseif (self:IsFlipped()) then
+	elseif self:IsFlipped() then
 		self:SetFlipped(false)
 		self:DoColour(colour_on)
 	end
@@ -114,15 +122,15 @@ function ENT:OrentationThink()
 end
 
 function ENT:Think()
-	if (BaseClass.Think) then
+	if BaseClass.Think then
 		BaseClass.Think(self)
 	end
 
-	if (not self:OrentationThink()) then
+	if not self:OrentationThink() then
 		return
 	end
 
-	if (self:CanSpawnNPC()) then
+	if self:CanSpawnNPC() then
 		self:SpawnOne()
 	end
 end
@@ -131,12 +139,12 @@ function ENT:NPCKilled(npc)
 	npcspawner.debug2("NPC Killed:", npc)
 	self.NPCs[npc] = nil
 	-- Make the delay apply after the nth NPC dies.
-	if (not self:GetLegacySpawnMode() and self.Spawned >= self:GetMaxNPCs()) then
+	if not self:GetLegacySpawnMode() and self.Spawned >= self:GetMaxNPCs() then
 		self.LastSpawn = CurTime()
 	end
 	self.Spawned = self.Spawned - 1
 	-- "This should never happen"
-	if (self.Spawned < 0) then
+	if self.Spawned < 0 then
 		self.Spawned = 0
 	end
 	self:TriggerOutput("OnNPCKilled", self)
@@ -144,7 +152,7 @@ function ENT:NPCKilled(npc)
 end
 
 function ENT:Use(activator, caller)
-	if (not self:GetCanToggle() or self.LastChange + 1 > CurTime()) then
+	if not self:GetCanToggle() or self.LastChange + 1 > CurTime() then
 		return
 	end
 	npcspawner.debug(self, "has been used by", activator, caller)
@@ -152,7 +160,7 @@ function ENT:Use(activator, caller)
 end
 
 function ENT:Toggle()
-	if (self:IsActive()) then
+	if self:IsActive() then
 		npcspawner.debug(self, "has toggled from on to off.")
 		self:TurnOff()
 	else
@@ -183,10 +191,10 @@ function ENT:OnActiveChange(_, _, active)
 	npcspawner.debug2(self, "is set to active state:", active)
 	local c = self:GetColor()
 	local a = c.a
-	if (active) then
+	if active then
 		self:SetModel(model_active)
 		self.LastSpawn = CurTime()
-		if (self:IsFlipped()) then
+		if self:IsFlipped() then
 			self:DoColour(colour_flipped)
 		else
 			self:DoColour(colour_on)
@@ -213,25 +221,35 @@ end
 
 --[[ Hammer I/O ]]
 function ENT:AcceptInput(name, activator, called, value)
-	if (BaseClass.AcceptInput and
-		BaseClass.AcceptInput(self, name, activator, called, value)) then
+	if
+		BaseClass.AcceptInput
+		and BaseClass.AcceptInput(self, name, activator, called, value)
+	then
 		return true
 	end
 
-	npcspawner.debug2(self, "has just had their", name, "triggered by",
-		tostring(called), "which was caused by", tostring(activator),
-		"and was passed", value)
+	npcspawner.debug2(
+		self,
+		"has just had their",
+		name,
+		"triggered by",
+		tostring(called),
+		"which was caused by",
+		tostring(activator),
+		"and was passed",
+		value
+	)
 
-	if (name == "TurnOn") then
+	if name == "TurnOn" then
 		self:TurnOn()
 		return true
-	elseif (name == "TurnOff") then
+	elseif name == "TurnOff" then
 		self:TurnOff()
 		return true
-	elseif (name == "RemoveNPCs") then
+	elseif name == "RemoveNPCs" then
 		self:RemoveNPCs()
 		return true
-	elseif (name == "SpawnOne") then
+	elseif name == "SpawnOne" then
 		self:SpawnOne()
 		return true
 	end

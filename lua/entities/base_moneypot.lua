@@ -25,7 +25,7 @@ ENT.AdminSpawnable = false
 ENT.IsMoneyPot = true
 
 local BaseClass
-if (WireLib) then
+if WireLib then
 	BaseClass = "base_wire_entity"
 else
 	BaseClass = "base_gmodentity"
@@ -36,26 +36,28 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "Money")
 end
 
-if (CLIENT) then
+if CLIENT then
 	if not WireLib then
 		-- Slightly improved performance for sandbox tooltips
 		function ENT:Think()
-			if (self:BeingLookedAtByLocalPlayer()) then
+			if self:BeingLookedAtByLocalPlayer() then
 				local text = self:GetOverlayText()
 
 				AddWorldTip(self:EntIndex(), text, 0.5, self:GetPos(), self)
 
-				halo.Add({self}, color_white, 1, 1, 1, true, true)
+				halo.Add({ self }, color_white, 1, 1, 1, true, true)
 			end
 		end
 	end
 
 	-- Sandbox
 	function ENT:GetOverlayText()
-		local txt = string.format(language.GetPhrase("tool.moneypot.overlay"),
-			self:FormatMoney(self:GetMoney()))
+		local txt = string.format(
+			language.GetPhrase("tool.moneypot.overlay"),
+			self:FormatMoney(self:GetMoney())
+		)
 
-		if (game.SinglePlayer()) then
+		if game.SinglePlayer() then
 			return txt
 		end
 
@@ -67,8 +69,10 @@ if (CLIENT) then
 	-- Wiremod
 	function ENT:GetOverlayData()
 		return {
-			txt = string.format(language.GetPhrase("tool.moneypot.overlay"),
-				self:FormatMoney(self:GetMoney())),
+			txt = string.format(
+				language.GetPhrase("tool.moneypot.overlay"),
+				self:FormatMoney(self:GetMoney())
+			),
 		}
 	end
 
@@ -121,23 +125,28 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetUseType(SIMPLE_USE)
-	if (WireLib) then
-		WireLib.CreateSpecialInputs(self, {"SpawnAll", "SpawnAmount"})
-		WireLib.CreateSpecialOutputs(self, {"StoredAmount", "LastAmount", "Updated"})
+	if WireLib then
+		WireLib.CreateSpecialInputs(self, { "SpawnAll", "SpawnAmount" })
+		WireLib.CreateSpecialOutputs(self, { "StoredAmount", "LastAmount", "Updated" })
 	end
 	local phys = self:GetPhysicsObject()
-	if (not phys:IsValid()) then
+	if not phys:IsValid() then
 		local mdl = self:GetModel()
 		self:Remove()
-		error("Entity of type " .. self.ClassName ..
-			      " created without a physobj! (Model: " .. mdl .. ")")
+		error(
+			"Entity of type "
+				.. self.ClassName
+				.. " created without a physobj! (Model: "
+				.. mdl
+				.. ")"
+		)
 	end
 	phys:Wake()
 end
 
 function ENT:SpawnAll(immediate)
 	local amount = self:GetMoney()
-	if (immediate) then
+	if immediate then
 		self:SpawnAmount(amount)
 	else
 		self:DelayedSpawn(amount)
@@ -149,32 +158,33 @@ function ENT:Use(activator)
 end
 
 function ENT:UpdateWireOutputs(amount)
-	if (not Wire_TriggerOutput) then
+	if not Wire_TriggerOutput then
 		return
 	end
 	Wire_TriggerOutput(self, "StoredAmount", self:GetMoney())
 	Wire_TriggerOutput(self, "LastAmount", amount)
 	Wire_TriggerOutput(self, "Updated", 1)
 	timer.Simple(0.1, function()
-		if (IsValid(self)) then
+		if IsValid(self) then
 			Wire_TriggerOutput(self, "Updated", 0)
 		end
 	end)
 end
 
 function ENT:IsGoodMoneyEntity(ent)
-	return IsValid(ent) and self:IsMoneyEntity(ent) and
-		       not self:IsMoneyEntityInvalid(ent) and (ent.MoneyPotPause or 0) <
-		       CurTime()
+	return IsValid(ent)
+		and self:IsMoneyEntity(ent)
+		and not self:IsMoneyEntityInvalid(ent)
+		and (ent.MoneyPotPause or 0) < CurTime()
 end
 
 function ENT:StartTouch(ent)
-	if (not self:IsGoodMoneyEntity(ent)) then
+	if not self:IsGoodMoneyEntity(ent) then
 		return
 	end
 
 	local amt = self:GetMoneyAmount(ent)
-	if (amt <= 0) then
+	if amt <= 0 then
 		return
 	end
 
@@ -188,16 +198,16 @@ end
 local spos = Vector(0, 0, 17)
 function ENT:SpawnAmount(amount)
 	amount = math.Clamp(math.floor(amount), 0, self:GetMoney())
-	if (amount == 0) then
+	if amount == 0 then
 		return
 	end
 	-- Prevent people spawning too many
-	if (self:GetNumMoneyEntities() >= 50) then
+	if self:GetNumMoneyEntities() >= 50 then
 		return
 	end
 
 	local cash = self:SpawnMoneyEntity(amount)
-	if (cash == NULL) then
+	if cash == NULL then
 		error("Moneypot (" .. self.ClassName .. ") unable to create cash entity!")
 	end
 	-- Remove our money before the new money exists
@@ -215,14 +225,18 @@ function ENT:AddMoney(amount)
 	self:UpdateWireOutputs(amount)
 end
 
-local cvar_delay = CreateConVar("moneypot_spawn_delay", 1, FCVAR_ARCHIVE,
-	"How long in seconds to wait before spawning money")
+local cvar_delay = CreateConVar(
+	"moneypot_spawn_delay",
+	1,
+	FCVAR_ARCHIVE,
+	"How long in seconds to wait before spawning money"
+)
 function ENT:DelayedSpawn(amount)
 	amount = math.Clamp(amount, 0, self:GetMoney())
-	if (amount == 0) then
+	if amount == 0 then
 		return
 	end
-	if (self.DoSpawn) then
+	if self.DoSpawn then
 		self.DoSpawn = self.DoSpawn + amount
 	else
 		self.DoSpawn = amount
@@ -235,11 +249,11 @@ ENT.DoSpawn = false
 ENT.SpawnTime = 0
 function ENT:Think()
 	BaseClass.Think(self)
-	if (not self.DoSpawn) then
+	if not self.DoSpawn then
 		return
 	end
 	local ctime = CurTime()
-	if (self.SpawnTime < ctime) then
+	if self.SpawnTime < ctime then
 		self:SpawnAmount(self.DoSpawn)
 		self.DoSpawn = false
 		return
@@ -259,15 +273,15 @@ function ENT:OnRemove()
 end
 
 function ENT:TriggerInput(key, value)
-	if (key == "SpawnAll" and value ~= 0) then
+	if key == "SpawnAll" and value ~= 0 then
 		self:SpawnAll(false)
-	elseif (key == "SpawnAmount" and value > 0) then
+	elseif key == "SpawnAmount" and value > 0 then
 		self:DelayedSpawn(value)
 	end
 end
 
 function ENT:OnEntityCopyTableFinish(data)
-	if (data.DT) then
+	if data.DT then
 		data.DT.Money = 0
 	end
 end
@@ -275,7 +289,7 @@ end
 function ENT:OnDuplicated(data)
 	self:SetMoney(0)
 	-- AdvDupe restores DTVars *AFTER* calling this function 😒
-	if (data.DT) then
+	if data.DT then
 		data.DT.Money = 0
 	end
 end

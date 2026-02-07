@@ -17,7 +17,7 @@
 local PANEL = {}
 
 function PANEL:OnConVarChange(password)
-	if (password == "") then
+	if password == "" then
 		self:DoText("You'll need a keypad cracker to use this keypad")
 	else
 		self:DoText("")
@@ -25,7 +25,7 @@ function PANEL:OnConVarChange(password)
 end
 
 function PANEL:ControlValues(data)
-	self:SetConVars({"keypad_password"})
+	self:SetConVars({ "keypad_password" })
 	self:HandleCVarChange()
 end
 

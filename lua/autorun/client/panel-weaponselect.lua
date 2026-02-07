@@ -20,19 +20,23 @@ DEFINE_BASECLASS("DComboBox")
 
 function PANEL:Init()
 	-- Big brained sorting hack
-	self:AddChoice("  " .. language.GetPhrase("menubar.npcs.defaultweapon"),
-		"weapon_default")
-	self:AddChoice("  " .. language.GetPhrase("menubar.npcs.noweapon"),
-		"weapon_none")
+	self:AddChoice(
+		"  " .. language.GetPhrase("menubar.npcs.defaultweapon"),
+		"weapon_default"
+	)
+	self:AddChoice("  " .. language.GetPhrase("menubar.npcs.noweapon"), "weapon_none")
 	self:AddChoice(
 		" " .. language.GetPhrase("tool.npc_spawnplatform.weapon_rebel"),
-		"weapon_rebel")
-	self:AddChoice(" " ..
-		               language.GetPhrase("tool.npc_spawnplatform.weapon_combine"),
-		"weapon_combine")
-	self:AddChoice(" " ..
-		               language.GetPhrase("tool.npc_spawnplatform.weapon_citizen"),
-		"weapon_citizen")
+		"weapon_rebel"
+	)
+	self:AddChoice(
+		" " .. language.GetPhrase("tool.npc_spawnplatform.weapon_combine"),
+		"weapon_combine"
+	)
+	self:AddChoice(
+		" " .. language.GetPhrase("tool.npc_spawnplatform.weapon_citizen"),
+		"weapon_citizen"
+	)
 
 	for _, tab in pairs(list.Get("NPCUsableWeapons")) do
 		self:AddChoice(tab.title, tab.class)
@@ -48,5 +52,4 @@ function PANEL:OnSelect(i, label, value)
 	RunConsoleCommand(self.m_strConVar, value)
 end
 
-derma.DefineControl("NPCWeaponSelecter", "Selects a NPC weapon", PANEL,
-	"DComboBox")
+derma.DefineControl("NPCWeaponSelecter", "Selects a NPC weapon", PANEL, "DComboBox")

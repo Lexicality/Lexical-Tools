@@ -76,14 +76,15 @@ function SWEP:IsTargetEntity(ent)
 end
 
 function SWEP:IsValidTrace(tr)
-	return tr.HitNonWorld and tr.StartPos:Distance(tr.HitPos) <= 50 and
-		       self:IsTargetEntity(tr.Entity)
+	return tr.HitNonWorld
+		and tr.StartPos:Distance(tr.HitPos) <= 50
+		and self:IsTargetEntity(tr.Entity)
 end
 
 function SWEP:ResetState()
 	self:SetWeaponHoldType("slam")
 	local target = self:GetCrackTarget()
-	if (IsValid(target) and SERVER) then
+	if IsValid(target) and SERVER then
 		target:EndCrack()
 	end
 	self:SetCrackState(self.States.Idle)
@@ -110,7 +111,7 @@ function SWEP:Succeed()
 	self:ResetState()
 	self:DoRecovery()
 
-	if (SERVER and IsValid(target)) then
+	if SERVER and IsValid(target) then
 		target:TriggerKeypad(true, self.Owner)
 		hook.Run("KeypadCrackSuccess", target, self.Owner)
 	end
@@ -125,7 +126,7 @@ function SWEP:Fail()
 
 	self:ResetState()
 
-	if (start > CurTime()) then
+	if start > CurTime() then
 		-- :/ this is really abrupt, but it's what CS:S does and I can't work out how to blend the anims
 		self:SendWeaponAnim(ACT_VM_IDLE)
 	else
@@ -142,13 +143,13 @@ function SWEP:Holster()
 end
 
 function SWEP:PrimaryAttack()
-	self:SetNextPrimaryFire(CurTime() + .4)
-	if (self:GetCrackState() ~= self.States.Idle) then
+	self:SetNextPrimaryFire(CurTime() + 0.4)
+	if self:GetCrackState() ~= self.States.Idle then
 		return
 	end
 
 	local tr = self.Owner:GetEyeTrace()
-	if (not self:IsValidTrace(tr)) then
+	if not self:IsValidTrace(tr) then
 		return
 	end
 	local ent = tr.Entity
@@ -172,13 +173,13 @@ SWEP.SecondaryAttack = SWEP.PrimaryAttack
 function SWEP:CheckFailState()
 	-- Make sure the keypad still exists
 	local target = self:GetCrackTarget()
-	if (not IsValid(target)) then
+	if not IsValid(target) then
 		self:Fail()
 		return true
 	end
 	-- Make sure they haven't moved
 	local tr = self.Owner:GetEyeTrace()
-	if (tr.Entity ~= target or not self:IsValidTrace(tr)) then
+	if tr.Entity ~= target or not self:IsValidTrace(tr) then
 		self:Fail()
 		return true
 	end
@@ -188,17 +189,17 @@ end
 
 function SWEP:Think()
 	local state = self:GetCrackState()
-	if (state == self.States.Idle) then
+	if state == self.States.Idle then
 		return
 	end
 
 	local now = CurTime()
-	if (state == self.States.InitialAnimation) then
+	if state == self.States.InitialAnimation then
 		-- Waiting for the animation to end
-		if (self:CheckFailState()) then
+		if self:CheckFailState() then
 			return
-		elseif (self:GetCrackStart() <= now) then
-			if (SERVER) then
+		elseif self:GetCrackStart() <= now then
+			if SERVER then
 				local target = self:GetCrackTarget()
 				target:StartCrack(self.Owner)
 				hook.Run("KeypadCrackStart", target, self.Owner)
@@ -206,22 +207,22 @@ function SWEP:Think()
 
 			self:SetCrackState(self.States.Cracking)
 		end
-	elseif (state == self.States.Cracking) then
+	elseif state == self.States.Cracking then
 		self._Blink = math.floor(CurTime() * 10) % 2 == 0
 		-- Crack testing
-		if (self:CheckFailState()) then
+		if self:CheckFailState() then
 			return
-		elseif (self:GetCrackEnd() <= now) then
+		elseif self:GetCrackEnd() <= now then
 			self:Succeed()
 		end
-	elseif (state == self.States.RecoverStage1) then
-		if (self:GetRecoveryTimer() <= now) then
+	elseif state == self.States.RecoverStage1 then
+		if self:GetRecoveryTimer() <= now then
 			self:SetCrackState(self.States.RecoverStage2)
 			self:SendWeaponAnim(ACT_VM_DRAW)
 			self:SetRecoveryTimer(CurTime() + self:SequenceDuration())
 		end
-	elseif (state == self.States.RecoverStage2) then
-		if (self:GetRecoveryTimer() <= now) then
+	elseif state == self.States.RecoverStage2 then
+		if self:GetRecoveryTimer() <= now then
 			self:SetCrackState(self.States.Idle)
 			self:SendWeaponAnim(ACT_VM_IDLE)
 		end
@@ -236,11 +237,11 @@ SWEP._Blink = false
 SWEP._BootupSequence = 0
 
 function SWEP:FireAnimationEvent(pos, ang, event, options)
-	if (event ~= 7001) then
+	if event ~= 7001 then
 		return
 	end
 	self._BootupSequence = string.len(options)
-	if (options == "*******") then
+	if options == "*******" then
 		self._BootupSequence = 8
 	end
 end
@@ -255,7 +256,7 @@ local texes = {
 	overlay1 = "dev/dev_prisontvoverlay001",
 	overlay2 = "dev/dev_prisontvoverlay002",
 }
-if (CLIENT) then
+if CLIENT then
 	for name, matname in pairs(texes) do
 		texes[name] = surface.GetTextureID(matname)
 	end
@@ -269,7 +270,6 @@ if (CLIENT) then
 		-- scanlines=2,
 		-- shadow=true,
 	})
-
 end
 
 local function drawTex(tex)
@@ -298,31 +298,31 @@ local lipsum = {
 }
 function SWEP:DrawScreen()
 	local i = self._BootupSequence
-	if (i < 1) then
+	if i < 1 then
 		return
 	end
 
 	surface.SetDrawColor(color_white)
 	surface.SetAlphaMultiplier(1)
 
-	if (i >= 2 and i <= 7) then
+	if i >= 2 and i <= 7 then
 		drawTex(texes.logo)
 		drawTex(texes.grid)
-	elseif (i >= 8) then
+	elseif i >= 8 then
 		drawTex(texes.map)
 	end
 
-	if (i >= 3) then
+	if i >= 3 then
 		drawTex(texes.overlay1)
 	end
-	if (i >= 4) then
+	if i >= 4 then
 		drawTex(texes.overlay2)
 		surface.SetAlphaMultiplier(0.8)
 		surface.DrawOutlinedRect(223, 74, 69, 10)
 	end
 
 	-- Bouncing bars of nonsense
-	if (i >= 5) then
+	if i >= 5 then
 		local now = CurTime() * 2
 		-- Left hand side
 		local len = -32
@@ -344,11 +344,11 @@ function SWEP:DrawScreen()
 	end
 
 	-- Actually useful bar
-	if (i >= 7) then
+	if i >= 7 then
 		local startTime = self:GetCrackStart()
 		local endTime = self:GetCrackEnd()
 		local now = CurTime()
-		if (now > startTime) then
+		if now > startTime then
 			local max = endTime - startTime
 			local cur = now - startTime
 			cur = math.min(cur, max)
@@ -359,7 +359,7 @@ function SWEP:DrawScreen()
 
 	surface.SetAlphaMultiplier(1)
 
-	if (i >= 6) then
+	if i >= 6 then
 		local now = CurTime() * 50
 		surface.SetTextColor(color_white)
 		surface.SetFont("GarbageText")
@@ -391,7 +391,7 @@ function SWEP:DrawScreen()
 			local voffset = (i - 1) * h
 			-- This just works, don't ask me how.
 			voffset = voffset - (now % (num * h))
-			if (voffset < 0) then
+			if voffset < 0 then
 				voffset = voffset + num * h
 			end
 			surface.SetTextPos(sx, sy + voffset)
@@ -401,14 +401,14 @@ function SWEP:DrawScreen()
 	end
 
 	drawTex(texes.distortion)
-	if (i == 1) then
+	if i == 1 then
 		drawTex(texes.grid)
 	end
 end
 
 function SWEP:ViewModelDrawn(vm)
 	local state = self:GetCrackState()
-	if (state ~= self.States.InitialAnimation and state ~= self.States.Cracking) then
+	if state ~= self.States.InitialAnimation and state ~= self.States.Cracking then
 		return
 	end
 
@@ -422,22 +422,23 @@ function SWEP:ViewModelDrawn(vm)
 	ang:RotateAroundAxis(ang:Up(), 180)
 
 	-- Screen
-	local screenpos = pos + ang:Forward() * 1.8 + ang:Right() * -1.3 + ang:Up() *
-		                  2.70
+	local screenpos = pos + ang:Forward() * 1.8 + ang:Right() * -1.3 + ang:Up() * 2.70
 
 	cam.Start3D2D(screenpos, ang, 0.01)
 	self:DrawScreen()
 	cam.End3D2D()
 
 	-- Everything else is for post bootup
-	if (state ~= self.States.Cracking) then
+	if state ~= self.States.Cracking then
 		return
 	end
 
 	-- Blinkenlite
-	if (self._Blink) then
-		local spritepos = pos + ang:Forward() * 1.59 + ang:Right() * 0.26 + ang:Up() *
-			                  2.86
+	if self._Blink then
+		local spritepos = pos
+			+ ang:Forward() * 1.59
+			+ ang:Right() * 0.26
+			+ ang:Up() * 2.86
 
 		render.SetMaterial(sprmat)
 		cam.IgnoreZ(true)
@@ -456,13 +457,16 @@ function SWEP:DrawWorldModel()
 end
 
 function SWEP:DrawWorldModelTranslucent()
-	if (self:GetCrackState() ~= self.States.Cracking or self:GetCrackStart() >
-		CurTime() or not IsValid(self:GetCrackTarget())) then
+	if
+		self:GetCrackState() ~= self.States.Cracking
+		or self:GetCrackStart() > CurTime()
+		or not IsValid(self:GetCrackTarget())
+	then
 		return
 	end
 
 	local bone = self:LookupBone("ValveBiped.Bip01_R_Hand")
-	if (not bone) then
+	if not bone then
 		return
 	end
 	local matt = self:GetBoneMatrix(bone)
@@ -475,7 +479,7 @@ end
 
 function SWEP:DrawMagicBeam(pos)
 	local target = self:GetCrackTarget()
-	if (not IsValid(target)) then
+	if not IsValid(target) then
 		return
 	end
 	local targetPos = target:GetZapPos()

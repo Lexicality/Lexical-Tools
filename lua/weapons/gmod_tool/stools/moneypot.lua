@@ -19,17 +19,17 @@ TOOL.Name = "#tool.moneypot.name"
 TOOL.ClientConVar["weld"] = 1
 TOOL.Information = {
 	-- Left click help
-	{name = "left"},
+	{ name = "left" },
 }
 
 cleanup.Register("moneypots")
 
 function TOOL:UpdateGhost(ent, ply)
-	if (not IsValid(ent)) then
+	if not IsValid(ent) then
 		return
 	end
 	local tr = ply:GetEyeTrace()
-	if (not tr.Hit or (IsValid(tr.Entity) and (tr.Entity:IsPlayer()))) then
+	if not tr.Hit or (IsValid(tr.Entity) and (tr.Entity:IsPlayer())) then
 		ent:SetNoDraw(true)
 		return
 	end
@@ -41,16 +41,15 @@ function TOOL:UpdateGhost(ent, ply)
 end
 
 function TOOL:Think()
-	if (SERVER and not game.SinglePlayer()) then
+	if SERVER and not game.SinglePlayer() then
 		return
 	end
-	if (CLIENT and game.SinglePlayer()) then
+	if CLIENT and game.SinglePlayer() then
 		return
 	end
 	local ent = self.GhostEntity
-	if (not IsValid(ent)) then
-		self:MakeGhostEntity("models/props_lab/powerbox02b.mdl", vector_origin,
-			Angle())
+	if not IsValid(ent) then
+		self:MakeGhostEntity("models/props_lab/powerbox02b.mdl", vector_origin, Angle())
 	end
 	self:UpdateGhost(self.GhostEntity, self:GetOwner())
 end
@@ -59,15 +58,17 @@ local function canTool(tr)
 	return tr.Hit and not tr.Entity:IsPlayer()
 end
 
-if (CLIENT) then
+if CLIENT then
 	function TOOL:LeftClick(tr)
 		return canTool(tr)
 	end
 	function TOOL.BuildCPanel(cp)
-		cp:AddControl("Header", {Description = "#tool.moneypot.help"})
+		cp:AddControl("Header", { Description = "#tool.moneypot.help" })
 
-		cp:AddControl("Checkbox",
-			{Label = "#tool.moneypot.weld", Command = "moneypot_weld"})
+		cp:AddControl(
+			"Checkbox",
+			{ Label = "#tool.moneypot.weld", Command = "moneypot_weld" }
+		)
 	end
 	return
 end
@@ -75,7 +76,7 @@ end
 CreateConVar("sbox_maxmoneypots", 10, FCVAR_NOTIFY)
 
 function TOOL:LeftClick(tr)
-	if (not canTool(tr)) then
+	if not canTool(tr) then
 		return false
 	end
 
@@ -84,16 +85,15 @@ function TOOL:LeftClick(tr)
 	local angles = tr.HitNormal:Angle()
 	angles.pitch = angles.pitch + 90
 
-	local box = MakeMoneyPot(ply, tr.HitPos, angles,
-		"models/props_lab/powerbox02b.mdl")
-	if (not box) then
+	local box = MakeMoneyPot(ply, tr.HitPos, angles, "models/props_lab/powerbox02b.mdl")
+	if not box then
 		return false
 	end
 	box:SetPos(tr.HitPos - tr.HitNormal * box:OBBMins().z)
 
 	local weld
 	local ent = tr.Entity
-	if (IsValid(ent) and not ent:IsWorld() and self:GetClientNumber("weld") ~= 0) then
+	if IsValid(ent) and not ent:IsWorld() and self:GetClientNumber("weld") ~= 0 then
 		weld = constraint.Weld(box, ent, 0, tr.PhysicsBone, 0)
 		ent:DeleteOnRemove(box)
 	else

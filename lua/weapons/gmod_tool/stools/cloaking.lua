@@ -30,16 +30,20 @@ local function checkTrace(tr)
 	return IsValid(tr.Entity) and not (tr.Entity:IsPlayer() or tr.Entity:IsNPC())
 end
 
-if (CLIENT) then
+if CLIENT then
 	usermessage.Hook("CloakingHurrah!", function()
 		GAMEMODE:AddNotify("Entity is now cloakable!", NOTIFY_GENERIC, 10)
 		surface.PlaySound("ambient/water/drip" .. math.random(1, 4) .. ".wav")
 	end)
 	language.Add("Tool_cloaking_name", "Cloaking")
-	language.Add("Tool_cloaking_desc",
-		"Allows you to turn things invisible at the touch of a button")
-	language.Add("Tool_cloaking_0",
-		"Click on something to make it a cloakable. Reload to remove cloaking from something.")
+	language.Add(
+		"Tool_cloaking_desc",
+		"Allows you to turn things invisible at the touch of a button"
+	)
+	language.Add(
+		"Tool_cloaking_0",
+		"Click on something to make it a cloakable. Reload to remove cloaking from something."
+	)
 	language.Add("Undone_cloaking", "Undone Cloaking")
 
 	list.Set("CloakingMaterials", "Heatwave", "sprites/heatwave")
@@ -52,13 +56,15 @@ if (CLIENT) then
 		panel:CheckBox("Toggle Controls", "cloaking_toggle")
 		panel:CheckBox("Cloak constrained entities", "cloaking_all")
 
-		panel:AddControl("Numpad", {Label = "Button", Command = "cloaking_key"})
+		panel:AddControl("Numpad", { Label = "Button", Command = "cloaking_key" })
 		local options = {}
 		for name, material in pairs(list.Get("CloakingMaterials")) do
-			options[name] = {cloaking_material = material}
+			options[name] = { cloaking_material = material }
 		end
-		panel:AddControl("Listbox",
-			{Label = "Material:", Height = 120, Options = options})
+		panel:AddControl(
+			"Listbox",
+			{ Label = "Material:", Height = 120, Options = options }
+		)
 	end
 
 	TOOL.LeftClick = checkTrace
@@ -69,20 +75,20 @@ end
 require("wirefixes")
 
 local function cloakActivate(self)
-	if (self.cloakActive) then
+	if self.cloakActive then
 		return
 	end
 	self.cloakActive = true
 	self.cloakPreviousMaterial = self:GetMaterial()
 	self:SetMaterial(self.cloakMaterial)
 	self:DrawShadow(false)
-	if (WireLib) then
+	if WireLib then
 		Wire_TriggerOutput(self, "CloakActive", 1)
 	end
 end
 
 local function cloakDeactivate(self)
-	if (not self.cloakActive) then
+	if not self.cloakActive then
 		return
 	end
 	self.cloakActive = false
@@ -91,7 +97,7 @@ local function cloakDeactivate(self)
 end
 
 local function cloakToggleActive(self)
-	if (self.cloakActive) then
+	if self.cloakActive then
 		self:cloakDeactivate()
 	else
 		self:cloakActivate()
@@ -99,7 +105,7 @@ local function cloakToggleActive(self)
 end
 
 local function onDown(ply, ent)
-	if (not (ent:IsValid() and ent.cloakToggleActive)) then
+	if not (ent:IsValid() and ent.cloakToggleActive) then
 		return
 	end
 	ent:cloakToggleActive()
@@ -107,7 +113,7 @@ end
 numpad.Register("Cloaking onDown", onDown)
 
 local function onUp(ply, ent)
-	if (not (ent:IsValid() and ent.cloakToggleActive and not ent.cloakToggle)) then
+	if not (ent:IsValid() and ent.cloakToggleActive and not ent.cloakToggle) then
 		return
 	end
 	ent:cloakToggleActive()
@@ -115,42 +121,42 @@ end
 numpad.Register("Cloaking onUp", onUp)
 
 local function TriggerInput(self, name, value, ...)
-	if (name == "Cloak") then
-		if (value == 0) then
-			if (self.cloakPrevWireOn) then
+	if name == "Cloak" then
+		if value == 0 then
+			if self.cloakPrevWireOn then
 				self.cloakPrevWireOn = false
-				if (not self.cloakToggle) then
+				if not self.cloakToggle then
 					self:cloakToggleActive()
 				end
 			end
 		else
-			if (not self.cloakPrevWireOn) then
+			if not self.cloakPrevWireOn then
 				self.cloakPrevWireOn = true
 				self:cloakToggleActive()
 			end
 		end
-	elseif (self.cloakTriggerInput) then
+	elseif self.cloakTriggerInput then
 		return self:cloakTriggerInput(name, value, ...)
 	end
 end
 
 local function PreEntityCopy(self)
 	local info = WireLib.BuildDupeInfo(self)
-	if (info) then
+	if info then
 		duplicator.StoreEntityModifier(self, "WireDupeInfo", info)
 	end
-	if (self.wireSupportPreEntityCopy) then
+	if self.wireSupportPreEntityCopy then
 		self:wireSupportEntityCopy()
 	end
 end
 
 local function PostEntityPaste(self, ply, ent, ents)
-	if (self.EntityMods and self.EntityMods.WireDupeInfo) then
+	if self.EntityMods and self.EntityMods.WireDupeInfo then
 		WireLib.ApplyDupeInfo(ply, self, self.EntityMods.WireDupeInfo, function(id)
 			return ents[id]
 		end)
 	end
-	if (self.wireSupportPostEntityPaste) then
+	if self.wireSupportPostEntityPaste then
 		self:wireSupportPostEntityPaste(ply, ent, ents)
 	end
 end
@@ -162,7 +168,7 @@ end
 
 -- Fer Duplicator
 local function dooEet(ply, ent, stuff)
-	if (ent.isCloakable) then
+	if ent.isCloakable then
 		ent:cloakDeactivate()
 		onRemove(ent)
 	else
@@ -171,13 +177,16 @@ local function dooEet(ply, ent, stuff)
 		ent.cloakDeactivate = cloakDeactivate
 		ent.cloakToggleActive = cloakToggleActive
 		ent:CallOnRemove("Cloaking", onRemove)
-		if (WireLib) then
-			WireLib.AddInputs(ent, {"Cloak"})
-			WireLib.AddOutputs(ent, {"CloakActive"},
-				{"If this entity is currently cloaked"})
+		if WireLib then
+			WireLib.AddInputs(ent, { "Cloak" })
+			WireLib.AddOutputs(
+				ent,
+				{ "CloakActive" },
+				{ "If this entity is currently cloaked" }
+			)
 			ent.cloakTriggerInput = ent.cloakTriggerInput or ent.TriggerInput
 			ent.TriggerInput = TriggerInput
-			if (not (ent.IsWire or ent.addedWireSupport)) then -- Dupe Support
+			if not (ent.IsWire or ent.addedWireSupport) then -- Dupe Support
 				ent.wireSupportPreEntityCopy = ent.PreEntityCopy
 				ent.PreEntityCopy = PreEntityCopy
 				ent.wireSupportPostEntityPaste = ent.PostEntityPaste
@@ -191,7 +200,7 @@ local function dooEet(ply, ent, stuff)
 	ent.cloakToggle = stuff.toggle
 	ent.cloakMaterial = stuff.material
 	ent.cloakFlicker = stuff.flicker
-	if (stuff.reversed) then
+	if stuff.reversed then
 		ent:cloakActivate()
 	end
 	duplicator.StoreEntityModifier(ent, "Lexical Cloaking", stuff)
@@ -212,14 +221,14 @@ duplicator.RegisterEntityModifier("Cloaking", function(ply, ent, Data)
 end)
 
 local function doUndo(undoData, ent)
-	if (IsValid(ent) and ent.isCloakable) then
+	if IsValid(ent) and ent.isCloakable then
 		onRemove(ent)
 		ent:cloakDeactivate()
 		ent.isCloakable = false
-		if (WireLib) then
+		if WireLib then
 			ent.TriggerInput = ent.cloakTriggerInput
-			WireLib.RemoveInputs(ent, {"Cloak"})
-			WireLib.RemoveOutputs(ent, {"CloakActive"})
+			WireLib.RemoveInputs(ent, { "Cloak" })
+			WireLib.RemoveOutputs(ent, { "CloakActive" })
 		end
 		return true
 	end
@@ -227,7 +236,7 @@ local function doUndo(undoData, ent)
 end
 
 hook.Add("EntityTakeDamage", "Cloaking Flicker Hook", function(ent)
-	if (ent.isCloakable and ent.cloakFlicker and ent.cloakActive) then
+	if ent.isCloakable and ent.cloakFlicker and ent.cloakActive then
 		ent:cloakDeactivate()
 		timer.Simple(0.05, function()
 			ent:cloakActivate()
@@ -243,7 +252,7 @@ local function massUndo(undoData)
 end
 
 function TOOL:LeftClick(tr)
-	if (not checkTrace(tr)) then
+	if not checkTrace(tr) then
 		return false
 	end
 	local ent = tr.Entity
@@ -258,7 +267,7 @@ function TOOL:LeftClick(tr)
 	undo.Create("cloaking")
 	undo.SetPlayer(ply)
 	undo.AddFunction(massUndo)
-	if (self:GetClientNumber("all") == 0) then
+	if self:GetClientNumber("all") == 0 then
 		dooEet(ply, ent, tab)
 		undo.AddEntity(ent)
 	else

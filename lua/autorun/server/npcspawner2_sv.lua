@@ -18,28 +18,28 @@ AddCSLuaFile("autorun/npcspawner2.lua")
 AddCSLuaFile("autorun/client/npcspawner2_cl.lua")
 
 local datapath = "npcspawner2"
-if (file.IsDir(datapath, "DATA")) then
+if file.IsDir(datapath, "DATA") then
 	local function readfile(fname)
 		fname = datapath .. "/" .. fname .. ".txt"
-		if (file.Exists(fname, "DATA")) then
+		if file.Exists(fname, "DATA") then
 			local data = util.JSONToTable(file.Read(fname, "DATA"))
-			if (data and table.Count(data) > 0) then
+			if data and table.Count(data) > 0 then
 				return data
 			end
 		end
 	end
 	local cfg = readfile("config")
-	if (cfg) then
+	if cfg then
 		for key, value in pairs(cfg) do
 			value = tonumber(value)
-			if (value) then
+			if value then
 				npcspawner.config[key] = value
 			end
 		end
 	end
 end
 local function writefile(fname, table)
-	if (not file.IsDir(datapath, "DATA")) then
+	if not file.IsDir(datapath, "DATA") then
 		file.CreateDir(datapath, "DATA")
 	end
 	fname = datapath .. "/" .. fname .. ".txt"
@@ -57,14 +57,14 @@ local function syncConfig(whomst)
 end
 
 concommand.Add("npcspawner_config", function(ply, _, args)
-	if (IsValid(ply) and not ply:IsAdmin()) then
+	if IsValid(ply) and not ply:IsAdmin() then
 		return
 	end
 
 	local name, value = args[1], tonumber(args[2])
-	if (not value) then
+	if not value then
 		local msg = string.format("%q is not a valid value for %s!", args[2], name)
-		if (IsValid(ply)) then
+		if IsValid(ply) then
 			ply:ChatPrint(msg)
 		else
 			print(msg)
@@ -79,7 +79,7 @@ end)
 
 hook.Add("PlayerInitialSpawn", "NPCSpawner PlayerInitialSpawn", syncConfig)
 
-if (not ConVarExists("sbox_maxspawnplatforms")) then
+if not ConVarExists("sbox_maxspawnplatforms") then
 	CreateConVar("sbox_maxspawnplatforms", 10)
 end
 

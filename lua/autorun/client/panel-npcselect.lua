@@ -69,16 +69,19 @@ function PANEL:Init()
 
 	self:SetTall(200)
 	self.list = ctrl
-
 end
 
 function PANEL:ControlValues(data)
-	if (data.command) then
+	if data.command then
 		self:SetConVar(data.command)
 	end
 end
 
 -- TODO: Think hook!
 
-derma.DefineControl("NPCSpawnSelecter", "Selects a NPC fo' spawnin'", PANEL,
-	"DPropertySheet")
+derma.DefineControl(
+	"NPCSpawnSelecter",
+	"Selects a NPC fo' spawnin'",
+	PANEL,
+	"DPropertySheet"
+)
