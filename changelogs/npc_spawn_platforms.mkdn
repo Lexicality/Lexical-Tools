@@ -184,8 +184,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Completely rebuilt internal vars + networking - API is now platform:GetMaxNPCs() instead of platform.k*maximum.
-  (k*\* vars are still available for compatability reasons, but are deprecated)
+- Completely rebuilt internal vars + networking - API is now `platform:GetMaxNPCs()` instead of `platform.k_maximum`.
+  (`k_*` vars are still available for compatability reasons, but are deprecated)
 - Now compatible with Saves, Duplication and persistence
 - Now uses the WireMod overlay when available
 - Added tabs to the NPC selection
