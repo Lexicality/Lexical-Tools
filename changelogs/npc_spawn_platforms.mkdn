@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Platforms are given a `targetname` if they don't have one
+- Spawned NPCs are given a `targetname` derived from the platform
+- `OnNPCSpawned` and `OnNPCKilled` outputs now have the NPC as the activator
+  and that NPC's `targetname` as the value
+
 ### Fixed
 
 - Stack overflow when rejoining and regaining control of spawned platforms

@@ -83,6 +83,10 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 
+	if self:GetName() == "" then
+		self:SetName("splat_" .. self:GetCreationID())
+	end
+
 	self:ResetLastSpawn()
 
 	self:SetupWire()
@@ -151,7 +155,7 @@ function ENT:NPCKilled(npc)
 	if self.Spawned < 0 then
 		self.Spawned = 0
 	end
-	self:TriggerOutput("OnNPCKilled", self)
+	self:TriggerOutput("OnNPCKilled", npc, npc:GetName())
 	self:TriggerWireOutput("ActiveNPCs", self.Spawned)
 end
 

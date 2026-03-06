@@ -77,7 +77,7 @@
 	input SpawnOne(void) : "Spawns a single NPC immediately."
 	input RemoveNPCs(void) : "Deletes all existing NPCs."
 
-	output OnNPCSpawned(void) : "Fired after spawning a NPC."
-	output OnNPCKiled(void) : "Fired after a spawned NPC dies"
+	output OnNPCSpawned(string) : "Fired after spawning a NPC. The activator is the NPC, and the string is the name of the NPC."
+	output OnNPCKiled(string) : "Fired after a spawned NPC dies. The activator is the NPC, and the string is the name of the NPC."
 	output OnLimitReached(void) : "Fired when the max number of NPCs specified has been reached."
 ]

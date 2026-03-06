@@ -326,6 +326,7 @@ function ENT:GetSpawnLocation()
 	return position, angles, offset
 end
 
+--- @param npc GEntity
 function ENT:ConfigureNPCSquad(npc)
 	local squad
 	if self:GetCustomSquad() then
@@ -338,6 +339,7 @@ function ENT:ConfigureNPCSquad(npc)
 	npc:SetKeyValue("squadname", squad)
 end
 
+--- @param npc GEntity
 function ENT:ConfigureNPCHealth(npc)
 	local hp = npc:GetMaxHealth()
 	local chp = npc:Health()
@@ -351,12 +353,14 @@ function ENT:ConfigureNPCHealth(npc)
 	npc:SetHealth(hp)
 end
 
+--- @param npc GEntity
 function ENT:ConfigureNPCWeapons(npc)
 	if npc.SetCurrentWeaponProficiency then
 		npc:SetCurrentWeaponProficiency(self:GetNPCSkillLevel())
 	end
 end
 
+--- @param npc GEntity
 function ENT:ConfigureNPCCollisions(npc)
 	if self:GetNoCollideNPCs() then
 		npcspawner.debug2("Nocollided.")
@@ -365,8 +369,10 @@ function ENT:ConfigureNPCCollisions(npc)
 	end
 end
 
+--- @param npc GEntity
 function ENT:ConfigureNPCOwnership(npc)
 	npc:CallOnRemove("NPCSpawnPlatform", onremove, self)
+	npc:SetName(self:GetName() .. "_npc_" .. npc:GetCreationID())
 	self.NPCs[npc] = npc
 	duplicator.StoreEntityModifier(npc, self.__MODIFIER_ID, {
 		id = self:GetCreationID(),
@@ -374,6 +380,7 @@ function ENT:ConfigureNPCOwnership(npc)
 	})
 end
 
+--- @param npc GEntity
 function ENT:ConfigureNPCValue(npc)
 	local value = self:GetRPValue()
 	if value == -1 then
@@ -419,6 +426,7 @@ function ENT:SpawnOne()
 		true
 	)
 
+	--- @type GEntity | nil
 	local npc
 	if npcdata then
 		npc = InternalSpawnNPC(ply, position, normal, class, weapon, angles, offset)
@@ -426,7 +434,7 @@ function ENT:SpawnOne()
 		npc = legacySpawn(ply, position, normal, class, weapon, angles, offset)
 	end
 
-	if not IsValid(npc) then
+	if not npc or not IsValid(npc) then
 		self:TurnOff()
 		error("Failed to create a NPC of type '" .. class .. "'!")
 	end
@@ -457,7 +465,7 @@ function ENT:SpawnOne()
 
 	self:TriggerWireOutput("LastNPCSpawned", npc)
 
-	self:TriggerOutput("OnNPCSpawned", self)
+	self:TriggerOutput("OnNPCSpawned", npc, npc:GetName())
 	self:TriggerWireOutput("OnNPCSpawned", 1)
 	self:TriggerWireOutput("OnNPCSpawned", 0)
 
