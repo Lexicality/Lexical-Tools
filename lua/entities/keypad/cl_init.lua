@@ -14,6 +14,9 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]]
+local ENT = ENT --[[@as SENT_Keypad]]
+--- @type SENT_BaseLexEntity
+local BaseClass
 DEFINE_BASECLASS("base_lexentity")
 
 include("shared.lua")

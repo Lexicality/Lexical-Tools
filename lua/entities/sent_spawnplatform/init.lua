@@ -24,6 +24,10 @@ include("sv_reliability.lua")
 include("sv_spawning.lua")
 include("sv_wire.lua")
 
+--- @class SENT_SpawnPlatform
+local ENT = ENT --[[@as SENT_SpawnPlatform]]
+--- @type SENT_BaseLexEntity
+local BaseClass
 DEFINE_BASECLASS(ENT.Base)
 
 local colour_on = Color(0, 255, 0)

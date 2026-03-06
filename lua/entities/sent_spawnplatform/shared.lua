@@ -14,6 +14,17 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]]
+--- @class SENT_SpawnPlatform : SENT_BaseLexEntity
+--- @field NPCs GEntity[]
+--- @field Spawned integer
+--- @field TotalSpawned integer
+--- @field LastSpawn number
+--- @field LastChange number
+--- @field _prevOnKeypad number
+--- @field _prevOffKeypad number
+--- @field k_ply number
+local ENT = ENT --[[@as SENT_SpawnPlatform]]
+
 ENT.Type = "anim"
 ENT.PrintName = "NPC Spawn Platform"
 ENT.WireDebugName = "Spawn Platform"
@@ -23,6 +34,8 @@ ENT.Spawnable = false
 ENT.AdminOnly = false
 ENT.CountKey = "Spawnplatforms"
 
+--- @type SENT_BaseLexEntity
+local BaseClass
 DEFINE_BASECLASS("base_lexentity")
 
 local function StartDelayCustomSet(self, value)
@@ -34,6 +47,7 @@ local function MaxNPCsCustomSet(self, value)
 	self:SetMaxNPCs(value)
 end
 
+--- @type LexNWVar[]
 ENT._NWVars = {
 	{ Type = "Bool", Name = "Active", KeyName = "active", Default = false },
 	{ Type = "Bool", Name = "Flipped", Default = false },
@@ -128,6 +142,7 @@ function ENT:SetupDataTables()
 	end
 end
 
+--- @deprecated
 function ENT:GetPlayerID()
 	-- NOTE: This function used to work on the client, but now doesn't.
 	-- If you rely on this feature, please either stop relying on it or add an

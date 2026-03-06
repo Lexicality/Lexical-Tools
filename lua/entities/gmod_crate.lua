@@ -15,6 +15,10 @@
 	limitations under the License.
 ]]
 AddCSLuaFile()
+
+--- @class SENT_Crate : SENT_BaseLexEntity
+local ENT = ENT --[[@as SENT_Crate]]
+
 ENT.Type = "anim"
 ENT.Base = "base_lexentity"
 ENT.PrintName = "Resizable Crate"
@@ -23,6 +27,7 @@ ENT.Contact = "lexi@lexi.org.uk"
 ENT.Spawnable = true
 ENT.Editable = true
 
+--- @type LexNWVar[]
 ENT._NWVars = {
 	{
 		Name = "Scale",

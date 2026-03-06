@@ -16,6 +16,10 @@
 ]]
 include("shared.lua")
 
+--- @class SENT_SpawnPlatform
+local ENT = ENT --[[@as SENT_SpawnPlatform]]
+--- @type SENT_BaseLexEntity
+local BaseClass
 DEFINE_BASECLASS(ENT.Base)
 
 if not WireLib then

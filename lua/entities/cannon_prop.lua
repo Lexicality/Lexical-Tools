@@ -15,6 +15,10 @@
 	limitations under the License.
 ]]
 AddCSLuaFile()
+
+--- @class SENT_CannonProp : SENT
+local ENT = ENT --[[@as SENT_CannonProp]]
+
 ENT.Type = "anim"
 ENT.Base = "base_anim"
 ENT.PrintName = "Prop Cannon Shot"

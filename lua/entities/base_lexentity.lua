@@ -16,6 +16,21 @@
 ]]
 AddCSLuaFile()
 
+--- @class LexNWVar
+--- @field Name string
+--- @field Type "String" | "Bool" | "Float" | "Int" | "Vector" | "Angle" | "Entity"
+--- @field Default? any
+--- @field KeyName? string
+--- @field Edit? table
+--- @field Special? table
+---
+--- @class SENT_BaseLexEntity : SENT
+--- @field _NWVars? LexNWVar[]
+--- @field CountKey? string
+--- @field Inputs? table
+--- @field Outputs? table
+local ENT = ENT --[[@as SENT_BaseLexEntity]]
+
 ENT.Type = "anim"
 ENT.PrintName = "Lex's Base Entity"
 ENT.Author = "Lex Robinson"
@@ -23,20 +38,23 @@ ENT.Contact = "lexi@lexi.org.uk"
 ENT.Purpose = "Abstracting away annoying features"
 ENT.Spawnable = false
 
-local BaseClass
+local baseclass_name
 if WireLib then
-	BaseClass = "base_wire_entity"
+	baseclass_name = "base_wire_entity"
 elseif gmod.GetGamemode().IsSandboxDerived then
-	BaseClass = "base_gmodentity"
+	baseclass_name = "base_gmodentity"
 else
-	BaseClass = "base_anim"
+	baseclass_name = "base_anim"
 end
-DEFINE_BASECLASS(BaseClass)
+--- @type SENT
+local BaseClass
+DEFINE_BASECLASS(baseclass_name)
 
 -- Stub for non-sandbox gamemodes
-function ENT:SetOverlayText(...)
-	if BaseClass.SetOverlayText then
-		BaseClass.SetOverlayText(self, ...)
+--- @param text string
+function ENT:SetOverlayText(text)
+	if BaseClass["SetOverlayText"] then
+		BaseClass["SetOverlayText"](self, text)
 	end
 end
 
@@ -78,6 +96,8 @@ if CLIENT then
 	return
 end
 
+--- @param key string
+--- @param value string
 function ENT:KeyValue(key, value)
 	if BaseClass.KeyValue then
 		BaseClass.KeyValue(self, key, value)
@@ -90,6 +110,9 @@ function ENT:KeyValue(key, value)
 	end
 end
 
+--- @param key string
+--- @param value string
+--- @return boolean
 function ENT:AddOutputFromKeyValue(key, value)
 	if key:sub(1, 2) == "On" then
 		self:StoreOutput(key, value)
@@ -99,6 +122,11 @@ function ENT:AddOutputFromKeyValue(key, value)
 	return false
 end
 
+--- @param name string
+--- @param activator GEntity
+--- @param called GEntity
+--- @param value string
+--- @return boolean
 function ENT:AcceptInput(name, activator, called, value)
 	if
 		BaseClass.AcceptInput
@@ -114,6 +142,9 @@ function ENT:AcceptInput(name, activator, called, value)
 	return false
 end
 
+--- @param name string
+--- @param value string
+--- @return boolean
 function ENT:AddOutputFromAcceptInput(name, value)
 	if name ~= "AddOutput" then
 		return false
@@ -162,16 +193,22 @@ function ENT:CreateWireOutputs(tab)
 	WireLib.CreateSpecialOutputs(self, names, types, descs)
 end
 
+--- @param name string
+--- @param value any
 function ENT:TriggerWireOutput(name, value)
 	if WireLib then
 		WireLib.TriggerOutput(self, name, value)
 	end
 end
 
+--- @param name string
+--- @return boolean
 function ENT:IsWireInputConnected(name)
 	return self.Inputs and self.Inputs[name] and IsValid(self.Inputs[name].Src)
 end
 
+--- @param name string
+--- @return boolean
 function ENT:IsWireOutputConnected(name)
 	if not (self.Outputs and self.Outputs[name]) then
 		return false
@@ -187,6 +224,9 @@ function ENT:IsWireOutputConnected(name)
 end
 
 -- 'Class' function
+--- @param ply GPlayer
+--- @param data table
+--- @return boolean
 function ENT.CanDuplicate(ply, data)
 	-- A mixture of duplicator copy/paste & sandbox boilerplate
 	if not duplicator.IsAllowed(data.Class) then
@@ -212,10 +252,13 @@ function ENT.CanDuplicate(ply, data)
 	return true
 end
 
--- This is just like duplicator.GenericDuplicatorFunction but it doesn't merge the data table with the entity
--- It also handles sandbox limits
+--- This is just like duplicator.GenericDuplicatorFunction but it doesn't merge the data table with the entity
+--- It also handles sandbox limits
+--- @param ply GPlayer
+--- @param data table
+--- @return nil | GEntity
 function ENT.GenericDuplicate(ply, data)
-	local ent = ents.Create(data.Class)
+	local ent = ents.Create(data.Class) --[[@as SENT_BaseLexEntity]]
 	if not IsValid(ent) then
 		return
 	end
@@ -240,6 +283,7 @@ function ENT.GenericDuplicate(ply, data)
 end
 
 -- Sandbox's player system, revamped a little
+---@param ply GPlayer
 function ENT:SetPlayer(ply)
 	self.Founder = ply
 	if IsValid(ply) then
@@ -254,25 +298,27 @@ function ENT:SetPlayer(ply)
 	end
 end
 
+--- @return GPlayer
 function ENT:GetPlayer()
 	if self.Founder == nil or self.FounderSID == "" then
 		-- SetPlayer has not been called
-		return NULL
+		return NULL --[[@as GPlayer]]
 	elseif IsValid(self.Founder) then
 		-- Normal operations
 		return self.Founder
 	end
 	-- See if the player has left the server then rejoined
-	local ply = player.GetBySteamID64(self.FounderSID)
+	local ply = player.GetBySteamID64(self.FounderSID) --[[@as GPlayer]]
 	if not IsValid(ply) then
 		-- Oh well
-		return NULL
+		return NULL --[[@as GPlayer]]
 	end
 	-- Save us the check next time
 	self:SetPlayer(ply)
 	return ply
 end
 
+--- @return string
 function ENT:GetPlayerName()
 	local ply = self:GetPlayer()
 	if IsValid(ply) then
@@ -282,7 +328,7 @@ function ENT:GetPlayerName()
 	return self:GetNWString("FounderName", "")
 end
 
--- All or nothing GetPhysicsObject
+--- All or nothing GetPhysicsObject
 function ENT:GetValidPhysicsObject()
 	local phys = self:GetPhysicsObject()
 	if not phys:IsValid() then

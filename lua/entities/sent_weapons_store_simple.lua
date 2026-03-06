@@ -5,6 +5,9 @@
 ]]
 AddCSLuaFile()
 
+--- @class SENT_WeaponsStoreSimple : SENT_BaseLexEntity
+local ENT = ENT --[[@as SENT_WeaponsStoreSimple]]
+
 ENT.Type = "anim"
 ENT.PrintName = "Weapon Spawner (simple)"
 ENT.WireDebugName = "Weapon Spawner (simple)"
@@ -16,10 +19,13 @@ ENT.Spawnable = true
 ENT.AdminOnly = true
 ENT.Editable = true
 
+--- @type SENT_BaseLexEntity
+local BaseClass
 DEFINE_BASECLASS("base_lexentity")
 
 duplicator.Allow("sent_weapons_store_simple")
 
+--- @type LexNWVar[]
 ENT._NWVars = {
 	{
 		Name = "SpawnOnce",

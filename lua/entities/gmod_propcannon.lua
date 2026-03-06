@@ -15,6 +15,10 @@
 	limitations under the License.
 ]]
 AddCSLuaFile()
+
+--- @class SENT_Cannon : SENT
+local ENT = ENT --[[@as SENT_Cannon]]
+
 ENT.Type = "anim"
 if WireLib then
 	ENT.Base = "base_wire_entity"

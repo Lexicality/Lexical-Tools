@@ -14,7 +14,16 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]]
+
+--- @class SENT_SpawnPlatform
+local ENT = ENT --[[@as SENT_SpawnPlatform]]
+--- @type SENT_BaseLexEntity
+local BaseClass
 DEFINE_BASECLASS(ENT.Base)
+
+--- @class GNPC
+--- @field SpawnFlags integer
+--- @field Equipment string
 
 local weaponsets = {
 	weapon_rebel = { "weapon_pistol", "weapon_smg1", "weapon_ar2", "weapon_shotgun" },
@@ -92,7 +101,7 @@ local function InternalSpawnNPC(
 	Position = Position + Normal * Offset
 
 	-- Create NPC
-	local NPC = ents.Create(NPCData.Class)
+	local NPC = ents.Create(NPCData.Class) --[[@as GNPC]]
 	if not IsValid(NPC) then
 		return
 	end

@@ -17,6 +17,9 @@
 ]]
 AddCSLuaFile()
 
+--- @class SENT_DRPMoneyPot : SENT_BaseMoneypot
+local ENT = ENT --[[@as SENT_DRPMoneyPot]]
+
 ENT.Type = "anim"
 ENT.PrintName = "DarkRP Money Pot"
 ENT.Information = "Allows you to collect DarkRP money into a pot"

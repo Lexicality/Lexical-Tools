@@ -17,6 +17,9 @@
 ]]
 AddCSLuaFile()
 
+--- @class SENT_BaseMoneypot : SENT
+local ENT = ENT --[[@as SENT_BaseMoneypot]]
+
 ENT.Type = "anim"
 ENT.PrintName = "Money Pot"
 ENT.Author = "Lexi"

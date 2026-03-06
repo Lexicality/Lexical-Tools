@@ -14,6 +14,11 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 ]]
+
+--- @class SENT_Keypad : SENT_BaseLexEntity
+local ENT = ENT --[[@as SENT_Keypad]]
+--- @type SENT_BaseLexEntity
+local BaseClass
 DEFINE_BASECLASS("base_lexentity")
 
 ENT.Type = "anim"
@@ -29,6 +34,7 @@ ENT.IsKeypad = true
 
 ENT.STATUSES = { Normal = 0, AccessGranted = 1, AccessDenied = 2 }
 
+--- @type LexNWVar[]
 ENT._NWVars = {
 	{ Type = "String", Name = "PasswordDisplay" },
 	{ Type = "Bool", Name = "Secure", KeyName = "secure" },

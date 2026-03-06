@@ -14,6 +14,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ]]
+
+--- @class SENT_SpawnPlatform
+local ENT = ENT --[[@as SENT_SpawnPlatform]]
+--- @type SENT_BaseLexEntity
+local BaseClass
 DEFINE_BASECLASS(ENT.Base)
 
 function ENT:ResetLastSpawn()
