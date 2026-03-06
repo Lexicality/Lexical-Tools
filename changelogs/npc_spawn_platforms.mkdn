@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Stack overflow when rejoining and regaining control of spawned platforms
+
 ## [3.3.2]
 
 ### Fixed

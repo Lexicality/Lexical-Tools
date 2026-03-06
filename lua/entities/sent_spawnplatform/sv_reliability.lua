@@ -47,7 +47,7 @@ function ENT:SetPlayerID(plyID)
 end
 
 function ENT:SetPlayer(ply)
-	local oldPly = self:GetPlayer()
+	local oldPly = self.Founder
 
 	BaseClass.SetPlayer(self, ply)
 
