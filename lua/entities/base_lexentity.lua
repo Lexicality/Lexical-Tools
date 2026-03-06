@@ -124,18 +124,18 @@ end
 
 --- @param name string
 --- @param activator GEntity
---- @param called GEntity
---- @param value string
+--- @param caller GEntity
+--- @param param string
 --- @return boolean
-function ENT:AcceptInput(name, activator, called, value)
+function ENT:AcceptInput(name, activator, caller, param)
 	if
 		BaseClass.AcceptInput
-		and BaseClass.AcceptInput(self, name, activator, called, value)
+		and BaseClass.AcceptInput(self, name, activator, caller, param)
 	then
 		return true
 	end
 
-	if self:AddOutputFromAcceptInput(name, value) then
+	if self:AddOutputFromAcceptInput(name, param) then
 		return true
 	end
 
